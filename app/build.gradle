@@ -1,0 +1,84 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.clone_daum"
+        minSdkVersion 18
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //
+    // KOTLIN
+    //
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //
+    // ANDROID LIBS
+    //
+
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "androidx.recyclerview:recyclerview:$androidx"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint"
+    implementation "androidx.multidex:multidex:2.0.0"
+
+    // material
+    implementation "com.google.android.material:material:$androidx"
+
+
+    //
+    // OPEN LIBS
+    //
+
+    implementation "org.slf4j:slf4j-api:$slf4j"
+    implementation "com.github.tony19:logback-android:$logback"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp"
+    implementation "com.squareup.picasso:picasso:$picasso"
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+
+    implementation project(path: ':common')
+}

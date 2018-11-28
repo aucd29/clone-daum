@@ -1,0 +1,9 @@
+<configuration>
+    <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+        <tagEncoder><pattern>[BK]</pattern></tagEncoder>
+        <encoder><pattern>%class{0}.%M\(%F:%L\) %msg</pattern></encoder>
+    </appender>
+
+    <!-- DEBUG 용 -->
+    <root level="debug"><appender-ref ref="logcat"/></root>
+</configuration>

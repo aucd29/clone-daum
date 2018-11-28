@@ -1,0 +1,17 @@
+[
+  {"name":"추천", "url":"http://m.daum.net"},
+  {"name":"뉴스", "url":"http://m.naver.com"},
+  {"name":"랭킹", "url":"http://m.daum.net"},
+  {"name":"연예", "url":"http://m.daum.net"},
+  {"name":"TV", "url":"http://m.daum.net"},
+  {"name":"쇼핑", "url":"http://m.daum.net"},
+  {"name":"스포츠", "url":"http://m.daum.net"},
+  {"name":"머니", "url":"http://m.daum.net"},
+  {"name":"홈&쿠킹", "url":"http://m.daum.net"},
+  {"name":"동물", "url":"http://m.daum.net"},
+  {"name":"스타일", "url":"http://m.daum.net"},
+  {"name":"자동차+", "url":"http://m.daum.net"},
+  {"name":"여행맛집", "url":"http://m.daum.net"},
+  {"name":"직장IN", "url":"http://m.daum.net"},
+  {"name":"펀&웹툰", "url":"http://m.daum.net"}
+]
