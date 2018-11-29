@@ -20,7 +20,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val viewpagerLoadedEvent    = ObservableField<()->Unit>()
 
     var gotoNewsEvent           = ObservableInt(0)
-    var gotoNewsIndex           = 0
+    var gotoNewsIndex           = 1
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {

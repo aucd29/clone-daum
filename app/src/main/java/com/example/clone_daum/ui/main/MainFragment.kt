@@ -45,20 +45,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
             mLog.debug("TAB DATA : ${tabList}")
         }
 
-        var newsIndex = 0
-        for (tab in tabList) {
-            if (tab.name == "뉴스") {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("NEWS INDEX : ${newsIndex}")
-                }
-                break
-            }
-            ++newsIndex
-        }
-
         viewmodel()?.run {
-            gotoNewsIndex = newsIndex
-
             tabAdapter.set(TabAdapter(childFragmentManager, tabList))
             viewpager.set(mBinding.viewpager)
             viewpagerLoadedEvent.set {
