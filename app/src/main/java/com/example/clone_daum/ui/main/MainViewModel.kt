@@ -2,8 +2,10 @@ package com.example.clone_daum.ui.main
 
 import android.app.Application
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
+import com.example.common.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 
 
@@ -17,9 +19,18 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val searchKeyword           = ObservableField<String>()
     val viewpagerLoadedEvent    = ObservableField<()->Unit>()
 
+    var gotoNewsEvent           = ObservableInt(0)
+    var gotoNewsIndex           = 0
+
     fun gotoNews() {
         if (mLog.isDebugEnabled) {
-            mLog.debug("")
+            mLog.debug("goto tab $gotoNewsIndex")
+        }
+
+        if (gotoNewsEvent.get() == gotoNewsIndex) {
+            gotoNewsEvent.notifyChange()
+        } else {
+            gotoNewsEvent.set(gotoNewsIndex)
         }
     }
 

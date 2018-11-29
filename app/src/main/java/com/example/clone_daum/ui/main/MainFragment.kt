@@ -1,8 +1,6 @@
 package com.example.clone_daum.ui.main
 
 import android.os.Bundle
-import android.widget.RelativeLayout
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -37,6 +35,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     private fun initFragment() {
         activity().disposable.add(DataManager.tabList(context!!).subscribe {
             it.jsonParse<List<TabData>>().let(::settingTab)
+            settingEvents()
         })
     }
 
@@ -46,7 +45,20 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
             mLog.debug("TAB DATA : ${tabList}")
         }
 
+        var newsIndex = 0
+        for (tab in tabList) {
+            if (tab.name == "뉴스") {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("NEWS INDEX : ${newsIndex}")
+                }
+                break
+            }
+            ++newsIndex
+        }
+
         viewmodel()?.run {
+            gotoNewsIndex = newsIndex
+
             tabAdapter.set(TabAdapter(childFragmentManager, tabList))
             viewpager.set(mBinding.viewpager)
             viewpagerLoadedEvent.set {
@@ -67,9 +79,9 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
                 }
             }
         }
+    }
 
-        mBinding.run {
-        }
+    private fun settingEvents() = viewmodel()?.run {
     }
 
     override fun onDestroy() {
