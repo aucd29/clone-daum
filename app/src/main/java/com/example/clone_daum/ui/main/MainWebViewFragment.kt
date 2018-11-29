@@ -39,8 +39,6 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                     mLog.debug("PAGE FINISHED")
                 }
 
-                viewmodel()?.splashClose()
-
                 if (swipeRefresh.isRefreshing) {
                     swipeRefresh.isRefreshing = false   // hide refresh icon
 

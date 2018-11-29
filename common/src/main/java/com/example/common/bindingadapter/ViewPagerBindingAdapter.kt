@@ -27,12 +27,14 @@ object ViewPagerBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("bindPagerAdapter")
-    fun bindAdapter(viewpager: ViewPager, adapter: FragmentPagerAdapter) {
+    @BindingAdapter(*arrayOf("bindPagerAdapter", "bindViewPagerLoaded"), requireAll = false)
+    fun bindAdapter(viewpager: ViewPager, adapter: FragmentPagerAdapter, viewPagerLoadedCallback: (() -> Unit)? = null) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindPagerAdapter")
         }
+
         viewpager.adapter = adapter
+        viewPagerLoadedCallback?.invoke()
     }
 
     @JvmStatic

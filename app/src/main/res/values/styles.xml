@@ -40,9 +40,17 @@
     <!-- dumy view -->
 
     <style name="dumyView">
-        <item name="android:background">#dedede</item>
+        <item name="android:background">#efefef</item>
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">10dp</item>
+    </style>
+
+    <!-- 1dp line -->
+
+    <style name="line1dp">
+        <item name="android:background">#efefef</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
     </style>
 </resources>

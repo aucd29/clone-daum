@@ -12,11 +12,11 @@ import androidx.fragment.app.FragmentManager
 
 inline fun Fragment.string(resid: String): String? = context?.string(resid)
 
-inline val FragmentManager.frgmts: List<Fragment?>
+inline val FragmentManager.childList: List<Fragment?>
     get() = (0..backStackEntryCount - 1).map { findFragmentByTag(getBackStackEntryAt(it).name) }
 
 inline val FragmentManager.current: Fragment?
-    get() = frgmts.last()
+    get() = childList.last()
 
 inline val FragmentManager.count: Int
     get() = backStackEntryCount

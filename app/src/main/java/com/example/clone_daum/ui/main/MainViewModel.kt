@@ -4,9 +4,7 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
-import com.example.common.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 class MainViewModel(val app: Application) : AndroidViewModel(app) {
@@ -14,11 +12,10 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
     }
 
-    val tabAdapter = ObservableField<TabAdapter>()
-    val viewpager  = ObservableField<ViewPager>()
-    val searchKeyword = ObservableField<String>()
-    val webviewInit = SingleLiveEvent<Void>()
-    var splashClose = AtomicBoolean(false)
+    val tabAdapter              = ObservableField<TabAdapter>()
+    val viewpager               = ObservableField<ViewPager>()
+    val searchKeyword           = ObservableField<String>()
+    val viewpagerLoadedEvent    = ObservableField<()->Unit>()
 
     fun searchExtendMenu() {
         if (mLog.isDebugEnabled) {
@@ -35,14 +32,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     fun tabMenu() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
-        }
-    }
-
-    fun splashClose() {
-        if (!splashClose.get()) {
-            splashClose.set(true)
-
-            webviewInit.call()
         }
     }
 }

@@ -1,15 +1,20 @@
 package com.example.clone_daum.ui.main
 
 import android.os.Bundle
+import android.widget.RelativeLayout
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.model.DataManager
 import com.example.clone_daum.model.local.TabData
 import com.example.common.BaseRuleFragment
+import com.example.common.childList
 import com.example.common.jsonParse
 import com.example.common.viewModel
+import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 
 class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
@@ -26,69 +31,65 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        loadDataManager()
+        initFragment()
     }
 
-    private fun loadDataManager() {
-        context?.let {
-            DataManager.tabList(it).subscribe {
-                it.jsonParse<List<TabData>>().let {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("TAB SIZE : ${it.size}")
-                        mLog.debug("TAB DATA : ${it}")
-                    }
+    private fun initFragment() {
+        activity().disposable.add(DataManager.tabList(context!!).subscribe {
+            it.jsonParse<List<TabData>>().let(::settingTab)
+        })
+    }
 
-                    viewmodel()?.let { vm ->
-                        vm.viewpager.set(mBinding.viewpager)
-                        vm.tabAdapter.set(TabAdapter(childFragmentManager, it))
+    private fun settingTab(tabList: List<TabData>) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("TAB SIZE : ${tabList.size}")
+            mLog.debug("TAB DATA : ${tabList}")
+        }
 
-                        observe(vm.webviewInit) {
+        viewmodel()?.run {
+            tabAdapter.set(TabAdapter(childFragmentManager, tabList))
+            viewpager.set(mBinding.viewpager)
+            viewpagerLoadedEvent.set {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("TAB LOADED")
+                    mLog.debug("tab count = ${mBinding.tab.tabCount}")
+                }
 
-                        }
-                    }
+                // https://stackoverflow.com/questions/40896907/can-a-custom-view-be-used-as-a-tabitem
+                mBinding.tab.childList.forEach {
+                    val view = layoutInflater.inflate(R.layout.tab_main_custom, null)
+                    view.tab_label.text = it?.text
+
+//                    val lparams = it?.view.layoutParams
+//                    it?.view.layoutParams =
+
+                    it?.customView = view
                 }
             }
+        }
+
+        mBinding.run {
         }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
         mBinding.viewpager.adapter = null
+
+        super.onDestroy()
     }
 }
 
 class TabAdapter(fm: FragmentManager?, val tabData: List<TabData>) : FragmentPagerAdapter(fm) {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(TabAdapter::class.java)
-    }
-
     override fun getItem(position: Int): Fragment {
         val frgmt = MainWebviewFragment()
-
         val bundle = Bundle()
         bundle.putString("url", tabData[position].url)
+
         frgmt.arguments = bundle
 
         return frgmt
     }
 
-    override fun getPageTitle(position: Int): String {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("TITLE : ${tabData[position].name}")
-        }
-
-        return tabData[position].name
-    }
-
+    override fun getPageTitle(position: Int): String = tabData[position].name
     override fun getCount() = tabData.size
-
-//        override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
-//            val frgmt = obj as Fragment
-//            val manager = frgmt.fragmentManager
-//
-//            manager?.run {
-//
-//            } ?: super.destroyItem(container, position, obj)
-//        }
 }
