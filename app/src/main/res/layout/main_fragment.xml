@@ -31,6 +31,8 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/white">
 
+                    <!-- SEARCH TEXT -->
+
                     <EditText
                             android:id="@+id/search"
                             android:layout_width="match_parent"
@@ -46,6 +48,8 @@
                             android:text="@={model.searchKeyword}"
                     />
 
+                    <!-- ICONS FROM SEARCH BAR -->
+
                     <ImageView
                             android:id="@+id/search_logo"
                             android:layout_width="wrap_content"
@@ -55,6 +59,7 @@
                             app:layout_constraintTop_toTopOf="@+id/search"
                             app:layout_constraintBottom_toBottomOf="@+id/search"
                             android:layout_marginStart="20dp"
+                            android:onClick="@{() -> model.gotoNews()}"
                     />
 
                     <ImageView
@@ -69,7 +74,7 @@
                             android:onClick="@{() -> model.searchExtendMenu()}"
                     />
 
-                    <!-- rank -->
+                    <!-- RANK -->
 
                     <TextView
                             android:id="@+id/search_rank"
@@ -89,7 +94,10 @@
                             app:layout_constraintEnd_toStartOf="@+id/search_vertical_bar"
                             android:layout_marginEnd="10dp"
                             android:onClick="@{() -> model.searchExtendRank()}"
+                            android:background="@drawable/selector_button_bgcolor"
                     />
+
+                    <!-- VERTICAL BAR -->
 
                     <TextView
                             android:id="@+id/search_vertical_bar"
@@ -101,17 +109,70 @@
                             app:layout_constraintEnd_toEndOf="parent"
                     />
 
-                    <!-- weather -->
+                    <!-- WEATHER -->
 
-                    <!-- gps -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/weather_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toEndOf="@+id/search_vertical_bar"
+                            app:layout_constraintTop_toBottomOf="@+id/search"
+                            app:layout_constraintBottom_toTopOf="@+id/search_underline"
+                            android:onClick="@{() -> model.weatherDetail()}">
+
+                        <TextView
+                                android:id="@+id/search_weather_text"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="서울"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                        />
+
+                        <ImageView
+                                android:id="@+id/search_weather_icon"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:src="@drawable/ic_brightness_low_black_24dp"
+                                app:layout_constraintStart_toEndOf="@+id/search_weather_text"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:layout_marginStart="20dp"
+                        />
+
+                        <TextView
+                                android:id="@+id/search_weather_temperature"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toEndOf="@+id/search_weather_icon"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="7도"
+                                android:layout_marginStart="10dp"
+                        />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- GPS -->
+
+                    <ImageView
+                            android:id="@+id/search_gps_icon"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:src="@drawable/ic_gps_not_fixed_black_24dp"
+                            app:layout_constraintTop_toBottomOf="@+id/search"
+                            app:layout_constraintEnd_toEndOf="@+id/search"
+                            app:layout_constraintBottom_toTopOf="@+id/search_underline"
+                            android:padding="8dp"
+                            android:onClick="@{() -> model.confirmGps()}"
+                    />
 
                     <View
+                            android:id="@+id/search_underline"
                             style="@style/dumyView"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/search_rank"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                     />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -157,13 +218,14 @@
                 <ImageView
                         android:id="@+id/tab_menu"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:src="@drawable/ic_menu_black_24dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@+id/tab_underline"
-                        android:paddingEnd="10dp"
-                        android:paddingStart="10dp"
+                        android:paddingEnd="15dp"
+                        android:paddingStart="15dp"
+                        android:background="@drawable/selector_button_bgcolor"
                         android:onClick="@{() -> model.tabMenu()}"
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>

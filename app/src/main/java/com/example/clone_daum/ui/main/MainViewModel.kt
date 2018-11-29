@@ -17,6 +17,12 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val searchKeyword           = ObservableField<String>()
     val viewpagerLoadedEvent    = ObservableField<()->Unit>()
 
+    fun gotoNews() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
     fun searchExtendMenu() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
@@ -24,6 +30,18 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     fun searchExtendRank() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
+    fun weatherDetail() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
+    fun confirmGps() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
         }
