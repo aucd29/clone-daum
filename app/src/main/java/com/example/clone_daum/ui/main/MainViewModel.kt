@@ -23,8 +23,9 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val viewpagerLoadedEvent    = ObservableField<()->Unit>()
 
     var gotoNewsEvent           = ObservableInt(0)
-
     val visibleBack             = ObservableInt(View.GONE)
+
+    val gotoSearchEvent         = SingleLiveEvent<Void>()
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {
@@ -36,6 +37,14 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
         } else {
             gotoNewsEvent.set(INDEX_NEWS)
         }
+    }
+
+    fun searchFragment() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+
+        gotoSearchEvent.call()
     }
 
     fun searchExtendMenu() {

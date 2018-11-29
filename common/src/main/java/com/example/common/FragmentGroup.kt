@@ -32,6 +32,9 @@ object FragmentAnim {
 
     val UP: String
         get() = "up"
+
+    val ALPHA: String
+        get() = "alpha"
 }
 
 object FragmentCommit {
@@ -102,6 +105,7 @@ inline fun FragmentManager.replace(params: FragmentParams) {
                     R.anim.slide_in_current, R.anim.slide_in_next)
                 FragmentAnim.UP -> setCustomAnimations(R.anim.slide_up_current, R.anim.slide_up_next,
                     R.anim.slide_down_current, R.anim.slide_down_prev)
+                FragmentAnim.ALPHA -> setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                 else -> { }
             }
         }

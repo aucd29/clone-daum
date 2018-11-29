@@ -8,10 +8,8 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.model.DataManager
 import com.example.clone_daum.model.local.TabData
-import com.example.common.BaseRuleFragment
-import com.example.common.childList
-import com.example.common.jsonParse
-import com.example.common.viewModel
+import com.example.clone_daum.ui.search.SearchFragment
+import com.example.common.*
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 
@@ -69,6 +67,11 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun settingEvents() = viewmodel()?.run {
+        observe(gotoSearchEvent) {
+            activity().supportFragmentManager.replace(FragmentParams(
+                R.id.container, SearchFragment::class.java,
+                anim = FragmentAnim.ALPHA))
+        }
     }
 
     override fun onDestroy() {
