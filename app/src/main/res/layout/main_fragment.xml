@@ -124,14 +124,13 @@
                     android:layout_height="match_parent"
                     app:layout_anchor="@+id/toolbar_layout">
 
-                <com.google.android.material.tabs.TabLayout
+                <com.example.clone_daum.ui.widget.TabLayout
                         style="@style/MyCustomTabLayout"
                         android:id="@+id/tab"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
                         app:tabMode="scrollable"
-                        app:tabIndicatorColor="@android:color/black"
                         app:bindSetupWithViewPager="@{model.viewpager}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

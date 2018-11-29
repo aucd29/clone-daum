@@ -49,28 +49,6 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
                 }
             }
         }
-
-    }
-
-    private fun loadArgs() {
-        arguments?.let {
-            it.getByteArray("tabList")?.jsonParse<List<TabData>>()?.let {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("TAB SIZE : ${it.size}")
-                    mLog.debug("TAB DATA : ${it}")
-                }
-
-                viewmodel()?.let { vm ->
-                    vm.viewpager.set(mBinding.viewpager)
-                    vm.tabAdapter.set(TabAdapter(childFragmentManager, it))
-
-                    observe(vm.webviewInit) {
-                        activity?.let {
-                        }
-                    }
-                }
-            }
-        }
     }
 
     override fun onDestroy() {

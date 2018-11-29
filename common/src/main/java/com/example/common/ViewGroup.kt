@@ -24,3 +24,6 @@ inline fun View.width(width: Int) {
 inline fun TextView.gravityCenter() {
     gravity = Gravity.CENTER
 }
+
+inline fun View.dpToPx(v: Int) = v * context.displayDensity()
+inline fun View.pxToDp(v: Int) = v / context.displayDensity()

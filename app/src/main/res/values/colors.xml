@@ -3,4 +3,6 @@
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#ffffff</color>
     <color name="colorAccent">#868686</color>
+
+    <color name="tab_backgound">#dedede</color>
 </resources>
