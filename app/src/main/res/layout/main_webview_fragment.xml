@@ -8,6 +8,7 @@
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
     </data>
 
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:fillViewport="true"
@@ -23,6 +24,6 @@
                     android:layout_width="match_parent" android:layout_height="wrap_content"/>
 
         </androidx.core.widget.NestedScrollView>
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </layout>

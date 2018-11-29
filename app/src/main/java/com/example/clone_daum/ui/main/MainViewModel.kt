@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.main
 
 import android.app.Application
+import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory
 class MainViewModel(val app: Application) : AndroidViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
+
+        const val INDEX_NEWS = 1
     }
 
     val tabAdapter              = ObservableField<TabAdapter>()
@@ -20,17 +23,18 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     val viewpagerLoadedEvent    = ObservableField<()->Unit>()
 
     var gotoNewsEvent           = ObservableInt(0)
-    var gotoNewsIndex           = 1
+
+    val visibleBack             = ObservableInt(View.GONE)
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {
-            mLog.debug("goto tab $gotoNewsIndex")
+            mLog.debug("goto tab $INDEX_NEWS")
         }
 
-        if (gotoNewsEvent.get() == gotoNewsIndex) {
+        if (gotoNewsEvent.get() == INDEX_NEWS) {
             gotoNewsEvent.notifyChange()
         } else {
-            gotoNewsEvent.set(gotoNewsIndex)
+            gotoNewsEvent.set(INDEX_NEWS)
         }
     }
 
@@ -59,6 +63,12 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
     }
 
     fun tabMenu() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
+    fun webviewBack() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
         }
