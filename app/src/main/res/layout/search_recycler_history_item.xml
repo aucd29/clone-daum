@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="viewModel" type="com.example.clone_daum.ui.search.SearchViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/history_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                tools:text="Search Keyword"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+        />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  tools:text="11.29."
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintEnd_toStartOf="@+id/delete_history"
+                  app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+        <ImageView
+                android:id="@+id/delete_history"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:src="@drawable/ic_clear_black_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.9"
+                android:padding="10dp"
+        />
+
+        <View
+                android:id="@+id/bottom_area_overline"
+                style="@style/line1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
