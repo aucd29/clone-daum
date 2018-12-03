@@ -241,7 +241,6 @@
                 app:bindPagerAdapter="@{model.tabAdapter}"
                 app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:layout_gravity="top"
         />
 
         <ImageView
