@@ -7,6 +7,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.common.arch.SingleLiveEvent
+import com.google.android.material.appbar.AppBarLayout
 import org.slf4j.LoggerFactory
 
 
@@ -17,14 +18,15 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
         const val INDEX_NEWS = 1
     }
 
-    val tabAdapter              = ObservableField<TabAdapter>()
-    val viewpager               = ObservableField<ViewPager>()
-    val searchKeyword           = ObservableField<String>()
-    val viewpagerLoadedEvent    = ObservableField<()->Unit>()
+    val tabAdapter                  = ObservableField<TabAdapter>()
+    val viewpager                   = ObservableField<ViewPager>()
+    val searchKeyword               = ObservableField<String>()
+    val viewpagerLoadedEvent        = ObservableField<()->Unit>()
+    val appbarOffsetChangedEvent    = ObservableField<(AppBarLayout, Int)->Unit>()
 
-    var gotoNewsEvent           = ObservableInt(0)
+    var gotoNewsEvent               = ObservableInt(0)
 
-    val visibleBack             = ObservableInt(View.GONE)
+    val visibleBack                 = ObservableInt(View.GONE)
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {

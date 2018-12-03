@@ -12,6 +12,7 @@ import com.example.common.BaseRuleFragment
 import com.example.common.childList
 import com.example.common.jsonParse
 import com.example.common.viewModel
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 
@@ -69,7 +70,33 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun settingEvents() = viewmodel()?.run {
+        appbarOffsetChangedEvent.set { appbar, offset ->
+            val maxScroll = appbar.getTotalScrollRange()
+            val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
+
+            if (mLog.isDebugEnabled) {
+                mLog.debug("$percentage")
+            }
+
+            mBinding.searchArea.alpha = 1.0f - percentage
+        }
     }
+
+//    private fun appbarSettings() {
+//        mBinding.searchBar.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener {
+//            override fun onOffsetChanged(appbar: AppBarLayout, offset: Int) {
+//                val maxScroll = appbar.getTotalScrollRange()
+//                val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
+//
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("$percentage")
+//                }
+//
+//                mBinding.searchArea.alpha = 1.0f - percentage
+//
+//            }
+//        })
+//    }
 
     override fun onDestroy() {
         mBinding.viewpager.adapter = null

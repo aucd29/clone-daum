@@ -17,7 +17,8 @@
                 android:id="@+id/search_bar"
                 android:fitsSystemWindows="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:bindOffsetChangedListener="@{model.appbarOffsetChangedEvent}" >
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:id="@+id/toolbar_layout"
@@ -240,6 +241,7 @@
                 app:bindPagerAdapter="@{model.tabAdapter}"
                 app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_gravity="top"
         />
 
         <ImageView
