@@ -67,4 +67,5 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson"
+    implementation "com.squareup.picasso:picasso:$picasso"
 }

@@ -1,11 +1,14 @@
 package com.example.clone_daum.ui.main
 
+import android.os.Build
 import android.os.Bundle
+import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.common.BaseRuleFragment
 import com.example.common.defaultSetting
 import com.example.common.viewModel
 import org.slf4j.LoggerFactory
+import java.util.*
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -47,6 +50,18 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                     }
                 }
             }
+
+            // at http protocol utils
+            // build.version.release, Locale.getDefault().getLanguage()
+            // Locale.getDefault().getCountry()
+            // paramString, AppVersion.getVersion(paramContext)
+
+            val release = Build.VERSION.RELEASE
+            val country = Locale.getDefault().country
+            val language = Locale.getDefault().language
+            val param = "service"   // LoginActorDeleteToken
+            val version = BuildConfig.VERSION_NAME
+            settings.userAgentString = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
 
             loadUrl(url)
 

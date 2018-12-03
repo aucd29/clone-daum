@@ -20,7 +20,6 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
     val tabAdapter                  = ObservableField<TabAdapter>()
     val viewpager                   = ObservableField<ViewPager>()
-    val searchKeyword               = ObservableField<String>()
 
     // view events
     val viewpagerLoadedEvent        = ObservableField<()->Unit>()

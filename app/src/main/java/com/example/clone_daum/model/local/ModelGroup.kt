@@ -10,4 +10,3 @@ data class TabData(
     val name: String,
     val url: String
 ) : Serializable
-

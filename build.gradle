@@ -13,7 +13,7 @@ ext {
     jackson     = '2.8.5'
     logback     = '1.1.1-11'
     slf4j       = '1.7.5'
-    picasso     = '2.5.2'
+    picasso     = '2.71828'
     okhttp      = '3.11.0'
     retrofit    = '2.4.0'
     runner      = '1.0.2'
@@ -24,7 +24,7 @@ ext {
     rxjava      = '2.1.9'
     rxandroid   = '2.0.2'
     rxkotlin        = '2.3.0'
-    room        = '1.1.1'
+    room        = '2.1.0-alpha02'
 
     firebase_core          = '16.0.1'
     firebase_msg           = '17.0.0'

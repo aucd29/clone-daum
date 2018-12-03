@@ -24,8 +24,24 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
-                android:focusable="false"
+                android:focusable="true"
                 android:background="@drawable/shape_search_background"
+                android:hint="@string/search_insert_search_keyword_or_url"
+                android:paddingStart="15dp"
+                android:paddingEnd="40dp"
+                android:singleLine="true"
+                android:lines="1"
+                android:text="@={model.searchKeyword}"
+        />
+
+        <ImageView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/search_edit"
+                app:layout_constraintEnd_toEndOf="@+id/search_edit"
+                app:layout_constraintBottom_toBottomOf="@+id/search_edit"
+                android:src="@drawable/ic_android_black_14dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="@{() -> model.search(model.searchKeyword)}"
         />
 
         <!-- search history & hit keywords -->
@@ -33,11 +49,12 @@
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/search_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bottom_area_overline"
+                app:bindItems="@{model.items}"
+                app:bindAdapter="@{model.adapter}"
         />
 
         <View

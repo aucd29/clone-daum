@@ -1,9 +1,7 @@
 package com.example.clone_daum
 
-import android.os.Parcel
-import android.os.Parcelable
 import androidx.multidex.MultiDexApplication
-
+import com.example.clone_daum.model.DataManager
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 26. <p/>
@@ -12,5 +10,7 @@ import androidx.multidex.MultiDexApplication
 class MainApp() : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
+
+        DataManager.init(this)
     }
 }

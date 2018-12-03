@@ -5,7 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="viewModel" type="com.example.clone_daum.ui.search.SearchViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.search.SearchViewModel"/>
+        <variable name="item" type="com.example.clone_daum.model.local.SearchKeyword" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +22,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.1"
+                android:text="@{item.keyword}"
         />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -28,6 +30,7 @@
                   app:layout_constraintTop_toTopOf="parent"
                   app:layout_constraintEnd_toStartOf="@+id/delete_history"
                   app:layout_constraintBottom_toBottomOf="parent"
+                  android:text="@{model.dateConvert(item.date)}"
         />
 
         <ImageView
@@ -40,6 +43,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.9"
                 android:padding="10dp"
+                android:onClick="@{() -> model.deleteHistory(item)}"
         />
 
         <View
