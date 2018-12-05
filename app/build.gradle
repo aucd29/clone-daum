@@ -32,6 +32,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kapt {
+        generateStubs = true
+    }
+
     dataBinding {
         enabled = true
     }
@@ -60,10 +64,20 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.0"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
-    implementation 'androidx.room:room-rxjava2:2.1.0-alpha02'
+    implementation "androidx.room:room-rxjava2:$room"
 
-    kapt 'com.google.dagger:dagger-compiler:2.19'
-    implementation 'com.google.dagger:dagger:2.19'
+    // dagger
+    // https://google.github.io/dagger/android
+
+    // 버그로 인해 사용 하지 않음
+//    kapt "com.google.dagger:dagger-compiler:$dagger2"
+//    implementation "com.google.dagger:dagger:$dagger2"
+////
+////    // dagger for android
+//    implementation "com.google.dagger:dagger-android:$$dagger2"
+//    implementation "com.google.dagger:dagger-android-support:$$dagger2" // if you use the support libraries
+//    kapt "com.google.dagger:dagger-android-processor:$$dagger2"  // 애는 버전이 낮음, 그리고 포함하면 컴파일 오류 발생
+
 
     // material
     implementation "com.google.android.material:material:$androidx"
