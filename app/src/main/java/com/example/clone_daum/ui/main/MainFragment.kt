@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
-import com.example.clone_daum.model.DataManager
+import com.example.clone_daum.model.Repository
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
@@ -35,7 +35,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun initFragment() {
-        activity().disposable.add(DataManager.tabList(context!!).subscribe {
+        activity().disposable.add(Repository.tabList(context!!).subscribe {
             it.jsonParse<List<TabData>>().let(::settingTab)
             settingEvents()
         })

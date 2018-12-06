@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.search
 
 import android.os.Bundle
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.clone_daum.model.DataManager
+import com.example.clone_daum.model.Repository
 import com.example.common.BaseRuleFragment
 import com.example.common.viewModel
 import io.reactivex.disposables.CompositeDisposable
@@ -23,7 +23,7 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         mBinding.model = viewmodel()?.apply {
             initAdapter("search_recycler_history_item")
 
-            mDisposable.add(DataManager.searchHistoryDao.search().subscribe {
+            mDisposable.add(Repository.searchHistoryDao.search().subscribe {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("history count : ${it.size}")
                 }

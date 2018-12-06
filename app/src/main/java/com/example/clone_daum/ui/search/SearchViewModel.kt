@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.search
 
 import android.app.Application
 import androidx.databinding.ObservableField
-import com.example.clone_daum.model.DataManager
+import com.example.clone_daum.model.Repository
 import com.example.clone_daum.model.local.SearchKeyword
 import com.example.common.RecyclerViewModel
 import com.example.common.arch.SingleLiveEvent
@@ -19,7 +19,7 @@ class SearchViewModel(app: Application) : RecyclerViewModel<SearchKeyword>(app) 
     val closeEvent = SingleLiveEvent<Void>()
 
 //    init {
-//        val d = DataManager.searchHistoryDao.search().subscribe {
+//        val d = Repository.searchHistoryDao.search().subscribe {
 //            initAdapter("search_recycler_history_item")
 //            setItems(it)
 //        }
@@ -27,7 +27,7 @@ class SearchViewModel(app: Application) : RecyclerViewModel<SearchKeyword>(app) 
 
     fun search(keyword: String) {
 //        ioThread {
-//            DataManager.searchHistoryDao.insert(
+//            Repository.searchHistoryDao.insert(
 //                SearchKeyword(keyword = keyword, date = System.currentTimeMillis()))
 //        }
 
@@ -39,11 +39,11 @@ class SearchViewModel(app: Application) : RecyclerViewModel<SearchKeyword>(app) 
     }
 
     fun deleteHistory(item: SearchKeyword) {
-        DataManager.searchHistoryDao.delete(item)
+        Repository.searchHistoryDao.delete(item)
     }
 
     fun deleteAllHistory() {
-        DataManager.searchHistoryDao.deleteAll()
+        Repository.searchHistoryDao.deleteAll()
         setItems(listOf())
     }
 

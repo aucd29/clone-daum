@@ -79,14 +79,14 @@ interface PopularKeywordDao {
 ////////////////////////////////////////////////////////////////////////////////////
 
 @Database(entities = arrayOf(SearchKeyword::class, PopularKeyword::class), version = 1)
-abstract class LocalDatabase: RoomDatabase() {
+abstract class LocalRepository: RoomDatabase() {
     companion object {
-        private var db: LocalDatabase? = null
+        private var db: LocalRepository? = null
 
-        fun get(context: Context): LocalDatabase {
+        fun get(context: Context): LocalRepository {
             if (db == null) {
                 synchronized(this) {
-                    db = Room.databaseBuilder(context, LocalDatabase::class.java, "local.db")
+                    db = Room.databaseBuilder(context, LocalRepository::class.java, "local.db")
                         .fallbackToDestructiveMigration()
                         .build()
                 }

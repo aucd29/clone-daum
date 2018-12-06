@@ -2,7 +2,7 @@ package com.example.clone_daum.model
 
 import android.content.Context
 import com.example.clone_daum.model.local.SearchHistoryDao
-import com.example.clone_daum.model.local.LocalDatabase
+import com.example.clone_daum.model.local.LocalRepository
 import com.example.clone_daum.model.local.PopularKeywordDao
 import io.reactivex.Observable
 
@@ -10,12 +10,12 @@ import io.reactivex.Observable
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
-object DataManager {
+object Repository {
     lateinit var searchHistoryDao: SearchHistoryDao
     lateinit var popularKeywordDao: PopularKeywordDao
 
     fun init(context: Context) {
-        LocalDatabase.get(context).run {
+        LocalRepository.get(context).run {
             searchHistoryDao  = searchHistoryDao()
             popularKeywordDao = popularKeywordDao()
         }
