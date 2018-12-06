@@ -6,18 +6,18 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
+import com.example.clone_daum.di.migration.DaggerXFragment
 import com.example.clone_daum.model.Repository
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
-import com.example.common.BaseRuleFragment
 import com.example.common.childList
 import com.example.common.jsonParse
 import com.example.common.viewModel
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 
-class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
+class MainFragment : DaggerXFragment<MainFragmentBinding>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
     }
