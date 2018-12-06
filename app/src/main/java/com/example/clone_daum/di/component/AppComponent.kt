@@ -2,9 +2,9 @@ package com.example.clone_daum.di.component
 
 import android.app.Application
 import com.example.clone_daum.MainApp
+import com.example.clone_daum.di.migration.AndroidXInjectionModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 /**
@@ -12,7 +12,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-@Component(modules = arrayOf(AndroidSupportInjectionModule::class))
+@Component(modules = arrayOf(AndroidXInjectionModule::class))
 interface AppComponent {
     @Component.Builder
     interface Builder {
