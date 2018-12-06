@@ -1,7 +1,7 @@
 package com.example.clone_daum.model.local
 
+import android.arch.persistence.room.*
 import android.content.Context
-import androidx.room.*
 import com.example.common.IRecyclerDiff
 import io.reactivex.Flowable
 

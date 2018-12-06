@@ -57,15 +57,27 @@ dependencies {
     //
     // ANDROID LIBS
     //
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation "com.android.support:appcompat-v7:$support_lib"
+    implementation "com.android.support:design:$support_lib"
+    implementation "com.android.support:recyclerview-v7:$support_lib"
+    implementation "android.arch.lifecycle:extensions:$lifecycle"
+    kapt "android.arch.lifecycle:compiler:$lifecycle"
+    implementation "com.android.support.constraint:constraint-layout:$constraint"
+    implementation "android.arch.persistence.room:runtime:$room"
+    kapt "android.arch.persistence.room:compiler:$room"
+    implementation "android.arch.persistence.room:rxjava2:$room"
 
-    implementation "androidx.appcompat:appcompat:$appcompat"
-    implementation "androidx.recyclerview:recyclerview:$androidx"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint"
-    implementation "androidx.multidex:multidex:2.0.0"
-    implementation "androidx.room:room-runtime:$room"
-    kapt "androidx.room:room-compiler:$room"
-    implementation "androidx.room:room-rxjava2:$room"
+//    implementation "androidx.appcompat:appcompat:$appcompat"
+//    implementation "androidx.recyclerview:recyclerview:$androidx"
+//    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+//    implementation "androidx.constraintlayout:constraintlayout:$constraint"
+    //    implementation "androidx.multidex:multidex:2.0.0"
+//    implementation "androidx.room:room-runtime:$room"
+//    kapt "androidx.room:room-compiler:$room"
+//    implementation "androidx.room:room-rxjava2:$room"
+    // material
+//    implementation "com.google.android.material:material:$androidx"
 
     // dagger
     // https://google.github.io/dagger/android
@@ -79,9 +91,6 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger2" // if you use the support libraries
     kapt "com.google.dagger:dagger-android-processor:$dagger2"  // 애는 버전이 낮음, 그리고 포함하면 컴파일 오류 발생
 
-
-    // material
-    implementation "com.google.android.material:material:$androidx"
 
     //
     // OPEN LIBS

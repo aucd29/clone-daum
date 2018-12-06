@@ -1,8 +1,8 @@
 package com.example.common.bindingadapter
 
-import androidx.databinding.BindingAdapter
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
+import android.databinding.BindingAdapter
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import org.slf4j.LoggerFactory
 
 /**

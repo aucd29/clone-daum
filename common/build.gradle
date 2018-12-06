@@ -47,14 +47,20 @@ dependencies {
     //
     // ANDROID LIBS
     //
+    implementation "com.android.support:appcompat-v7:$support_lib"
+    implementation "com.android.support:design:$support_lib"
+    implementation "com.android.support:recyclerview-v7:$support_lib"
+    implementation "android.arch.lifecycle:extensions:$lifecycle"
+    kapt "android.arch.lifecycle:compiler:$lifecycle"
+    implementation "com.android.support.constraint:constraint-layout:$constraint"
 
-    implementation "androidx.appcompat:appcompat:$appcompat"
-    implementation "androidx.recyclerview:recyclerview:$androidx"
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint"
-
-    // material
-    implementation "com.google.android.material:material:$androidx"
+//    implementation "androidx.appcompat:appcompat:$appcompat"
+//    implementation "androidx.recyclerview:recyclerview:$androidx"
+//    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+//    implementation "androidx.constraintlayout:constraintlayout:$constraint"
+//
+//    // material
+//    implementation "com.google.android.material:material:$androidx"
 
 
     //

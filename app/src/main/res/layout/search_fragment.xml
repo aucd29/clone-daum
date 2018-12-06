@@ -8,7 +8,7 @@
         <variable name="model" type="com.example.clone_daum.ui.search.SearchViewModel"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <android.support.constraint.ConstraintLayout
             android:id="@+id/search_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -46,7 +46,7 @@
 
         <!-- search history & hit keywords -->
 
-        <androidx.recyclerview.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/search_bottom_area"
         />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <android.support.constraint.ConstraintLayout
                 android:id="@+id/search_bottom_area"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,7 +120,7 @@
                     android:onClick="@{() -> model.searchCancel()}"
             />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
 </layout>

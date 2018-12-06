@@ -1,9 +1,8 @@
 package com.example.common.bindingadapter
 
-import androidx.databinding.BindingAdapter
-import androidx.viewpager.widget.ViewPager
-import com.example.common.arch.SingleLiveEvent
-import com.google.android.material.tabs.TabLayout
+import android.databinding.BindingAdapter
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import org.slf4j.LoggerFactory
 
 /**

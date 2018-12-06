@@ -6,12 +6,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Environment
+import android.support.annotation.StringRes
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 1. 24.. <p/>

@@ -1,13 +1,13 @@
 package com.example.clone_daum.ui.main
 
 import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
+import android.databinding.ObservableField
+import android.databinding.ObservableInt
+import android.support.design.widget.AppBarLayout
+import android.support.v4.view.ViewPager
 import android.view.View
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
-import androidx.viewpager.widget.ViewPager
 import com.example.common.arch.SingleLiveEvent
-import com.google.android.material.appbar.AppBarLayout
 import org.slf4j.LoggerFactory
 
 

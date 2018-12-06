@@ -1,8 +1,8 @@
 package com.example.common.bindingadapter
 
-import androidx.databinding.BindingAdapter
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
+import android.databinding.BindingAdapter
+import android.support.design.widget.AppBarLayout
+
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 3. <p/>

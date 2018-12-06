@@ -2,18 +2,18 @@
 package com.example.common.bindingadapter
 
 import android.content.Context
+import android.databinding.BindingAdapter
 import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
+import android.support.annotation.DrawableRes
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.common.IRecyclerDiff
 import com.example.common.R
 import com.example.common.RecyclerAdapter

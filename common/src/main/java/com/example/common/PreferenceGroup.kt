@@ -3,10 +3,10 @@ package com.example.common
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.AndroidViewModel
+import android.support.v4.app.Fragment
 import java.lang.RuntimeException
 
 /**

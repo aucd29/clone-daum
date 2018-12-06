@@ -1,7 +1,7 @@
 package com.example.clone_daum.ui.search
 
 import android.app.Application
-import androidx.databinding.ObservableField
+import android.databinding.ObservableField
 import com.example.clone_daum.model.Repository
 import com.example.clone_daum.model.local.SearchKeyword
 import com.example.common.RecyclerViewModel

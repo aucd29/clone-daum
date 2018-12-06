@@ -3,7 +3,15 @@ package com.example.common
 
 import android.app.Activity
 import android.app.Application
+import android.arch.lifecycle.*
+import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
 import android.os.Bundle
+import android.support.annotation.LayoutRes
+import android.support.annotation.StringRes
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,14 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.*
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -48,12 +48,12 @@ inline val AndroidViewModel.app : Application
 ////////////////////////////////////////////////////////////////////////////////////
 
 inline fun <reified T : ViewModel> FragmentActivity.viewModel(clazz: Class<T>,
-                                                      provider: ViewModelProvider.Factory? = null) =
+                                                              provider: ViewModelProvider.Factory? = null) =
         provider?.let { ViewModelProviders.of(this, it).get(clazz) } ?:
                         ViewModelProviders.of(this).get(clazz)
 
 inline fun <reified T : ViewModel> Fragment.viewModel(clazz: Class<T>,
-                                              provider: ViewModelProvider.Factory? = null) =
+                                                      provider: ViewModelProvider.Factory? = null) =
         activity?.viewModel(clazz, provider)
 
 
@@ -96,7 +96,7 @@ abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
         mBackPressed = BackPressedManager(this, mBinding.root)
     }
 
-    fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
+    fun <T> observe(data: LiveData<T>, observer: (T?) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
 
@@ -126,7 +126,7 @@ abstract class BaseFragment<T: ViewDataBinding> : Fragment() {
         return mBinding.root
     }
 
-    fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
+    fun <T> observe(data: LiveData<T>, observer: (T?) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
 
