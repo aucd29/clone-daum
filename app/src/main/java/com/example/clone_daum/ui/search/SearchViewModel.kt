@@ -1,29 +1,35 @@
 package com.example.clone_daum.ui.search
 
 import android.app.Application
-import android.databinding.ObservableField
-import com.example.clone_daum.model.Repository
+import androidx.databinding.ObservableField
+import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.SearchKeyword
 import com.example.common.RecyclerViewModel
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.toDate
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchViewModel(app: Application) : RecyclerViewModel<SearchKeyword>(app) {
+class SearchViewModel @Inject constructor(
+    app: Application,
+    val db: DbRepository,
+    val disposable: CompositeDisposable
+) : RecyclerViewModel<SearchKeyword>(app) {
     val searchKeyword = ObservableField<String>()
 
-    val searchEvent = SingleLiveEvent<String>()
-    val closeEvent = SingleLiveEvent<Void>()
+    val searchEvent   = SingleLiveEvent<String>()
+    val closeEvent    = SingleLiveEvent<Void>()
 
-//    init {
-//        val d = Repository.searchHistoryDao.search().subscribe {
-//            initAdapter("search_recycler_history_item")
-//            setItems(it)
-//        }
-//    }
+    init {
+        disposable.add(db.searchHistoryDao.search().subscribe {
+            initAdapter("search_recycler_history_item")
+            setItems(it)
+        })
+    }
 
     fun search(keyword: String) {
 //        ioThread {
@@ -39,11 +45,11 @@ class SearchViewModel(app: Application) : RecyclerViewModel<SearchKeyword>(app) 
     }
 
     fun deleteHistory(item: SearchKeyword) {
-        Repository.searchHistoryDao.delete(item)
+        db.searchHistoryDao.delete(item)
     }
 
     fun deleteAllHistory() {
-        Repository.searchHistoryDao.deleteAll()
+        db.searchHistoryDao.deleteAll()
         setItems(listOf())
     }
 

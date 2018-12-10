@@ -1,45 +1,52 @@
 package com.example.clone_daum.ui.main
 
-import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import com.example.clone_daum.MainApp
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
-import com.example.clone_daum.model.Repository
+import com.example.clone_daum.di.module.common.DaggerViewModelFactory
+import com.example.clone_daum.di.module.common.inject
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
-import com.example.common.childList
-import com.example.common.jsonParse
-import com.example.common.viewModel
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
 class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
     }
 
-    override fun bindViewModel() {
-        mBinding.model = viewmodel()
-    }
+    @Inject
+    lateinit var disposable: CompositeDisposable
 
-    private fun viewmodel() = viewModel(MainViewModel::class.java)
+    @Inject
+    lateinit var vmfactory: DaggerViewModelFactory
+
+    lateinit var viewmodel: MainViewModel
+
+    // 먼가 룰에 따라서 viewmodel 을 inject 시키긴 하는데 맘에 안드는 군;;;
+    override fun bindViewModel() {
+        viewmodel = vmfactory.inject(this, MainViewModel::class.java)
+        mBinding.model = viewmodel
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("START MAIN FRAGMENT")
+        }
 
         initFragment()
     }
 
     private fun initFragment() {
-        activity().disposable.add(Repository.tabList(context!!).subscribe {
-            it.jsonParse<List<TabData>>().let(::settingTab)
+        viewmodel.run {
+            settingTab(tabDataList)
             settingEvents()
-        })
+        }
     }
 
     private fun settingTab(tabList: List<TabData>) {
@@ -48,8 +55,9 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
             mLog.debug("TAB DATA : ${tabList}")
         }
 
-        viewmodel()?.run {
-            tabAdapter.set(TabAdapter(childFragmentManager, tabList))
+        viewmodel.run {
+            // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
+            tabAdapter.set(MainTabAdapter(childFragmentManager, tabList))
             viewpager.set(mBinding.viewpager)
             viewpagerLoadedEvent.set {
                 if (mLog.isDebugEnabled) {
@@ -62,16 +70,13 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
                     val view = layoutInflater.inflate(R.layout.tab_main_custom, null)
                     view.tab_label.text = it?.text
 
-//                    val lparams = it?.view.layoutParams
-//                    it?.view.layoutParams =
-
                     it?.customView = view
                 }
             }
         }
     }
 
-    private fun settingEvents() = viewmodel()?.run {
+    private fun settingEvents() = viewmodel.run {
         observe(gotoSearchEvent) {
             activity().supportFragmentManager.replace(
                 FragmentParams(
@@ -93,40 +98,21 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
         }
     }
 
-//    private fun appbarSettings() {
-//        mBinding.searchBar.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener {
-//            override fun onOffsetChanged(appbar: AppBarLayout, offset: Int) {
-//                val maxScroll = appbar.getTotalScrollRange()
-//                val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
-//
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("$percentage")
-//                }
-//
-//                mBinding.searchArea.alpha = 1.0f - percentage
-//
-//            }
-//        })
-//    }
-
     override fun onDestroy() {
         mBinding.viewpager.adapter = null
 
         super.onDestroy()
     }
-}
+    
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    //
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
-class TabAdapter(fm: FragmentManager?, val tabData: List<TabData>) : FragmentPagerAdapter(fm) {
-    override fun getItem(position: Int): Fragment {
-        val frgmt = MainWebviewFragment()
-        val bundle = Bundle()
-        bundle.putString("url", tabData[position].url)
-
-        frgmt.arguments = bundle
-
-        return frgmt
+    @dagger.Module
+    abstract class Module {
+        @dagger.android.ContributesAndroidInjector
+        abstract fun contributeInjector(): MainFragment
     }
-
-    override fun getPageTitle(position: Int): String = tabData[position].name
-    override fun getCount() = tabData.size
 }

@@ -2,11 +2,13 @@ package com.example.clone_daum.ui.search
 
 import android.os.Bundle
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.clone_daum.model.Repository
+import com.example.clone_daum.di.module.common.DaggerViewModelFactory
+import com.example.clone_daum.di.module.common.inject
 import com.example.common.BaseRuleFragment
-import com.example.common.viewModel
+import dagger.android.ContributesAndroidInjector
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 29. <p/>
@@ -17,23 +19,30 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
-    private val mDisposable = CompositeDisposable()
+    @Inject
+    lateinit var disposable: CompositeDisposable
+
+    @Inject
+    lateinit var vmfactory: DaggerViewModelFactory
+
+    lateinit var viewmodel: SearchViewModel
 
     override fun bindViewModel() {
-        mBinding.model = viewmodel()?.apply {
+        viewmodel = vmfactory.inject(this, SearchViewModel::class.java)
+
+        mBinding.model = viewmodel.apply {
             initAdapter("search_recycler_history_item")
 
-            mDisposable.add(Repository.searchHistoryDao.search().subscribe {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("history count : ${it.size}")
-                }
-
-                setItems(it)
-            })
+            // TODO
+//            disposable.add(Repository.searchHistoryDao.search().subscribe {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("history count : ${it.size}")
+//                }
+//
+//                setItems(it)
+//            })
         }
     }
-
-    private fun viewmodel() = viewModel(SearchViewModel::class.java)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -41,7 +50,7 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         settingEvents()
     }
 
-    fun settingEvents() = viewmodel()?.run {
+    fun settingEvents() = viewmodel.run {
         observe(closeEvent) {
             activity().supportFragmentManager.popBackStack()
         }
@@ -51,9 +60,9 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         }
     }
 
-    override fun onDestroy() {
-        mDisposable.clear()
-
-        super.onDestroy()
+    @dagger.Module
+    abstract class Module {
+        @ContributesAndroidInjector
+        abstract fun contributeInjector(): SearchFragment
     }
 }

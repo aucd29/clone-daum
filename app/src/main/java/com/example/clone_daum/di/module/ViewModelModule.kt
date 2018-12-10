@@ -1,20 +1,27 @@
 package com.example.clone_daum.di.module
 
-import android.arch.lifecycle.ViewModelProviders
-import com.example.clone_daum.ui.main.MainFragment
+import androidx.lifecycle.ViewModel
+import com.example.clone_daum.di.module.common.ViewModelKey
 import com.example.clone_daum.ui.main.MainViewModel
+import com.example.clone_daum.ui.search.SearchViewModel
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import dagger.multibindings.IntoMap
+
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 6. <p/>
  */
 
 @Module
-class ViewModelModule {
-    @Provides
-    @Singleton
-    fun provideMainViewModel(frgmt: MainFragment) =
-        ViewModelProviders.of(frgmt.activity!!).get(MainViewModel::class.java)
+abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    abstract fun bindSearchViewModel(vm: SearchViewModel): ViewModel
 }

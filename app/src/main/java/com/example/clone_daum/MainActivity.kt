@@ -1,10 +1,10 @@
 package com.example.clone_daum
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.common.*
+import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -13,6 +13,9 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
 
+    @Inject
+    lateinit var disposable: CompositeDisposable
+
     override fun layoutId() = R.layout.main_activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,11 +23,21 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
 
         super.onCreate(savedInstanceState)
 
+        if (mLog.isDebugEnabled) {
+            mLog.debug("START ACTIVITY")
+        }
+
         if (savedInstanceState == null) {
             supportFragmentManager.run {
                 add(FragmentParams(R.id.container, MainFragment::class.java,
-                    commit = FragmentCommit.NOW))
+                        commit = FragmentCommit.NOW))
             }
         }
+    }
+
+    override fun onDestroy() {
+        disposable.clear()
+
+        super.onDestroy()
     }
 }

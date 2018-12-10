@@ -9,7 +9,7 @@
         <variable name="item" type="com.example.clone_daum.model.local.SearchKeyword" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/history_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -55,5 +55,5 @@
                 android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
         />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

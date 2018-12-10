@@ -1,7 +1,7 @@
 package com.example.clone_daum.model.local
 
-import android.arch.persistence.room.*
 import android.content.Context
+import androidx.room.*
 import com.example.common.IRecyclerDiff
 import io.reactivex.Flowable
 
@@ -24,6 +24,21 @@ data class SearchKeyword (
     override fun compare(item: IRecyclerDiff)= this._id == (item as SearchKeyword)._id
 }
 
+@Entity(tableName = "popularKeyword")
+data class PopularKeyword (
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int,
+    val keyword: String
+) : IRecyclerDiff {
+    override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 @Dao
 interface SearchHistoryDao {
     @Query("SELECT * FROM searchHistory")
@@ -40,21 +55,6 @@ interface SearchHistoryDao {
 
     @Query("DELETE FROM searchHistory")
     fun deleteAll()
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-//
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-@Entity(tableName = "popularKeyword")
-data class PopularKeyword (
-    @PrimaryKey(autoGenerate = true)
-    val _id: Int,
-    val keyword: String
-) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
 }
 
 @Dao
@@ -78,29 +78,11 @@ interface PopularKeywordDao {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-@Database(entities = arrayOf(SearchKeyword::class, PopularKeyword::class), version = 1)
-abstract class LocalRepository: RoomDatabase() {
-    companion object {
-        private var db: LocalRepository? = null
-
-        fun get(context: Context): LocalRepository {
-            if (db == null) {
-                synchronized(this) {
-                    db = Room.databaseBuilder(context, LocalRepository::class.java, "local.db")
-                        .fallbackToDestructiveMigration()
-                        .build()
-                }
-            }
-
-            return db!!
-        }
-
-
-        fun destroy() {
-            db = null
-        }
-    }
-
+@Database(entities = [
+    SearchKeyword::class,
+    PopularKeyword::class
+], version = 1)
+abstract class LocalDb: RoomDatabase() {
     abstract fun searchHistoryDao(): SearchHistoryDao
     abstract fun popularKeywordDao(): PopularKeywordDao
 }

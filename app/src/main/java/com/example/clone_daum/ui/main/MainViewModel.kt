@@ -1,24 +1,30 @@
 package com.example.clone_daum.ui.main
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.databinding.ObservableField
-import android.databinding.ObservableInt
-import android.support.design.widget.AppBarLayout
-import android.support.v4.view.ViewPager
 import android.view.View
+import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
+import androidx.lifecycle.AndroidViewModel
+import androidx.viewpager.widget.ViewPager
+import com.example.clone_daum.model.local.TabData
 import com.example.common.arch.SingleLiveEvent
+import com.google.android.material.appbar.AppBarLayout
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
 
-class MainViewModel(val app: Application) : AndroidViewModel(app) {
+//class MainViewModel @Inject constructor(val app: Application, val tabList: List<TabData>)
+class MainViewModel @Inject constructor(
+    val app: Application,
+    val tabDataList: List<TabData>
+) : AndroidViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
         const val INDEX_NEWS = 1
     }
 
-    val tabAdapter                  = ObservableField<TabAdapter>()
+    val tabAdapter                  = ObservableField<MainTabAdapter>()
     val viewpager                   = ObservableField<ViewPager>()
 
     // view events

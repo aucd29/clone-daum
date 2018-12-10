@@ -3,6 +3,7 @@ package com.example.clone_daum.di.module.common
 import android.app.Application
 import android.content.Context
 import android.preference.PreferenceManager
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -12,17 +13,17 @@ import javax.inject.Singleton
  */
 
 @Module
-class AppModule(private val mApp: Application) {
-    @Provides
+abstract class AppModule {
+    @Binds
     @Singleton
-    fun provideApplication() = mApp
+    abstract fun provideContext(app: Application): Context
 
-    @Provides
-    @Singleton
-    fun provideContext() = mApp.applicationContext
-
-    @Provides
-    @Singleton
-    fun provideSharedPreference(context: Context) =
-        PreferenceManager.getDefaultSharedPreferences(context)
+    // https://stackoverflow.com/questions/48081881/dagger-2-not-injecting-sharedpreference
+    @Module
+    companion object {
+        @JvmStatic
+        @Provides
+        fun provideSharedPreference(context: Context)
+                = PreferenceManager.getDefaultSharedPreferences(context)
+    }
 }

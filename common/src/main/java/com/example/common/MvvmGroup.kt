@@ -3,15 +3,7 @@ package com.example.common
 
 import android.app.Activity
 import android.app.Application
-import android.arch.lifecycle.*
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,6 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.*
+import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 
 /**
@@ -48,12 +49,12 @@ inline val AndroidViewModel.app : Application
 ////////////////////////////////////////////////////////////////////////////////////
 
 inline fun <reified T : ViewModel> FragmentActivity.viewModel(clazz: Class<T>,
-                                                              provider: ViewModelProvider.Factory? = null) =
+                                                      provider: ViewModelProvider.Factory? = null) =
         provider?.let { ViewModelProviders.of(this, it).get(clazz) } ?:
                         ViewModelProviders.of(this).get(clazz)
 
 inline fun <reified T : ViewModel> Fragment.viewModel(clazz: Class<T>,
-                                                      provider: ViewModelProvider.Factory? = null) =
+                                              provider: ViewModelProvider.Factory? = null) =
         activity?.viewModel(clazz, provider)
 
 
@@ -83,10 +84,9 @@ inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: I
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
+abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
     protected lateinit var mBinding : T
 
-    val disposable = CompositeDisposable()
     protected lateinit var mBackPressed: BackPressedManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +96,7 @@ abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
         mBackPressed = BackPressedManager(this, mBinding.root)
     }
 
-    fun <T> observe(data: LiveData<T>, observer: (T?) -> Unit) {
+    fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
 
@@ -107,15 +107,9 @@ abstract class BaseActivity<T : ViewDataBinding> : AppCompatActivity() {
             super.onBackPressed()
         }
     }
-
-    override fun onDestroy() {
-        disposable.clear()
-
-        super.onDestroy()
-    }
 }
 
-abstract class BaseFragment<T: ViewDataBinding> : Fragment() {
+abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     protected lateinit var mBinding : T
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -126,7 +120,7 @@ abstract class BaseFragment<T: ViewDataBinding> : Fragment() {
         return mBinding.root
     }
 
-    fun <T> observe(data: LiveData<T>, observer: (T?) -> Unit) {
+    fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
 
@@ -135,9 +129,9 @@ abstract class BaseFragment<T: ViewDataBinding> : Fragment() {
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
 
-    fun disposable() = if (activity != null && activity is BaseActivity<*>) {
-        activity().disposable
-    } else null
+//    fun disposable() = if (activity != null && activity is BaseActivity<*>) {
+//        activity().disposable
+//    } else null
 }
 
 abstract class BaseRuleFragment<T: ViewDataBinding>: BaseFragment<T>() {

@@ -2,17 +2,17 @@
 package com.example.common
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
 import android.content.DialogInterface
-import android.support.annotation.DimenRes
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.FragmentActivity
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.DimenRes
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import com.example.common.arch.SingleLiveEvent
@@ -41,7 +41,7 @@ inline fun Activity.dimen(@DimenRes resid: Int) =
     resources.getDimension(resid)
 
 inline fun FragmentActivity.observeDialog(event: SingleLiveEvent<DialogParam>, disposable: CompositeDisposable? = null) {
-    event.observe(this, Observer { it?.run { dialog(this, disposable) } })
+    event.observe(this, Observer { dialog(it, disposable) })
 }
 
 data class DialogParam (

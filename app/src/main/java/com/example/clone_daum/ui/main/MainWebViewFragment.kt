@@ -7,6 +7,8 @@ import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.common.BaseRuleFragment
 import com.example.common.defaultSetting
 import com.example.common.viewModel
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -73,5 +75,11 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                 this.reload()
             }
         }
+    }
+
+    @dagger.Module
+    abstract class Module {
+        @ContributesAndroidInjector
+        abstract fun contributeInjector(): MainWebviewFragment
     }
 }

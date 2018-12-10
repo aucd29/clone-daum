@@ -1,8 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common
 
-import android.support.design.widget.TabLayout
-
+import com.google.android.material.tabs.TabLayout
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 29. <p/>

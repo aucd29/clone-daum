@@ -1,7 +1,7 @@
 package com.example.common.bindingadapter
 
-import android.databinding.BindingAdapter
 import android.webkit.WebView
+import androidx.databinding.BindingAdapter
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.defaultSetting
 import org.slf4j.LoggerFactory
