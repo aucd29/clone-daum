@@ -66,9 +66,9 @@ object RecyclerBindingAdapter {
     private val mLog = LoggerFactory.getLogger(RecyclerBindingAdapter::class.java)
 
     @JvmStatic
-    @BindingAdapter(*arrayOf("bindAdapter", "bindItems"))
+    @BindingAdapter(*["bindAdapter", "bindItems"])
     fun <T: IRecyclerDiff> bindAdapter(recycler: RecyclerView, adapter: RecyclerAdapter<T>,
-                                       items: java.util.ArrayList<T>?) {
+                                       items: List<T>?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND ADAPTER (${recycler.id}), ITEM COUNT (${items?.count()})")
         }
@@ -87,7 +87,7 @@ object RecyclerBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter(*arrayOf("bindHorDecoration", "bindVerDecoration"))
+    @BindingAdapter(*["bindHorDecoration", "bindVerDecoration"])
     fun bindDecorator(recycler: RecyclerView, horDrawable: Int, verDrawable: Int) {
         //https://stackoverflow.com/questions/31242812/how-can-a-divider-line-be-added-in-an-android-recyclerview
         if (mLog.isDebugEnabled) {
@@ -153,6 +153,6 @@ class VideoRequestHandler: RequestHandler() {
         val bm = ThumbnailUtils.createVideoThumbnail(it.uri.path,
             MediaStore.Images.Thumbnails.FULL_SCREEN_KIND)
 
-        RequestHandler.Result(bm, Picasso.LoadedFrom.DISK)
+        Result(bm, Picasso.LoadedFrom.DISK)
     }
 }

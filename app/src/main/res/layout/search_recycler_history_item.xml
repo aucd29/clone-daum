@@ -12,11 +12,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/history_item"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+    >
 
         <TextView
+                android:id="@+id/search_keyword"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 tools:text="Search Keyword"
+
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -27,9 +33,9 @@
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   tools:text="11.29."
-                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintTop_toTopOf="@+id/search_keyword"
                   app:layout_constraintEnd_toStartOf="@+id/delete_history"
-                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintBottom_toBottomOf="@+id/search_keyword"
                   android:text="@{model.dateConvert(item.date)}"
         />
 
@@ -38,9 +44,9 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:src="@drawable/ic_clear_black_24dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/search_keyword"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/search_keyword"
                 app:layout_constraintHorizontal_bias="0.9"
                 android:padding="10dp"
                 android:onClick="@{() -> model.deleteHistory(item)}"

@@ -86,7 +86,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
         }
     }
 
-    var items: ArrayList<T> = arrayListOf()
+    var items: List<T> = arrayListOf()
     lateinit var viewModel: ViewModel
 
     constructor(layoutId: String) : this(arrayOf(layoutId)) {
@@ -142,9 +142,11 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
         return 0
     }
 
-    fun setItems(recycler: RecyclerView, newItems: java.util.ArrayList<T>) {
+    // 이론상으로는 맞는데 제대로 안도는 현상?
+    fun setItems(recycler: RecyclerView, newItems: List<T>) {
         if (items.size == 0) {
-            items.addAll(newItems)
+            //items.addAll(newItems)
+            items = newItems
             notifyItemRangeChanged(0, items.size)
 
             return
@@ -179,7 +181,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
                 }
 
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("INSERTED")
+                    mLog.debug("INSERTED (pos: $position) (cnt: $count)")
                 }
 
                 notifyItemRangeInserted(position, count)
@@ -187,7 +189,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
 
             override fun onRemoved(position: Int, count: Int) {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("REMOVED")
+                    mLog.debug("REMOVED (pos: $position) (cnt: $count)")
                 }
 
                 notifyItemRangeRemoved(position, count)
@@ -195,7 +197,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
 
             override fun onMoved(fromPosition: Int, toPosition: Int) {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("MOVED")
+                    mLog.debug("MOVED (from: $fromPosition) (to: $toPosition)")
                 }
 
                 notifyItemMoved(fromPosition, toPosition)
@@ -203,20 +205,22 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
 
             override fun onChanged(position: Int, count: Int, payload: Any?) {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("CHANGED")
+                    mLog.debug("CHANGED (pos: $position) (cnt: $count)")
                 }
 
                 notifyItemRangeChanged(position, count, payload)
             }
         })
 
-        items.clear()
-        items.addAll(newItems)
+//        items.clear()
+//        items.addAll(newItems)
+        items = newItems
     }
 }
 
 open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewModel(app) {
-    val items   = ObservableArrayList<T>()
+    //val items   = ObservableArrayList<T>()
+    val items   = ObservableField<List<T>>()
     val adapter = ObservableField<RecyclerAdapter<T>>()
 
     fun initAdapter(id: String) {
@@ -231,10 +235,5 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
         adapter.viewModel = this
 
         this.adapter.set(adapter)
-    }
-
-    open fun setItems(items: List<T>) {
-        this.items.clear()
-        this.items.addAll(items)
     }
 }

@@ -5,6 +5,7 @@ import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
 import com.example.common.BaseRuleFragment
+import com.example.common.snackbar
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -29,19 +30,7 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
 
     override fun bindViewModel() {
         viewmodel = vmfactory.inject(this, SearchViewModel::class.java)
-
-        mBinding.model = viewmodel.apply {
-            initAdapter("search_recycler_history_item")
-
-            // TODO
-//            disposable.add(Repository.searchHistoryDao.search().subscribe {
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("history count : ${it.size}")
-//                }
-//
-//                setItems(it)
-//            })
-        }
+        mBinding.model = viewmodel
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -51,12 +40,24 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
     }
 
     fun settingEvents() = viewmodel.run {
+        init()
+
         observe(closeEvent) {
             activity().supportFragmentManager.popBackStack()
         }
 
         observe(searchEvent) {
-            // brs fragment
+            if (mLog.isDebugEnabled) {
+                mLog.debug("SEARCH KEYWORD : $it")
+            }
+        }
+
+        observe(errorEvent) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("SEARCHING $it")
+            }
+
+            activity().snackbar(mBinding.root, it).show()
         }
     }
 

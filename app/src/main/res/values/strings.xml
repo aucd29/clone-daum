@@ -17,4 +17,7 @@
     <string name="search_delete_all_history">전체삭제</string>
     <string name="search_cancel">취소</string>
     <string name="search_insert_search_keyword_or_url">검색어 또는 URL 입력</string>
+
+
+    <string name="error_empty_keyword">검색어가 없습니다.</string>
 </resources>

@@ -40,19 +40,21 @@
                 app:layout_constraintEnd_toEndOf="@+id/search_edit"
                 app:layout_constraintBottom_toBottomOf="@+id/search_edit"
                 android:src="@drawable/ic_android_black_14dp"
-                android:layout_marginEnd="20dp"
+                android:padding="20sp"
                 android:onClick="@{() -> model.search(model.searchKeyword)}"
         />
 
         <!-- search history & hit keywords -->
 
         <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/search_edit"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bottom_area_overline"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:bindItems="@{model.items}"
                 app:bindAdapter="@{model.adapter}"
         />
