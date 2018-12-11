@@ -15,6 +15,7 @@ import retrofit2.http.GET
  */
 
 interface DaumService {
-    @GET("/clone-daum/tree/merge_search/dumy/popular-keyword.json")
+    // https://raw.githubusercontent.com/aucd29/clone-daum/merge_search/dumy/popular-keyword.json
+    @GET("/aucd29/clone-daum/merge_search/dumy/popular-keyword.json")
     fun popularKeywordList(): Observable<List<String>>
 }

@@ -27,7 +27,7 @@ data class SearchKeyword (
 @Entity(tableName = "popularKeyword")
 data class PopularKeyword (
     @PrimaryKey(autoGenerate = true)
-    val _id: Int,
+    val _id: Int = 0,
     val keyword: String
 ) : IRecyclerDiff {
     override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
@@ -70,6 +70,9 @@ interface PopularKeywordDao {
 
     @Delete
     fun delete(keyword: PopularKeyword): Completable
+
+    @Query("DELETE FROM popularKeyword")
+    fun deleteAll()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

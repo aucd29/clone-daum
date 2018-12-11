@@ -36,6 +36,7 @@ class DaumModule {
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
 
+
 //    @Singleton
 //    @Provides
 //    fun provideMainTabAdapter(frgmtManager: FragmentManager, tabListData: List<TabData>) =

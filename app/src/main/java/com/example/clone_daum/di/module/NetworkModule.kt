@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Module(includes = [OkhttpModule::class])
 class NetworkModule {
     companion object {
-        val BASE_URL  = "http://github.com/aucd29"
+        val BASE_URL  = "https://raw.githubusercontent.com/"
         val LOG_CLASS = NetworkModule::class.java
     }
 
