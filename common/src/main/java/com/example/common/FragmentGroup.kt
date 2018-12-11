@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import com.example.common.arch.SingleLiveEvent
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 8. <p/>
@@ -22,6 +25,14 @@ inline val FragmentManager.count: Int
     get() = backStackEntryCount
 
 inline fun FragmentManager.find(clazz: Class<out Fragment>) = findFragmentByTag(clazz.name)
+
+inline fun Fragment.observeDialog(event: SingleLiveEvent<DialogParam>, disposable: CompositeDisposable? = null) {
+    event.observe(this, Observer { dialog(it, disposable) })
+}
+
+inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
+    activity?.dialog(params, disposable)
+}
 
 object FragmentAnim {
     val LEFT: String

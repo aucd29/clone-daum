@@ -13,7 +13,6 @@ import javax.inject.Singleton
 
 @Module
 class ChipModule {
-    @Singleton
     @Provides
     fun provideChipsLayoutManager(context: Context): ChipsLayoutManager {
         val manager = ChipsLayoutManager.newBuilder(context)

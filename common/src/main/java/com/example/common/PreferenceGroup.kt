@@ -20,6 +20,9 @@ inline fun Context.prefs()  = getSharedPreferences(K_SHARED_PREFERECE, Context.M
 inline fun Fragment.prefs() = context?.prefs()
 inline fun AndroidViewModel.prefs() = getApplication<Application>().prefs()
 
+
+// set : prefs().edit { putBoolean(K_RECENT_SEARCH, showSearchRecyclerLayout) }
+// get : prefs().getBoolean(K_RECENT_SEARCH, true)
 inline fun Context.prefs(commit: Boolean = true, action: SharedPreferences.Editor.() -> Unit) {
     prefs().edit(commit, action)
 }

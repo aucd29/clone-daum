@@ -33,6 +33,7 @@
                 android:singleLine="true"
                 android:lines="1"
                 android:text="@={model.searchKeyword}"
+                android:imeOptions="actionDone"
         />
 
         <ImageView
@@ -72,14 +73,35 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        android:visibility="@{model.visibleSearchRecycler}"
                 />
+
+                <TextView
+                        android:id="@+id/search_empty_area"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:paddingTop="50dp" android:paddingBottom="50dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/search_recycler"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:gravity="center"
+                        android:text="@{model.toggleEmptyAreaText}"
+                        android:visibility="@{model.visibleSearchEmpty}"
+                />
+
+                <!--<View-->
+                        <!--android:id="@+id/search_area_line"-->
+                        <!--style="@style/line1dp"-->
+                        <!--app:layout_constraintStart_toStartOf="parent"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintTop_toBottomOf="@+id/search_empty_area"-->
+                <!--/>-->
 
                 <TextView
                         android:id="@+id/popular_keyword"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="@string/search_popular_keyword"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/search_recycler"
+                        app:layout_constraintTop_toBottomOf="@+id/search_empty_area"
                         android:layout_marginStart="10dp"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
@@ -121,25 +143,26 @@
                 android:padding="15dp">
 
             <TextView
-                    android:id="@+id/close_search_history"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/search_close_search_history"
+                    android:id="@+id/toggle_recent_search"
+                    android:layout_width="wrap_content" android:layout_height="16dp"
+                    android:text="@{model.toggleRecentSearchText}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.05"
-                    android:onClick="@{() -> model.closeSearchHistory()}"
+                    android:onClick="@{() -> model.toggleRecentSearch()}"
             />
 
             <TextView
                     android:id="@+id/close_search_history_bar"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="|"
-                    app:layout_constraintStart_toEndOf="@+id/close_search_history"
+                    app:layout_constraintStart_toEndOf="@+id/toggle_recent_search"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginStart="10dp"
+                    android:visibility="@{model.visibleSearchRecycler}"
             />
 
             <TextView
@@ -150,6 +173,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginStart="10dp"
                     android:onClick="@{() -> model.deleteAllHistory()}"
+                    android:visibility="@{model.visibleSearchRecycler}"
             />
 
             <TextView

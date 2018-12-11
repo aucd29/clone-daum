@@ -6,6 +6,8 @@ import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
 import com.example.common.BaseRuleFragment
+import com.example.common.DialogParam
+import com.example.common.observeDialog
 import com.example.common.snackbar
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.disposables.CompositeDisposable
@@ -70,6 +72,8 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
 
             activity().snackbar(mBinding.root, it).show()
         }
+
+        observeDialog(dlgEvent, disposable)
     }
 
     fun popuplarEvents() = popularviewmodel.run {
