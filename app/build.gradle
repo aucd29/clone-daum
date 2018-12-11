@@ -105,8 +105,7 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
-    // https://github.com/2dxgujun/AndroidTagGroup
-    implementation "me.gujun.android.taggroup:library:1.4@aar"
+    implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
 
     implementation project(path: ':common')
 }

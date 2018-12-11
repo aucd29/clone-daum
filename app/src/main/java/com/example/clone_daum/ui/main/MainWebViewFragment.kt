@@ -77,6 +77,16 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        mBinding.webview.pauseTimers()
+    }
+
+    override fun onResume() {
+        mBinding.webview.resumeTimers()
+        super.onResume()
+    }
+
     @dagger.Module
     abstract class Module {
         @ContributesAndroidInjector

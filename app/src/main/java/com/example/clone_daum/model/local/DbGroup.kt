@@ -1,11 +1,9 @@
 package com.example.clone_daum.model.local
 
-import android.content.Context
 import androidx.room.*
 import com.example.common.IRecyclerDiff
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 3. <p/>
@@ -46,7 +44,7 @@ interface SearchHistoryDao {
     @Query("SELECT * FROM searchHistory ORDER BY _id DESC")
     fun search(): Flowable<List<SearchKeyword>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(keyword: SearchKeyword): Completable
 
     @Update
@@ -62,16 +60,16 @@ interface SearchHistoryDao {
 @Dao
 interface PopularKeywordDao {
     @Query("SELECT * FROM popularKeyword")
-    fun searchPopularKeywordList(): List<PopularKeyword>
+    fun list(): Flowable<List<PopularKeyword>>
 
-    @Insert
-    fun insertPopularKeyword(keyword: PopularKeyword)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(keyword: PopularKeyword): Completable
 
     @Update
-    fun updatePopularKeyword(keyword: PopularKeyword)
+    fun update(keyword: PopularKeyword): Completable
 
     @Delete
-    fun deletePopularKeyword(keyword: PopularKeyword)
+    fun delete(keyword: PopularKeyword): Completable
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

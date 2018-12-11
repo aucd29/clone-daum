@@ -20,7 +20,8 @@ import javax.inject.Singleton
 
 @Module(includes = [NetworkModule::class
     , DbModule::class
-    , AssetModule::class])
+    , AssetModule::class
+    , ChipModule::class])
 class DaumModule {
     @Singleton
     @Provides

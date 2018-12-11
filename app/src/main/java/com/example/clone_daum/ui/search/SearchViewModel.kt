@@ -6,10 +6,8 @@ import androidx.databinding.ObservableField
 import com.example.clone_daum.R
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.SearchKeyword
-import com.example.common.RecyclerViewModel
+import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
-import com.example.common.string
-import com.example.common.toDate
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
@@ -36,11 +34,11 @@ class SearchViewModel @Inject constructor(
 
     fun init() {
         initAdapter("search_recycler_history_item")
-        items.set(db.searchHistoryDao.search().limit(10).blockingFirst())
+        items.set(db.searchHistoryDao.search().limit(4).blockingFirst())
     }
 
     fun reloadData() {
-        disposable.add(db.searchHistoryDao.search().limit(10).subscribe {
+        disposable.add(db.searchHistoryDao.search().limit(4).subscribe {
             items.set(it)
         })
     }
@@ -65,18 +63,13 @@ class SearchViewModel @Inject constructor(
         } ?: errorEvent(R.string.error_empty_keyword)
     }
 
-    private fun errorEvent(@StringRes resid: Int) {
-        mLog.error("ERROR: ${string(resid)}")
-
-        errorEvent.value = string(resid)
-    }
+    private fun errorEvent(@StringRes resid: Int) =
+        errorEvent(string(resid))
 
     private fun errorEvent(msg: String?) {
         mLog.error("ERROR: $msg")
 
-        msg?.run {
-            errorEvent.value = this
-        }
+        msg?.run { errorEvent.value = this }
     }
 
     fun closeSearchHistory() {
@@ -96,20 +89,14 @@ class SearchViewModel @Inject constructor(
     }
 
     fun deleteAllHistory() {
-        db.searchHistoryDao.deleteAll()
-//        disposable.add(
-//            .subscribeOn(Schedulers.computation())
-//            .subscribe({
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("DELETED ALL SEARCH KEYWORD ")
-//                }
-//
-//                setItems(listOf())
-//            }, { e -> errorEvent(e.message) }))
+        // delete query 는 왜? Completable 이 안되는가?
+        ioThread {
+            db.searchHistoryDao.deleteAll()
+            reloadData()
+        }
     }
 
     fun searchCancel() {
-//        val df = SimpleDateFormat("yyyyMMdd  HH:mm")
         closeEvent.call()
     }
 

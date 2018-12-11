@@ -212,14 +212,11 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
             }
         })
 
-//        items.clear()
-//        items.addAll(newItems)
         items = newItems
     }
 }
 
 open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewModel(app) {
-    //val items   = ObservableArrayList<T>()
     val items   = ObservableField<List<T>>()
     val adapter = ObservableField<RecyclerAdapter<T>>()
 

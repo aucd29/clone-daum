@@ -48,7 +48,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/search_keyword"
                 app:layout_constraintHorizontal_bias="0.9"
-                android:padding="10dp"
+                android:padding="20dp"
                 android:onClick="@{() -> model.deleteHistory(item)}"
         />
 

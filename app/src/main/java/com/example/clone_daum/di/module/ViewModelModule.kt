@@ -3,6 +3,7 @@ package com.example.clone_daum.di.module
 import androidx.lifecycle.ViewModel
 import com.example.clone_daum.di.module.common.ViewModelKey
 import com.example.clone_daum.ui.main.MainViewModel
+import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -24,4 +25,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     abstract fun bindSearchViewModel(vm: SearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PopularViewModel::class)
+    abstract fun bindPopularViewModel(vm: PopularViewModel): ViewModel
+
+
 }
