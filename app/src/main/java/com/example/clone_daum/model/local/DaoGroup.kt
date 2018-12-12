@@ -43,3 +43,21 @@ interface PopularKeywordDao {
     @Query("DELETE FROM popularKeyword")
     fun deleteAll()
 }
+
+@Dao
+interface UrlHistoryDao {
+    @Query("SELECT * FROM urlHistory ORDER BY _id DESC")
+    fun search(): Flowable<List<UrlHistory>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(keyword: UrlHistory): Completable
+
+    @Update
+    fun update(keyword: UrlHistory): Completable
+
+    @Delete
+    fun delete(keyword: UrlHistory): Completable
+
+    @Query("DELETE FROM urlHistory")
+    fun deleteAll()
+}

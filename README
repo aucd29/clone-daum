@@ -1,5 +1,5 @@
 == CLONE DAUM
 
-Kotlin + Rxjava2 + MVVM + Dagger2 를 이용한 예제
+Kotlin + Rxjava2 + MVVM + Dagger2 + Retrofit 를 이용한 예제
 
 One Activity + Some Fragments + Constratint Layout + AndroidX

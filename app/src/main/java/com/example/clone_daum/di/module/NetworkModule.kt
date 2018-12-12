@@ -32,12 +32,4 @@ class NetworkModule {
     fun provideLogLevel() =
         HttpLoggingInterceptor.Level.BODY
 
-    @Provides
-    fun provideRetrofit(rxAdapter: RxJava2CallAdapterFactory,
-                        jacksonFactory: JacksonConverterFactory,
-                        okhttpclient: OkHttpClient) =
-        Retrofit.Builder()
-            .addCallAdapterFactory(rxAdapter)
-            .addConverterFactory(jacksonFactory)
-            .client(okhttpclient)
 }

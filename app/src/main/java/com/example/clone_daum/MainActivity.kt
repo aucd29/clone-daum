@@ -13,8 +13,7 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
 
-    @Inject
-    lateinit var disposable: CompositeDisposable
+    @Inject lateinit var disposable: CompositeDisposable
 
     override fun layoutId() = R.layout.main_activity
 
@@ -30,7 +29,7 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
         if (savedInstanceState == null) {
             supportFragmentManager.run {
                 add(FragmentParams(R.id.container, MainFragment::class.java,
-                        commit = FragmentCommit.NOW))
+                        commit = FragmentCommit.NOW, backStack = false))
             }
         }
     }

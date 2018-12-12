@@ -84,6 +84,10 @@ inline fun FragmentManager.add(params: FragmentParams) {
 
         add(params.containerId, frgmt, frgmt.javaClass.name)
 
+        if (params.backStack) {
+            addToBackStack(frgmt.javaClass.name)
+        }
+
         params.commit?.let {
             when (it) {
                 FragmentCommit.ALLOW -> commitAllowingStateLoss()

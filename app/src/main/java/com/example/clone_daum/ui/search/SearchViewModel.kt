@@ -29,7 +29,7 @@ class SearchViewModel @Inject constructor(app: Application)
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
         const val RECENT_SEARCH_LIMIT = 4L
-        const val K_RECENT_SEARCH = "search-recent-search"
+        const val K_RECENT_SEARCH     = "search-recent-search"
     }
 
     @Inject lateinit var daum: DaumService
@@ -147,7 +147,7 @@ class SearchViewModel @Inject constructor(app: Application)
                 }
 
                 reloadHistoryData()
-            }, { e -> errorEvent(e.message)}))
+            }, { e -> errorEvent(e.message) }))
     }
 
     fun eventDeleteAllHistory() {
@@ -182,14 +182,14 @@ class SearchViewModel @Inject constructor(app: Application)
     fun suggest(keyword: String) {
         disposable.add(daum.suggest(keyword)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
                 it.subkeys.forEach { suggestList.add(SuggestItem(it)) }
 
                 items.set(suggestList.toList())
-            })
+            }, { e -> errorEvent(e.message) }))
     }
 
     fun eventSearchSuggest(keyword: String) {

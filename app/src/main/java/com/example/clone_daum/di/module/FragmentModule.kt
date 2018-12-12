@@ -2,7 +2,7 @@ package com.example.clone_daum.di.module
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
+import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.search.SearchFragment
@@ -15,8 +15,9 @@ import javax.inject.Singleton
  */
 
 @Module(includes = [MainFragment.Module::class
-        , MainWebviewFragment.Module::class
-        , SearchFragment.Module::class
+    , MainWebviewFragment.Module::class
+    , SearchFragment.Module::class
+    , BrowserFragment.Module::class
 ])
 class FragmentModule {
     @Singleton

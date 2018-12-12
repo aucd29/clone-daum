@@ -2,6 +2,8 @@ package com.example.clone_daum.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.clone_daum.model.BrowserRecyclerType
+import com.example.clone_daum.model.IBrowserRecyclerData
 import com.example.clone_daum.model.ISearchRecyclerData
 import com.example.clone_daum.model.SearchRecyclerType
 import com.example.common.IRecyclerDiff
@@ -28,4 +30,15 @@ data class PopularKeyword (
     val keyword: String
 ) : IRecyclerDiff {
     override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
+}
+
+@Entity(tableName = "urlHistory")
+data class UrlHistory (
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val url: String,
+    val date: Long
+) : IBrowserRecyclerData {
+    override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
+    override fun type() = BrowserRecyclerType.T_HISTORY
 }

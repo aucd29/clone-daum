@@ -3,11 +3,11 @@ package com.example.clone_daum.ui.main
 import android.os.Build
 import android.os.Bundle
 import com.example.clone_daum.BuildConfig
+import com.example.clone_daum.Config
+import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
-import com.example.common.BaseRuleFragment
-import com.example.common.defaultSetting
-import com.example.common.viewModel
-import dagger.Module
+import com.example.clone_daum.ui.browser.BrowserFragment
+import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -39,7 +39,24 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         }
 
         webview.run {
-            defaultSetting {
+            defaultSetting(urlLoading = { v, url ->
+                if (mLog.isInfoEnabled) {
+                    mLog.info("url : $url")
+                }
+
+                url?.let {
+                    if (!it.contains("m.daum.net")) {
+                        val bundle = Bundle()
+                        bundle.putString("url", it)
+
+                        activity().supportFragmentManager.add(FragmentParams(
+                            R.id.container, BrowserFragment::class.java,
+                            anim = FragmentAnim.ALPHA, bundle = bundle))
+                    } else {
+                        v?.loadUrl(url)
+                    }
+                }
+            }, pageFinished = {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("PAGE FINISHED")
                 }
@@ -51,19 +68,9 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                         mLog.debug("HIDE REFRESH ICON")
                     }
                 }
-            }
+            })
 
-            // at http protocol utils
-            // build.version.release, Locale.getDefault().getLanguage()
-            // Locale.getDefault().getCountry()
-            // paramString, AppVersion.getVersion(paramContext)
-
-            val release = Build.VERSION.RELEASE
-            val country = Locale.getDefault().country
-            val language = Locale.getDefault().language
-            val param = "service"   // LoginActorDeleteToken
-            val version = BuildConfig.VERSION_NAME
-            settings.userAgentString = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
+            settings.userAgentString = Config.USER_AGENT
 
             loadUrl(url)
 

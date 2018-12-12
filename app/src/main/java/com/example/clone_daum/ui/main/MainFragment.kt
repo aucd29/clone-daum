@@ -40,6 +40,10 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun initFragment() {
+        mBinding.run {
+            viewpager.offscreenPageLimit = 3
+        }
+
         viewmodel.run {
             settingTab(tabDataList)
             settingEvents()

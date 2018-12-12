@@ -1,6 +1,7 @@
 package com.example.clone_daum
 
 import android.app.Activity
+import android.os.Build
 import androidx.multidex.MultiDexApplication
 import com.example.clone_daum.di.component.DaggerAppComponent
 import com.example.clone_daum.model.DbRepository
@@ -10,6 +11,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -19,14 +21,9 @@ import javax.inject.Inject
 class MainApp : MultiDexApplication(), HasActivityInjector {
     private val mLog = LoggerFactory.getLogger(MainApp::class.java)
 
-    @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-
-    @Inject
-    lateinit var dm: GithubService
-
-    @Inject
-    lateinit var db: DbRepository
+    @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+    @Inject lateinit var dm: GithubService
+    @Inject lateinit var db: DbRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -37,6 +34,7 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
             .inject(this)
 
         loadNetworkData()
+        makeUserAgent()
     }
 
     private fun loadNetworkData() {
@@ -55,6 +53,21 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
                 }
             }
         }, { e -> mLog.error("ERROR: ${e.message}") })
+    }
+
+    private fun makeUserAgent() {
+        // at http protocol utils
+        // build.version.release, Locale.getDefault().getLanguage()
+        // Locale.getDefault().getCountry()
+        // paramString, AppVersion.getVersion(paramContext)
+
+        val release = Build.VERSION.RELEASE
+        val country = Locale.getDefault().country
+        val language = Locale.getDefault().language
+        val param = "service"   // LoginActorDeleteToken
+        val version = BuildConfig.VERSION_NAME
+
+        Config.USER_AGENT = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
     }
     
     ////////////////////////////////////////////////////////////////////////////////////

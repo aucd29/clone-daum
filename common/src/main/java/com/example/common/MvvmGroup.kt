@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import dagger.android.support.DaggerAppCompatActivity
 import dagger.android.support.DaggerFragment
-import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 10. 15. <p/>
@@ -84,6 +83,11 @@ inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: I
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
+
+interface OnBackPressedListener {
+    fun onBackPressed(): Boolean
+}
+
 abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
     protected lateinit var mBinding : T
 
@@ -103,6 +107,13 @@ abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
     abstract fun layoutId(): Int
 
     override fun onBackPressed() {
+        // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
+        // h/w backkey 를 처리한 것으로 본다.
+        val frgmt = supportFragmentManager.current
+        if (frgmt != null && frgmt is OnBackPressedListener && frgmt.onBackPressed()) {
+            return
+        }
+
         if (mBackPressed.onBackPressed()) {
             super.onBackPressed()
         }
