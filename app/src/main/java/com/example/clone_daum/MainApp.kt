@@ -5,7 +5,7 @@ import androidx.multidex.MultiDexApplication
 import com.example.clone_daum.di.component.DaggerAppComponent
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.PopularKeyword
-import com.example.clone_daum.model.remote.DaumService
+import com.example.clone_daum.model.remote.GithubService
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import io.reactivex.schedulers.Schedulers
@@ -23,7 +23,7 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     @Inject
-    lateinit var dm: DaumService
+    lateinit var dm: GithubService
 
     @Inject
     lateinit var db: DbRepository

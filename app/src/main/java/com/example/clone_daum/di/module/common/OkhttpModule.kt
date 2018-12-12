@@ -1,5 +1,6 @@
 package com.example.clone_daum.di.module.common
 
+import com.example.common.Json
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -43,5 +44,6 @@ class OkhttpModule {
 
     @Provides
     @Singleton
-    fun provideJacksonConverterFactory() = JacksonConverterFactory.create()
+    fun provideJacksonConverterFactory() =
+        JacksonConverterFactory.create(Json.mapper)
 }

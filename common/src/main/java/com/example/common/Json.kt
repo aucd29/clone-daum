@@ -18,6 +18,7 @@ package com.example.common
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationConfig
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -39,6 +40,9 @@ object Json {
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
             setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+
+            //https://stackoverflow.com/questions/5455014/ignoring-new-fields-on-json-objects-using-jackson
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         }
     }
 

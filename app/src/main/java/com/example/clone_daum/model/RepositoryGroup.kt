@@ -9,28 +9,8 @@ import javax.inject.Singleton
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
-//@Singleton
-//class AssetRepository @Inject constructor(
-//    private val tabList: Observable<ByteArray>,
-//    private val disposable: CompositeDisposable
-//) {
-//    fun tabList(callback: (List<TabData>) -> Unit) {
-//        disposable.add(tabList.subscribe {
-//            callback(it.jsonParse())
-//        })
-//    }
-//
-//    fun tabList2() = tabList
-//        .observeOn(Schedulers.computation())
-//}
-
 @Singleton
 class DbRepository @Inject constructor(
     val searchHistoryDao: SearchHistoryDao,
     val popularKeywordDao: PopularKeywordDao
-) {
-}
-
-//@Singleton
-//class Repository @Inject constructor() {
-//}
+)

@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
-//class MainViewModel @Inject constructor(val app: Application, val tabList: List<TabData>)
 class MainViewModel @Inject constructor(
     val app: Application,
     val tabDataList: List<TabData>

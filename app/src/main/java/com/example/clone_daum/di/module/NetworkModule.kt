@@ -19,7 +19,6 @@ import javax.inject.Singleton
 @Module(includes = [OkhttpModule::class])
 class NetworkModule {
     companion object {
-        val BASE_URL  = "https://raw.githubusercontent.com/"
         val LOG_CLASS = NetworkModule::class.java
     }
 
@@ -34,13 +33,11 @@ class NetworkModule {
         HttpLoggingInterceptor.Level.BODY
 
     @Provides
-    @Singleton
     fun provideRetrofit(rxAdapter: RxJava2CallAdapterFactory,
                         jacksonFactory: JacksonConverterFactory,
                         okhttpclient: OkHttpClient) =
-        Retrofit.Builder().baseUrl(BASE_URL)
+        Retrofit.Builder()
             .addCallAdapterFactory(rxAdapter)
             .addConverterFactory(jacksonFactory)
             .client(okhttpclient)
-            .build()
 }

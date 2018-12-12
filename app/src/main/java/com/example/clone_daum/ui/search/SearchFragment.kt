@@ -1,12 +1,13 @@
 package com.example.clone_daum.ui.search
 
 import android.os.Bundle
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
 import com.example.common.BaseRuleFragment
-import com.example.common.DialogParam
+import com.example.common.hideKeyboard
 import com.example.common.observeDialog
 import com.example.common.snackbar
 import dagger.android.ContributesAndroidInjector
@@ -41,6 +42,8 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
             model        = viewmodel
             popularmodel = popularviewmodel
 
+            // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
+            searchRecycler.itemAnimator = null
             chipRecycler.layoutManager = layoutManager
         }
     }
@@ -49,34 +52,29 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         super.onActivityCreated(savedInstanceState)
 
         settingEvents()
-        popuplarEvents()
+        popularEvents()
     }
 
     fun settingEvents() = viewmodel.run {
         init()
 
         observe(closeEvent) {
-            activity().supportFragmentManager.popBackStack()
+            activity().run {
+                supportFragmentManager.popBackStack()
+                hideKeyboard(mBinding.searchEdit)
+            }
         }
-
+        observe(errorEvent) { activity().snackbar(mBinding.root, it).show() }
         observe(searchEvent) {
             if (mLog.isDebugEnabled) {
                 mLog.debug("SEARCH KEYWORD : $it")
             }
         }
 
-        observe(errorEvent) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("SEARCHING $it")
-            }
-
-            activity().snackbar(mBinding.root, it).show()
-        }
-
         observeDialog(dlgEvent, disposable)
     }
 
-    fun popuplarEvents() = popularviewmodel.run {
+    fun popularEvents() = popularviewmodel.run {
         init()
     }
 
