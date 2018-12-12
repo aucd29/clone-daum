@@ -26,10 +26,6 @@ class PopularViewModel @Inject constructor(
         items.set(db.popularKeywordDao.list().blockingFirst())
     }
 
-//    fun reloadHistoryData() {
-//        disposable.add(db.popularKeywordDao.list().subscribe { items.set(it) })
-//    }
-
     fun event(keyword: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("EVENT : $keyword")

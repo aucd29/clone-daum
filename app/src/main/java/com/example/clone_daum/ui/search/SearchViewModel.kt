@@ -36,15 +36,15 @@ class SearchViewModel @Inject constructor(app: Application)
     @Inject lateinit var db: DbRepository
     @Inject lateinit var disposable: CompositeDisposable
 
-    val searchKeyword            = ObservableField<String>()
-    var showSearchRecyclerLayout = prefs().getBoolean(K_RECENT_SEARCH, true)
-    val toggleRecentSearchText   = ObservableInt()
-    val toggleEmptyAreaText      = ObservableInt()
-    val editorAction             = ObservableField<(String?) -> Boolean>()
+    val searchKeyword               = ObservableField<String>()
+    var showSearchRecyclerLayout    = prefs().getBoolean(K_RECENT_SEARCH, true)
+    val toggleRecentSearchText      = ObservableInt()
+    val toggleEmptyAreaText         = ObservableInt()
+    val editorAction                = ObservableField<(String?) -> Boolean>()
 
-    val visibleSearchRecycler = ObservableInt(View.VISIBLE)
-    val visibleSearchEmpty    = ObservableInt(View.GONE)
-    val visibleBottomButtons  = ObservableInt(View.VISIBLE)
+    val visibleSearchRecycler       = ObservableInt(View.VISIBLE)
+    val visibleSearchEmpty          = ObservableInt(View.GONE)
+    val visibleBottomButtons        = ObservableInt(View.VISIBLE)
 
     val searchEvent      = SingleLiveEvent<String>()
     val closeEvent       = SingleLiveEvent<Void>()

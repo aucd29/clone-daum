@@ -18,11 +18,8 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
     }
 
-    @Inject
-    lateinit var disposable: CompositeDisposable
-
-    @Inject
-    lateinit var vmfactory: DaggerViewModelFactory
+    @Inject lateinit var disposable: CompositeDisposable
+    @Inject lateinit var vmfactory: DaggerViewModelFactory
 
     lateinit var viewmodel: MainViewModel
 

@@ -24,13 +24,10 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
-    @Inject
-    lateinit var disposable: CompositeDisposable
-    @Inject
-    lateinit var layoutManager: ChipsLayoutManager
+    @Inject lateinit var disposable: CompositeDisposable
+    @Inject lateinit var layoutManager: ChipsLayoutManager
+    @Inject lateinit var vmfactory: DaggerViewModelFactory
 
-    @Inject
-    lateinit var vmfactory: DaggerViewModelFactory
     lateinit var viewmodel: SearchViewModel
     lateinit var popularviewmodel: PopularViewModel
 
