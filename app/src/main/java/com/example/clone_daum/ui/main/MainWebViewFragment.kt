@@ -1,16 +1,17 @@
 package com.example.clone_daum.ui.main
 
-import android.os.Build
 import android.os.Bundle
-import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.Config
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
+import com.example.clone_daum.di.module.common.DaggerViewModelFactory
+import com.example.clone_daum.di.module.common.inject
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
-import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -21,11 +22,15 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
     }
 
-    override fun bindViewModel() {
-        mBinding.model = viewmodel()
-    }
+    @Inject lateinit var disposable: CompositeDisposable
+    @Inject lateinit var vmfactory: DaggerViewModelFactory
 
-    private fun viewmodel() = viewModel(MainViewModel::class.java)
+    lateinit var viewmodel: MainViewModel
+
+    override fun bindViewModel() {
+        viewmodel = vmfactory.inject(this, MainViewModel::class.java)
+        mBinding.model = viewmodel
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

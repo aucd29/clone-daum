@@ -40,9 +40,9 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun initFragment() {
-        mBinding.run {
-            viewpager.offscreenPageLimit = 3
-        }
+//        mBinding.run {
+//            viewpager.offscreenPageLimit = 3
+//        }
 
         viewmodel.run {
             settingTab(tabDataList)
@@ -62,8 +62,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
             viewpager.set(mBinding.viewpager)
             viewpagerLoadedEvent.set {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("TAB LOADED")
-                    mLog.debug("tab count = ${mBinding.tab.tabCount}")
+                    mLog.debug("TAB LOADED (COUNT :${mBinding.tab.tabCount})")
                 }
 
                 // https://stackoverflow.com/questions/40896907/can-a-custom-view-be-used-as-a-tabitem

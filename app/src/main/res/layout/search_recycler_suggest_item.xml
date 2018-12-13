@@ -7,6 +7,7 @@
     <data>
         <variable name="model" type="com.example.clone_daum.ui.search.SearchViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.remote.SuggestItem" />
+        <import type="android.text.Html" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +23,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="@{item.keyword}"
+                android:text="@{Html.fromHtml(item.keyword)}"
                 android:maxLines="1"
         />
 

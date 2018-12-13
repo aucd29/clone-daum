@@ -13,7 +13,6 @@ data class Suggest (
     val subkeys: List<String>
 )
 
-
 // recycler 에 사용하기 위해 랩핑
 data class SuggestItem (
     val keyword: String

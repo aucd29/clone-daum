@@ -46,10 +46,10 @@ class SearchViewModel @Inject constructor(app: Application)
     val visibleSearchEmpty          = ObservableInt(View.GONE)
     val visibleBottomButtons        = ObservableInt(View.VISIBLE)
 
-    val searchEvent      = SingleLiveEvent<String>()
-    val closeEvent       = SingleLiveEvent<Void>()
-    val dlgEvent         = SingleLiveEvent<DialogParam>()
-    val errorEvent       = SingleLiveEvent<String>()
+    val searchEvent  = SingleLiveEvent<String>()
+    val closeEvent   = SingleLiveEvent<Void>()
+    val dlgEvent     = SingleLiveEvent<DialogParam>()
+    val errorEvent   = SingleLiveEvent<String>()
 
     fun init() {
         editorAction.set {
@@ -186,7 +186,10 @@ class SearchViewModel @Inject constructor(app: Application)
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
-                it.subkeys.forEach { suggestList.add(SuggestItem(it)) }
+                it.subkeys.forEach { key ->
+                    val newkey = key.replace(it.q, "<font color='#4766FF'><b>${it.q}</b></font>")
+                    suggestList.add(SuggestItem(newkey))
+                }
 
                 items.set(suggestList.toList())
             }, { e -> errorEvent(e.message) }))

@@ -1,6 +1,8 @@
 package com.example.clone_daum
 
+import android.os.Build
 import android.os.Bundle
+import android.webkit.WebView
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.common.*
@@ -24,6 +26,17 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
 
         if (mLog.isDebugEnabled) {
             mLog.debug("START ACTIVITY")
+        }
+
+        if (BuildConfig.DEBUG) {
+            // enabled chrome inspector
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("ENABLED CHROME INSPECTOR")
+                }
+
+                WebView.setWebContentsDebuggingEnabled(true)
+            }
         }
 
         if (savedInstanceState == null) {
