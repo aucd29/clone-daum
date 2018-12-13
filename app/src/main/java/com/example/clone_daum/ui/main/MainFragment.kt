@@ -6,7 +6,7 @@ import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
 import com.example.clone_daum.model.local.TabData
-import com.example.clone_daum.ui.search.SearchFragment
+import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
@@ -19,13 +19,17 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     @Inject lateinit var disposable: CompositeDisposable
-    @Inject lateinit var vmfactory: DaggerViewModelFactory
+    @Inject lateinit var vmFactory: DaggerViewModelFactory
+    @Inject lateinit var viewController: ViewController
+
+//    @Inject lateinit var act: MainActivity
+    @Inject lateinit var uiManager: ViewController
 
     lateinit var viewmodel: MainViewModel
 
     // 먼가 룰에 따라서 viewmodel 을 inject 시키긴 하는데 맘에 안드는 군;;;
     override fun bindViewModel() {
-        viewmodel = vmfactory.inject(this, MainViewModel::class.java)
+        viewmodel = vmFactory.inject(this, MainViewModel::class.java)
         mBinding.model = viewmodel
     }
 
@@ -77,10 +81,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun settingEvents() = viewmodel.run {
-        observe(gotoSearchEvent) {
-            activity().supportFragmentManager.show(FragmentParams(R.id.container,
-                SearchFragment::class.java, anim = FragmentAnim.ALPHA))
-        }
+        observe(gotoSearchEvent) { viewController.searchFragment() }
 
         appbarOffsetChangedEvent.set { appbar, offset ->
             val maxScroll = appbar.getTotalScrollRange()

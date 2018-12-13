@@ -4,7 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.webkit.WebView
 import com.example.clone_daum.databinding.MainActivityBinding
-import com.example.clone_daum.ui.main.MainFragment
+import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -16,6 +16,7 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     @Inject lateinit var disposable: CompositeDisposable
+    @Inject lateinit var viewController: ViewController
 
     override fun layoutId() = R.layout.main_activity
 
@@ -39,10 +40,7 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
             }
         }
 
-        if (savedInstanceState == null) {
-            supportFragmentManager.show(FragmentParams(R.id.container,
-                MainFragment::class.java, commit = FragmentCommit.NOW, backStack = false))
-        }
+        if (savedInstanceState == null) { viewController.mainFragment() }
     }
 
     override fun onDestroy() {

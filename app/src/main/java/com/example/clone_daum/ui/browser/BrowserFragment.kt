@@ -7,6 +7,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
+import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
@@ -28,12 +29,13 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
     }
 
     @Inject lateinit var disposable: CompositeDisposable
-    @Inject lateinit var vmfactory: DaggerViewModelFactory
+    @Inject lateinit var vmFactory: DaggerViewModelFactory
+    @Inject lateinit var viewController: ViewController
 
     lateinit var viewmodel: BrowserViewModel
 
     override fun bindViewModel() {
-        viewmodel = vmfactory.inject(this, BrowserViewModel::class.java)
+        viewmodel = vmFactory.inject(this, BrowserViewModel::class.java)
         mBinding.model = viewmodel
     }
 
@@ -97,6 +99,9 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
 
             observe(reloadEvent) { brsWebview.reload() }
             observe(forwardEvent) { brsWebview.goForward() }
+            observe(homeEvent) { finish() }
+            observe(searchEvent) { viewController.searchFragment() }
+            observe(submenuEvent) {  }
         }
     }
 
@@ -122,13 +127,17 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
                 .setDuration(ANI_DURATION).start()
     }
 
+    private fun finish() {
+        activity().supportFragmentManager.pop()
+    }
+
     override fun onBackPressed(): Boolean {
         mBinding.run {
             if (brsWebview.canGoBack()) {
                 brsWebview.goBack()
             } else {
                 animateOut()
-                activity().supportFragmentManager.pop()
+                finish()
             }
         }
 
