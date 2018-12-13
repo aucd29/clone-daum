@@ -29,10 +29,17 @@ class BrowserViewModel @Inject constructor(application: Application)
     val brsCount        = ObservableField<String>()
     val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
 
-    val visibleSslIcon = ObservableInt(View.GONE)
+    val visibleSslIcon  = ObservableInt(View.GONE)
 
-    val backEvent   = SingleLiveEvent<Void>()
-    val reloadEvent = SingleLiveEvent<String>()
+    val backEvent       = SingleLiveEvent<Void>()
+    val forwardEvent    = SingleLiveEvent<Void>()
+    val homeEvent       = SingleLiveEvent<Void>()
+    val searchEvent     = SingleLiveEvent<Void>()
+    val submenuEvent    = SingleLiveEvent<Void>()
+
+    val reloadEvent     = SingleLiveEvent<String>()
+    val favoriteEvent   = SingleLiveEvent<String>()
+    val shareEvent      = SingleLiveEvent<String>()
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {
@@ -67,4 +74,53 @@ class BrowserViewModel @Inject constructor(application: Application)
 
         reloadEvent.value = url
     }
+
+    fun eventForward() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("FORWARD PRESSED EVENT")
+        }
+
+        forwardEvent.call()
+    }
+
+    fun eventHome() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("HOME EVENT")
+        }
+
+        homeEvent.call()
+    }
+
+    fun eventFavorite(url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("FAVORITE EVENT $url")
+        }
+
+        favoriteEvent.value = url
+    }
+
+    fun eventSearchFragment() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHOW SEARCH FRAGMENT")
+        }
+
+        searchEvent.call()
+    }
+
+    fun eventShareUrl(url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHARE URL : $url")
+        }
+
+        shareEvent.value = url
+    }
+
+    fun eventSubMenu() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SUB MENU ")
+        }
+
+        submenuEvent.call()
+    }
+
 }

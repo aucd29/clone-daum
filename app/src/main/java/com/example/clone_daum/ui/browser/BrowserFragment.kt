@@ -1,8 +1,6 @@
 package com.example.clone_daum.ui.browser
 
-import android.os.Build
 import android.os.Bundle
-import android.webkit.WebView
 import com.example.clone_daum.Config
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
@@ -23,6 +21,9 @@ import javax.inject.Inject
 class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
+
+        const val ANI_DURATION      = 400L
+        const val WEBVIEW_SLIDING   = 3
     }
 
     @Inject lateinit var disposable: CompositeDisposable
@@ -45,10 +46,18 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
             mBinding.run {
                 brsWebview.run {
                     defaultSetting(progress = {
+                        if (mLog.isTraceEnabled()) {
+                            mLog.trace("BRS PROGRESS $it")
+                        }
+
                         brsProgress.progress = it
                     }, receivedError = {
+                        mLog.error("ERROR: $it")
+
                         it?.let { snackbar(this, it, Snackbar.LENGTH_LONG)?.show() }
                     }, sslError = {
+                        mLog.error("ERROR: SSL ")
+
                         dialog(DialogParam(string(R.string.brs_dlg_message_ssl_error)!!,
                             title        = string(R.string.brs_dlg_title_ssl_error),
                             positiveStr  = string(R.string.dlg_btn_open),
@@ -65,11 +74,7 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
                     loadUrl(url)
                 }
 
-                brsUrlBar.run {
-                    val brsUrlBarY = getActionBarHeight()
-                    translationY = brsUrlBarY * -1
-                    animate().translationY(0f).setDuration(400).start()
-                }
+                animateIn()
             }
 
             settingEvents(it)
@@ -84,11 +89,34 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
         observe(reloadEvent) { mBinding.brsWebview.reload() }
     }
 
+    private fun animateIn() = mBinding.run {
+        brsUrlBar.run {
+            val brsUrlBarY = getActionBarHeight()
+            translationY = brsUrlBarY * -1
+            animate().translationY(0f).setDuration(ANI_DURATION).start()
+        }
+
+        brsArea.run {
+            val brsAreaY = getActionBarHeight() * WEBVIEW_SLIDING
+            translationY = brsAreaY
+            animate().translationY(0f).setDuration(ANI_DURATION).start()
+        }
+    }
+
+    private fun animateOut() = mBinding.run {
+        brsUrlBar.animate().translationY(getActionBarHeight() * -1)
+                .setDuration(ANI_DURATION).start()
+
+        brsArea.animate().translationY(getActionBarHeight() * WEBVIEW_SLIDING)
+                .setDuration(ANI_DURATION).start()
+    }
+
     override fun onBackPressed(): Boolean {
         mBinding.run {
             if (brsWebview.canGoBack()) {
                 brsWebview.goBack()
             } else {
+                animateOut()
                 // back 처리를 activity 에 전달
                 return false
             }
@@ -115,6 +143,12 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
         return ta.getDimension(0, 0f)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // 
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+    
     @dagger.Module
     abstract class Module {
         @ContributesAndroidInjector
