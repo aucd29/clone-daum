@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
@@ -28,8 +29,11 @@ class BrowserViewModel @Inject constructor(application: Application)
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
     val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
+    val valProgress     = ObservableInt()
+    val visibleProgress = ObservableInt(View.VISIBLE)
 
     val visibleSslIcon  = ObservableInt(View.GONE)
+    val enableForward   = ObservableBoolean(false)
 
     val backEvent       = SingleLiveEvent<Void>()
     val forwardEvent    = SingleLiveEvent<Void>()

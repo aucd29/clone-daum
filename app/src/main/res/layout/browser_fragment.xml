@@ -97,14 +97,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/brs_url_bar"
         />
 
-        <ProgressBar
-                android:id="@+id/brs_progress"
-                android:layout_width="match_parent" android:layout_height="1dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/brs_url_bar_underline"
-        />
-
         <FrameLayout
                 android:id="@+id/brs_area"
                 android:layout_width="match_parent" android:layout_height="0dp"
@@ -120,6 +112,19 @@
                     android:layout_height="match_parent"
             />
         </FrameLayout>
+
+        <ProgressBar
+                android:id="@+id/brs_progress"
+                android:layout_width="match_parent" android:layout_height="3dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:max="100"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/brs_url_bar"
+                android:progress="@{model.valProgress}"
+                android:visibility="@{model.visibleProgress}"
+                android:translationY="1dp"
+        />
 
         <View
                 android:id="@+id/brs_brs_area_underline"
@@ -146,11 +151,12 @@
                     android:onClick="@{() -> model.eventBack()}"
             />
 
-            <ImageView
+            <ImageButton
                     android:id="@+id/brs_bottom_forward"
                     style="@style/brs_bottom_button"
-                    android:src="@drawable/ic_chevron_right_black_24dp"
+                    android:src="@drawable/selector_chevron_right_24dp"
                     android:onClick="@{() -> model.eventForward()}"
+                    android:enabled="@{model.enableForward}"
             />
 
             <ImageView

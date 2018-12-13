@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.browser
 
 import android.os.Bundle
+import android.view.View
 import com.example.clone_daum.Config
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
@@ -22,7 +23,7 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
-        const val ANI_DURATION      = 400L
+        const val ANI_DURATION      = 300L
         const val WEBVIEW_SLIDING   = 3
     }
 
@@ -43,14 +44,20 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
 
         val url = arguments?.getString("url")
         url?.let {
+            animateIn()
+
             mBinding.run {
                 brsWebview.run {
-                    defaultSetting(progress = {
+                    defaultSetting(pageStarted = {
+                        viewmodel.visibleProgress.set(View.VISIBLE)
+                    }, progress = {
                         if (mLog.isTraceEnabled()) {
                             mLog.trace("BRS PROGRESS $it")
                         }
 
-                        brsProgress.progress = it
+                        viewmodel.valProgress.set(it)
+                    }, pageFinished = {
+                        viewmodel.visibleProgress.set(View.GONE)
                     }, receivedError = {
                         mLog.error("ERROR: $it")
 
@@ -68,13 +75,13 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
                                     viewmodel.sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
                                 } else it?.cancel()
                             }))
+                    }, canGoForward = {
+                        viewmodel.enableForward.set(it)
                     })
                     settings.userAgentString = Config.USER_AGENT
 
                     loadUrl(url)
                 }
-
-                animateIn()
             }
 
             settingEvents(it)
@@ -83,10 +90,14 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
 
     private fun settingEvents(url: String) = viewmodel.run {
         applyUrl(url)
-        applyBrsCount(mBinding.brsArea.childCount)
-
         observe(backEvent) { onBackPressed() }
-        observe(reloadEvent) { mBinding.brsWebview.reload() }
+
+        mBinding.run {
+            applyBrsCount(brsArea.childCount)
+
+            observe(reloadEvent) { brsWebview.reload() }
+            observe(forwardEvent) { brsWebview.goForward() }
+        }
     }
 
     private fun animateIn() = mBinding.run {
@@ -117,8 +128,7 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
                 brsWebview.goBack()
             } else {
                 animateOut()
-                // back 처리를 activity 에 전달
-                return false
+                activity().supportFragmentManager.pop()
             }
         }
 
@@ -145,7 +155,7 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // 
+    //
     //
     ////////////////////////////////////////////////////////////////////////////////////
     

@@ -9,8 +9,11 @@ import com.example.clone_daum.di.module.common.inject
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -20,10 +23,13 @@ import javax.inject.Inject
 class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
+        private const val TIMEOUT_RELOAD_ICO = 6L
     }
 
     @Inject lateinit var disposable: CompositeDisposable
     @Inject lateinit var vmfactory: DaggerViewModelFactory
+
+    private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
 
     lateinit var viewmodel: MainViewModel
 
@@ -76,6 +82,12 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                     swipeRefresh.isRefreshing = false   // hide refresh icon
 
                     if (mLog.isDebugEnabled) {
+                        mLog.debug("DISPOSABLE COUNT : ${mTimerDisposable?.size()}")
+                    }
+
+                    mTimerDisposable?.clear()
+
+                    if (mLog.isDebugEnabled) {
                         mLog.debug("HIDE REFRESH ICON")
                     }
                 }
@@ -91,17 +103,29 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                     mLog.debug("RELOAD $url")
                 }
                 this.reload()
+
+                mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
+                    .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                        if (mLog.isInfoEnabled) {
+                            mLog.info("EXPLODE RELOAD ICO TIMER")
+                        }
+
+                        swipeRefresh.isRefreshing = false
+                    })
             }
         }
     }
 
     override fun onPause() {
         super.onPause()
+
         mBinding.webview.pauseTimers()
+        mTimerDisposable?.clear()
     }
 
     override fun onResume() {
         mBinding.webview.resumeTimers()
+
         super.onResume()
     }
 

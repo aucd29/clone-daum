@@ -187,7 +187,7 @@ class SearchViewModel @Inject constructor(app: Application)
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
                 it.subkeys.forEach { key ->
-                    val newkey = key.replace(it.q, "<font color='#4766FF'><b>${it.q}</b></font>")
+                    val newkey = key.replace(it.q, "<font color='#ff7b39'><b>${it.q}</b></font>")
                     suggestList.add(SuggestItem(newkey))
                 }
 
