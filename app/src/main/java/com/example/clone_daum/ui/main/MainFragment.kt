@@ -79,20 +79,16 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
 
     private fun settingEvents() = viewmodel.run {
         observe(gotoSearchEvent) {
-            activity().supportFragmentManager.replace(
-                FragmentParams(
-                    R.id.container, SearchFragment::class.java,
-                    anim = FragmentAnim.ALPHA
-                )
-            )
+            activity().supportFragmentManager.show(FragmentParams(R.id.container,
+                SearchFragment::class.java, anim = FragmentAnim.ALPHA))
         }
 
         appbarOffsetChangedEvent.set { appbar, offset ->
             val maxScroll = appbar.getTotalScrollRange()
             val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("$percentage")
+            if (mLog.isTraceEnabled) {
+                mLog.trace("$percentage")
             }
 
             mBinding.searchArea.alpha = 1.0f - percentage

@@ -27,10 +27,8 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
         }
 
         if (savedInstanceState == null) {
-            supportFragmentManager.run {
-                add(FragmentParams(R.id.container, MainFragment::class.java,
-                        commit = FragmentCommit.NOW, backStack = false))
-            }
+            supportFragmentManager.show(FragmentParams(R.id.container,
+                MainFragment::class.java, commit = FragmentCommit.NOW, backStack = false))
         }
     }
 

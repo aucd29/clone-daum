@@ -46,13 +46,19 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
 
                 url?.let {
                     if (!it.contains("m.daum.net")) {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("OPEN BROWSER FRAGMENT : $url")
+                        }
+
                         val bundle = Bundle()
                         bundle.putString("url", it)
 
-                        activity().supportFragmentManager.add(FragmentParams(
-                            R.id.container, BrowserFragment::class.java,
-                            anim = FragmentAnim.ALPHA, bundle = bundle))
+                        activity().supportFragmentManager.show(FragmentParams(R.id.container,
+                            BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = bundle))
                     } else {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("JUST LOAD URL : $url")
+                        }
                         v?.loadUrl(url)
                     }
                 }
