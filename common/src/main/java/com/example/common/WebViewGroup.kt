@@ -2,9 +2,8 @@
 package com.example.common
 
 import android.graphics.Bitmap
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.net.http.SslError
+import android.webkit.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -12,7 +11,10 @@ import org.slf4j.LoggerFactory
  */
 
 inline fun WebView.defaultSetting(noinline urlLoading: ((WebView?, String?) -> Unit)? = null,
-                                  noinline pageFinished: ((String?) -> Unit)? = null) {
+                                  noinline pageFinished: ((String?) -> Unit)? = null,
+                                  noinline receivedError: ((String?) -> Unit)? = null,
+                                  noinline sslError: ((SslErrorHandler?) -> Unit)? = null,
+                                  noinline progress: ((Int) -> Unit)? = null) {
     settings.run {
         textZoom = 100
         cacheMode = WebSettings.LOAD_NO_CACHE
@@ -58,6 +60,26 @@ inline fun WebView.defaultSetting(noinline urlLoading: ((WebView?, String?) -> U
             } else {
                 redirect = false
             }
+        }
+
+        override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+            super.onReceivedError(view, errorCode, description, failingUrl)
+
+            receivedError?.invoke(failingUrl)
+        }
+
+        override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+            //super.onReceivedSslError(view, handler, error)
+            // http://theeye.pe.kr/archives/2721
+            sslError?.invoke(handler)
+        }
+    }
+
+    webChromeClient = object: WebChromeClient() {
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            super.onProgressChanged(view, newProgress)
+
+            progress?.invoke(newProgress)
         }
     }
 }

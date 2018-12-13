@@ -27,6 +27,7 @@
                 android:maxLines="1"
         />
 
+
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   tools:text="11.29."
                   app:layout_constraintTop_toTopOf="@+id/search_keyword"

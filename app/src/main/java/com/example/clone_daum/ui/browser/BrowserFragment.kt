@@ -8,12 +8,13 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
-import com.example.common.BaseRuleFragment
-import com.example.common.OnBackPressedListener
-import com.example.common.defaultSetting
+import com.example.common.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -24,6 +25,7 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
     }
 
+    @Inject lateinit var disposable: CompositeDisposable
     @Inject lateinit var vmfactory: DaggerViewModelFactory
 
     lateinit var viewmodel: BrowserViewModel
@@ -36,13 +38,38 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewmodel.sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+
         val url = arguments?.getString("url")
         url?.let {
-            mBinding.brsWebview.run {
-                defaultSetting()
-                settings.userAgentString = Config.USER_AGENT
+            mBinding.run {
+                brsWebview.run {
+                    defaultSetting(progress = {
+                        brsProgress.progress = it
+                    }, receivedError = {
+                        it?.let { snackbar(this, it, Snackbar.LENGTH_LONG)?.show() }
+                    }, sslError = {
+                        dialog(DialogParam(string(R.string.brs_dlg_message_ssl_error)!!,
+                            title        = string(R.string.brs_dlg_title_ssl_error),
+                            positiveStr  = string(R.string.dlg_btn_open),
+                            negativeStr  = string(R.string.dlg_btn_close),
+                            listener     = { res, _ ->
+                                if (res) {
+                                    it?.proceed()
+                                    viewmodel.sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
+                                } else it?.cancel()
+                            }))
+                    })
+                    settings.userAgentString = Config.USER_AGENT
 
-                loadUrl(url)
+                    loadUrl(url)
+                }
+
+                brsUrlBar.run {
+                    val brsUrlBarY = getActionBarHeight()
+                    translationY = brsUrlBarY * -1
+                    animate().translationY(0f).setDuration(400).start()
+                }
             }
 
             settingEvents(it)
@@ -52,23 +79,6 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
     private fun settingEvents(url: String) = viewmodel.run {
         applyUrl(url)
         applyBrsCount(mBinding.brsArea.childCount)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            // 따로 okhttp 로 ssl 유효성을 확인하나?
-            // trust manager 넣기 귀찮은데... -_-;;;
-            context?.run {
-                WebView.startSafeBrowsing(this) {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("SAFE BROWSING $it")
-                    }
-
-                    sslIconResId.set(if (it)
-                            R.drawable.ic_vpn_key_black_24dp
-                        else
-                            R.drawable.ic_vpn_key_red_24dp)
-                }
-            }
-        }
 
         observe(backEvent) { onBackPressed() }
         observe(reloadEvent) { mBinding.brsWebview.reload() }
@@ -86,6 +96,23 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
 
         // 이곳에서 back 관련 처리를 함
         return true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mBinding.brsWebview.pauseTimers()
+    }
+
+    override fun onResume() {
+        mBinding.brsWebview.resumeTimers()
+        super.onResume()
+    }
+
+    private fun getActionBarHeight(): Float {
+        val ta = context!!.theme.obtainStyledAttributes(
+            intArrayOf(android.R.attr.actionBarSize)
+        )
+        return ta.getDimension(0, 0f)
     }
 
     @dagger.Module

@@ -2,7 +2,9 @@
 package com.example.common
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -13,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 8. <p/>
  */
 
-inline fun Fragment.string(resid: String): String? = context?.string(resid)
+inline fun Fragment.string(@StringRes resid: Int): String? = context?.string(resid)
 
 inline val FragmentManager.childList: List<Fragment?>
     get() = (0..backStackEntryCount - 1).map { findFragmentByTag(getBackStackEntryAt(it).name) }
@@ -29,6 +31,12 @@ inline fun FragmentManager.find(clazz: Class<out Fragment>) = findFragmentByTag(
 inline fun Fragment.observeDialog(event: SingleLiveEvent<DialogParam>, disposable: CompositeDisposable? = null) {
     event.observe(this, Observer { dialog(it, disposable) })
 }
+
+inline fun Fragment.snackbar(view: View, msg: String, length: Int = com.google.android.material.snackbar.Snackbar.LENGTH_SHORT) =
+    activity?.snackbar(view, msg, length)
+
+inline fun Fragment.snackbar(view: View, @StringRes resid: Int, length: Int = com.google.android.material.snackbar.Snackbar.LENGTH_SHORT) =
+    activity?.snackbar(view, resid, length)
 
 inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
     activity?.dialog(params, disposable)
