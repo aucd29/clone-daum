@@ -127,10 +127,6 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
                 .setDuration(ANI_DURATION).start()
     }
 
-    private fun finish() {
-        activity().supportFragmentManager.pop()
-    }
-
     override fun onBackPressed(): Boolean {
         mBinding.run {
             if (brsWebview.canGoBack()) {

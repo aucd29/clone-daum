@@ -29,16 +29,18 @@ import dagger.android.support.DaggerFragment
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
  */
 inline fun AndroidViewModel.string(@StringRes resid: Int) =
-    getApplication<Application>().getString(resid)
+    app.getString(resid)
 
 /**
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
  */
 inline fun AndroidViewModel.string(resid: String) =
-    getApplication<Application>().string(resid)
+    app.string(resid)
 
 inline val AndroidViewModel.app : Application
         get() = getApplication()
+
+inline fun AndroidViewModel.time() = System.currentTimeMillis()
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -139,10 +141,6 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     abstract fun bindViewModel()
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
-
-//    fun disposable() = if (activity != null && activity is BaseActivity<*>) {
-//        activity().disposable
-//    } else null
 }
 
 abstract class BaseRuleFragment<T: ViewDataBinding>: BaseFragment<T>() {

@@ -42,6 +42,13 @@ inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable?
     activity?.dialog(params, disposable)
 }
 
+inline fun Fragment.hideKeyboard(view: View) =
+    activity?.hideKeyboard(view)
+
+inline fun Fragment.finish() =
+    fragmentManager?.pop()
+
+
 object FragmentAnim {
     val LEFT: String
         get() = "left"

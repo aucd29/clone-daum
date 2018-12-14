@@ -6,10 +6,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
-import com.example.common.BaseRuleFragment
-import com.example.common.hideKeyboard
-import com.example.common.observeDialog
-import com.example.common.snackbar
+import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -56,11 +53,10 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         init()
 
         observe(closeEvent) {
-            activity().run {
-                supportFragmentManager.popBackStack()
-                hideKeyboard(mBinding.searchEdit)
-            }
+            finish()
+            hideKeyboard(mBinding.searchEdit)
         }
+
         observe(errorEvent) { activity().snackbar(mBinding.root, it).show() }
         observe(searchEvent) {
             if (mLog.isDebugEnabled) {
