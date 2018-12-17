@@ -17,7 +17,7 @@ class SplashViewModel @Inject constructor(
     val visibleSplash      = ObservableInt(View.VISIBLE)
     val splashTranslationY = ObservableInt()
     val splashHeight       = ObservableInt()
-    
+
     val splashCloseEvent   = SingleLiveEvent<Void>()
 
     init {

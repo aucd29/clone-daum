@@ -1,16 +1,11 @@
 package com.example.clone_daum.di.module
 
-import android.content.res.AssetManager
 import com.example.clone_daum.di.module.common.AssetModule
-import com.example.clone_daum.di.module.common.RxModule
-import com.example.clone_daum.model.local.TabData
+import com.example.common.di.module.RxModule
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.GithubService
-import com.example.common.jsonParse
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -44,23 +39,4 @@ class DaumModule {
     fun provideDaumService(retrofitBuilder: Retrofit.Builder) =
         retrofitBuilder.baseUrl(DAUM_BASE_URL).build()
             .create(DaumService::class.java)
-
-    @Singleton
-    @Provides
-    fun provideTabList(assetManager: AssetManager) =
-        Observable.just(assetManager.open("res/tab.json").readBytes())
-            .observeOn(Schedulers.computation())
-            .map { it.jsonParse<List<TabData>>() }
-            .blockingFirst()
-
-//    @Singleton
-//    @Provides
-//    fun provideMainTabAdapter(frgmtManager: FragmentManager, tabListData: List<TabData>) =
-//        MainTabAdapter(frgmtManager, tabListData)
-
-//    @Singleton
-//    @Provides
-//    fun provideMainTabAdapter(frgmtManager: FragmentManager, tabListData: Observable<ByteArray>): MainTabAdapter {
-//        return MainTabAdapter(frgmtManager, tabListData.map { it.jsonParse<List<TabData>>() }.blockingFirst())
-//    }
 }

@@ -55,13 +55,23 @@ dependencies {
 
     // material
     implementation "com.google.android.material:material:$androidx"
+
+    // dagger2
     implementation "com.google.dagger:dagger:$dagger2"
     implementation "com.google.dagger:dagger-android:$dagger2"
     implementation "com.google.dagger:dagger-android-support:$dagger2"
+    kapt "com.google.dagger:dagger-compiler:$dagger2"
+    kapt "com.google.dagger:dagger-android-processor:2.16"  // 애는 버전이 낮음
 
     //
     // OPEN LIBS
     //
+
+    implementation "com.squareup.okhttp3:okhttp:$okhttp"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
     implementation "org.slf4j:slf4j-api:$slf4j"
     implementation "com.github.tony19:logback-android:$logback"

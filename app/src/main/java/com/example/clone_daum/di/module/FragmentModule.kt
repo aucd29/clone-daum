@@ -15,4 +15,6 @@ import dagger.Module
     , SearchFragment.Module::class
     , BrowserFragment.Module::class
 ])
-class FragmentModule
+class FragmentModule {
+
+}

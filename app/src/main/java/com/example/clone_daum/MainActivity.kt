@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import com.example.clone_daum.databinding.MainActivityBinding
-import com.example.clone_daum.di.module.common.DaggerViewModelFactory
-import com.example.clone_daum.di.module.common.inject
+import com.example.common.di.module.DaggerViewModelFactory
+import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*

@@ -18,8 +18,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import com.example.common.arch.SingleLiveEvent
+import com.example.common.di.module.DaggerViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.support.DaggerAppCompatActivity
 import dagger.android.support.DaggerFragment
+import io.reactivex.disposables.CompositeDisposable
+import java.lang.reflect.ParameterizedType
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 10. 15. <p/>
@@ -86,27 +92,46 @@ inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: I
 ////////////////////////////////////////////////////////////////////////////////////
 
 
+interface IDialogAware {
+    val dlgEvent: SingleLiveEvent<DialogParam>
+}
+
+interface ISnackbarAware {
+    val snackbarEvent: SingleLiveEvent<String>
+
+    fun snackbarEvent(msg: String?) {
+        msg?.let { snackbarEvent.value = it }
+    }
+}
+
+interface IFinishFragmentAware {
+    val finishEvent: SingleLiveEvent<Void>
+}
+
 interface OnBackPressedListener {
     fun onBackPressed(): Boolean
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
     protected lateinit var mBinding : T
-
     protected lateinit var mBackPressed: BackPressedManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = dataBindingView(layoutId())
+        mBinding     = dataBindingView(layoutId())
         mBackPressed = BackPressedManager(this, mBinding.root)
     }
 
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
-
-    abstract fun layoutId(): Int
 
     override fun onBackPressed() {
         // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
@@ -120,6 +145,14 @@ abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
             super.onBackPressed()
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ABSTRACT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    abstract fun layoutId(): Int
 }
 
 abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
@@ -128,6 +161,7 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId(), container, false)
         mBinding.root.isClickable = true
+
         bindViewModel()
 
         return mBinding.root
@@ -187,4 +221,72 @@ abstract class BaseRuleFragment<T: ViewDataBinding>: BaseFragment<T>() {
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+}
+
+abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFragment<T>() {
+    companion object {
+        fun invokeMethod(binding: ViewDataBinding, methodName: String, argType: Class<*>, argValue: Any, log: Boolean) {
+            try {
+                val method = binding.javaClass.getDeclaredMethod(methodName, *arrayOf(argType))
+                method.invoke(binding, *arrayOf(argValue))
+            } catch (e: Exception) {
+                if (log) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    @Inject lateinit var disposable: CompositeDisposable
+    @Inject lateinit var vmfactory: DaggerViewModelFactory
+
+    lateinit var viewmodel: M
+
+    private fun viewModelClass() =
+        (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<M>
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewmodel = ViewModelProviders.of(this.activity!!, vmfactory).get(viewModelClass())
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        snackbarAware()
+        dialogAware()
+        settingEvents()
+    }
+
+    open fun viewModelMethodName() = "setModel"
+
+    override fun bindViewModel() {
+        invokeMethod(mBinding, viewModelMethodName(), viewModelClass(), viewmodel, true)
+    }
+
+    protected open fun snackbarAware() = viewmodel.run {
+        if (this is ISnackbarAware) {
+            observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT)?.show() }
+        }
+    }
+
+    protected open fun dialogAware() = viewmodel.run {
+        if (this is IDialogAware) {
+            observeDialog(this.dlgEvent, disposable)
+        }
+    }
+
+    protected open fun finishFragmentAware() = viewmodel.run {
+        if (this is IFinishFragmentAware) {
+            observe(this.finishEvent) { finish() }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ABSTRACT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    abstract fun settingEvents()
 }

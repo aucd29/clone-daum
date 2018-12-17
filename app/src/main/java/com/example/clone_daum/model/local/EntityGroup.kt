@@ -42,3 +42,13 @@ data class UrlHistory (
     override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
     override fun type() = BrowserRecyclerType.T_HISTORY
 }
+
+@Entity(tableName = "myFavorite")
+data class MyFavorite (
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val url: String,
+    val date: Long
+) : IRecyclerDiff {
+    override fun compare(item: IRecyclerDiff)= this._id == (item as MyFavorite)._id
+}

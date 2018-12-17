@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.MainActivity
 import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.main.MainFragment
+import com.example.clone_daum.ui.main.MainTabAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector

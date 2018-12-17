@@ -1,12 +1,13 @@
 package com.example.clone_daum.ui.browser
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
-import com.example.clone_daum.di.module.common.DaggerViewModelFactory
-import com.example.clone_daum.di.module.common.inject
+import com.example.common.di.module.DaggerViewModelFactory
+import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
@@ -21,42 +22,31 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPressedListener {
+class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
         const val WEBVIEW_SLIDING = 3
     }
 
-    @Inject lateinit var disposable: CompositeDisposable
-    @Inject lateinit var vmFactory: DaggerViewModelFactory
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
-    lateinit var viewmodel: BrowserViewModel
-
-    override fun bindViewModel() {
-        viewmodel      = vmFactory.inject(this, BrowserViewModel::class.java)
-        mBinding.model = viewmodel
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun settingEvents() = viewmodel.run {
         val url = arguments?.getString("url")
-        url?.let {
-            animateIn()
-            settingEvents(it)
+        if (url == null) {
+            mLog.error("ERROR: URL : $url")
+            return
         }
-    }
 
-    private fun settingEvents(url: String) = viewmodel.run {
+        animateIn()
+
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
 
         applyUrl(url)
-        observe(backEvent) { onBackPressed() }
-        observe(homeEvent) { finish() }
-        observe(searchEvent) { viewController.searchFragment() }
+        observe(backEvent)    { onBackPressed() }
+        observe(searchEvent)  { viewController.searchFragment() }
+        observe(shareEvent)   { shareLink(it) }
         observe(submenuEvent) {  }
 
         mBinding.run {
@@ -102,16 +92,6 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
         ))
     }
 
-    private fun animateIn() = viewmodel.run {
-        brsUrlBarAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * -1))
-        brsAreaAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
-    }
-
-    private fun animateOut() = viewmodel.run {
-        brsUrlBarAni.set(AnimParams(config.ACTION_BAR_HEIGHT * -1))
-        brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
-    }
-
     override fun onBackPressed() = mBinding.run {
         if (brsWebview.canGoBack()) {
             brsWebview.goBack()
@@ -119,6 +99,7 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
             animateOut()
             finish()
         }
+
         // 이곳에서 back 관련 처리를 함
         true
     }
@@ -133,6 +114,26 @@ class BrowserFragment : BaseRuleFragment<BrowserFragmentBinding>(), OnBackPresse
         mBinding.brsWebview.resumeTimers()
 
         super.onResume()
+    }
+
+    private fun animateIn() = viewmodel.run {
+        brsUrlBarAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * -1))
+        brsAreaAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
+    }
+
+    private fun animateOut() = viewmodel.run {
+        brsUrlBarAni.set(AnimParams(config.ACTION_BAR_HEIGHT * -1))
+        brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
+    }
+
+    private fun shareLink(url: String) {
+        val message = string(R.string.brs_intent_app_for_sharing)
+
+        startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+            setType("text/plain")
+            putExtra(Intent.EXTRA_SUBJECT, message)
+            putExtra(Intent.EXTRA_TEXT, url)
+        }, message))
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

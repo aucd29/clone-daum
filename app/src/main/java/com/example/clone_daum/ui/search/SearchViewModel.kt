@@ -5,7 +5,6 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.R
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.SearchHistory
@@ -25,7 +24,8 @@ import javax.inject.Inject
  */
 
 class SearchViewModel @Inject constructor(app: Application)
-    : RecyclerViewModel<ISearchRecyclerData>(app) {
+    : RecyclerViewModel<ISearchRecyclerData>(app)
+    , ISnackbarAware, IDialogAware, IFinishFragmentAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
@@ -37,20 +37,21 @@ class SearchViewModel @Inject constructor(app: Application)
     @Inject lateinit var db: DbRepository
     @Inject lateinit var disposable: CompositeDisposable
 
-    val searchKeyword               = ObservableField<String>()
-    var showSearchRecyclerLayout    = prefs().getBoolean(K_RECENT_SEARCH, true)
-    val toggleRecentSearchText      = ObservableInt()
-    val toggleEmptyAreaText         = ObservableInt()
-    val editorAction                = ObservableField<(String?) -> Boolean>()
+    val searchKeyword            = ObservableField<String>()
+    var showSearchRecyclerLayout = prefs().getBoolean(K_RECENT_SEARCH, true)
+    val toggleRecentSearchText   = ObservableInt()
+    val toggleEmptyAreaText      = ObservableInt()
+    val editorAction             = ObservableField<(String?) -> Boolean>()
 
-    val visibleSearchRecycler       = ObservableInt(View.VISIBLE)
-    val visibleSearchEmpty          = ObservableInt(View.GONE)
-    val visibleBottomButtons        = ObservableInt(View.VISIBLE)
+    val visibleSearchRecycler    = ObservableInt(View.VISIBLE)
+    val visibleSearchEmpty       = ObservableInt(View.GONE)
+    val visibleBottomButtons     = ObservableInt(View.VISIBLE)
 
-    val searchEvent                 = SingleLiveEvent<String>()
-    val closeEvent                  = SingleLiveEvent<Void>()
-    val dlgEvent                    = SingleLiveEvent<DialogParam>()
-    val errorEvent                  = SingleLiveEvent<String>()
+    val searchEvent              = SingleLiveEvent<String>()
+
+    override val dlgEvent        = SingleLiveEvent<DialogParam>()
+    override val snackbarEvent   = SingleLiveEvent<String>()
+    override val finishEvent     = SingleLiveEvent<Void>()
 
     fun init() {
         editorAction.set {
@@ -79,7 +80,7 @@ class SearchViewModel @Inject constructor(app: Application)
         keyword?.let {
             disposable.add(db.searchHistoryDao.insert(SearchHistory(
                 keyword = it,
-                date = System.currentTimeMillis()))
+                date    = System.currentTimeMillis()))
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (mLog.isDebugEnabled) {
@@ -88,19 +89,18 @@ class SearchViewModel @Inject constructor(app: Application)
 
                     searchKeyword.set("")
                     reloadHistoryData()
-                }, { e -> errorEvent(e.message) }
+                }, { e -> snackbarEvent(e.message) }
             ))
 
             searchEvent.value = it
-        } ?: errorEvent(R.string.error_empty_keyword)
+        } ?: snackbarEvent(R.string.error_empty_keyword)
     }
 
     fun eventToggleRecentSearch() {
         if (showSearchRecyclerLayout) {
-            dlgEvent.value = DialogParam(
-                title    = string(R.string.dlg_title_stop_using_recent_search),
-                message  = string(R.string.dlg_msg_do_you_want_stop_using_recent_search),
-                listener = { res, _ -> if (res) toggleSearchRecyclerLayout() },
+            dlgEvent.value = DialogParam(string(R.string.dlg_msg_do_you_want_stop_using_recent_search),
+                title       = string(R.string.dlg_title_stop_using_recent_search),
+                listener    = { res, _ -> if (res) toggleSearchRecyclerLayout() },
                 positiveStr = string(android.R.string.ok),
                 negativeStr = string(android.R.string.cancel)
             )
@@ -148,7 +148,7 @@ class SearchViewModel @Inject constructor(app: Application)
                 }
 
                 reloadHistoryData()
-            }, { e -> errorEvent(e.message) }))
+            }, { e -> snackbarEvent(e.message) }))
     }
 
     fun eventDeleteAllHistory() {
@@ -175,7 +175,7 @@ class SearchViewModel @Inject constructor(app: Application)
         }
 
         searchKeyword.set("")
-        closeEvent.call()
+        finishEvent.call()
     }
 
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
@@ -193,7 +193,7 @@ class SearchViewModel @Inject constructor(app: Application)
                 }
 
                 items.set(suggestList.toList())
-            }, { e -> errorEvent(e.message) }))
+            }, { e -> snackbarEvent(e.message) }))
     }
 
     fun eventSearchSuggest(keyword: String) {
@@ -226,12 +226,12 @@ class SearchViewModel @Inject constructor(app: Application)
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private fun errorEvent(@StringRes resid: Int) =
-        errorEvent(string(resid))
+    private fun snackbarEvent(@StringRes resid: Int) =
+        snackbarEvent(string(resid))
 
-    private fun errorEvent(msg: String?) {
+    override fun snackbarEvent(msg: String?) {
         mLog.error("ERROR: $msg")
 
-        msg?.run { errorEvent.value = this }
+        super.snackbarEvent(msg)
     }
 }

@@ -3,6 +3,7 @@ package com.example.clone_daum.model.local
 import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -59,5 +60,27 @@ interface UrlHistoryDao {
     fun delete(keyword: UrlHistory): Completable
 
     @Query("DELETE FROM urlHistory")
+    fun deleteAll()
+}
+
+
+@Dao
+interface MyFavoriteDao {
+    @Query("SELECT * FROM myFavorite ORDER BY _id DESC")
+    fun select(): Flowable<List<MyFavorite>>
+
+    @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
+    fun isFavorite(url: String): Single<Int>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(keyword: MyFavorite): Completable
+
+    @Update
+    fun update(keyword: MyFavorite): Completable
+
+    @Delete
+    fun delete(keyword: MyFavorite): Completable
+
+    @Query("DELETE FROM myFavorite")
     fun deleteAll()
 }

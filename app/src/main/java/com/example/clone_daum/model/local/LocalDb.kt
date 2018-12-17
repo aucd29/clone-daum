@@ -20,9 +20,11 @@ import io.reactivex.Flowable
 @Database(entities = [SearchHistory::class
     , PopularKeyword::class
     , UrlHistory::class
+    , MyFavorite::class
 ], version = 1)
 abstract class LocalDb: RoomDatabase() {
     abstract fun searchHistoryDao(): SearchHistoryDao
     abstract fun popularKeywordDao(): PopularKeywordDao
     abstract fun urlHistoryDao(): UrlHistoryDao
+    abstract fun myFavoriteDao(): MyFavoriteDao
 }

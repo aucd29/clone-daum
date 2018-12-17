@@ -38,4 +38,9 @@ class DbModule {
     @Provides
     fun provideUrlHistoryDao(db: LocalDb) =
             db.urlHistoryDao()
+
+    @Singleton
+    @Provides
+    fun provideMyFavoriteDao(db: LocalDb) =
+        db.myFavoriteDao()
 }

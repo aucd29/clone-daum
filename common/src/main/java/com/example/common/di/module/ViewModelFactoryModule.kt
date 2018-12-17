@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package com.example.clone_daum.di.module.common
+package com.example.common.di.module
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

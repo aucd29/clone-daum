@@ -70,11 +70,11 @@ dependencies {
 
     // dagger
     // https://google.github.io/dagger/android
-    kapt "com.google.dagger:dagger-compiler:$dagger2"
     implementation "com.google.dagger:dagger:$dagger2"
-//    // dagger for android
     implementation "com.google.dagger:dagger-android:$dagger2"
     implementation "com.google.dagger:dagger-android-support:$dagger2" // if you use the support libraries
+
+    kapt "com.google.dagger:dagger-compiler:$dagger2"
     kapt "com.google.dagger:dagger-android-processor:2.16"  // 애는 버전이 낮음
     // di
     implementation "com.radutopor.viewmodelfactory:annotations:1.0.0"

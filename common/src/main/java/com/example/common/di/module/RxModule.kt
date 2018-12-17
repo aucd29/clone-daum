@@ -1,4 +1,4 @@
-package com.example.clone_daum.di.module.common
+package com.example.common.di.module
 
 import dagger.Module
 import dagger.Provides

@@ -2,16 +2,20 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
+import com.example.clone_daum.model.local.MyFavorite
+import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
-import com.example.common.WebViewSettingParams
+import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
+import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -19,8 +23,11 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application) {
+class BrowserViewModel @Inject constructor(application: Application
+        , val favDao: MyFavoriteDao
+        , val disposable: CompositeDisposable)
+    : AndroidViewModel(application)
+    , ISnackbarAware, IFinishFragmentAware {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
@@ -37,19 +44,18 @@ class BrowserViewModel @Inject constructor(application: Application)
     val enableForward   = ObservableBoolean(false)
 
     val brsSetting      = ObservableField<WebViewSettingParams>()
-    val brsPauseTimer   = ObservableField<Boolean>()
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
 
     val backEvent       = SingleLiveEvent<Void>()
     val forwardEvent    = SingleLiveEvent<Void>()
-    val homeEvent       = SingleLiveEvent<Void>()
     val searchEvent     = SingleLiveEvent<Void>()
     val submenuEvent    = SingleLiveEvent<Void>()
-
     val reloadEvent     = SingleLiveEvent<String>()
-    val favoriteEvent   = SingleLiveEvent<String>()
     val shareEvent      = SingleLiveEvent<String>()
+
+    override val snackbarEvent = SingleLiveEvent<String>()
+    override val finishEvent   = SingleLiveEvent<Void>()
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {
@@ -98,7 +104,7 @@ class BrowserViewModel @Inject constructor(application: Application)
             mLog.debug("HOME EVENT")
         }
 
-        homeEvent.call()
+        finishEvent.call()
     }
 
     fun eventFavorite(url: String) {
@@ -106,7 +112,14 @@ class BrowserViewModel @Inject constructor(application: Application)
             mLog.debug("FAVORITE EVENT $url")
         }
 
-        favoriteEvent.value = url
+        disposable.add(favDao.isFavorite(url).subscribe { cnt, _ ->
+            if (cnt > 0) {
+                snackbarEvent(R.string.brs_exist_fav_url)
+            } else {
+                disposable.add(favDao.insert(MyFavorite(url = url, date = time()))
+                    .subscribe({ snackbarEvent(R.string.brs_fav_url_ok) }, { snackbarEvent(it.message) }))
+            }
+        })
     }
 
     fun eventSearchFragment() {
@@ -133,4 +146,18 @@ class BrowserViewModel @Inject constructor(application: Application)
         submenuEvent.call()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ISnackbarAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    private fun snackbarEvent(@StringRes resid: Int) =
+        snackbarEvent(string(resid))
+
+    override fun snackbarEvent(msg: String?) {
+        mLog.error("ERROR: $msg")
+
+        super.snackbarEvent(msg)
+    }
 }

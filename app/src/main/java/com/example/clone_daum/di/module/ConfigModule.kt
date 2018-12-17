@@ -1,16 +1,20 @@
 package com.example.clone_daum.di.module
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.graphics.Point
 import android.os.Build
 import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.PopularKeyword
+import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.GithubService
+import com.example.common.jsonParse
 import com.example.common.systemService
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
@@ -30,8 +34,9 @@ class ConfigModule {
 
     @Singleton
     @Provides
-    fun providePreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable) =
-        PreloadConfig(dm, db, dp)
+    fun providePreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable,
+                             assetManager: AssetManager) =
+        PreloadConfig(dm, db, dp, assetManager)
 }
 
 class Config(val context: Context) {
@@ -76,10 +81,15 @@ class Config(val context: Context) {
     }
 }
 
-class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable) {
+class PreloadConfig(dm: GithubService,
+                    db: DbRepository,
+                    dp: CompositeDisposable,
+                    assetManager: AssetManager) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
+
+    val tabLabelList: List<TabData>
 
     init {
         dp.add(dm.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
@@ -97,5 +107,10 @@ class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable
                 }
             }
         }, { e -> mLog.error("ERROR: ${e.message}") }))
+
+        tabLabelList = Observable.just(assetManager.open("res/tab.json").readBytes())
+            .observeOn(Schedulers.computation())
+            .map { it.jsonParse<List<TabData>>() }
+            .blockingFirst()
     }
 }

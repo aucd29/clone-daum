@@ -1,10 +1,12 @@
 package com.example.clone_daum.ui.main
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
-import com.example.clone_daum.di.module.common.DaggerViewModelFactory
-import com.example.clone_daum.di.module.common.inject
+import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
@@ -19,7 +21,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
-class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
+class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
         private const val TIMEOUT_RELOAD_ICO = 6L
@@ -27,21 +29,17 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         var calledFinishSplash = false
     }
 
-    @Inject lateinit var disposable: CompositeDisposable
-    @Inject lateinit var vmFactory: DaggerViewModelFactory
+    private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
+
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
-    private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
-
-    lateinit var viewmodel: MainViewModel
     lateinit var splashVm: SplashViewModel
 
     override fun bindViewModel() {
-        viewmodel = vmFactory.inject(this, MainViewModel::class.java)
-        splashVm  = vmFactory.inject(this, SplashViewModel::class.java)
+        super.bindViewModel()
 
-        mBinding.model = viewmodel
+        splashVm = vmfactory.inject(this, SplashViewModel::class.java)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -50,8 +48,6 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         val url = arguments?.getString("url")
         val webview = mBinding.webview
         val swipeRefresh = mBinding.swipeRefresh
-
-        settingEvents()
 
         webview.run {
             loadUrl(url)
@@ -75,7 +71,7 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         }
     }
 
-    private fun settingEvents() = viewmodel.run {
+    override fun settingEvents() = viewmodel.run {
         val swipeRefresh = mBinding.swipeRefresh
 
         brsSetting.set(WebViewSettingParams(
