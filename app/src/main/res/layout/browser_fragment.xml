@@ -18,7 +18,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/brs_url_bar"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:padding="10dp">
+                android:padding="10dp"
+                app:bindTranslateY="@{model.brsUrlBarAni}">
 
             <ImageView
                     android:id="@+id/brs_back"
@@ -104,12 +105,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/brs_url_bar_underline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/brs_brs_area_underline"
+                app:bindTranslateY="@{model.brsAreaAni}"
         >
 
             <WebView
                     android:id="@+id/brs_webview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:bindWebViewSetting="@{model.brsSetting}"
             />
         </FrameLayout>
 

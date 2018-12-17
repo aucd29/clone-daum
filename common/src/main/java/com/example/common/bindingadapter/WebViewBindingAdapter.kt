@@ -2,7 +2,7 @@ package com.example.common.bindingadapter
 
 import android.webkit.WebView
 import androidx.databinding.BindingAdapter
-import com.example.common.arch.SingleLiveEvent
+import com.example.common.WebViewSettingParams
 import com.example.common.defaultSetting
 import org.slf4j.LoggerFactory
 
@@ -14,13 +14,44 @@ object WebViewBindingAdapter {
     private val mLog = LoggerFactory.getLogger(WebViewBindingAdapter::class.java)
 
     @JvmStatic
-    @BindingAdapter("bindWebViewInit")
-    fun bindWebViewInit(webview: WebView, event: SingleLiveEvent<Void>) {
+    @BindingAdapter("bindWebViewSetting")
+    fun bindWebViewInit(webview: WebView, params: WebViewSettingParams) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("bindWebViewInit")
+            mLog.debug("bindWebViewSetting")
         }
 
-        webview.defaultSetting()
-        event.call()
+        webview.defaultSetting(params)
     }
+
+//    @JvmStatic
+//    @BindingAdapter("bindLoadUrl")
+//    fun bindWebViewInit(webview: WebView, url: String) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("bindLoadUrl")
+//        }
+//
+//        webview.loadUrl(url)
+//    }
+//
+//    @JvmStatic
+//    @BindingAdapter("bindTimer")
+//    fun bindTimer(webview: WebView, pause: Boolean) = webview.run {
+//        if (pause) {
+//            pauseTimers()
+//        } else {
+//            resumeTimers()
+//        }
+//    }
+//
+//    @JvmStatic
+//    @BindingAdapter("bindReload")
+//    fun bindReload(webview: WebView, reload: Boolean) = webview.run {
+//        reload()
+//    }
+//
+//    @JvmStatic
+//    @BindingAdapter("bindForward")
+//    fun bindForward(webview: WebView, reload: Boolean) = webview.run {
+//        goForward()
+//    }
 }

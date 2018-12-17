@@ -22,7 +22,9 @@
             <WebView
                     android:id="@+id/webview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:bindWebViewSetting="@{model.brsSetting}"
+            />
 
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

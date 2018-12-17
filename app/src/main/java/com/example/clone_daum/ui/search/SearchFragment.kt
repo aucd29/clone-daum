@@ -1,8 +1,6 @@
 package com.example.clone_daum.ui.search
 
 import android.os.Bundle
-import androidx.recyclerview.widget.SimpleItemAnimator
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
@@ -22,7 +20,6 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
     }
 
     @Inject lateinit var disposable: CompositeDisposable
-    @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var vmfactory: DaggerViewModelFactory
 
     lateinit var viewmodel: SearchViewModel
@@ -35,10 +32,6 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
         mBinding.run {
             model        = viewmodel
             popularmodel = popularviewmodel
-
-            // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
-            searchRecycler.itemAnimator = null
-            chipRecycler.layoutManager = layoutManager
         }
     }
 
@@ -56,14 +49,12 @@ class SearchFragment: BaseRuleFragment<SearchFragmentBinding>() {
             finish()
             hideKeyboard(mBinding.searchEdit)
         }
-
-        observe(errorEvent) { activity().snackbar(mBinding.root, it).show() }
+        observe(errorEvent) { snackbar(mBinding.root, it)?.show() }
         observe(searchEvent) {
             if (mLog.isDebugEnabled) {
                 mLog.debug("SEARCH KEYWORD : $it")
             }
         }
-
         observeDialog(dlgEvent, disposable)
     }
 

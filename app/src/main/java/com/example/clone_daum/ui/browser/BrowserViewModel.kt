@@ -9,7 +9,9 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
+import com.example.common.WebViewSettingParams
 import com.example.common.arch.SingleLiveEvent
+import com.example.common.bindingadapter.AnimParams
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -31,9 +33,13 @@ class BrowserViewModel @Inject constructor(application: Application)
     val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
     val valProgress     = ObservableInt()
     val visibleProgress = ObservableInt(View.VISIBLE)
-
     val visibleSslIcon  = ObservableInt(View.GONE)
     val enableForward   = ObservableBoolean(false)
+
+    val brsSetting      = ObservableField<WebViewSettingParams>()
+    val brsPauseTimer   = ObservableField<Boolean>()
+    val brsUrlBarAni    = ObservableField<AnimParams>()
+    val brsAreaAni      = ObservableField<AnimParams>()
 
     val backEvent       = SingleLiveEvent<Void>()
     val forwardEvent    = SingleLiveEvent<Void>()

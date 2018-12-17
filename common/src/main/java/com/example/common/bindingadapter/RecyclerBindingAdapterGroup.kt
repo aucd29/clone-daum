@@ -113,6 +113,26 @@ object RecyclerBindingAdapter {
 
         ViewCompat.setNestedScrollingEnabled(recycler, false)
     }
+
+    @JvmStatic
+    @BindingAdapter("bindLayoutManager")
+    fun bindLayoutManager(recycler: RecyclerView, manager: RecyclerView.LayoutManager) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND LAYOUT MANAGER")
+        }
+
+        recycler.layoutManager = manager
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindItemAnimator")
+    fun bindLayoutManager(recycler: RecyclerView, animator: RecyclerView.ItemAnimator?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND ITEM ANIMATOR")
+        }
+
+        recycler.itemAnimator = animator
+    }
 }
 
 inline fun RecyclerView.decorator(@DrawableRes drawable: Int, type: Int = DividerItemDecoration.HORIZONTAL) {

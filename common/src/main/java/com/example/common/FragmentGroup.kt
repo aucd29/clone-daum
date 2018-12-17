@@ -17,11 +17,11 @@ import io.reactivex.disposables.CompositeDisposable
 
 inline fun Fragment.string(@StringRes resid: Int): String? = context?.string(resid)
 
-inline val FragmentManager.childList: List<Fragment?>
-    get() = (0..backStackEntryCount - 1).map { findFragmentByTag(getBackStackEntryAt(it).name) }
+//inline val FragmentManager.childList: List<Fragment?>?
+//    get() = (0..backStackEntryCount - 1).map { findFragmentByTag(getBackStackEntryAt(it).name) }
 
 inline val FragmentManager.current: Fragment?
-    get() = childList.last()
+    get() = fragments.last()
 
 inline val FragmentManager.count: Int
     get() = backStackEntryCount

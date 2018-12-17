@@ -2,6 +2,7 @@ package com.example.clone_daum.di.module
 
 import android.content.res.AssetManager
 import com.example.clone_daum.di.module.common.AssetModule
+import com.example.clone_daum.di.module.common.RxModule
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.GithubService
@@ -20,7 +21,9 @@ import javax.inject.Singleton
 @Module(includes = [NetworkModule::class
     , DbModule::class
     , AssetModule::class
-    , ChipModule::class])
+    , ChipModule::class
+    , ConfigModule::class
+    , RxModule::class])
 class DaumModule {
     companion object {
         val GITHUB_BASE_URL = "https://raw.githubusercontent.com/"

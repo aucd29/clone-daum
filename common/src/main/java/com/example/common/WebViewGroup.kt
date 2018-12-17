@@ -10,28 +10,23 @@ import org.slf4j.LoggerFactory
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
-inline fun WebView.defaultSetting(noinline urlLoading: ((WebView?, String?) -> Unit)? = null,
-                                  noinline pageFinished: ((String?) -> Unit)? = null,
-                                  noinline pageStarted: ((String?) -> Unit)? = null,
-                                  noinline receivedError: ((String?) -> Unit)? = null,
-                                  noinline sslError: ((SslErrorHandler?) -> Unit)? = null,
-                                  noinline progress: ((Int) -> Unit)? = null,
-                                  noinline canGoForward: ((Boolean) -> Unit)? = null) {
+inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     settings.run {
-        textZoom = 100
-        cacheMode = WebSettings.LOAD_NO_CACHE
         setAppCacheEnabled(true)
-        javaScriptEnabled = true
-        domStorageEnabled = true
-        allowFileAccessFromFileURLs = true
+        textZoom                         = 100
+        cacheMode                        = WebSettings.LOAD_NO_CACHE
+        javaScriptEnabled                = true
+        domStorageEnabled                = true
+        allowFileAccessFromFileURLs      = true
         allowUniversalAccessFromFileURLs = true
+        userAgent?.invoke().let { userAgentString = it }
     }
 
     webViewClient = object : WebViewClient() {
         private val mLog = LoggerFactory.getLogger(WebView::class.java)
 
         var loadingFinished = true
-        var redirect = false
+        var redirect        = false
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (!loadingFinished) {
@@ -91,3 +86,14 @@ inline fun WebView.defaultSetting(noinline urlLoading: ((WebView?, String?) -> U
         }
     }
 }
+
+data class WebViewSettingParams (
+    val urlLoading: ((WebView?, String?) -> Unit)? = null,
+    val pageFinished: ((String?) -> Unit)? = null,
+    val pageStarted: ((String?) -> Unit)? = null,
+    val receivedError: ((String?) -> Unit)? = null,
+    val sslError: ((SslErrorHandler?) -> Unit)? = null,
+    val progress: ((Int) -> Unit)? = null,
+    val canGoForward: ((Boolean) -> Unit)? = null,
+    val userAgent: (() -> String)? = null
+)

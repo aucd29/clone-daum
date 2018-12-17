@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.clone_daum.di.module.common.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.main.MainViewModel
+import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
@@ -37,4 +38,8 @@ abstract class ViewModelModule {
     @ViewModelKey(BrowserViewModel::class)
     abstract fun bindBrowserViewModel(vm: BrowserViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(SplashViewModel::class)
+    abstract fun bindSplashViewModel(vm: SplashViewModel): ViewModel
 }

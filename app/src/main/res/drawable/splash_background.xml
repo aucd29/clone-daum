@@ -4,6 +4,6 @@
     <item android:drawable="@color/colorPrimary"/>
     <!-- Your product logo - 144dp color version of your app icon -->
     <item
-        android:drawable="@drawable/ic_android_black_14dp"
+        android:drawable="@drawable/ic_android_black_100dp"
         android:gravity="center"/>
 </layer-list>

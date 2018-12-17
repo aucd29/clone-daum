@@ -22,9 +22,6 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     @Inject lateinit var vmFactory: DaggerViewModelFactory
     @Inject lateinit var viewController: ViewController
 
-//    @Inject lateinit var act: MainActivity
-    @Inject lateinit var uiManager: ViewController
-
     lateinit var viewmodel: MainViewModel
 
     // 먼가 룰에 따라서 viewmodel 을 inject 시키긴 하는데 맘에 안드는 군;;;
@@ -44,10 +41,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
     }
 
     private fun initFragment() {
-//        mBinding.run {
-//            viewpager.offscreenPageLimit = 3
-//        }
-
+        mBinding.run { viewpager.offscreenPageLimit = 3 }
         viewmodel.run {
             settingTab(tabDataList)
             settingEvents()
@@ -88,7 +82,7 @@ class MainFragment : BaseRuleFragment<MainFragmentBinding>() {
             val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
 
             if (mLog.isTraceEnabled) {
-                mLog.trace("$percentage")
+                mLog.trace("APP BAR (ALPHA) : $percentage")
             }
 
             mBinding.searchArea.alpha = 1.0f - percentage

@@ -1,8 +1,8 @@
 package com.example.clone_daum.ui.main
 
 import android.os.Bundle
-import com.example.clone_daum.Config
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
+import com.example.clone_daum.di.module.Config
 import com.example.clone_daum.di.module.common.DaggerViewModelFactory
 import com.example.clone_daum.di.module.common.inject
 import com.example.clone_daum.ui.ViewController
@@ -23,18 +23,24 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
         private const val TIMEOUT_RELOAD_ICO = 6L
+
+        var calledFinishSplash = false
     }
 
     @Inject lateinit var disposable: CompositeDisposable
     @Inject lateinit var vmFactory: DaggerViewModelFactory
     @Inject lateinit var viewController: ViewController
+    @Inject lateinit var config: Config
 
     private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
 
     lateinit var viewmodel: MainViewModel
+    lateinit var splashVm: SplashViewModel
 
     override fun bindViewModel() {
         viewmodel = vmFactory.inject(this, MainViewModel::class.java)
+        splashVm  = vmFactory.inject(this, SplashViewModel::class.java)
+
         mBinding.model = viewmodel
     }
 
@@ -45,12 +51,35 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
         val webview = mBinding.webview
         val swipeRefresh = mBinding.swipeRefresh
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("webview load url : $url")
-        }
+        settingEvents()
 
         webview.run {
-            defaultSetting(urlLoading = { v, url ->
+            loadUrl(url)
+
+            // http://sarangnamu.net/basic/basic_view.php?no=6321&page=1&sCategory=0
+            swipeRefresh.setOnRefreshListener {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("RELOAD $url")
+                }
+                this.reload()
+
+                mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
+                    .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                        if (mLog.isInfoEnabled) {
+                            mLog.info("EXPLODE RELOAD ICO TIMER")
+                        }
+
+                        swipeRefresh.isRefreshing = false
+                    })
+            }
+        }
+    }
+
+    private fun settingEvents() = viewmodel.run {
+        val swipeRefresh = mBinding.swipeRefresh
+
+        brsSetting.set(WebViewSettingParams(
+            urlLoading = { v, url ->
                 if (mLog.isInfoEnabled) {
                     mLog.info("url : $url")
                 }
@@ -90,29 +119,17 @@ class MainWebviewFragment: BaseRuleFragment<MainWebviewFragmentBinding>() {
                         mLog.debug("HIDE REFRESH ICON")
                     }
                 }
-            })
-
-            settings.userAgentString = Config.USER_AGENT
-
-            loadUrl(url)
-
-            // http://sarangnamu.net/basic/basic_view.php?no=6321&page=1&sCategory=0
-            swipeRefresh.setOnRefreshListener {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("RELOAD $url")
-                }
-                this.reload()
-
-                mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                    .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("EXPLODE RELOAD ICO TIMER")
-                        }
-
-                        swipeRefresh.isRefreshing = false
-                    })
             }
-        }
+            , userAgent = { config.USER_AGENT }
+            , progress = {
+                if (it == 100)  {
+                    if (!calledFinishSplash) {
+                        calledFinishSplash = true
+                        splashVm.splashCloseEvent.call()
+                    }
+                }
+            }
+        ))
     }
 
     override fun onPause() {

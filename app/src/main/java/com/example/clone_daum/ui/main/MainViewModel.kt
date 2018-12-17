@@ -7,6 +7,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.model.local.TabData
+import com.example.common.WebViewSettingParams
 import com.example.common.arch.SingleLiveEvent
 import com.google.android.material.appbar.AppBarLayout
 import org.slf4j.LoggerFactory
@@ -26,14 +27,16 @@ class MainViewModel @Inject constructor(
     val tabAdapter                  = ObservableField<MainTabAdapter>()
     val viewpager                   = ObservableField<ViewPager>()
 
-    // view events
+    // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
     val viewpagerLoadedEvent        = ObservableField<()->Unit>()
+    // appbar 에 offsetChanged 를 알려줌 (AppBarBindingAdapter)
     val appbarOffsetChangedEvent    = ObservableField<(AppBarLayout, Int)->Unit>()
 
     var gotoNewsEvent               = ObservableInt(0)
     val visibleBack                 = ObservableInt(View.GONE)
-
     val gotoSearchEvent             = SingleLiveEvent<Void>()
+
+    val brsSetting      = ObservableField<WebViewSettingParams>()
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {

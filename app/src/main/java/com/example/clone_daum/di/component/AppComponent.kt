@@ -25,7 +25,6 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class
     , AppModule::class
-    , RxModule::class
     , ViewModelFactoryModule::class
     , ViewModelModule::class
     , DaumModule::class

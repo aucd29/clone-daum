@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.R
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.SearchHistory
@@ -46,10 +47,10 @@ class SearchViewModel @Inject constructor(app: Application)
     val visibleSearchEmpty          = ObservableInt(View.GONE)
     val visibleBottomButtons        = ObservableInt(View.VISIBLE)
 
-    val searchEvent  = SingleLiveEvent<String>()
-    val closeEvent   = SingleLiveEvent<Void>()
-    val dlgEvent     = SingleLiveEvent<DialogParam>()
-    val errorEvent   = SingleLiveEvent<String>()
+    val searchEvent                 = SingleLiveEvent<String>()
+    val closeEvent                  = SingleLiveEvent<Void>()
+    val dlgEvent                    = SingleLiveEvent<DialogParam>()
+    val errorEvent                  = SingleLiveEvent<String>()
 
     fun init() {
         editorAction.set {
