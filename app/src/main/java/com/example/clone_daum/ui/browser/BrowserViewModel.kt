@@ -15,7 +15,10 @@ import com.example.clone_daum.model.local.UrlHistoryDao
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -65,6 +68,7 @@ class BrowserViewModel @Inject constructor(application: Application
         visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
         urlString.set(url)
         urlDao.insert(UrlHistory(url = url, date = System.currentTimeMillis()))
+            .subscribeOn(Schedulers.io()).subscribe()
     }
 
     fun applyBrsCount(count: Int) {
@@ -112,14 +116,27 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("FAVORITE EVENT $url")
         }
 
-        disposable.add(favDao.isFavorite(url).subscribe { cnt, _ ->
-            if (cnt > 0) {
-                snackbarEvent(R.string.brs_exist_fav_url)
-            } else {
-                disposable.add(favDao.insert(MyFavorite(url = url, date = time()))
-                    .subscribe({ snackbarEvent(R.string.brs_fav_url_ok) }, { snackbarEvent(it.message) }))
-            }
-        })
+        disposable.add(favDao.isFavorite(url)
+            .subscribeOn(Schedulers.io())
+            .subscribe { cnt, e ->
+                if (e != null) {
+                    observeSnackbarEvent(e.message)
+                } else {
+                    if (cnt > 0) {
+                        observeSnackbarEvent(string(R.string.brs_exist_fav_url))
+                    } else {
+                        disposable.add(favDao.insert(MyFavorite(url = url, date = time()))
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
+                                if (mLog.isDebugEnabled) {
+                                    mLog.debug("FAV URL : $url")
+                                }
+
+                                observeSnackbarEvent(string(R.string.brs_fav_url_ok))
+                            }, { observeSnackbarEvent(it.message) }))
+                    }
+                }
+            })
     }
 
     fun eventSearchFragment() {
@@ -159,5 +176,10 @@ class BrowserViewModel @Inject constructor(application: Application
         mLog.error("ERROR: $msg")
 
         super.snackbarEvent(msg)
+    }
+
+    private inline fun observeSnackbarEvent(msg: String?) {
+        disposable.add(Single.just(msg).subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe { msg, _ -> snackbarEvent(msg) })
     }
 }

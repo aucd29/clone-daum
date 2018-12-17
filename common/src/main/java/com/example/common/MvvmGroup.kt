@@ -260,6 +260,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
 
     open fun viewModelMethodName() = "setModel"
 
+    // 귀차니즘이 너무 큰게 아닌가 싶기도 하고 -_ -ㅋ
     override fun bindViewModel() {
         invokeMethod(mBinding, viewModelMethodName(), viewModelClass(), viewmodel, true)
     }
