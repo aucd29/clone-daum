@@ -15,9 +15,10 @@ class SplashViewModel @Inject constructor(
     val config: Config
 ) : ViewModel() {
     val visibleSplash      = ObservableInt(View.VISIBLE)
-    val splashCloseEvent   = SingleLiveEvent<Void>()
     val splashTranslationY = ObservableInt()
     val splashHeight       = ObservableInt()
+    
+    val splashCloseEvent   = SingleLiveEvent<Void>()
 
     init {
         // 초기 로딩시 적용되는 v center 와 실제 레이아웃에 들어가는 v center 랑 값이 달라
