@@ -15,7 +15,6 @@
             android:background="#f4f4f4"
     >
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dumy_layout"
                 android:layout_width="match_parent"

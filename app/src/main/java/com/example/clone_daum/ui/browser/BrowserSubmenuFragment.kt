@@ -14,7 +14,8 @@ import dagger.android.ContributesAndroidInjector
 
 class BrowserSubmenuFragment : BaseDaggerFragment<BrowserSubmenuFragmentBinding, BrowserSubmenuViewModel>() {
     override fun settingEvents() = mViewModel.run {
-        submenuLayoutAni.set(AnimParams(value = 0f, initValue = 200.dpToPx(app)))
+        submenuLayoutAni.set(AnimParams(value = 0f, initValue = 200.dpToPx(app),
+            duration = 600))
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

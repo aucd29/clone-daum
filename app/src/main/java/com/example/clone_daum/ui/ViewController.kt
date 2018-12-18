@@ -43,7 +43,7 @@ class ViewController private constructor() {
     }
 
     fun browserSubFragment(container: Int, subManager: FragmentManager) {
-        subManager.show(FragmentParams(container,
+        manager.show(FragmentParams(CONTAINER,
             BrowserSubmenuFragment::class.java, anim = FragmentAnim.ALPHA))
     }
 }
