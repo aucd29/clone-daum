@@ -5,25 +5,18 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import com.example.clone_daum.databinding.MainActivityBinding
-import com.example.common.di.module.DaggerViewModelFactory
-import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
-import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-class MainActivity : BaseActivity<MainActivityBinding>() {
+class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
 
-    @Inject lateinit var disposable: CompositeDisposable
     @Inject lateinit var viewController: ViewController
-    @Inject lateinit var vmFactory: DaggerViewModelFactory
-
-    lateinit var splashVm: SplashViewModel
 
     override fun layoutId() = R.layout.main_activity
 
@@ -35,18 +28,15 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
             mLog.debug("START ACTIVITY")
         }
 
-        splashVm = vmFactory.inject(this, SplashViewModel::class.java)
-
-        settingsEvents()
         chromeInspector()
 
-        if (savedInstanceState == null) { viewController.mainFragment() }
+        if (savedInstanceState == null) {
+            viewController.mainFragment()
+        }
     }
 
-    private fun settingsEvents() = splashVm.run {
-        mBinding.model = this
-
-        observe(splashCloseEvent) {
+    override fun settingEvents() = mViewModel.run {
+        observe(closeEvent) {
             if (mLog.isInfoEnabled) {
                 mLog.info("GONE SPLASH")
             }
@@ -66,11 +56,5 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
                 WebView.setWebContentsDebuggingEnabled(true)
             }
         }
-    }
-
-    override fun onDestroy() {
-        disposable.clear()
-
-        super.onDestroy()
     }
 }

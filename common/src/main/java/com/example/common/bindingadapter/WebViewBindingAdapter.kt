@@ -2,6 +2,8 @@ package com.example.common.bindingadapter
 
 import android.webkit.WebView
 import androidx.databinding.BindingAdapter
+import com.example.common.WebViewEvent
+import com.example.common.WebViewEventParams
 import com.example.common.WebViewSettingParams
 import com.example.common.defaultSetting
 import org.slf4j.LoggerFactory
@@ -15,12 +17,29 @@ object WebViewBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindWebViewSetting")
-    fun bindWebViewInit(webview: WebView, params: WebViewSettingParams) {
+    fun bindWebViewSetting(webview: WebView, params: WebViewSettingParams) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindWebViewSetting")
         }
 
         webview.defaultSetting(params)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindWebViewEvent")
+    fun bindWebViewEvent(view: WebView, params: WebViewEventParams) = view.run {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindWebViewEvent event : ${params.event}")
+        }
+
+        when (params.event) {
+            WebViewEvent.FORWARD      -> goForward()
+            WebViewEvent.BACK         -> goBack()
+            WebViewEvent.STOP_LOADING -> stopLoading()
+            WebViewEvent.RELOAD       -> reload()
+            WebViewEvent.PAUSE_TIMER  -> pauseTimers()
+            WebViewEvent.RESUME_TIMER -> resumeTimers()
+        }
     }
 
 //    @JvmStatic

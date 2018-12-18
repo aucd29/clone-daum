@@ -1,19 +1,15 @@
 package com.example.clone_daum.ui.browser
 
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
-import com.example.common.di.module.DaggerViewModelFactory
-import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
-import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -32,33 +28,24 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
-    override fun settingEvents() = viewmodel.run {
+    override fun settingEvents() = mViewModel.run {
         val url = arguments?.getString("url")
         if (url == null) {
             mLog.error("ERROR: URL : $url")
             return
         }
 
-        animateIn()
-
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
 
+        animateIn()
         applyUrl(url)
+        mBinding.brsWebview.loadUrl(url)
+        applyBrsCount(mBinding.brsArea.childCount)  // 임시 코드 추후 db 에서 얻어오도록 해야함
+
         observe(backEvent)    { onBackPressed() }
         observe(searchEvent)  { viewController.searchFragment() }
         observe(shareEvent)   { shareLink(it) }
         observe(submenuEvent) {  }
-
-        mBinding.run {
-            applyBrsCount(brsArea.childCount)
-
-            brsWebview.run {
-                loadUrl(url)
-
-                observe(reloadEvent)  { reload() }
-                observe(forwardEvent) { goForward() }
-            }
-        }
 
         brsSetting.set(WebViewSettingParams(
             progress = {
@@ -84,9 +71,13 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                             sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
                         } else it?.cancel()
                     }))
+            } , pageStarted  = {
+                visibleProgress.set(View.VISIBLE)
+                reloadIconResId.set(R.drawable.ic_clear_black_24dp)
+            } , pageFinished = {
+                visibleProgress.set(View.GONE)
+                reloadIconResId.set(R.drawable.ic_replay_black_24dp)
             }
-            , pageStarted  = { visibleProgress.set(View.VISIBLE) }
-            , pageFinished = { visibleProgress.set(View.GONE) }
             , canGoForward = { enableForward.set(it) }
             , userAgent    = { config.USER_AGENT }
         ))
@@ -94,7 +85,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     override fun onBackPressed() = mBinding.run {
         if (brsWebview.canGoBack()) {
-            brsWebview.goBack()
+            mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.BACK))
         } else {
             animateOut()
             finish()
@@ -107,21 +98,21 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     override fun onPause() {
         super.onPause()
 
-        mBinding.brsWebview.pauseTimers()
+        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.PAUSE_TIMER))
     }
 
     override fun onResume() {
-        mBinding.brsWebview.resumeTimers()
+        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.RESUME_TIMER))
 
         super.onResume()
     }
 
-    private fun animateIn() = viewmodel.run {
+    private fun animateIn() = mViewModel.run {
         brsUrlBarAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }
 
-    private fun animateOut() = viewmodel.run {
+    private fun animateOut() = mViewModel.run {
         brsUrlBarAni.set(AnimParams(config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }

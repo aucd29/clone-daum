@@ -88,12 +88,20 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
 }
 
 data class WebViewSettingParams (
-    val urlLoading: ((WebView?, String?) -> Unit)? = null,
-    val pageFinished: ((String?) -> Unit)? = null,
-    val pageStarted: ((String?) -> Unit)? = null,
-    val receivedError: ((String?) -> Unit)? = null,
-    val sslError: ((SslErrorHandler?) -> Unit)? = null,
-    val progress: ((Int) -> Unit)? = null,
-    val canGoForward: ((Boolean) -> Unit)? = null,
-    val userAgent: (() -> String)? = null
+    val urlLoading      : ((WebView?, String?) -> Unit)? = null,
+    val pageFinished    : ((String?) -> Unit)? = null,
+    val pageStarted     : ((String?) -> Unit)? = null,
+    val receivedError   : ((String?) -> Unit)? = null,
+    val sslError        : ((SslErrorHandler?) -> Unit)? = null,
+    val progress        : ((Int) -> Unit)? = null,
+    val canGoForward    : ((Boolean) -> Unit)? = null,
+    val userAgent       : (() -> String)? = null
+)
+
+enum class WebViewEvent {
+    RELOAD, BACK, FORWARD, STOP_LOADING, PAUSE_TIMER, RESUME_TIMER
+}
+
+data class WebViewEventParams (
+    val event: WebViewEvent? = null
 )

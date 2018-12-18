@@ -155,6 +155,61 @@ abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
     abstract fun layoutId(): Int
 }
 
+abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseActivity<T>() {
+    companion object {
+        protected val LAYOUT = "layout"
+
+        fun invokeMethod(binding: ViewDataBinding, methodName: String, argType: Class<*>, argValue: Any, log: Boolean) {
+            try {
+                val method = binding.javaClass.getDeclaredMethod(methodName, *arrayOf(argType))
+                method.invoke(binding, *arrayOf(argValue))
+            } catch (e: Exception) {
+                if (log) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    @Inject lateinit var mDisposable: CompositeDisposable
+    @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
+
+    var className: String = ""
+    lateinit var mViewModel: M
+
+    private fun viewModelClass() =
+        (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<M>
+
+    open fun viewModelMethodName() = "setModel"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
+        bindViewModel()
+        settingEvents()
+    }
+
+    // 귀차니즘이 너무 큰게 아닌가 싶기도 하고 -_ -ㅋ
+    open fun bindViewModel() {
+        invokeMethod(mBinding, viewModelMethodName(), viewModelClass(), mViewModel, true)
+    }
+
+    override fun onDestroy() {
+        mDisposable.clear()
+
+        super.onDestroy()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ABSTRACT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    abstract fun settingEvents()
+}
+
 abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     protected lateinit var mBinding : T
 
@@ -237,16 +292,16 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
         }
     }
 
-    @Inject lateinit var disposable: CompositeDisposable
-    @Inject lateinit var vmfactory: DaggerViewModelFactory
+    @Inject lateinit var mDisposable: CompositeDisposable
+    @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
-    lateinit var viewmodel: M
+    lateinit var mViewModel: M
 
     private fun viewModelClass() =
         (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<M>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewmodel = ViewModelProviders.of(this.activity!!, vmfactory).get(viewModelClass())
+        mViewModel = ViewModelProviders.of(this.activity!!, mViewModelFactory).get(viewModelClass())
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -262,22 +317,22 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
 
     // 귀차니즘이 너무 큰게 아닌가 싶기도 하고 -_ -ㅋ
     override fun bindViewModel() {
-        invokeMethod(mBinding, viewModelMethodName(), viewModelClass(), viewmodel, true)
+        invokeMethod(mBinding, viewModelMethodName(), viewModelClass(), mViewModel, true)
     }
 
-    protected open fun snackbarAware() = viewmodel.run {
+    protected open fun snackbarAware() = mViewModel.run {
         if (this is ISnackbarAware) {
             observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT)?.show() }
         }
     }
 
-    protected open fun dialogAware() = viewmodel.run {
+    protected open fun dialogAware() = mViewModel.run {
         if (this is IDialogAware) {
-            observeDialog(this.dlgEvent, disposable)
+            observeDialog(this.dlgEvent, mDisposable)
         }
     }
 
-    protected open fun finishFragmentAware() = viewmodel.run {
+    protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
             observe(this.finishEvent) { finish() }
         }

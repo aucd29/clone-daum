@@ -15,11 +15,11 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     override fun bindViewModel() = mBinding.run {
         super.bindViewModel()
 
-        popularviewVm = vmfactory.inject(this@SearchFragment, PopularViewModel::class.java)
+        popularviewVm = mViewModelFactory.inject(this@SearchFragment, PopularViewModel::class.java)
         popularmodel  = popularviewVm
     }
 
-    override fun settingEvents() = viewmodel.run {
+    override fun settingEvents() = mViewModel.run {
         init()
         observe(searchEvent) { browserFragment(it) }
 
@@ -30,7 +30,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         init()
     }
 
-    override fun finishFragmentAware() = viewmodel.run {
+    override fun finishFragmentAware() = mViewModel.run {
         observe(finishEvent) {
             finish()
             hideKeyboard(mBinding.searchEdit)

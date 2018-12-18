@@ -8,12 +8,16 @@
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
     </data>
 
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:fillViewport="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+    >
+        <!-- 제대로 동작하지 않아 수정 -->
+        <!--app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"-->
+        <!--app:bindSwipeRefreshingFalse="@{model.swipeRefreshingFalse}"-->
+        <!--app:bindSwipeIsRefreshing="@{model.swipeIsRefreshing}"-->
 
         <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
@@ -24,6 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:bindWebViewSetting="@{model.brsSetting}"
+                    app:bindWebViewEvent="@{model.brsEvent}"
             />
 
         </androidx.core.widget.NestedScrollView>

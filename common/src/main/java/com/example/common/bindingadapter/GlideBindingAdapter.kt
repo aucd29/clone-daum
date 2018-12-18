@@ -67,8 +67,8 @@ inline fun ImageView.glide(@DrawableRes resid: Int) {
 }
 
 inline fun ImageView.fitxy() {
-    scaleType = ImageView.ScaleType.FIT_XY
     adjustViewBounds = true
+    scaleType = ImageView.ScaleType.FIT_XY
 }
 
 inline fun ImageView.glide(path: String) {

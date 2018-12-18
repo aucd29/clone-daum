@@ -15,7 +15,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
 
     @Inject lateinit var viewController: ViewController
 
-    override fun settingEvents() = viewmodel.run {
+    override fun settingEvents() = mViewModel.run {
         observe(gotoSearchEvent) { viewController.searchFragment() }
 
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;

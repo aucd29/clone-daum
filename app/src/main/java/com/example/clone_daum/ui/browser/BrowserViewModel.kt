@@ -40,20 +40,20 @@ class BrowserViewModel @Inject constructor(application: Application
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
     val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
+    val reloadIconResId = ObservableInt(R.drawable.ic_clear_black_24dp)
     val valProgress     = ObservableInt()
     val visibleProgress = ObservableInt(View.VISIBLE)
     val visibleSslIcon  = ObservableInt(View.GONE)
     val enableForward   = ObservableBoolean(false)
 
     val brsSetting      = ObservableField<WebViewSettingParams>()
+    val brsEvent        = ObservableField<WebViewEventParams>()
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
 
     val backEvent       = SingleLiveEvent<Void>()
-    val forwardEvent    = SingleLiveEvent<Void>()
     val searchEvent     = SingleLiveEvent<Void>()
     val submenuEvent    = SingleLiveEvent<Void>()
-    val reloadEvent     = SingleLiveEvent<String>()
     val shareEvent      = SingleLiveEvent<String>()
 
     override val snackbarEvent = SingleLiveEvent<String>()
@@ -65,6 +65,7 @@ class BrowserViewModel @Inject constructor(application: Application
         }
 
         visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
+
         urlString.set(url)
         urlDao.insert(UrlHistory(url = url, date = System.currentTimeMillis()))
             .subscribeOn(Schedulers.io()).subscribe()
@@ -87,11 +88,19 @@ class BrowserViewModel @Inject constructor(application: Application
     }
 
     fun eventReloadBrowser(url : String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RELOAD BROWSER $url")
-        }
+        if (reloadIconResId.get() == R.drawable.ic_clear_black_24dp) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("STOP")
+            }
 
-        reloadEvent.value = url
+            brsEvent.set(WebViewEventParams(event = WebViewEvent.STOP_LOADING))
+        } else {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("RELOAD BROWSER $url")
+            }
+
+            brsEvent.set(WebViewEventParams(event = WebViewEvent.RELOAD))
+        }
     }
 
     fun eventForward() {
@@ -99,7 +108,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("FORWARD PRESSED EVENT")
         }
 
-        forwardEvent.call()
+        brsEvent.set(WebViewEventParams(event = WebViewEvent.FORWARD))
     }
 
     fun eventHome() {

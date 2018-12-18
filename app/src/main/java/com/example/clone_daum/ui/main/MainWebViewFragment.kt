@@ -1,9 +1,6 @@
 package com.example.clone_daum.ui.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
 import com.example.common.di.module.inject
@@ -24,55 +21,48 @@ import javax.inject.Inject
 class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
-        private const val TIMEOUT_RELOAD_ICO = 6L
 
-        var calledFinishSplash = false
+        private const val TIMEOUT_RELOAD_ICO = 6L
+        private var IS_CLOSED_SPLASH = false
     }
 
     private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
+    private lateinit var mSplashViewModel: SplashViewModel
 
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
-    lateinit var splashVm: SplashViewModel
-
     override fun bindViewModel() {
         super.bindViewModel()
 
-        splashVm = vmfactory.inject(this, SplashViewModel::class.java)
+        mSplashViewModel = mViewModelFactory.inject(this, SplashViewModel::class.java)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun settingEvents() = mViewModel.run {
         val url = arguments?.getString("url")
-        val webview = mBinding.webview
-        val swipeRefresh = mBinding.swipeRefresh
+        if (url == null) {
+            mLog.error("ERROR: URL == null")
 
-        webview.run {
-            loadUrl(url)
-
-            // http://sarangnamu.net/basic/basic_view.php?no=6321&page=1&sCategory=0
-            swipeRefresh.setOnRefreshListener {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("RELOAD $url")
-                }
-                this.reload()
-
-                mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                    .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("EXPLODE RELOAD ICO TIMER")
-                        }
-
-                        swipeRefresh.isRefreshing = false
-                    })
-            }
+            return
         }
-    }
 
-    override fun settingEvents() = viewmodel.run {
-        val swipeRefresh = mBinding.swipeRefresh
+        mBinding.webview.loadUrl(url)
+        mBinding.swipeRefresh.setOnRefreshListener {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("RELOAD $url")
+            }
+
+            brsEvent.set(WebViewEventParams(event = WebViewEvent.RELOAD))
+
+            mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
+                .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                    if (mLog.isInfoEnabled) {
+                        mLog.info("EXPLODE RELOAD ICO TIMER")
+                    }
+
+                    mBinding.swipeRefresh.isRefreshing = false
+                })
+        }
 
         brsSetting.set(WebViewSettingParams(
             urlLoading = { v, url ->
@@ -94,7 +84,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
                         if (mLog.isDebugEnabled) {
                             mLog.debug("JUST LOAD URL : $url")
                         }
-                        v?.loadUrl(url)
+
+                        mBinding.webview.loadUrl(url)
                     }
                 }
             }, pageFinished = {
@@ -102,26 +93,31 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
                     mLog.debug("PAGE FINISHED")
                 }
 
-                if (swipeRefresh.isRefreshing) {
-                    swipeRefresh.isRefreshing = false   // hide refresh icon
+                mBinding.swipeRefresh.run {
+                    if (isRefreshing) {
+                        isRefreshing = false     // hide refresh icon
 
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("DISPOSABLE COUNT : ${mTimerDisposable?.size()}")
-                    }
+                        mTimerDisposable?.let {
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("DISPOSABLE COUNT : ${it.size()}")
+                            }
 
-                    mTimerDisposable?.clear()
+                            it.clear()
+                        }
 
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("HIDE REFRESH ICON")
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("HIDE REFRESH ICON")
+                        }
                     }
                 }
             }
             , userAgent = { config.USER_AGENT }
-            , progress = {
+            , progress  = {
                 if (it == 100)  {
-                    if (!calledFinishSplash) {
-                        calledFinishSplash = true
-                        splashVm.splashCloseEvent.call()
+                    if (!IS_CLOSED_SPLASH) {
+                        IS_CLOSED_SPLASH = true
+
+                        mSplashViewModel.closeEvent.call()
                     }
                 }
             }
@@ -131,12 +127,12 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     override fun onPause() {
         super.onPause()
 
-        mBinding.webview.pauseTimers()
+        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.PAUSE_TIMER))
         mTimerDisposable?.clear()
     }
 
     override fun onResume() {
-        mBinding.webview.resumeTimers()
+        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.RESUME_TIMER))
 
         super.onResume()
     }
