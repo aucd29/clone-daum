@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common
 
+import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
@@ -27,3 +28,6 @@ inline fun TextView.gravityCenter() {
 
 inline fun View.dpToPx(v: Int) = v * context.displayDensity()
 inline fun View.pxToDp(v: Int) = v / context.displayDensity()
+
+inline fun Int.dpToPx(context: Context) = this * context.displayDensity()
+inline fun Int.pxToDp(context: Context) = this / context.displayDensity()

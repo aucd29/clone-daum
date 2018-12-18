@@ -127,12 +127,12 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     override fun onPause() {
         super.onPause()
 
-        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.PAUSE_TIMER))
+        mViewModel.brsEvent.set(WebViewEventParams(WebViewEvent.PAUSE_TIMER))
         mTimerDisposable?.clear()
     }
 
     override fun onResume() {
-        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.RESUME_TIMER))
+        mViewModel.brsEvent.set(WebViewEventParams(WebViewEvent.RESUME_TIMER))
 
         super.onResume()
     }

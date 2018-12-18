@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.browser
 
 import android.content.Intent
 import android.view.View
+import android.widget.ArrayAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -9,6 +10,8 @@ import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.google.android.material.snackbar.Snackbar
+import com.orhanobut.dialogplus.DialogPlus
+import com.orhanobut.dialogplus.GridHolder
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -39,13 +42,16 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         animateIn()
         applyUrl(url)
-        mBinding.brsWebview.loadUrl(url)
-        applyBrsCount(mBinding.brsArea.childCount)  // 임시 코드 추후 db 에서 얻어오도록 해야함
+
+        mBinding.run {
+            brsWebview.loadUrl(url)
+            applyBrsCount(brsArea.childCount)  // 임시 코드 추후 db 에서 얻어오도록 해야함
+        }
 
         observe(backEvent)    { onBackPressed() }
         observe(searchEvent)  { viewController.searchFragment() }
         observe(shareEvent)   { shareLink(it) }
-        observe(submenuEvent) {  }
+        observe(submenuEvent) { viewController.browserSubFragment(R.id.brs_container, childFragmentManager) }
 
         brsSetting.set(WebViewSettingParams(
             progress = {

@@ -30,6 +30,7 @@
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:onClick="@{() -> model.eventBack()}"
                     android:padding="5dp"
+                    android:background="?selectableItemBackgroundBorderless"
             />
 
             <ImageView
@@ -69,6 +70,7 @@
                     android:src="@{model.reloadIconResId}"
                     android:layout_marginEnd="15dp"
                     android:onClick="@{() -> model.eventReloadBrowser(model.urlString)}"
+                    android:background="?selectableItemBackgroundBorderless"
             />
             <!--android:src="@drawable/ic_replay_black_24dp"-->
             <TextView

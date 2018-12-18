@@ -27,18 +27,25 @@ object WebViewBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindWebViewEvent")
-    fun bindWebViewEvent(view: WebView, params: WebViewEventParams) = view.run {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindWebViewEvent event : ${params.event}")
-        }
+    fun bindWebViewEvent(view: WebView, params: WebViewEventParams?) = view.run {
+        params?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("bindWebViewEvent event : ${it.event}")
+            }
 
-        when (params.event) {
-            WebViewEvent.FORWARD      -> goForward()
-            WebViewEvent.BACK         -> goBack()
-            WebViewEvent.STOP_LOADING -> stopLoading()
-            WebViewEvent.RELOAD       -> reload()
-            WebViewEvent.PAUSE_TIMER  -> pauseTimers()
-            WebViewEvent.RESUME_TIMER -> resumeTimers()
+            when (it.event) {
+                WebViewEvent.FORWARD      -> goForward()
+                WebViewEvent.BACK         -> goBack()
+                WebViewEvent.STOP_LOADING -> stopLoading()
+                WebViewEvent.RELOAD       -> reload()
+                WebViewEvent.PAUSE_TIMER  -> pauseTimers()
+                WebViewEvent.RESUME_TIMER -> resumeTimers()
+                else -> {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("UNKNOWN EVENT")
+                    }
+                }
+            }
         }
     }
 

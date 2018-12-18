@@ -93,13 +93,13 @@ class BrowserViewModel @Inject constructor(application: Application
                 mLog.debug("STOP")
             }
 
-            brsEvent.set(WebViewEventParams(event = WebViewEvent.STOP_LOADING))
+            brsEvent.set(WebViewEventParams(WebViewEvent.STOP_LOADING))
         } else {
             if (mLog.isDebugEnabled) {
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            brsEvent.set(WebViewEventParams(event = WebViewEvent.RELOAD))
+            brsEvent.set(WebViewEventParams(WebViewEvent.RELOAD))
         }
     }
 
@@ -108,7 +108,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("FORWARD PRESSED EVENT")
         }
 
-        brsEvent.set(WebViewEventParams(event = WebViewEvent.FORWARD))
+        brsEvent.set(WebViewEventParams(WebViewEvent.FORWARD))
     }
 
     fun eventHome() {

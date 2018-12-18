@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.browser.BrowserFragment
+import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.FragmentAnim
@@ -39,5 +40,10 @@ class ViewController private constructor() {
     fun browserFragment(bundle: Bundle) {
         manager.show(FragmentParams(CONTAINER,
             BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = bundle))
+    }
+
+    fun browserSubFragment(container: Int, subManager: FragmentManager) {
+        subManager.show(FragmentParams(container,
+            BrowserSubmenuFragment::class.java, anim = FragmentAnim.ALPHA))
     }
 }

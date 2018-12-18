@@ -103,5 +103,5 @@ enum class WebViewEvent {
 }
 
 data class WebViewEventParams (
-    val event: WebViewEvent? = null
+    val event: WebViewEvent
 )

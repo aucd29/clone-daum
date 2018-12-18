@@ -48,6 +48,8 @@ inline val AndroidViewModel.app : Application
 
 inline fun AndroidViewModel.time() = System.currentTimeMillis()
 
+inline fun AndroidViewModel.dpToPx(v: Int) = v * app.displayDensity()
+inline fun AndroidViewModel.pxToDp(v: Int) = v / app.displayDensity()
 
 ////////////////////////////////////////////////////////////////////////////////////
 //

@@ -37,6 +37,14 @@
     <string name="brs_exist_fav_url">이미 입력된 url 임</string>
     <string name="brs_fav_url_ok">저장되었삼</string>
 
+    <string-array name="test">
+        <item>test 1</item>
+        <item>test 2</item>
+        <item>test 3</item>
+        <item>test 4</item>
+    </string-array>
+
+    <!-- error -->
     <string name="error_empty_keyword">검색어가 없습니다.</string>
 
 </resources>
