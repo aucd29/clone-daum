@@ -27,6 +27,7 @@ import javax.inject.Inject
  */
 
 class BrowserViewModel @Inject constructor(application: Application
+        , var urlDao: UrlHistoryDao
         , val favDao: MyFavoriteDao
         , val disposable: CompositeDisposable)
     : AndroidViewModel(application)
@@ -35,8 +36,6 @@ class BrowserViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
     }
-
-    @Inject lateinit var urlDao: UrlHistoryDao
 
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
@@ -62,7 +61,7 @@ class BrowserViewModel @Inject constructor(application: Application
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("INSERT URL : $url")
+            mLog.debug("APPLY URL : $url")
         }
 
         visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
@@ -116,27 +115,55 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("FAVORITE EVENT $url")
         }
 
-        disposable.add(favDao.isFavorite(url)
-            .subscribeOn(Schedulers.io())
-            .subscribe { cnt, e ->
-                if (e != null) {
-                    observeSnackbarEvent(e.message)
-                } else {
-                    if (cnt > 0) {
-                        observeSnackbarEvent(string(R.string.brs_exist_fav_url))
-                    } else {
-                        disposable.add(favDao.insert(MyFavorite(url = url, date = time()))
-                            .subscribeOn(Schedulers.io())
-                            .subscribe({
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("FAV URL : $url")
-                                }
+        if (url != urlString.get()) {
+            mLog.error("ERROR: $url")
+            mLog.error("ERROR: ${urlString.get()}")
+        }
 
-                                observeSnackbarEvent(string(R.string.brs_fav_url_ok))
-                            }, { observeSnackbarEvent(it.message) }))
+        disposable.add(favDao.hasUrl(url)
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                if (it > 0) {
+                    if (mLog.isInfoEnabled) {
+                        mLog.info("EXIST URL : $url ($it)")
                     }
+
+                    observeSnackbarEvent(string(R.string.brs_exist_fav_url))
+                } else {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("FAV URL : $url ($it)")
+                    }
+
+                    insertFavUrl(url)
                 }
+            }, { e ->
+                if (mLog.isDebugEnabled) {
+                    e.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${e.message}")
+                observeSnackbarEvent(e.message)
             })
+        )
+    }
+
+    private fun insertFavUrl(url: String) {
+        disposable.add(favDao.insert(MyFavorite(url = url, date = time()))
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("FAV URL : $url")
+                }
+
+                observeSnackbarEvent(string(R.string.brs_fav_url_ok))
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+                observeSnackbarEvent(it.message)
+            }))
     }
 
     fun eventSearchFragment() {
@@ -171,12 +198,6 @@ class BrowserViewModel @Inject constructor(application: Application
 
     private fun snackbarEvent(@StringRes resid: Int) =
         snackbarEvent(string(resid))
-
-    override fun snackbarEvent(msg: String?) {
-        mLog.error("ERROR: $msg")
-
-        super.snackbarEvent(msg)
-    }
 
     private inline fun observeSnackbarEvent(msg: String?) {
         disposable.add(Single.just(msg).subscribeOn(AndroidSchedulers.mainThread())

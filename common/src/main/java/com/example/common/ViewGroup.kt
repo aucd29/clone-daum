@@ -9,13 +9,13 @@ import android.widget.TextView
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
 
-inline fun View.height(height: Int) {
+inline fun View.layoutHeight(height: Int) {
     val param = layoutParams
     param.height = height
     layoutParams = param
 }
 
-inline fun View.width(width: Int) {
+inline fun View.layoutWidth(width: Int) {
     val param = layoutParams
     param.height = width
     layoutParams = param

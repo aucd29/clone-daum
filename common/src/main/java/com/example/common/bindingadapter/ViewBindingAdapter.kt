@@ -2,6 +2,8 @@ package com.example.common.bindingadapter
 
 import android.view.View
 import androidx.databinding.BindingAdapter
+import com.example.common.layoutHeight
+import com.example.common.layoutWidth
 import org.slf4j.LoggerFactory
 
 /**
@@ -15,23 +17,19 @@ object ViewBindingAdapter {
     @BindingAdapter("bindLayoutHeight")
     fun layoutHeight(view: View, height: Int) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("bind height")
+            mLog.debug("bind height : $height")
         }
 
-        val lp = view.layoutParams
-        lp.height = height
-        view.layoutParams = lp
+        view.layoutHeight(height)
     }
 
     @JvmStatic
     @BindingAdapter("bindLayoutWidth")
     fun layoutWidth(view: View, width: Int) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("bind width")
+            mLog.debug("bind width : $width")
         }
 
-        val lp = view.layoutParams
-        lp.width = width
-        view.layoutParams = lp
+        view.layoutWidth(width)
     }
 }

@@ -22,7 +22,7 @@ object Resize {
     fun height(view: View, height: Int, aniListener: AniListener? = null, duration: Long = 600) {
         ValueAnimator.ofInt(view.measuredHeight, height).apply {
             addUpdateListener {
-                view.height(animatedValue as Int)
+                view.layoutHeight(animatedValue as Int)
             }
 
             aniListener({

@@ -123,3 +123,10 @@ inline fun Context.clipboard(value: String) = systemService(ClipboardManager::cl
 inline fun <T> Context.systemService(serviceClass: Class<T>): T? {
     return ContextCompat.getSystemService(this, serviceClass)
 }
+
+inline fun Context.availMem(percent: Int): Long {
+    val mi = ActivityManager.MemoryInfo()
+    systemService(ActivityManager::class.java)?.getMemoryInfo(mi)
+
+    return percent.toLong() * mi.availMem / 100L
+}

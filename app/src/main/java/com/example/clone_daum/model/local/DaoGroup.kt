@@ -3,6 +3,7 @@ package com.example.clone_daum.model.local
 import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -70,7 +71,7 @@ interface MyFavoriteDao {
     fun select(): Flowable<List<MyFavorite>>
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
-    fun isFavorite(url: String): Single<Int>
+    fun hasUrl(url: String): Maybe<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(keyword: MyFavorite): Completable

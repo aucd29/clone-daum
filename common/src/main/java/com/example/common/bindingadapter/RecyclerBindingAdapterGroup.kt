@@ -1,12 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common.bindingadapter
 
-import android.content.Context
-import android.media.MediaMetadataRetriever
-import android.media.ThumbnailUtils
-import android.net.Uri
-import android.provider.MediaStore
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -15,52 +9,36 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.IRecyclerDiff
-import com.example.common.R
 import com.example.common.RecyclerAdapter
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Request
-import com.squareup.picasso.RequestHandler
 import org.slf4j.LoggerFactory
-import java.io.File
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
 
-object ImageBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(ImageBindingAdapter::class.java)
-
-    @JvmStatic
-    @BindingAdapter("android:src")
-    fun imageSource(view: ImageView, resid: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND IMAGE : ${view} = ${resid}")
-        }
-
-        view.picasso(resid)
-//        view.setImageResource(resid)
-    }
-
-    @JvmStatic
-    @BindingAdapter("android:src")
-    fun imagePath(view: ImageView, path: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND IAMGE : $path")
-        }
-
-        val fp = File(path)
-        if (!fp.exists()) {
-            mLog.error("ERROR: FILE NOT FOUND($path)")
-            return
-        }
-
-        if (fp.isVideo(view.context)) {
-            view.picassoVideo(path)
-        } else {
-            view.picasso(fp)
-        }
-    }
-}
+//object ImageBindingAdapter {
+//    private val mLog = LoggerFactory.getLogger(ImageBindingAdapter::class.java)
+//
+//    @JvmStatic
+//    @BindingAdapter("android:src")
+//    fun imagePath(view: ImageView, path: String) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("BIND IAMGE : $path")
+//        }
+//
+//        val fp = File(path)
+//        if (!fp.exists()) {
+//            mLog.error("ERROR: FILE NOT FOUND($path)")
+//            return
+//        }
+//
+//        if (fp.isVideo(view.context)) {
+//            view.picassoVideo(path)
+//        } else {
+//            view.picasso(fp)
+//        }
+//    }
+//}
 
 object RecyclerBindingAdapter {
     private val mLog = LoggerFactory.getLogger(RecyclerBindingAdapter::class.java)
@@ -143,36 +121,32 @@ inline fun RecyclerView.decorator(@DrawableRes drawable: Int, type: Int = Divide
         }
     }
 }
+//
+//inline fun ImageView.picasso(@DrawableRes resid: Int, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) =
+//    Picasso.get().load(resid).into(this)
+//
+//inline fun ImageView.picasso(fp: File, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) =
+//    Picasso.get().load(fp).into(this)
+//
+//inline fun ImageView.picassoVideo(path: String, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) {
+//    Picasso.Builder(context).addRequestHandler(VideoRequestHandler()).build()
+//        .load("${VideoRequestHandler.VIDEO_SCHEME}:$path")
+//        .placeholder(holder).into(this)
+//}
 
-inline fun ImageView.picasso(@DrawableRes resid: Int, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) =
-    Picasso.get().load(resid).placeholder(holder).into(this)
-
-inline fun ImageView.picasso(fp: File, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) =
-    Picasso.get().load(fp).placeholder(holder).into(this)
-
-inline fun ImageView.picassoVideo(path: String, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) {
-    Picasso.Builder(context).addRequestHandler(VideoRequestHandler()).build()
-        .load("${VideoRequestHandler.VIDEO_SCHEME}:$path")
-        .placeholder(holder).into(this)
-}
-
-inline fun File.isVideo(context: Context) = MediaMetadataRetriever().run {
-    setDataSource(context, Uri.fromFile(this@isVideo))
-    "yes" == extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO)
-}
-
-class VideoRequestHandler: RequestHandler() {
-    companion object {
-        const val VIDEO_SCHEME = "video"
-    }
-
-    override fun canHandleRequest(data: Request?) =
-        VIDEO_SCHEME == data?.uri?.scheme ?: false
-
-    override fun load(request: Request?, networkPolicy: Int) = request?.let {
-        val bm = ThumbnailUtils.createVideoThumbnail(it.uri.path,
-            MediaStore.Images.Thumbnails.FULL_SCREEN_KIND)
-
-        Result(bm, Picasso.LoadedFrom.DISK)
-    }
-}
+//
+//class VideoRequestHandler: RequestHandler() {
+//    companion object {
+//        const val VIDEO_SCHEME = "video"
+//    }
+//
+//    override fun canHandleRequest(data: Request?) =
+//        VIDEO_SCHEME == data?.uri?.scheme ?: false
+//
+//    override fun load(request: Request?, networkPolicy: Int) = request?.let {
+//        val bm = ThumbnailUtils.createVideoThumbnail(it.uri.path,
+//            MediaStore.Images.Thumbnails.FULL_SCREEN_KIND)
+//
+//        Result(bm, Picasso.LoadedFrom.DISK)
+//    }
+//}

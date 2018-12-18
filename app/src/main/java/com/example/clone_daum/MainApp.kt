@@ -1,19 +1,14 @@
 package com.example.clone_daum
 
 import android.app.Activity
-import android.os.Build
 import androidx.multidex.MultiDexApplication
 import com.example.clone_daum.di.component.DaggerAppComponent
 import com.example.clone_daum.di.module.PreloadConfig
-import com.example.clone_daum.model.DbRepository
-import com.example.clone_daum.model.local.PopularKeyword
-import com.example.clone_daum.model.remote.GithubService
+import com.example.common.availMem
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
-import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
-import java.util.*
 import javax.inject.Inject
 
 /**
