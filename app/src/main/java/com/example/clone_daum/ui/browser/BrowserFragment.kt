@@ -51,7 +51,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         observe(backEvent)    { onBackPressed() }
         observe(searchEvent)  { viewController.searchFragment() }
         observe(shareEvent)   { shareLink(it) }
-        observe(submenuEvent) { viewController.browserSubFragment(R.id.brs_container, childFragmentManager) }
+        observe(submenuEvent) { viewController.browserSubFragment() }
 
         brsSetting.set(WebViewSettingParams(
             progress = {
