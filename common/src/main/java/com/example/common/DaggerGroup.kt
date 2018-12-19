@@ -36,6 +36,10 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseAc
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 
         bindViewModel()
+        snackbarAware()
+        dialogAware()
+        finishFragmentAware()
+
         settingEvents()
     }
 
@@ -57,6 +61,23 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseAc
         super.onDestroy()
     }
 
+    protected open fun snackbarAware() = mViewModel.run {
+        if (this is ISnackbarAware) {
+            observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT)?.show() }
+        }
+    }
+
+    protected open fun dialogAware() = mViewModel.run {
+        if (this is IDialogAware) {
+            observeDialog(this.dlgEvent, mDisposable)
+        }
+    }
+
+    protected open fun finishFragmentAware() = mViewModel.run {
+        if (this is IFinishFragmentAware) {
+            observe(this.finishEvent) { finish() }
+        }
+    }
 
     abstract fun settingEvents()
 }
@@ -75,6 +96,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mViewModel = ViewModelProviders.of(this.activity!!, mViewModelFactory).get(viewModelClass())
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -118,6 +140,96 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
         }
     }
 
+
+    abstract fun settingEvents()
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseDaggerFragmentDialog
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleDialogFragment<T>() {
+    @Inject lateinit var mDisposable: CompositeDisposable
+    @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
+
+    lateinit var mViewModel: M
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mViewModel = ViewModelProviders.of(activity!!, mViewModelFactory).get(viewModelClass())
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        finishFragmentAware()
+
+        settingEvents()
+    }
+
+    private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
+
+    protected open fun viewModelMethodName() = SET_VIEW_MODEL
+
+    override fun bindViewModel() {
+        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(
+            argTypes = listOf(viewModelClass()),
+            argv     = listOf(mViewModel)
+        ))
+    }
+
+    protected open fun finishFragmentAware() = mViewModel.run {
+        if (this is IFinishFragmentAware) {
+            observe(this.finishEvent) { dismiss() }
+        }
+    }
+
+    abstract fun settingEvents()
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseRuleBottomSheetDialogFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleBottomSheetDialogFragment<T>() {
+    @Inject lateinit var mDisposable: CompositeDisposable
+    @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
+
+    lateinit var mViewModel: M
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mViewModel = ViewModelProviders.of(activity!!, mViewModelFactory).get(viewModelClass())
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        finishFragmentAware()
+
+        settingEvents()
+    }
+
+    private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
+
+    protected open fun viewModelMethodName() = SET_VIEW_MODEL
+
+    override fun bindViewModel() {
+        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(
+            argTypes = listOf(viewModelClass()),
+            argv     = listOf(mViewModel)
+        ))
+    }
+
+    protected open fun finishFragmentAware() = mViewModel.run {
+        if (this is IFinishFragmentAware) {
+            observe(this.finishEvent) { dismiss() }
+        }
+    }
 
     abstract fun settingEvents()
 }

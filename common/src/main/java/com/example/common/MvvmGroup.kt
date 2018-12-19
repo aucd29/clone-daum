@@ -3,8 +3,8 @@ package com.example.common
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,17 +19,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.example.common.arch.SingleLiveEvent
-import com.example.common.di.module.DaggerViewModelFactory
-import com.google.android.material.snackbar.Snackbar
-import dagger.android.support.DaggerAppCompatActivity
-import dagger.android.support.DaggerFragment
-import io.reactivex.disposables.CompositeDisposable
-import java.lang.reflect.ParameterizedType
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.*
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 10. 15. <p/>
  */
+
+private const val LAYOUT = "layout"
 
 /**
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
@@ -89,7 +90,7 @@ inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: I
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-//
+// AWARE INTERFACES
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -116,7 +117,7 @@ interface OnBackPressedListener {
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-//
+// BaseActivity
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,16 +149,45 @@ abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ABSTRACT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
 
     abstract fun layoutId(): Int
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
+    protected lateinit var mBinding : T
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mBinding = dataBinding(layoutId(), container, false)
+        mBinding.root.isClickable = true
+
+        bindViewModel()
+
+        return mBinding.root
+    }
+
+    protected fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
+        data.observe(this, Observer { observer(it) })
+    }
+
+    protected fun activity() = activity as BaseActivity<out ViewDataBinding>
+
+    protected abstract fun layoutId(): Int
+    protected abstract fun bindViewModel()
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseDialogFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFragment() {
     protected lateinit var mBinding : T
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -173,52 +203,106 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
         data.observe(this, Observer { observer(it) })
     }
 
+    fun activity() = activity as BaseActivity<out ViewDataBinding>
+
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
-
-    fun activity() = activity as BaseActivity<out ViewDataBinding>
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding> : BottomSheetDialogFragment(), HasSupportFragmentInjector {
+    protected lateinit var mBinding : T
+
+    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        mBinding = dataBinding(layoutId(), container, false)
+        mBinding.root.isClickable = true
+
+        bindViewModel()
+
+        return mBinding.root
+    }
+
+    override fun onAttach(context: Context?) {
+        AndroidSupportInjection.inject(this)
+
+        super.onAttach(context)
+    }
+
+    override fun supportFragmentInjector() = childFragmentInjector
+
+    fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
+        data.observe(this, Observer { observer(it) })
+    }
+
+
+    abstract fun layoutId(): Int
+    abstract fun bindViewModel()
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseRuleFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 abstract class BaseRuleFragment<T: ViewDataBinding>: BaseFragment<T>() {
-    companion object {
-        protected val LAYOUT = "layout"
-    }
+    protected var mLayoutName = generateLayoutName()
 
-    var className: String = ""
-
-    fun layoutName(): String {
-        if (!TextUtils.isEmpty(className)) {
-            return className
-        }
-
-        val name = javaClass.simpleName
-        className = name.get(0).toLowerCase().toString()
-
-        name.substring(1, name.length).forEach {
-            className += if (it.isUpperCase()) {
-                "_${it.toLowerCase()}"
-            } else {
-                it
-            }
-        }
-
-        return className
-    }
-
-    override fun layoutId() = resources.getIdentifier(layoutName(), LAYOUT, activity?.packageName)
+    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (layoutId() == 0) {
-            val view = LinearLayout(activity)
-            view.lpmm()
-            view.gravity = Gravity.CENTER
+            return generateEmptyLayout(mLayoutName)
+        }
 
-            val text = TextView(activity)
-            text.gravityCenter()
-            text.text = "FILE NOT FOUND (${layoutName()})"
-            view.addView(text)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+}
 
-            return view
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseRuleDialogFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+abstract class BaseRuleDialogFragment<T: ViewDataBinding> : BaseDialogFragment<T>() {
+    protected var mLayoutName = generateLayoutName()
+
+    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (layoutId() == 0) {
+            return generateEmptyLayout(mLayoutName)
+        }
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseRuleBottomSheetDialogFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+abstract class BaseRuleBottomSheetDialogFragment<T: ViewDataBinding> : BaseBottomSheetDialogFragment<T>() {
+    protected var mLayoutName = generateLayoutName()
+
+    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (layoutId() == 0) {
+            return generateEmptyLayout(mLayoutName)
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)

@@ -7,8 +7,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
-import com.example.clone_daum.model.local.TabData
-import com.example.common.WebViewEventParams
+import com.example.common.WebViewEvent
 import com.example.common.WebViewSettingParams
 import com.example.common.arch.SingleLiveEvent
 import com.google.android.material.appbar.AppBarLayout
@@ -29,7 +28,7 @@ class MainViewModel @Inject constructor(
     val tabAdapter         = ObservableField<MainTabAdapter>()
     val viewpager          = ObservableField<ViewPager>()
     val brsSetting         = ObservableField<WebViewSettingParams>()
-    val brsEvent           = ObservableField<WebViewEventParams>()
+    val brsEvent           = ObservableField<WebViewEvent>()
     val viewpagerPageLimit = ObservableInt(3)
     val visibleBack        = ObservableInt(View.GONE)
     var gotoNewsEvent      = ObservableInt(0)

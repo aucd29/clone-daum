@@ -2,9 +2,13 @@
 package com.example.common
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -131,6 +135,13 @@ inline fun FragmentManager.pop() {
     popBackStack()
 }
 
+inline fun FragmentManager.showDialog(frgmt: DialogFragment, name: String) {
+    val transaction = beginTransaction()
+    findFragmentByTag(name)?.let { transaction.remove(it) }
+
+    frgmt.show(transaction, name)
+}
+
 inline fun FragmentManager.popAll() {
     (0..count - 1).map { popBackStack(it, FragmentManager.POP_BACK_STACK_INCLUSIVE) }
 }
@@ -144,3 +155,31 @@ data class FragmentParams(
     var commit: String? = null,
     var backStack: Boolean = true
 )
+
+inline fun Fragment.generateLayoutName(): String {
+    val name = javaClass.simpleName
+    var layoutName = name.get(0).toLowerCase().toString()
+
+    name.substring(1, name.length).forEach {
+        layoutName += if (it.isUpperCase()) {
+            "_${it.toLowerCase()}"
+        } else {
+            it
+        }
+    }
+
+    return layoutName
+}
+
+inline fun Fragment.generateEmptyLayout(name: String): LinearLayout {
+    val view = LinearLayout(activity)
+    view.lpmm()
+    view.gravity = Gravity.CENTER
+
+    val text = TextView(activity)
+    text.gravityCenter()
+    text.text = "FILE NOT FOUND (${name})"
+    view.addView(text)
+
+    return view
+}

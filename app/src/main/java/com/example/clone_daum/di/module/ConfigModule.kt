@@ -7,10 +7,12 @@ import android.os.Build
 import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.model.DbRepository
+import com.example.clone_daum.model.local.BrowserSubMenu
 import com.example.clone_daum.model.local.PopularKeyword
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.GithubService
 import com.example.common.jsonParse
+import com.example.common.stringId
 import com.example.common.systemService
 import dagger.Module
 import dagger.Provides
@@ -35,8 +37,8 @@ class ConfigModule {
     @Singleton
     @Provides
     fun providePreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable,
-                             assetManager: AssetManager) =
-        PreloadConfig(dm, db, dp, assetManager)
+                             assetManager: AssetManager, context: Context) =
+        PreloadConfig(dm, db, dp, assetManager, context)
 }
 
 class Config(val context: Context) {
@@ -81,15 +83,15 @@ class Config(val context: Context) {
     }
 }
 
-class PreloadConfig(dm: GithubService,
-                    db: DbRepository,
-                    dp: CompositeDisposable,
-                    assetManager: AssetManager) {
+class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable, assets: AssetManager,
+                    context: Context) {
+
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
 
     val tabLabelList: List<TabData>
+    lateinit var brsSubMenu: List<BrowserSubMenu>
 
     init {
         dp.add(dm.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
@@ -108,9 +110,22 @@ class PreloadConfig(dm: GithubService,
             }
         }, { e -> mLog.error("ERROR: ${e.message}") }))
 
-        tabLabelList = Observable.just(assetManager.open("res/tab.json").readBytes())
-            .observeOn(Schedulers.computation())
+        dp.add(Observable.just(assets.open("res/brs_submenu.json").readBytes())
+            .observeOn(Schedulers.io())
+            .map { it.jsonParse<List<BrowserSubMenu>>() }
+            .map {
+                it.forEach {
+                    it.iconResid = context.stringId(it.icon)
+                }
+
+                it
+            }
+            .subscribe { brsSubMenu = it })
+
+        tabLabelList = Observable.just(assets.open("res/tab.json").readBytes())
+            .observeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
+
     }
 }

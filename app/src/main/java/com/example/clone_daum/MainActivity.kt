@@ -1,5 +1,6 @@
 package com.example.clone_daum
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -33,6 +35,11 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         if (savedInstanceState == null) {
             viewController.mainFragment()
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        // https://github.com/InflationX/Calligraphy
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
     override fun settingEvents() = mViewModel.run {

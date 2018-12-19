@@ -8,6 +8,7 @@ import com.example.common.availMem
 import com.squareup.leakcanary.LeakCanary
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
+import io.github.inflationx.viewpump.ViewPump
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -22,6 +23,7 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
 
     @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
     @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var viewPump: ViewPump
 
     override fun onCreate() {
         super.onCreate()
@@ -38,6 +40,8 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
             .application(this)
             .build()
             .inject(this)
+
+        ViewPump.init(viewPump)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

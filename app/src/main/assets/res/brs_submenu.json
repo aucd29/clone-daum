@@ -1,0 +1,13 @@
+[
+  {"icon":"fa_star", "name": "즐겨찾기목록"},
+  {"icon":"fa_heart", "name": "즐겨찾기추가"},
+  {"icon":"fa_history", "name": "방문기록"},
+  {"icon":"fa_copy", "name": "URL 복사"},
+  {"icon":"fa_globe_asia", "name": "기타 브라우저"},
+  {"icon":"fa_search", "name": "화면 내 검색"},
+  {"icon":"fa_camera_retro", "name": "화면 캡쳐"},
+  {"icon":"fa_font", "name": "글자 크기"},
+  {"icon":"fa_plus", "name": "홈 화면에 추가"},
+  {"icon":"fa_expand_arrows_alt", "name": "전체화면 보기"},
+  {"icon":"fa_cog", "name": "앱설정"}
+]

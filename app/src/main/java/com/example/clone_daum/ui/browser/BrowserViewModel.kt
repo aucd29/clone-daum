@@ -47,7 +47,7 @@ class BrowserViewModel @Inject constructor(application: Application
     val enableForward   = ObservableBoolean(false)
 
     val brsSetting      = ObservableField<WebViewSettingParams>()
-    val brsEvent        = ObservableField<WebViewEventParams>()
+    val brsEvent        = ObservableField<WebViewEvent>()
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
 
@@ -93,13 +93,13 @@ class BrowserViewModel @Inject constructor(application: Application
                 mLog.debug("STOP")
             }
 
-            brsEvent.set(WebViewEventParams(WebViewEvent.STOP_LOADING))
+            brsEvent.set(WebViewEvent.STOP_LOADING)
         } else {
             if (mLog.isDebugEnabled) {
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            brsEvent.set(WebViewEventParams(WebViewEvent.RELOAD))
+            brsEvent.set(WebViewEvent.RELOAD)
         }
     }
 
@@ -108,7 +108,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("FORWARD PRESSED EVENT")
         }
 
-        brsEvent.set(WebViewEventParams(WebViewEvent.FORWARD))
+        brsEvent.set(WebViewEvent.FORWARD)
     }
 
     fun eventHome() {

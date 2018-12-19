@@ -3,7 +3,6 @@ package com.example.common.bindingadapter
 import android.webkit.WebView
 import androidx.databinding.BindingAdapter
 import com.example.common.WebViewEvent
-import com.example.common.WebViewEventParams
 import com.example.common.WebViewSettingParams
 import com.example.common.defaultSetting
 import org.slf4j.LoggerFactory
@@ -27,13 +26,13 @@ object WebViewBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindWebViewEvent")
-    fun bindWebViewEvent(view: WebView, params: WebViewEventParams?) = view.run {
-        params?.let {
+    fun bindWebViewEvent(view: WebView, event: WebViewEvent?) = view.run {
+        event?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("bindWebViewEvent event : ${it.event}")
+                mLog.debug("bindWebViewEvent event : ${it}")
             }
 
-            when (it.event) {
+            when (it) {
                 WebViewEvent.FORWARD      -> goForward()
                 WebViewEvent.BACK         -> goBack()
                 WebViewEvent.STOP_LOADING -> stopLoading()

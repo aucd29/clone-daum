@@ -7,10 +7,7 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.search.SearchFragment
-import com.example.common.FragmentAnim
-import com.example.common.FragmentCommit
-import com.example.common.FragmentParams
-import com.example.common.show
+import com.example.common.*
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 13. <p/>
@@ -43,7 +40,6 @@ class ViewController private constructor() {
     }
 
     fun browserSubFragment() {
-        manager.show(FragmentParams(CONTAINER,
-            BrowserSubmenuFragment::class.java, anim = FragmentAnim.ALPHA))
+        manager.showDialog(BrowserSubmenuFragment(), "submenu")
     }
 }

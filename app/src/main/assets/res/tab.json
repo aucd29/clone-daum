@@ -1,7 +1,4 @@
 [
-  // tiara 팬이라도 있는거뉘?
-  // 왜 event 처리가 죄다 -_ -; 아오...
-
   {"name":"추천", "url":"https://m.daum.net/?tab=app&nil_top=android&nil_src=androidapp&DA=JUA&nil_app=daumapp&nil_mtopsearch=issuekwd&f=androidapp&DN=ADDA&w=HOME"},
   {"name":"뉴스", "url":"https://m.media.daum.net/m/media/"},
   {"name":"랭킹", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},

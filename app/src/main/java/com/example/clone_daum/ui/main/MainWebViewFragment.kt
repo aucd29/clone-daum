@@ -5,6 +5,7 @@ import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
 import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
@@ -52,7 +53,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
                 mLog.debug("RELOAD $url")
             }
 
-            brsEvent.set(WebViewEventParams(event = WebViewEvent.RELOAD))
+            brsEvent.set(WebViewEvent.RELOAD)
 
             mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
                 .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
@@ -127,15 +128,21 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     override fun onPause() {
         super.onPause()
 
-        mViewModel.brsEvent.set(WebViewEventParams(WebViewEvent.PAUSE_TIMER))
+        mViewModel.brsEvent.set(WebViewEvent.PAUSE_TIMER)
         mTimerDisposable?.clear()
     }
 
     override fun onResume() {
-        mViewModel.brsEvent.set(WebViewEventParams(WebViewEvent.RESUME_TIMER))
+        mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
 
         super.onResume()
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    //
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {

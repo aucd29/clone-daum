@@ -115,5 +115,8 @@ dependencies {
     // dialogplus
     implementation 'com.orhanobut:dialogplus:1.11@aar'
 
+    // local lib
+
     implementation project(path: ':common')
+    implementation project(path: ':dingbat')
 }

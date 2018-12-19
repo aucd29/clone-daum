@@ -93,7 +93,10 @@ inline fun Context.string(@StringRes resid: Int) = getString(resid)
  * 문자열 데이터를 얻는다.
  */
 inline fun Context.string(resid: String) =
-    string(resources.getIdentifier(resid, "string", packageName))
+    string(stringId(resid))
+
+inline fun Context.stringId(resid: String) =
+    resources.getIdentifier(resid, "string", packageName)
 
 
 ////////////////////////////////////////////////////////////////////////////////////

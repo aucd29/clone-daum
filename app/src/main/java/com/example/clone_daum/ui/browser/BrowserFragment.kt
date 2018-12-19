@@ -91,7 +91,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     override fun onBackPressed() = mBinding.run {
         if (brsWebview.canGoBack()) {
-            mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.BACK))
+            mViewModel.brsEvent.set(WebViewEvent.BACK)
         } else {
             animateOut()
             finish()
@@ -104,11 +104,11 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     override fun onPause() {
         super.onPause()
 
-        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.PAUSE_TIMER))
+        mViewModel.brsEvent.set(WebViewEvent.PAUSE_TIMER)
     }
 
     override fun onResume() {
-        mViewModel.brsEvent.set(WebViewEventParams(event = WebViewEvent.RESUME_TIMER))
+        mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
 
         super.onResume()
     }

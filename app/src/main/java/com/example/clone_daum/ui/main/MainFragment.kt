@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main
 
+import android.os.Bundle
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
@@ -14,6 +15,13 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     @Inject lateinit var viewController: ViewController
+
+//    // 테스트 코드
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//        fragmentManager?.showDialog(BrowserSubmenuFragment(), "submenu")
+//    }
 
     override fun settingEvents() = mViewModel.run {
         observe(gotoSearchEvent) { viewController.searchFragment() }

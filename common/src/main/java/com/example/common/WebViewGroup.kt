@@ -44,7 +44,7 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
 
             loadingFinished = false
             view?.let { canGoForward?.invoke(it.canGoForward()) }
-            url?.let { pageStarted?.invoke(it) }
+            url?.let  { pageStarted?.invoke(it) }
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
@@ -101,7 +101,3 @@ data class WebViewSettingParams (
 enum class WebViewEvent {
     RELOAD, BACK, FORWARD, STOP_LOADING, PAUSE_TIMER, RESUME_TIMER
 }
-
-data class WebViewEventParams (
-    val event: WebViewEvent
-)

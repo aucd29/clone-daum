@@ -16,30 +16,6 @@ import org.slf4j.LoggerFactory
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
 
-//object ImageBindingAdapter {
-//    private val mLog = LoggerFactory.getLogger(ImageBindingAdapter::class.java)
-//
-//    @JvmStatic
-//    @BindingAdapter("android:src")
-//    fun imagePath(view: ImageView, path: String) {
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("BIND IAMGE : $path")
-//        }
-//
-//        val fp = File(path)
-//        if (!fp.exists()) {
-//            mLog.error("ERROR: FILE NOT FOUND($path)")
-//            return
-//        }
-//
-//        if (fp.isVideo(view.context)) {
-//            view.picassoVideo(path)
-//        } else {
-//            view.picasso(fp)
-//        }
-//    }
-//}
-
 object RecyclerBindingAdapter {
     private val mLog = LoggerFactory.getLogger(RecyclerBindingAdapter::class.java)
 
