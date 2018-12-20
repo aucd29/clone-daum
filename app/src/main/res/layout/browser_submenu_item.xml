@@ -13,8 +13,8 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
             android:onClick="@{() -> model.event(item.name)}"
+            android:paddingBottom="20dp"
             android:background="?selectableItemBackgroundBorderless"
     >
 
@@ -23,10 +23,11 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="25sp"
                 android:textAppearance="@style/solid"
+                android:text="@{item.iconResid}"
+                android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="@{item.iconResid}"
                 tools:text="ICON"
         />
 
@@ -38,7 +39,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@{item.name}"
                 android:layout_marginTop="10dp"
-                android:textSize="9sp"
+                android:textSize="10sp"
                 tools:text="NAME"
         />
 
