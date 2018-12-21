@@ -24,8 +24,9 @@
                     app:bindPagerAdapter="@{model.tabAdapter}"
                     app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
                     app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
-                    app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
             />
+
+            <!--app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"-->
 
             <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/search_bar"
@@ -247,38 +248,17 @@
                     />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>
-
-            <!--<androidx.viewpager.widget.ViewPager-->
-                    <!--android:id="@+id/viewpager"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--app:bindPagerAdapter="@{model.tabAdapter}"-->
-                    <!--app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"-->
-                    <!--app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"-->
-                    <!--app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"-->
-            <!--/>-->
-            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-
-            <ImageView
-                    android:id="@+id/over_back"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:src="@drawable/ic_backspace_black_24dp"
-                    android:layout_gravity="bottom"
-                    android:visibility="@{model.visibleBack}"
-                    android:padding="10dp"
-                    android:onClick="@{() -> model.webviewBack()}"
-            />
-
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <!--<androidx.viewpager.widget.ViewPager-->
-        <!--android:id="@+id/viewpager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:bindPagerAdapter="@{model.tabAdapter}"-->
-        <!--app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"-->
-        <!--app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-        <!--/>-->
+        <ImageView
+                android:id="@+id/over_back"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:src="@drawable/ic_backspace_black_24dp"
+                android:visibility="@{model.visibleBack}"
+                android:padding="10dp"
+                android:onClick="@{() -> model.webviewBack()}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+        />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

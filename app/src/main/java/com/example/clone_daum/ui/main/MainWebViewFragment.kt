@@ -48,6 +48,15 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
         }
 
         mBinding.run {
+            // appbar 이동 시 webview 도 동일하게 이동 시킴
+            observe(appbarOffsetLiveEvent) {
+                if (mLog.isTraceEnabled()) {
+                    mLog.trace("WEBVIEW TRANSLATION Y : $it")
+                }
+
+                mBinding.webview.translationY = it.toFloat()
+            }
+
             webview.loadUrl(url)
             swipeRefresh.setOnRefreshListener {
                 if (mLog.isDebugEnabled) {

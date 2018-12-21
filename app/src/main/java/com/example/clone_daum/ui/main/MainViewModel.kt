@@ -5,6 +5,7 @@ import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
@@ -38,11 +39,9 @@ class MainViewModel @Inject constructor(val app: Application
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
     val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
-    // appbar 에 offsetChanged 를 알려줌 (AppBarBindingAdapter)
     val appbarOffsetChangedEvent = ObservableField<(AppBarLayout, Int) -> Unit>()
-//    val swipeRefreshListener     = ObservableField<() -> Unit>()
-//    val swipeRefreshingFalse     = ObservableField<Boolean>(false)
-//    val swipeIsRefreshing        = ObservableField<(Boolean) -> Unit>()
+    val appbarOffsetLiveEvent    = MutableLiveData<Int>()
+
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {

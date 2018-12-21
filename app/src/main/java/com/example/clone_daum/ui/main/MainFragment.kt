@@ -3,11 +3,8 @@ package com.example.clone_daum.ui.main
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
@@ -37,8 +34,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
         observe(gotoSearchEvent) { viewController.searchFragment() }
         observe(navEvent)        { viewController.navigationFragment() }
 
-        mBinding.viewpager.offscreenPageLimit = 1
-
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
         tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
         viewpager.set(mBinding.viewpager)
@@ -64,7 +59,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
                 mLog.trace("APP BAR (ALPHA) : $percentage")
             }
 
-            mBinding.searchArea.alpha = 1.0f - percentage
+            mBinding.searchArea.alpha   = 1.0f - percentage
+            appbarOffsetLiveEvent.value = offset
         }
     }
 
