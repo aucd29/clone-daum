@@ -1,17 +1,17 @@
 [
   {"name":"추천", "url":"https://m.daum.net/?tab=app&nil_top=android&nil_src=androidapp&DA=JUA&nil_app=daumapp&nil_mtopsearch=issuekwd&f=androidapp&DN=ADDA&w=HOME"}
-//  , {"name":"뉴스", "url":"https://m.media.daum.net/m/media/"},
-//  {"name":"랭킹", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"연예", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"TV", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"쇼핑", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"스포츠", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"머니", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"홈&쿠킹", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"동물", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"스타일", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"자동차+", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"여행맛집", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"직장IN", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"},
-//  {"name":"펀&웹툰", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+, {"name":"뉴스", "url":"https://m.media.daum.net/m/media/"}
+//, {"name":"랭킹", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"연예", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"TV", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"쇼핑", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"스포츠", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"머니", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"홈&쿠킹", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"동물", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"스타일", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"자동차+", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"여행맛집", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"직장IN", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
+//, {"name":"펀&웹툰", "url":"https://m.daum.net/?tab=app&nil_top=site&nil_src=androidapp"}
 ]

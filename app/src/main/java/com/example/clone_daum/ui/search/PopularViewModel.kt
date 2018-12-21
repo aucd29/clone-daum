@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.PopularKeyword
+import com.example.clone_daum.model.local.PopularKeywordDao
 import com.example.common.RecyclerViewModel
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -16,20 +17,17 @@ import javax.inject.Inject
  */
 
 class PopularViewModel @Inject constructor(app: Application
-    , val db: DbRepository
-//    , val disposable: CompositeDisposable
+    , val popularKeywordDao: PopularKeywordDao
 ): RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
     }
 
     val chipLayoutManager = ObservableField<ChipsLayoutManager>()
-    // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
-    val itemAnimator      = ObservableField<RecyclerView.ItemAnimator?>()
 
     fun init() {
         initAdapter("search_recycler_popular_item")
-        items.set(db.popularKeywordDao.list().blockingFirst())
+        items.set(popularKeywordDao.list().blockingFirst())
     }
 
     fun event(keyword: String) {

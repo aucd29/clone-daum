@@ -80,7 +80,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:visibility="@{model.visibleSearchRecycler}"
-                />
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:bindItemAnimator="@{model.itemAnimator}" />
 
                 <TextView
                         android:id="@+id/search_empty_area"
@@ -126,7 +127,7 @@
                         app:bindItems="@{popularmodel.items}"
                         app:bindAdapter="@{popularmodel.adapter}"
                         app:bindLayoutManager="@{popularmodel.chipLayoutManager}"
-                        app:bindItemAnimator="@{popularmodel.itemAnimator}"
+
                 />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,11 +5,13 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.SearchHistory
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.ISearchRecyclerData
+import com.example.clone_daum.model.local.SearchHistoryDao
 import com.example.clone_daum.model.remote.SuggestItem
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
@@ -34,7 +36,7 @@ class SearchViewModel @Inject constructor(app: Application)
     }
 
     @Inject lateinit var daum: DaumService
-    @Inject lateinit var db: DbRepository
+    @Inject lateinit var searchDao: SearchHistoryDao
     @Inject lateinit var disposable: CompositeDisposable
 
     val searchKeyword            = ObservableField<String>()
@@ -53,6 +55,9 @@ class SearchViewModel @Inject constructor(app: Application)
     override val snackbarEvent   = SingleLiveEvent<String>()
     override val finishEvent     = SingleLiveEvent<Void>()
 
+    // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
+    val itemAnimator      = ObservableField<RecyclerView.ItemAnimator?>()
+
     fun init() {
         editorAction.set {
             eventSearch(it)
@@ -62,13 +67,13 @@ class SearchViewModel @Inject constructor(app: Application)
 
         initAdapter(arrayOf("search_recycler_history_item", "search_recycler_suggest_item"))
 
-        val searchList = db.searchHistoryDao.search().limit(RECENT_SEARCH_LIMIT).blockingFirst()
+        val searchList = searchDao.search().limit(RECENT_SEARCH_LIMIT).blockingFirst()
         items.set(searchList)
         visibleSearchRecycler(searchList.size > 0)
     }
 
     fun reloadHistoryData() {
-        disposable.add(db.searchHistoryDao.search().limit(RECENT_SEARCH_LIMIT)
+        disposable.add(searchDao.search().limit(RECENT_SEARCH_LIMIT)
             .subscribe {
                 items.set(it)
 
@@ -78,7 +83,7 @@ class SearchViewModel @Inject constructor(app: Application)
 
     fun eventSearch(keyword: String?) {
         keyword?.let {
-            disposable.add(db.searchHistoryDao.insert(SearchHistory(
+            disposable.add(searchDao.insert(SearchHistory(
                 keyword = it,
                 date    = System.currentTimeMillis()))
                 .subscribeOn(Schedulers.io())
@@ -140,7 +145,7 @@ class SearchViewModel @Inject constructor(app: Application)
     }
 
     fun eventDeleteHistory(item: SearchHistory) {
-        disposable.add(db.searchHistoryDao.delete(item)
+        disposable.add(searchDao.delete(item)
             .subscribeOn(Schedulers.io())
             .subscribe ({
                 if (mLog.isDebugEnabled) {
@@ -159,7 +164,7 @@ class SearchViewModel @Inject constructor(app: Application)
                 if (res) {
                     // delete query 는 왜? Completable 이 안되는가?
                     ioThread {
-                        db.searchHistoryDao.deleteAll()
+                        searchDao.deleteAll()
                         reloadHistoryData()
                     }
                 }
