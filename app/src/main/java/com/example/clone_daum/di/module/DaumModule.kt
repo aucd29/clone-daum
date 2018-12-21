@@ -4,6 +4,7 @@ import com.example.clone_daum.di.module.common.AssetModule
 import com.example.common.di.module.RxModule
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.GithubService
+import com.example.common.di.module.ViewModelFactoryModule
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -13,12 +14,15 @@ import javax.inject.Singleton
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 5. <p/>
  */
 
-@Module(includes = [NetworkModule::class
+@Module(includes = [ViewModelFactoryModule::class
+    , ViewModelModule::class
+    , NetworkModule::class
     , DbModule::class
     , AssetModule::class
-    , ChipModule::class
     , ConfigModule::class
-    , RxModule::class])
+    , RxModule::class
+    , CalligraphyModule::class
+])
 class DaumModule {
     companion object {
         val GITHUB_BASE_URL = "https://raw.githubusercontent.com/"

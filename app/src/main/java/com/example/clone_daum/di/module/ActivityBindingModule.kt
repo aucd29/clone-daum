@@ -1,23 +1,18 @@
 package com.example.clone_daum.di.module
 
-import android.os.Build
 import androidx.fragment.app.FragmentManager
-import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.MainActivity
 import com.example.clone_daum.ui.ViewController
-import com.example.clone_daum.ui.main.MainFragment
-import com.example.clone_daum.ui.main.MainTabAdapter
+import com.example.common.di.module.ViewModelFactoryModule
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
-import java.util.*
-import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 6. <p/>
  */
 
-@Module(includes = [ViewModelModule::class])
+@Module(includes = [])
 abstract class ActivityBindingModule {
     @ContributesAndroidInjector(modules = [FragmentModule::class, MainActivityModule::class])
     abstract fun contributeMainActivity(): MainActivity

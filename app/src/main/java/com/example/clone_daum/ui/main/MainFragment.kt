@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.main
 
-import android.os.Bundle
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
@@ -25,6 +24,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
 
     override fun settingEvents() = mViewModel.run {
         observe(gotoSearchEvent) { viewController.searchFragment() }
+        observe(navEvent)        { viewController.navigationFragment() }
 
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
         tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))

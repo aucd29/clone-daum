@@ -93,9 +93,9 @@ inline fun FragmentManager.show(params: FragmentParams) {
     transaction.run {
         params.anim?.let {
             when (it) {
-                FragmentAnim.LEFT -> setCustomAnimations(R.anim.slide_in_current, R.anim.slide_in_next,
+                FragmentAnim.RIGHT -> setCustomAnimations(R.anim.slide_in_current, R.anim.slide_in_next,
                     R.anim.slide_out_current, R.anim.slide_out_prev)
-                FragmentAnim.RIGHT -> setCustomAnimations(R.anim.slide_out_current, R.anim.slide_out_prev,
+                FragmentAnim.LEFT -> setCustomAnimations(R.anim.slide_out_current, R.anim.slide_out_prev,
                     R.anim.slide_in_current, R.anim.slide_in_next)
                 FragmentAnim.UP -> setCustomAnimations(R.anim.slide_up_current, R.anim.slide_up_next,
                     R.anim.slide_down_current, R.anim.slide_down_prev)

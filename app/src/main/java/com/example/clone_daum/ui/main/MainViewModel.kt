@@ -7,6 +7,7 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.ui.ViewController
 import com.example.common.WebViewEvent
 import com.example.common.WebViewSettingParams
 import com.example.common.arch.SingleLiveEvent
@@ -15,9 +16,8 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 
-class MainViewModel @Inject constructor(
-    val app: Application,
-    val preConfig: PreloadConfig
+class MainViewModel @Inject constructor(val app: Application
+    , val preConfig: PreloadConfig
 ) : AndroidViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
@@ -33,6 +33,8 @@ class MainViewModel @Inject constructor(
     val visibleBack        = ObservableInt(View.GONE)
     var gotoNewsEvent      = ObservableInt(0)
     val gotoSearchEvent    = SingleLiveEvent<Void>()
+
+    val navEvent = SingleLiveEvent<Void>()
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
     val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
@@ -87,9 +89,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun tabMenu() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
+        navEvent.call()
     }
 
     fun webviewBack() {
