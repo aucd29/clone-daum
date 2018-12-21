@@ -8,17 +8,24 @@
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
     </data>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-            android:id="@+id/drawer_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:openDrawer="end"
             tools:context=".MainActivity">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
         >
+            <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:bindPagerAdapter="@{model.tabAdapter}"
+                    app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
+                    app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
+                    app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
+            />
 
             <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/search_bar"
@@ -49,7 +56,7 @@
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:layout_marginStart="15dp"
-                                android:layout_marginTop="10dp"
+                                android:layout_marginTop="14dp"
                                 android:layout_marginEnd="15dp"
                                 android:focusable="false"
                                 android:background="@drawable/shape_search_background"
@@ -66,7 +73,7 @@
                                 app:layout_constraintStart_toStartOf="@+id/search"
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
-                                android:layout_marginStart="20dp"
+                                android:layout_marginStart="15dp"
                                 android:onClick="@{() -> model.gotoNews()}"
                         />
 
@@ -78,7 +85,7 @@
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
-                                android:layout_marginEnd="20dp"
+                                android:layout_marginEnd="15dp"
                                 android:onClick="@{() -> model.searchExtendMenu()}"
                         />
 
@@ -198,7 +205,7 @@
                             style="@style/MyCustomTabLayout"
                             android:id="@+id/tab"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="45dp"
                             android:layout_gravity="bottom"
                             app:tabMode="scrollable"
                             app:tabPadding="0dp"
@@ -223,7 +230,6 @@
                             app:layout_constraintTop_toBottomOf="@+id/tab"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            android:translationY="-1dp"
                     />
 
                     <ImageView
@@ -242,18 +248,16 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
-
-            <!--<View android:layout_width="match_parent" android:layout_height="match_parent" />-->
-
-            <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:bindPagerAdapter="@{model.tabAdapter}"
-                    app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
-                    app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            />
+            <!--<androidx.viewpager.widget.ViewPager-->
+                    <!--android:id="@+id/viewpager"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--app:bindPagerAdapter="@{model.tabAdapter}"-->
+                    <!--app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"-->
+                    <!--app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"-->
+                    <!--app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"-->
+            <!--/>-->
+            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
 
             <ImageView
                     android:id="@+id/over_back"
@@ -267,19 +271,6 @@
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <com.google.android.material.navigation.NavigationView
-                android:id="@+id/nav_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-        >
-            <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                          android:orientation="vertical">
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/lorem"/>
-
-            </LinearLayout>
-        </com.google.android.material.navigation.NavigationView>
-
         <!--<androidx.viewpager.widget.ViewPager-->
         <!--android:id="@+id/viewpager"-->
         <!--android:layout_width="match_parent"-->
@@ -289,5 +280,5 @@
         <!--app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"-->
         <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
         <!--/>-->
-    </androidx.drawerlayout.widget.DrawerLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

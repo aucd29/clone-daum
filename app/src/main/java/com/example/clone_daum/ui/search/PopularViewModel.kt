@@ -18,7 +18,6 @@ import javax.inject.Inject
 class PopularViewModel @Inject constructor(app: Application
     , val db: DbRepository
 //    , val disposable: CompositeDisposable
-//    , val layoutManager: ChipsLayoutManager
 ): RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
@@ -27,10 +26,6 @@ class PopularViewModel @Inject constructor(app: Application
     val chipLayoutManager = ObservableField<ChipsLayoutManager>()
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
     val itemAnimator      = ObservableField<RecyclerView.ItemAnimator?>()
-
-//    init {
-//        chipLayoutManager.set(layoutManager)
-//    }
 
     fun init() {
         initAdapter("search_recycler_popular_item")

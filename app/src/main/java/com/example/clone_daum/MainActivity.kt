@@ -49,6 +49,8 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
             }
 
             visibleSplash.set(View.GONE)
+            // remove view
+            mBinding.root.removeView(mBinding.splash)
         }
     }
 

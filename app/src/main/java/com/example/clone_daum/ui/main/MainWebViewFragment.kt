@@ -23,7 +23,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
-        private const val TIMEOUT_RELOAD_ICO = 6L
+        private const val TIMEOUT_RELOAD_ICO = 4L
         private var IS_CLOSED_SPLASH = false
     }
 
@@ -47,22 +47,26 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
             return
         }
 
-        mBinding.webview.loadUrl(url)
-        mBinding.swipeRefresh.setOnRefreshListener {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("RELOAD $url")
+        mBinding.run {
+            webview.loadUrl(url)
+            swipeRefresh.setOnRefreshListener {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("RELOAD $url")
+                }
+
+                //brsEvent.set(WebViewEvent.RELOAD)
+                // 해당 brs 에만 작용하기 위해서 수정
+                webview.reload()
+
+                mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
+                    .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                        if (mLog.isInfoEnabled) {
+                            mLog.info("EXPLODE RELOAD ICO TIMER")
+                        }
+
+                        swipeRefresh.isRefreshing = false
+                    })
             }
-
-            brsEvent.set(WebViewEvent.RELOAD)
-
-            mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("EXPLODE RELOAD ICO TIMER")
-                    }
-
-                    mBinding.swipeRefresh.isRefreshing = false
-                })
         }
 
         brsSetting.set(WebViewSettingParams(
