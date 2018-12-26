@@ -85,7 +85,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
         @ContributesAndroidInjector
         abstract fun contributeInjector(): NavigationFragment
 
-//        @dagger.Module
+//        @dagger.Moduledi
 //        companion object {
 //            @JvmStatic
 //            @Provides
