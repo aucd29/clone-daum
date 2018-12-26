@@ -202,6 +202,10 @@
                         app:layout_anchor="@+id/toolbar_layout">
 
                     <!--android:selectedItemPosition="@={model.gotoNewsEvent}"-->
+                    <!--
+                    fade edge :
+                    https://stackoverflow.com/questions/11538873/making-the-edge-of-the-scrollview-fade-when-scrolling-in-android/16726054
+                    -->
                     <com.google.android.material.tabs.TabLayout
                             style="@style/MyCustomTabLayout"
                             android:id="@+id/tab"
@@ -218,6 +222,8 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tab_menu"
                             app:layout_constraintBottom_toTopOf="@+id/tab_underline"
+                            android:requiresFadingEdge="horizontal"
+                            android:fadingEdgeLength="80dp"
                     />
 
                     <View

@@ -19,7 +19,8 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <!-- brs
+    <!--
+    brs
     https://stackoverflow.com/questions/31941753/how-to-make-a-circular-ripple-on-a-button-when-its-being-clicked
     -->
     <style name="brs_bottom_button">
