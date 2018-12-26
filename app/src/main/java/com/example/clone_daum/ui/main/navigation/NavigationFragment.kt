@@ -42,7 +42,6 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     private fun viewBinding() = mBinding.run {
         mDrawerListener = DrawerCloseCallback(this@NavigationFragment)
 
-
         navContainer.run {
             postDelayed({ openDrawer(GravityCompat.END) }, 50)
             addDrawerListener(mDrawerListener)

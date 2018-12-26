@@ -24,8 +24,6 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     override fun bindViewModel() = mBinding.run {
         super.bindViewModel()
 
-
-
         popularviewVm = mViewModelFactory.inject(this@SearchFragment, PopularViewModel::class.java)
         popularviewVm.chipLayoutManager.set(layoutManager)
 
@@ -52,6 +50,14 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     private fun browserFragment(url: String) {
         
+    }
+
+    override fun onDestroyView() {
+        mViewModel.run {
+            searchKeyword.set("")
+        }
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

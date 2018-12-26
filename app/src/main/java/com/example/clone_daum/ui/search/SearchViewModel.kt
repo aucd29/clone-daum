@@ -56,7 +56,8 @@ class SearchViewModel @Inject constructor(app: Application)
     override val finishEvent     = SingleLiveEvent<Void>()
 
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
-    val itemAnimator      = ObservableField<RecyclerView.ItemAnimator?>()
+    val itemAnimator             = ObservableField<RecyclerView.ItemAnimator?>()
+
 
     fun init() {
         editorAction.set {
