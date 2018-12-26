@@ -7,20 +7,27 @@
         <variable name="model" type="com.example.clone_daum.ui.main.navigation.NavigationViewModel"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.drawerlayout.widget.DrawerLayout
             android:id="@+id/nav_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white">
+            >
 
-        <TextView
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="HELLO WORLD"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-        />
+        <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                app:elevation="0dp"
+        >
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:text="hello world"
+                    android:gravity="center|center_vertical"
+            />
+
+        </com.google.android.material.navigation.NavigationView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

@@ -42,7 +42,7 @@ class ViewController private constructor() {
         }
 
         manager.show(FragmentParams(CONTAINER,
-            NavigationFragment::class.java, anim = FragmentAnim.RIGHT))
+            NavigationFragment::class.java))
     }
 
     fun searchFragment() {
