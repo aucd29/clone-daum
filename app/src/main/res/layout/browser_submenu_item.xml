@@ -14,17 +14,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{() -> model.event(item.name)}"
-            android:paddingBottom="20dp"
+            android:paddingBottom="@dimen/brs_sub_item_pad_b"
             android:background="?selectableItemBackgroundBorderless"
     >
 
         <TextView
                 android:id="@+id/icon"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textSize="25sp"
+                android:textSize="@dimen/brs_sub_item_ico"
                 android:textAppearance="@style/solid"
                 android:text="@{item.iconResid}"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/brs_sub_item_ico_mgn_t"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -38,8 +38,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="@{item.name}"
-                android:layout_marginTop="10dp"
-                android:textSize="10sp"
+                android:layout_marginTop="@dimen/brs_sub_item_text_mgn_t"
+                android:textSize="@dimen/brs_sub_item_text"
                 tools:text="NAME"
         />
 

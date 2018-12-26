@@ -30,6 +30,15 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
+    <style name="brs_stack">
+        <item name="android:gravity">center|center_vertical</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:paddingTop">1dp</item>
+        <item name="android:paddingBottom">1dp</item>
+        <item name="android:layout_marginEnd">3dp</item>
+    </style>
+
 
     <!--
     tab

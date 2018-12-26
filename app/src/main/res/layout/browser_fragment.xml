@@ -18,7 +18,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/brs_url_bar"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="@dimen/brs_urlbar_pad"
                 app:bindTranslateY="@{model.brsUrlBarAni}">
 
             <ImageView
@@ -29,7 +29,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:onClick="@{() -> model.eventBack()}"
-                    android:padding="5dp"
+                    android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
             />
 
@@ -39,7 +39,7 @@
                     app:layout_constraintStart_toEndOf="@+id/brs_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/brs_ssl_mgn_s"
                     android:src="@{model.sslIconResId}"
                     android:visibility="@{model.visibleSslIcon}"
             />
@@ -54,8 +54,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="urlinfoasdfasdfassafdsaf dfasdfasdfa sdfasdaf"
-                    android:layout_marginStart="10dp"
-                    android:maxWidth="230dp"
+                    android:layout_marginStart="@dimen/brs_url_mgn_s"
+                    android:maxWidth="@dimen/brs_url_max_w"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@{model.urlString}"
@@ -68,7 +68,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/brs_stack"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:src="@{model.reloadIconResId}"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="@dimen/brs_reload_mgn_e"
                     android:onClick="@{() -> model.eventReloadBrowser(model.urlString)}"
                     android:background="?selectableItemBackgroundBorderless"
             />
@@ -81,12 +81,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="1"
-                    android:gravity="center|center_vertical"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp"
-                    android:paddingTop="1dp"
-                    android:paddingBottom="1dp"
-                    android:layout_marginEnd="3dp"
+                    style="@style/brs_stack"
                     android:text="@{model.brsCount}"
                     android:textColor="@android:color/black"
                     android:background="@drawable/shape_brs_stack_background"

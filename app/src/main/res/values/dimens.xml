@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- main frgmt -->
+    <dimen name="main_search_height">50dp</dimen>
+    <dimen name="main_search_mgn_s">15dp</dimen>
+    <dimen name="main_search_mgn_t">14dp</dimen>
+    <dimen name="main_search_mgn_e">15dp</dimen>
+    <dimen name="main_search_logo_mgn_s">15dp</dimen>
+    <dimen name="main_search_extend_mgn_e">15dp</dimen>
+    <dimen name="main_search_rank_mgn_t">10dp</dimen>
+    <dimen name="main_search_extend_rank_mgn_e">10dp</dimen>
+    <dimen name="main_weather_mgn_s">20dp</dimen>
+    <dimen name="main_temperature_mgn_s">10dp</dimen>
+    <dimen name="main_gps_pad">8dp</dimen>
+    <dimen name="main_tab_height">45dp</dimen>
+    <dimen name="main_tab_pad">0dp</dimen>
+    <dimen name="main_tab_menu_pad">15dp</dimen>
+    <dimen name="main_over_back_pad">10dp</dimen>
+
+    <!-- search frgmt -->
+    <dimen name="search_empty_area_pad">50dp</dimen>
+    <dimen name="search_popular_pad">10dp</dimen>
+    <dimen name="search_popular_mgn_s">10dp</dimen>
+    <dimen name="search_chip_mgn_s">20dp</dimen>
+    <dimen name="search_chip_mgn_e">10dp</dimen>
+    <dimen name="search_bottom_pad">15dp</dimen>
+    <dimen name="search_bottom_recent_height">16dp</dimen>
+    <dimen name="search_bottom_close_mgn_s">10dp</dimen>
+    <dimen name="search_bottom_del_mgn_s">10dp</dimen>
+    <dimen name="search_bottom_cancel_mgn_s">10dp</dimen>
+    <dimen name="search_item_search_mgn_s">30dp</dimen>
+    <dimen name="search_item_search_mgn_s">30dp</dimen>
+
+
+    <!-- brs frgmt -->
+    <dimen name="brs_urlbar_pad">10dp</dimen>
+    <dimen name="brs_back_pad">5dp</dimen>
+    <dimen name="brs_ssl_mgn_s">10dp</dimen>
+    <dimen name="brs_url_mgn_s">10dp</dimen>
+    <dimen name="brs_url_max_w">230dp</dimen>
+    <dimen name="brs_reload_mgn_e">15dp</dimen>
+
+    <!-- brs submenu -->
+    <dimen name="brs_sub_container_pad">10dp</dimen>
+    <dimen name="brs_sub_item_pad_b">20dp</dimen>
+    <dimen name="brs_sub_item_ico">25sp</dimen>
+    <dimen name="brs_sub_item_ico_mgn_t">20dp</dimen>
+    <dimen name="brs_sub_item_text_mgn_t">10dp</dimen>
+    <dimen name="brs_sub_item_text">10sp</dimen>
+</resources>

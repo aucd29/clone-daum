@@ -85,8 +85,10 @@
 
                 <TextView
                         android:id="@+id/search_empty_area"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:paddingTop="50dp" android:paddingBottom="50dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/search_empty_area_pad"
+                        android:paddingBottom="@dimen/search_empty_area_pad"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/search_recycler"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -105,22 +107,23 @@
 
                 <TextView
                         android:id="@+id/popular_keyword"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/search_popular_keyword"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/search_empty_area"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/search_popular_mgn_s"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
-                        android:padding="10dp"
+                        android:padding="@dimen/search_popular_pad"
                         />
 
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/chip_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="@dimen/search_chip_mgn_s"
+                        android:layout_marginEnd="@dimen/search_chip_mgn_e"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/popular_keyword"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -149,7 +152,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="#ededed"
-                android:padding="15dp">
+                android:padding="@dimen/search_bottom_pad">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
@@ -161,7 +164,8 @@
                 >
                 <TextView
                         android:id="@+id/toggle_recent_search"
-                        android:layout_width="wrap_content" android:layout_height="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/search_bottom_recent_height"
                         android:text="@{model.toggleRecentSearchText}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -173,12 +177,13 @@
 
                 <TextView
                         android:id="@+id/close_search_history_bar"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="|"
                         app:layout_constraintStart_toEndOf="@+id/toggle_recent_search"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/search_bottom_close_mgn_s"
                         android:visibility="@{model.visibleSearchRecycler}"
                 />
 
@@ -188,7 +193,7 @@
                         app:layout_constraintStart_toEndOf="@+id/close_search_history_bar"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/search_bottom_del_mgn_s"
                         android:onClick="@{() -> model.eventDeleteAllHistory()}"
                         android:visibility="@{model.visibleSearchRecycler}"
                 />
@@ -202,7 +207,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias=".95"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/search_bottom_cancel_mgn_s"
                     android:textColor="@android:color/black"
                     android:onClick="@{() -> model.eventCloseSearchFragment()}"
             />
