@@ -29,8 +29,9 @@
     <dimen name="search_bottom_del_mgn_s">10dp</dimen>
     <dimen name="search_bottom_cancel_mgn_s">10dp</dimen>
     <dimen name="search_item_search_mgn_s">30dp</dimen>
-    <dimen name="search_item_search_mgn_s">30dp</dimen>
-
+    <dimen name="search_item_del_mgn_e">30dp</dimen>
+    <dimen name="search_item_del_pad">15dp</dimen>
+    <dimen name="search_item_underline_pad">20dp</dimen>
 
     <!-- brs frgmt -->
     <dimen name="brs_urlbar_pad">10dp</dimen>

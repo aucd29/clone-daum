@@ -43,18 +43,18 @@
                 app:layout_constraintTop_toTopOf="@+id/search_keyword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/search_keyword"
-                android:layout_marginEnd="30dp"
-                android:padding="15dp"
+                android:layout_marginEnd="@dimen/search_item_del_mgn_e"
+                android:padding="@dimen/search_item_del_pad"
                 android:onClick="@{() -> model.eventDeleteHistory(item)}"
         />
 
         <View
-                android:id="@+id/bottom_area_overline"
+                android:id="@+id/bottom_area_underline"
                 style="@style/line1dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginStart="@dimen/search_item_underline_pad"
+                android:layout_marginEnd="@dimen/search_item_underline_pad"
                 app:layout_constraintBottom_toBottomOf="parent"
         />
     </androidx.constraintlayout.widget.ConstraintLayout>
