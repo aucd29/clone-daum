@@ -23,9 +23,9 @@
                 android:onClick="@{() -> model.event(item.keyword)}"
                 android:background="@drawable/shape_chip_background"
                 tools:text="HELLO WORLD"
-                android:padding="8dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:padding="@dimen/search_item_chip_pad"
+                android:layout_marginEnd="@dimen/search_item_chip_mgn"
+                android:layout_marginBottom="@dimen/search_item_chip_mgn"
                 android:textColor="@android:color/black"
                 android:text="@{item.keyword}"
         />
