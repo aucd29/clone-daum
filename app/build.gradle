@@ -63,7 +63,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$androidx"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.constraintlayout:constraintlayout:$constraint"
-    implementation "androidx.multidex:multidex:2.0.0"
+    implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
     implementation "androidx.room:room-rxjava2:$room"
