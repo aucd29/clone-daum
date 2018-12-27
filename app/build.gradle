@@ -112,9 +112,6 @@ dependencies {
     // chip layout
     implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
 
-    // dialogplus
-    implementation 'com.orhanobut:dialogplus:1.11@aar'
-
     // local lib
 
     implementation project(path: ':common')
