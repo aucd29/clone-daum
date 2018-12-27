@@ -11,25 +11,199 @@
             android:id="@+id/nav_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            android:background="#10000000"
+    >
 
         <com.google.android.material.navigation.NavigationView
                 android:id="@+id/nav_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="end"
                 app:elevation="0dp"
                 android:background="@android:color/transparent"
+                android:layout_gravity="end"
         >
 
-            <TextView
-                    android:layout_width="match_parent" android:layout_height="match_parent"
-                    android:text="hello world"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/nav_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:background="@android:color/white"
-                    android:gravity="center|center_vertical"
-            />
+            >
 
+                <TextView
+                        android:id="@+id/nav_setting"
+                        style="@style/navi_icon"
+                        android:text="@string/fa_cog"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="X"
+                        android:onClick="@{() -> model.eventSetting()}"
+                />
+
+                <TextView
+                        android:id="@+id/nav_menu_position"
+                        style="@style/navi_icon"
+                        android:text="@string/fa_home"
+                        app:layout_constraintStart_toEndOf="@+id/nav_setting"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="X"
+                        android:onClick="@{() -> model.eventMenuPosition()}"
+                />
+
+                <TextView
+                        android:id="@+id/nav_text_size"
+                        style="@style/navi_icon"
+                        android:text="@string/fa_font"
+                        app:layout_constraintStart_toEndOf="@+id/nav_menu_position"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="X"
+                        android:onClick="@{() -> model.eventWebViewTextSize()}"
+                />
+
+                <TextView
+                        android:id="@+id/nav_exit"
+                        style="@style/navi_icon"
+                        android:text="@string/fa_times"
+                        android:layout_marginEnd="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="X"
+                        android:onClick="@{() -> model.eventFinishFragment()}"
+                />
+
+                <!-- line 1 -->
+
+                <ImageView
+                        android:id="@+id/navi_user_photo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_mood_black_24dp"
+                        android:padding="10dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/nav_setting"
+                />
+
+                <TextView
+                        android:id="@+id/navi_require_login"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/navi_require_login"
+                        android:textSize="17sp"
+                        app:layout_constraintStart_toEndOf="@+id/navi_user_photo"
+                        app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                        app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
+                />
+
+                <TextView
+                        android:id="@+id/navi_notification"
+                        style="@style/navi_icon"
+                        android:text="@string/fa_bell"
+                        android:layout_marginEnd="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                        app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
+                        android:onClick="@{() -> model.eventReceivedNoti()}"
+                />
+
+                <TextView
+                        android:id="@+id/navi_bookmark"
+                        style="@style/navi_icon"
+                        android:text="@string/fa_bookmark"
+                        app:layout_constraintEnd_toStartOf="@+id/navi_notification"
+                        app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                        app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
+                        android:onClick="@{() -> model.eventBookMark()}"
+                />
+
+                <!-- line 2 -->
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                        android:id="@+id/navi_tab"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:menu="@menu/navigation"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/navi_user_photo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                />
+
+                <!-- line 3 -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/navi_tab_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/navi_tab"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toTopOf="parent"
+                />
+
+                <!-- bottom -->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/navi_bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/light_gray"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                >
+                    <LinearLayout
+                            style="@style/navi_bottom_button"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/navi_vertical_bar"
+                            android:onClick="@{() -> model.eventNotification()}"
+                    >
+
+                        <TextView
+                                style="@style/navi_icon"
+                                android:text="@string/fa_comment_alt"
+                        />
+
+                        <TextView
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="@string/navi_notice"
+                        />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            style="@style/navi_bottom_button"
+                            app:layout_constraintStart_toEndOf="@+id/navi_vertical_bar"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:onClick="@{() -> model.eventLogin()}"
+                    >
+
+                        <TextView
+                                style="@style/navi_icon"
+                                android:text="@string/fa_sign_in_alt"
+                        />
+
+                        <TextView
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="@string/navi_login"
+                        />
+
+                    </LinearLayout>
+
+
+                    <TextView
+                            android:id="@+id/navi_vertical_bar"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            tools:text="1"
+                            android:textColor="#dedede"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.navigation.NavigationView>
-
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

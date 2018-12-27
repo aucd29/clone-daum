@@ -10,6 +10,8 @@ import com.example.clone_daum.di.module.Config
 import com.example.common.BaseDaggerFragment
 import com.example.common.OnBackPressedListener
 import com.example.common.finish
+import com.example.common.layoutWidth
+import dagger.Binds
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -25,9 +27,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     }
 
     @Inject lateinit var config: Config
-//    @Inject lateinit var drawerListener: DrawerCloseCallback
-
-    private lateinit var mDrawerListener: DrawerCloseCallback
+    @Inject lateinit var drawerListener: DrawerCloseCallback
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -40,11 +40,9 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     }
 
     private fun viewBinding() = mBinding.run {
-        mDrawerListener = DrawerCloseCallback(this@NavigationFragment)
-
         navContainer.run {
             postDelayed({ openDrawer(GravityCompat.END) }, 50)
-            addDrawerListener(mDrawerListener)
+            addDrawerListener(drawerListener)
         }
 
         navView.run {
@@ -57,6 +55,8 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
 
             layoutParams = lp
         }
+
+//        navLayout.layoutWidth(config.SCREEN.x)
     }
 
     override fun onBackPressed() = mBinding.run {
@@ -67,7 +67,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
 
     override fun onDestroyView() {
         mBinding.run {
-            navContainer.removeDrawerListener(mDrawerListener)
+            navContainer.removeDrawerListener(drawerListener)
         }
 
         super.onDestroyView()
@@ -79,32 +79,25 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    @dagger.Module //(includes = [NavigationFragmentModule::class])
+    @dagger.Module
     abstract class Module {
         @ContributesAndroidInjector
         abstract fun contributeInjector(): NavigationFragment
 
-//        @dagger.Moduledi
-//        companion object {
-//            @JvmStatic
-//            @Provides
-//            fun provideDrawerCloseCallback(frgmt: NavigationFragment) = DrawerCloseCallback(frgmt)
-//        }
+        @Binds
+        abstract fun bindDrawerCloseCallback(callback: DrawerCloseCallback): DrawerLayout.DrawerListener
     }
-
-//    @dagger.Module
-//    class NavigationFragmentModule {
-//        @Provides
-//        fun provideDrawerCloseCallback(frgmt: NavigationFragment) = DrawerCloseCallback(frgmt)
-//    }
 }
 
-class DrawerCloseCallback constructor(val mFragment: NavigationFragment) : DrawerLayout.DrawerListener {
+class DrawerCloseCallback @Inject constructor(val mFragment: NavigationFragment) : DrawerLayout.DrawerListener {
     override fun onDrawerClosed(drawerView: View) {
         mFragment.finish()
     }
 
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+        // TODO background alpha 처리 필요
+    }
+
     override fun onDrawerStateChanged(newState: Int) { }
-    override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
     override fun onDrawerOpened(drawerView: View) { }
 }

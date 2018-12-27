@@ -11,6 +11,17 @@
         Praesent tincidunt lorem sit amet mi consequat cursus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Praesent vitae blandit sapien. Curabitur est sapien, lobortis sit amet facilisis vel, faucibus eu quam. Nam tempus libero at tellus tempor laoreet. Pellentesque quam lorem, tincidunt in molestie eget, dictum vel risus. Nunc gravida convallis mattis.
     </string>
 
+    <!-- main -->
+
+    <!-- navigation -->
+    <string name="navi_require_login">로그인하시오</string>
+    <string name="navi_tab_shotcut">바로가기</string>
+    <string name="navi_tab_mail">메일</string>
+    <string name="navi_tab_cafe">카페</string>
+    <string name="navi_notice">공지사항</string>
+    <string name="navi_login">로그인</string>
+
+
     <!-- dlg -->
     <string name="dlg_title_stop_using_recent_search">최근 검색어 끄기</string>
     <string name="dlg_msg_do_you_want_stop_using_recent_search">최근검색어사용을중지하겠습니까?</string>
@@ -37,12 +48,8 @@
     <string name="brs_exist_fav_url">이미 입력된 url 임</string>
     <string name="brs_fav_url_ok">저장되었삼</string>
 
-    <string-array name="test">
-        <item>test 1</item>
-        <item>test 2</item>
-        <item>test 3</item>
-        <item>test 4</item>
-    </string-array>
+
+
 
     <!-- error -->
     <string name="error_empty_keyword">검색어가 없습니다.</string>

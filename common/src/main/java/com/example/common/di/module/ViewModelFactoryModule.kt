@@ -41,6 +41,7 @@ inline fun <reified T : ViewModel> DaggerViewModelFactory.inject(activity: Fragm
 inline fun <reified T : ViewModel> DaggerViewModelFactory.inject(frgmt: Fragment, clazz: Class<T>) =
     ViewModelProviders.of(frgmt.activity!!, this).get(clazz)
 
+
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @MapKey
 annotation class ViewModelKey(val value: KClass<out ViewModel>)

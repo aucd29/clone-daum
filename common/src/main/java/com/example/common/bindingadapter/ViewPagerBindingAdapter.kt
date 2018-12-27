@@ -2,6 +2,7 @@ package com.example.common.bindingadapter
 
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import org.slf4j.LoggerFactory
 
@@ -28,7 +29,7 @@ object ViewPagerBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(*arrayOf("bindPagerAdapter", "bindViewPagerLoaded"), requireAll = false)
-    fun bindAdapter(viewpager: ViewPager, adapter: FragmentPagerAdapter, viewPagerLoadedCallback: (() -> Unit)? = null) {
+    fun bindAdapter(viewpager: ViewPager, adapter: PagerAdapter, viewPagerLoadedCallback: (() -> Unit)? = null) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindPagerAdapter")
         }

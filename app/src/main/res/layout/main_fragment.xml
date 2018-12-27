@@ -213,7 +213,8 @@
                             android:layout_height="@dimen/main_tab_height"
                             android:layout_gravity="bottom"
                             app:tabMode="scrollable"
-                            app:tabPadding="@dimen/main_tab_pad"
+                            app:tabPaddingStart="0dp"
+                            app:tabPaddingEnd="0dp"
                             app:tabGravity="fill"
                             app:tabMinWidth="0dp"
                             app:bindTabSelect="@{model.gotoNewsEvent}"
@@ -223,7 +224,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/tab_menu"
                             app:layout_constraintBottom_toTopOf="@+id/tab_underline"
                             android:requiresFadingEdge="horizontal"
-                            android:fadingEdgeLength="80dp"
+                            android:fadingEdgeLength="50dp"
                     />
 
                     <View

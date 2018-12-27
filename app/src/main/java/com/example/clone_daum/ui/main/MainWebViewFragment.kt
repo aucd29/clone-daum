@@ -5,7 +5,6 @@ import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
 import com.example.common.di.module.inject
 import com.example.clone_daum.ui.ViewController
-import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
@@ -29,6 +28,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
 
     private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
     private lateinit var mSplashViewModel: SplashViewModel
+    var webviewUrl: String? = null
 
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
@@ -40,8 +40,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     }
 
     override fun settingEvents() = mViewModel.run {
-        val url = arguments?.getString("url")
-        if (url == null) {
+        webviewUrl = arguments?.getString("url")
+        if (webviewUrl == null) {
             mLog.error("ERROR: URL == null")
 
             return
@@ -57,10 +57,10 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
                 mBinding.webview.translationY = it.toFloat()
             }
 
-            webview.loadUrl(url)
+            webview.loadUrl(webviewUrl)
             swipeRefresh.setOnRefreshListener {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("RELOAD $url")
+                    mLog.debug("RELOAD $webviewUrl")
                 }
 
                 //brsEvent.set(WebViewEvent.RELOAD)

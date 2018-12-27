@@ -8,7 +8,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
-import com.example.clone_daum.ui.ViewController
 import com.example.common.WebViewEvent
 import com.example.common.WebViewSettingParams
 import com.example.common.arch.SingleLiveEvent

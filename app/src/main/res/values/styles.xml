@@ -58,6 +58,29 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <!--
+     navigation
+    -->
+
+    <style name="navi_icon">
+        <item name="android:textAppearance">@style/solid</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <!--<item name="android:background">?selectableItemBackgroundBorderless</item>-->
+    </style>
+
+    <style name="navi_bottom_button">
+        <item name="android:gravity">center|center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingTop">25dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
     <!-- dumy view -->
 
     <style name="dumyView">

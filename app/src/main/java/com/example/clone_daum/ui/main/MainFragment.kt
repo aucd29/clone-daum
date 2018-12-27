@@ -1,20 +1,12 @@
 package com.example.clone_daum.ui.main
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.util.AttributeSet
-import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
-import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import kotlin.math.log
 
 class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     companion object {
