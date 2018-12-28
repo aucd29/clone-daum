@@ -89,13 +89,27 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     }
 }
 
-class DrawerCloseCallback @Inject constructor(val mFragment: NavigationFragment) : DrawerLayout.DrawerListener {
+////////////////////////////////////////////////////////////////////////////////////
+//
+// 시간 날때 대거 소스를 분석해봐야 할듯 -_-
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+class DrawerCloseCallback @Inject constructor(private val mFragment: NavigationFragment)
+    : DrawerLayout.DrawerListener {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(DrawerCloseCallback::class.java)
+    }
+
     override fun onDrawerClosed(drawerView: View) {
         mFragment.finish()
     }
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
         // TODO background alpha 처리 필요
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SLIDE OFFSET : $slideOffset")
+        }
     }
 
     override fun onDrawerStateChanged(newState: Int) { }

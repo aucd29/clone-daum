@@ -36,3 +36,26 @@ class MainTabAdapter constructor(fm: FragmentManager, val tabListData: List<TabD
 
     private inline fun divTabList(pos: Int) = tabListData[pos % tabListData.size]
 }
+
+class MainTabAdapter2 @Inject constructor(fm: FragmentManager, val tabListData: List<TabData>)
+    : FragmentStatePagerAdapter(fm) {
+
+    override fun getItem(position: Int): Fragment {
+        val frgmt  = MainWebviewFragment()
+        val bundle = Bundle()
+
+        bundle.putString("url", url(position))
+
+        frgmt.arguments = bundle
+
+        return frgmt
+    }
+
+    override fun getPageTitle(position: Int): String = title(position)
+    override fun getCount() = tabListData.size // Integer.MAX_VALUE     //
+
+    private fun url(pos: Int) = divTabList(pos).url
+    private fun title(pos: Int) = divTabList(pos).name
+
+    private inline fun divTabList(pos: Int) = tabListData[pos % tabListData.size]
+}

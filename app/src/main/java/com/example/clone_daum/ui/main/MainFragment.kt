@@ -1,9 +1,11 @@
 package com.example.clone_daum.ui.main
 
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
+import dagger.Binds
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -14,6 +16,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     @Inject lateinit var viewController: ViewController
+//    @Inject lateinit var mainTabAdapter: MainTabAdapter2
 
     override fun settingEvents() = mViewModel.run {
         observe(gotoSearchEvent) { viewController.searchFragment() }
@@ -68,6 +71,9 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     abstract class Module {
         @dagger.android.ContributesAndroidInjector
         abstract fun contributeInjector(): MainFragment
+
+        @Binds
+        abstract fun bindMainTabAdapter(adapter: MainTabAdapter2): FragmentStatePagerAdapter
     }
 }
 

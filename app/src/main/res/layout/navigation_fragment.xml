@@ -139,7 +139,7 @@
                         app:layout_constraintBottom_toTopOf="parent"
                 />
 
-                <!-- bottom -->
+                <!-- bottom area -->
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/navi_bottom"
@@ -188,7 +188,6 @@
 
                     </LinearLayout>
 
-
                     <TextView
                             android:id="@+id/navi_vertical_bar"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -200,9 +199,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                     />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.navigation.NavigationView>
     </androidx.drawerlayout.widget.DrawerLayout>

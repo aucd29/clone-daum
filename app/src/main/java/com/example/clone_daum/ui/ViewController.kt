@@ -10,22 +10,17 @@ import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
-
-class ViewController private constructor() {
-    private object Holder { val INSTANCE = ViewController() }
-
+class ViewController @Inject constructor(val manager: FragmentManager) {
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
-        val get: ViewController by lazy { Holder.INSTANCE }
-
         const val CONTAINER = R.id.container
     }
-
-    lateinit var manager: FragmentManager
 
     fun mainFragment() {
         if (mLog.isInfoEnabled) {
