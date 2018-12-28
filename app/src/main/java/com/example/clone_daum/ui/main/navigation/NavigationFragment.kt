@@ -1,33 +1,30 @@
 package com.example.clone_daum.ui.main.navigation
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.di.module.Config
-import com.example.common.BaseDaggerFragment
-import com.example.common.OnBackPressedListener
-import com.example.common.finish
-import com.example.common.layoutWidth
-import dagger.Binds
-import dagger.Provides
+import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.clone_daum.R
+import com.example.clone_daum.ui.ViewController
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 20. <p/>
  */
 
-class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>(), OnBackPressedListener {
+class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
+    , OnBackPressedListener, DrawerLayout.DrawerListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
     }
 
     @Inject lateinit var config: Config
-    @Inject lateinit var drawerListener: DrawerCloseCallback
+    @Inject lateinit var viewController: ViewController
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -36,38 +33,51 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     }
 
     override fun settingEvents() = mViewModel.run {
-
     }
 
     private fun viewBinding() = mBinding.run {
-        navContainer.run {
+        naviContainer.run {
             postDelayed({ openDrawer(GravityCompat.END) }, 50)
-            addDrawerListener(drawerListener)
+            addDrawerListener(this@NavigationFragment)
         }
 
-        navView.run {
-            val lp = layoutParams
-            lp.width = config.SCREEN.x
-
+        naviView.layoutWidth(config.SCREEN.x)
+        naviTab.setOnNavigationItemSelectedListener {
             if (mLog.isDebugEnabled) {
-                mLog.debug("RESIZE NAV VIEW (${lp.width}")
+                mLog.debug("ITEM ID : ${it.title} : ${it.itemId}\n")
             }
 
-            layoutParams = lp
+            // R.id.mnu_navi_shortcut 입력 시 unresolved reference 오류가 발생되면
+            // R 경로를 수동으로 입력해주면 된다.
+            when (it.itemId) {
+                R.id.mnu_navi_shortcut -> {
+                    viewController.shortcutFragment(childFragmentManager)
+                    true
+                }
+                R.id.mnu_navi_mail -> {
+                    viewController.mailFragment(childFragmentManager)
+                    true
+                }
+                R.id.mnu_navi_cafe -> {
+                    viewController.cafeFragment(childFragmentManager)
+                    true
+                }
+                else -> false
+            }
         }
 
-//        navLayout.layoutWidth(config.SCREEN.x)
+        viewController.shortcutFragment(childFragmentManager, true)
     }
 
     override fun onBackPressed() = mBinding.run {
-        navContainer.closeDrawer(GravityCompat.END)
+        naviContainer.closeDrawer(GravityCompat.END)
 
         true
     }
 
     override fun onDestroyView() {
         mBinding.run {
-            navContainer.removeDrawerListener(drawerListener)
+            naviContainer.removeDrawerListener(this@NavigationFragment)
         }
 
         super.onDestroyView()
@@ -75,7 +85,30 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
+    // AWARE
     //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun finishFragmentAware()  = mViewModel.run {
+        observe(finishEvent) { onBackPressed() }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DrawerLayout.DrawerListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onDrawerClosed(drawerView: View) { finish() }
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+        mBinding.naviBackground.alpha = slideOffset
+    }
+    override fun onDrawerStateChanged(newState: Int) { }
+    override fun onDrawerOpened(drawerView: View) { }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Module
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
@@ -83,9 +116,6 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     abstract class Module {
         @ContributesAndroidInjector
         abstract fun contributeInjector(): NavigationFragment
-
-        @Binds
-        abstract fun bindDrawerCloseCallback(callback: DrawerCloseCallback): DrawerLayout.DrawerListener
     }
 }
 
@@ -94,24 +124,3 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
 // 시간 날때 대거 소스를 분석해봐야 할듯 -_-
 //
 ////////////////////////////////////////////////////////////////////////////////////
-
-class DrawerCloseCallback @Inject constructor(private val mFragment: NavigationFragment)
-    : DrawerLayout.DrawerListener {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(DrawerCloseCallback::class.java)
-    }
-
-    override fun onDrawerClosed(drawerView: View) {
-        mFragment.finish()
-    }
-
-    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-        // TODO background alpha 처리 필요
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SLIDE OFFSET : $slideOffset")
-        }
-    }
-
-    override fun onDrawerStateChanged(newState: Int) { }
-    override fun onDrawerOpened(drawerView: View) { }
-}

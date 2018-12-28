@@ -24,7 +24,9 @@ import javax.inject.Inject
 
 private const val SET_VIEW_MODEL = "setModel"
 
-abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseActivity<T>() {
+abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
+    : BaseActivity<T>() {
+
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
@@ -49,10 +51,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseAc
 
     // 귀차니즘이 너무 큰게 아닌가 싶기도 하고 -_ -ㅋ
     protected open fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(
-            argTypes = listOf(viewModelClass()),
-            argv     = listOf(mViewModel)
-        ))
+        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
 
     override fun onDestroy() {
@@ -69,13 +68,13 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseAc
 
     protected open fun dialogAware() = mViewModel.run {
         if (this is IDialogAware) {
-            observeDialog(this.dlgEvent, mDisposable)
+            observeDialog(dlgEvent, mDisposable)
         }
     }
 
     protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
-            observe(this.finishEvent) { finish() }
+            observe(finishEvent) { finish() }
         }
     }
 
@@ -88,7 +87,9 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel> : BaseAc
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFragment<T>() {
+abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
+    : BaseRuleFragment<T>() {
+
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
@@ -116,10 +117,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
 
     // 귀차니즘이 너무 큰게 아닌가 싶기도 하고 -_ -ㅋ
     override fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(
-            argTypes = listOf(viewModelClass()),
-            argv     = listOf(mViewModel)
-        ))
+        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
 
     protected open fun snackbarAware() = mViewModel.run {
@@ -130,13 +128,13 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
 
     protected open fun dialogAware() = mViewModel.run {
         if (this is IDialogAware) {
-            observeDialog(this.dlgEvent, mDisposable)
+            observeDialog(dlgEvent, mDisposable)
         }
     }
 
     protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
-            observe(this.finishEvent) { finish() }
+            observe(finishEvent) { finish() }
         }
     }
 
@@ -150,7 +148,9 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleFra
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleDialogFragment<T>() {
+abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
+    : BaseRuleDialogFragment<T>() {
+
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
@@ -174,15 +174,12 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>: BaseR
     protected open fun viewModelMethodName() = SET_VIEW_MODEL
 
     override fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(
-            argTypes = listOf(viewModelClass()),
-            argv     = listOf(mViewModel)
-        ))
+        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
 
     protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
-            observe(this.finishEvent) { dismiss() }
+            observe(finishEvent) { dismiss() }
         }
     }
 
@@ -195,7 +192,9 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>: BaseR
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>: BaseRuleBottomSheetDialogFragment<T>() {
+abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
+    : BaseRuleBottomSheetDialogFragment<T>() {
+
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
@@ -219,15 +218,12 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     protected open fun viewModelMethodName() = SET_VIEW_MODEL
 
     override fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(
-            argTypes = listOf(viewModelClass()),
-            argv     = listOf(mViewModel)
-        ))
+        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
 
     protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
-            observe(this.finishEvent) { dismiss() }
+            observe(finishEvent) { dismiss() }
         }
     }
 

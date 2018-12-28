@@ -5,6 +5,9 @@ import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
+import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
+import com.example.clone_daum.ui.main.navigation.mail.MailFragment
+import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import dagger.Module
 
@@ -15,6 +18,9 @@ import dagger.Module
 @Module(includes = [MainFragment.Module::class
     , MainWebviewFragment.Module::class
     , NavigationFragment.Module::class
+    , CafeFragment.Module::class
+    , MailFragment.Module::class
+    , ShortcutFragment.Module::class
     , SearchFragment.Module::class
     , BrowserFragment.Module::class
     , BrowserSubmenuFragment.Module::class

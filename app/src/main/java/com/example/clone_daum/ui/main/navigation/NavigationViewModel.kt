@@ -1,6 +1,8 @@
 package com.example.clone_daum.ui.main.navigation
 
 import android.app.Application
+import android.view.Menu
+import android.view.MenuItem
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.example.common.IFinishFragmentAware
@@ -22,7 +24,7 @@ class NavigationViewModel @Inject constructor(
 
     override val finishEvent = SingleLiveEvent<Void>()
 
-    val tabChangedListener = ObservableField<(Int) -> Unit>()
+    val itemSelected = ObservableField<(MenuItem) -> Unit>()
 
 
     fun eventSetting() {

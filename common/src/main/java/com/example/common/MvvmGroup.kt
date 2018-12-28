@@ -5,12 +5,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
@@ -20,10 +17,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.example.common.arch.SingleLiveEvent
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.*
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -121,7 +116,9 @@ interface OnBackPressedListener {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
+abstract class BaseActivity<T : ViewDataBinding>
+    : DaggerAppCompatActivity() {
+
     protected lateinit var mBinding : T
     protected lateinit var mBackPressed: BackPressedManager
 
@@ -159,7 +156,9 @@ abstract class BaseActivity<T : ViewDataBinding> : DaggerAppCompatActivity() {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
+abstract class BaseFragment<T: ViewDataBinding>
+    : DaggerFragment() {
+
     protected lateinit var mBinding : T
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -215,7 +214,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding> : BottomSheetDialogFragment(), HasSupportFragmentInjector {
+abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
+    : BottomSheetDialogFragment(), HasSupportFragmentInjector {
+
     protected lateinit var mBinding : T
 
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -255,7 +256,9 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding> : BottomSheetDi
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseRuleFragment<T: ViewDataBinding>: BaseFragment<T>() {
+abstract class BaseRuleFragment<T: ViewDataBinding>
+    : BaseFragment<T>() {
+
     protected var mLayoutName = generateLayoutName()
 
     override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
@@ -275,7 +278,9 @@ abstract class BaseRuleFragment<T: ViewDataBinding>: BaseFragment<T>() {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseRuleDialogFragment<T: ViewDataBinding> : BaseDialogFragment<T>() {
+abstract class BaseRuleDialogFragment<T: ViewDataBinding>
+    : BaseDialogFragment<T>() {
+
     protected var mLayoutName = generateLayoutName()
 
     override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
@@ -295,7 +300,9 @@ abstract class BaseRuleDialogFragment<T: ViewDataBinding> : BaseDialogFragment<T
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseRuleBottomSheetDialogFragment<T: ViewDataBinding> : BaseBottomSheetDialogFragment<T>() {
+abstract class BaseRuleBottomSheetDialogFragment<T: ViewDataBinding>
+    : BaseBottomSheetDialogFragment<T>() {
+
     protected var mLayoutName = generateLayoutName()
 
     override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)

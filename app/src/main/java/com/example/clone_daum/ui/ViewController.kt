@@ -7,6 +7,9 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
+import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
+import com.example.clone_daum.ui.main.navigation.mail.MailFragment
+import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
 import org.slf4j.LoggerFactory
@@ -19,7 +22,9 @@ import javax.inject.Singleton
 class ViewController @Inject constructor(val manager: FragmentManager) {
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
-        const val CONTAINER = R.id.container
+
+        const val CONTAINER         = R.id.container
+        const val NAV_TAB_CONTAINER = R.id.navi_tab_container
     }
 
     fun mainFragment() {
@@ -36,8 +41,31 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("NAVIGATION FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER,
-            NavigationFragment::class.java))
+        manager.show(FragmentParams(CONTAINER, NavigationFragment::class.java))
+    }
+
+    fun cafeFragment(child: FragmentManager) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CAFE FRAGMENT")
+        }
+
+        child.show(FragmentParams(NAV_TAB_CONTAINER, CafeFragment::class.java, add = false))
+    }
+
+    fun mailFragment(child: FragmentManager) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("MAIL FRAGMENT")
+        }
+
+        child.show(FragmentParams(NAV_TAB_CONTAINER, MailFragment::class.java, add = false))
+    }
+
+    fun shortcutFragment(child: FragmentManager, add: Boolean = false) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHORTCUT FRAGMENT")
+        }
+
+        child.show(FragmentParams(NAV_TAB_CONTAINER, ShortcutFragment::class.java, add = add))
     }
 
     fun searchFragment() {

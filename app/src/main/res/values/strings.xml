@@ -15,12 +15,15 @@
 
     <!-- navigation -->
     <string name="navi_require_login">로그인하시오</string>
-    <string name="navi_tab_shotcut">바로가기</string>
+    <string name="navi_tab_shortcut">바로가기</string>
     <string name="navi_tab_mail">메일</string>
     <string name="navi_tab_cafe">카페</string>
     <string name="navi_notice">공지사항</string>
     <string name="navi_login">로그인</string>
 
+    <string name="navi_require_login_check_mail">로그인하여\n내 메일 목록을 확인해 보세요</string>
+    <string name="navi_require_login_check_cafe">로그인하여\n내 카페 목록을 확인해 보세요</string>
+    <string name="navi_show_cafe">카페 둘러보기</string>
 
     <!-- dlg -->
     <string name="dlg_title_stop_using_recent_search">최근 검색어 끄기</string>

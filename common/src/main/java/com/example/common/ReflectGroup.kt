@@ -84,21 +84,29 @@ object Reflect {
     inline fun method(obj: Any, name: String, params: Params? = null) {
         try {
             obj.javaClass.run {
-                params?.let {
-                     getDeclaredMethod(name, *it.argTypes!!.toTypedArray())
-                         .invoke(obj, *it.argv!!.toTypedArray())
-                } ?: getDeclaredMethod(name).invoke(obj)
+                if (params == null) {
+                    getDeclaredMethod(name).invoke(obj)
+                } else {
+                    params.let {
+                        getDeclaredMethod(name, *it.argTypes!!.toTypedArray())
+                            .invoke(obj, *it.argv!!.toTypedArray())
+                    }
+                }
             }
         } catch (e: Exception) {
             if (Reflect.mLog.isDebugEnabled) {
                 e.printStackTrace()
             }
+
+            mLog.error("ERROR: ${e.message}")
         }
     }
 
     inline fun classType(obj: Any, index: Int) =
         (obj.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[index]
 
-    data class Params(val argTypes: List<Class<out Any>>? = null, val argv : List<Any>? = null)
+    data class Params(val argTypes: List<Class<out Any>>? = null, val argv : List<Any>? = null) {
+        constructor(argTypes: Class<out Any>, argv: Any) : this(listOf(argTypes), listOf(argv))
+    }
 }
 

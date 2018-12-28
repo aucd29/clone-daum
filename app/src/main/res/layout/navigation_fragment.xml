@@ -8,14 +8,19 @@
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
-            android:id="@+id/nav_container"
+            android:id="@+id/navi_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#10000000"
     >
+        <View
+                android:id="@+id/navi_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#0c000000"
+        />
 
         <com.google.android.material.navigation.NavigationView
-                android:id="@+id/nav_view"
+                android:id="@+id/navi_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:elevation="0dp"
@@ -24,7 +29,7 @@
         >
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/nav_layout"
+                    android:id="@+id/navi_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/white"
@@ -133,10 +138,11 @@
                         android:id="@+id/navi_tab_container"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:background="#dedede"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/navi_tab"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/navi_bottom"
                 />
 
                 <!-- bottom area -->
@@ -191,8 +197,12 @@
                     <TextView
                             android:id="@+id/navi_vertical_bar"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            tools:text="1"
-                            android:textColor="#dedede"
+                            android:text="|"
+                            android:textColor="#a4a4a4"
+                            android:paddingTop="10dp"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp"
+                            android:gravity="center|center_vertical"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"

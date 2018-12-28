@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-            android:id="@+id/navi_shotcut"
-            android:title="@string/navi_tab_shotcut" />
+            android:id="@+id/mnu_navi_shortcut"
+            android:title="@string/navi_tab_shortcut" />
 
     <item
-            android:id="@+id/navi_mail"
+            android:id="@+id/mnu_navi_mail"
             android:title="@string/navi_tab_mail" />
 
     <item
-            android:id="@+id/navi_cafe"
+            android:id="@+id/mnu_navi_cafe"
             android:title="@string/navi_tab_cafe" />
 </menu>
