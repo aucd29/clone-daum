@@ -8,6 +8,7 @@ import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.common.BaseDaggerFragment
 import com.example.common.dataBinding
 import com.example.common.di.module.inject
+import com.example.common.di.module.injectFrom
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -23,7 +24,7 @@ class MailFragment: BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mLoginViewModel = mViewModelFactory.inject(this, NavigationLoginViewModel::class.java)
+        mLoginViewModel = mViewModelFactory.injectFrom(this, NavigationLoginViewModel::class.java)
 
         viewBinding()
     }
