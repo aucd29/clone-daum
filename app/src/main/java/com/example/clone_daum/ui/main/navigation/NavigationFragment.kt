@@ -26,16 +26,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     @Inject lateinit var config: Config
     @Inject lateinit var viewController: ViewController
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        viewBinding()
-    }
-
-    override fun settingEvents() = mViewModel.run {
-    }
-
-    private fun viewBinding() = mBinding.run {
+    override fun initViewBinding() = mBinding.run {
         naviContainer.run {
             postDelayed({ openDrawer(GravityCompat.END) }, 50)
             addDrawerListener(this@NavigationFragment)
@@ -67,6 +58,9 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
         }
 
         viewController.shortcutFragment(childFragmentManager, true)
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
     }
 
     override fun onBackPressed() = mBinding.run {

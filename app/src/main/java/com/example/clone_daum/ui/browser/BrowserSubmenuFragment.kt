@@ -18,8 +18,10 @@ import dagger.android.ContributesAndroidInjector
 
 class BrowserSubmenuFragment
     : BaseDaggerBottomSheetDialogFragment<BrowserSubmenuFragmentBinding, BrowserSubmenuViewModel>() {
+    override fun initViewBinding() {
+    }
 
-    override fun settingEvents() { }
+    override fun initViewModelEvents() { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

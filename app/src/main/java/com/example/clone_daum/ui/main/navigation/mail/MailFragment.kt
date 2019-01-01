@@ -1,15 +1,12 @@
 package com.example.clone_daum.ui.main.navigation.mail
 
-import android.os.Bundle
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MailFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.common.BaseDaggerFragment
 import com.example.common.dataBinding
-import com.example.common.di.module.inject
-import com.example.common.di.module.injectFrom
-import dagger.Module
+import com.example.common.di.module.injectOf
 import dagger.android.ContributesAndroidInjector
 
 /**
@@ -17,28 +14,23 @@ import dagger.android.ContributesAndroidInjector
  */
 
 class MailFragment: BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
-
     private lateinit var mLoginViewModel: NavigationLoginViewModel
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun bindViewModel() {
+        super.bindViewModel()
 
-        mLoginViewModel = mViewModelFactory.injectFrom(this, NavigationLoginViewModel::class.java)
-
-        viewBinding()
+        mLoginViewModel = mViewModelFactory.injectOf(this, NavigationLoginViewModel::class.java)
     }
 
-    private fun viewBinding() = mBinding.run {
+    override fun initViewBinding() = mBinding.run {
         mLoginDataBinding = dataBinding(R.layout.mail_fragment)
 
 //        mailContainer
     }
 
-    override fun settingEvents() {
+    override fun initViewModelEvents() {
     }
-
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

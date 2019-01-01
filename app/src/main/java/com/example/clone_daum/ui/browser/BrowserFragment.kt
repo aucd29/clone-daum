@@ -28,28 +28,35 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
-    override fun settingEvents() = mViewModel.run {
-        val url = arguments?.getString("url")
-        if (url == null) {
-            mLog.error("ERROR: URL : $url")
-            return
-        }
+    private var mUrl: String? = null
 
-        sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+    override fun initViewBinding() = mBinding.run {
+        mUrl = arguments?.getString("url")
+
+        if (mUrl == null) {
+            mLog.error("ERROR: URL : $mUrl")
+            return@run
+        }
 
         animateIn()
-        applyUrl(url)
+        brsWebview.loadUrl(mUrl)
+        mViewModel.applyUrl(mUrl!!)
+    }
 
-        mBinding.run {
-            brsWebview.loadUrl(url)
-            applyBrsCount(brsArea.childCount)  // 임시 코드 추후 db 에서 얻어오도록 해야함
+    override fun initViewModelEvents() = mViewModel.run {
+        if (mUrl == null) {
+            return@run
         }
+
+        // 임시 코드 추후 db 에서 얻어오도록 해야함
+        applyBrsCount(mBinding.brsArea.childCount)
 
         observe(backEvent)    { onBackPressed() }
         observe(searchEvent)  { viewController.searchFragment() }
         observe(shareEvent)   { shareLink(it) }
         observe(submenuEvent) { viewController.browserSubFragment() }
 
+        sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
         brsSetting.set(WebViewSettingParams(
             progress = {
                 if (mLog.isTraceEnabled()) {

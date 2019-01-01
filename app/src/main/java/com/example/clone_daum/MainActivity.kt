@@ -42,7 +42,10 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    override fun settingEvents() = mViewModel.run {
+    override fun initViewBinding() {
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
         observe(closeEvent) {
             if (mLog.isInfoEnabled) {
                 mLog.info("GONE SPLASH")

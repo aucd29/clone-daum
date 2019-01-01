@@ -10,7 +10,10 @@ import dagger.android.ContributesAndroidInjector
  */
 
 class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
-    override fun settingEvents() {
+    override fun initViewBinding() {
+    }
+
+    override fun initViewModelEvents() {
 
     }
 

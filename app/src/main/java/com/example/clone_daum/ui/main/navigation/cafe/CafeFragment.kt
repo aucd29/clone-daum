@@ -10,7 +10,10 @@ import dagger.android.ContributesAndroidInjector
  */
 
 class CafeFragment: BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
-    override fun settingEvents() {
+    override fun initViewBinding() {
+    }
+
+    override fun initViewModelEvents() {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

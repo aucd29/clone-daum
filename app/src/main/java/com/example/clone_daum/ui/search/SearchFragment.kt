@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.search
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.common.di.module.inject
+import com.example.common.di.module.injectOfActivity
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -24,13 +24,16 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     override fun bindViewModel() = mBinding.run {
         super.bindViewModel()
 
-        popularviewVm = mViewModelFactory.inject(this@SearchFragment, PopularViewModel::class.java)
+        popularviewVm = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
         popularviewVm.chipLayoutManager.set(layoutManager)
 
         popularmodel = popularviewVm
     }
 
-    override fun settingEvents() = mViewModel.run {
+    override fun initViewBinding() {
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
         init()
         observe(searchEvent) { browserFragment(it) }
 

@@ -38,18 +38,19 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 
         bindViewModel()
+
         snackbarAware()
         dialogAware()
         finishFragmentAware()
 
-        settingEvents()
+        initViewBinding()
+        initViewModelEvents()
     }
 
     private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
     protected open fun viewModelMethodName() = SET_VIEW_MODEL
 
-    // 귀차니즘이 너무 큰게 아닌가 싶기도 하고 -_ -ㅋ
     protected open fun bindViewModel() {
         Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
@@ -78,7 +79,8 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    abstract fun settingEvents()
+    abstract fun initViewBinding()
+    abstract fun initViewModelEvents()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +110,8 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         dialogAware()
         finishFragmentAware()
 
-        settingEvents()
+        initViewBinding()
+        initViewModelEvents()
     }
 
     private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
@@ -138,8 +141,8 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-
-    abstract fun settingEvents()
+    abstract fun initViewBinding()
+    abstract fun initViewModelEvents()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +169,8 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 
         finishFragmentAware()
 
-        settingEvents()
+        initViewBinding()
+        initViewModelEvents()
     }
 
     private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
@@ -183,7 +187,8 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    abstract fun settingEvents()
+    abstract fun initViewBinding()
+    abstract fun initViewModelEvents()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -210,7 +215,8 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
         finishFragmentAware()
 
-        settingEvents()
+        initViewBinding()
+        initViewModelEvents()
     }
 
     private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
@@ -227,5 +233,6 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         }
     }
 
-    abstract fun settingEvents()
+    abstract fun initViewBinding()
+    abstract fun initViewModelEvents()
 }

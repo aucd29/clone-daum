@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.main
 import android.os.Bundle
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
-import com.example.common.di.module.inject
+import com.example.common.di.module.injectOfActivity
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
@@ -36,46 +36,49 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mSplashViewModel = mViewModelFactory.inject(this, SplashViewModel::class.java)
+        mSplashViewModel = mViewModelFactory.injectOfActivity(this, SplashViewModel::class.java)
     }
 
-    override fun settingEvents() = mViewModel.run {
+    override fun initViewBinding() = mBinding.run {
         webviewUrl = arguments?.getString("url")
+
         if (webviewUrl == null) {
             mLog.error("ERROR: URL == null")
 
             return
         }
 
-        mBinding.run {
-            // appbar 이동 시 webview 도 동일하게 이동 시킴
-            observe(appbarOffsetLiveEvent) {
-                if (mLog.isTraceEnabled()) {
-                    mLog.trace("WEBVIEW TRANSLATION Y : $it")
-                }
+        webview.loadUrl(webviewUrl)
 
-                mBinding.webview.translationY = it.toFloat()
+        swipeRefresh.setOnRefreshListener {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("RELOAD $webviewUrl")
             }
 
-            webview.loadUrl(webviewUrl)
-            swipeRefresh.setOnRefreshListener {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("RELOAD $webviewUrl")
-                }
+            //brsEvent.set(WebViewEvent.RELOAD)
+            // 해당 brs 에만 작용하기 위해서 수정
+            webview.reload()
 
-                //brsEvent.set(WebViewEvent.RELOAD)
-                // 해당 brs 에만 작용하기 위해서 수정
-                webview.reload()
+            mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
+                .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                    if (mLog.isInfoEnabled) {
+                        mLog.info("EXPLODE RELOAD ICO TIMER")
+                    }
 
-                mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                    .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("EXPLODE RELOAD ICO TIMER")
-                        }
+                    swipeRefresh.isRefreshing = false
+                })
+        }
 
-                        swipeRefresh.isRefreshing = false
-                    })
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
+        // appbar 이동 시 webview 도 동일하게 이동 시킴
+        observe(appbarOffsetLiveEvent) {
+            if (mLog.isTraceEnabled()) {
+                mLog.trace("WEBVIEW TRANSLATION Y : $it")
             }
+
+            mBinding.webview.translationY = it.toFloat()
         }
 
         brsSetting.set(WebViewSettingParams(

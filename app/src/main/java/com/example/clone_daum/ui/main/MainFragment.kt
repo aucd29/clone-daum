@@ -14,9 +14,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     @Inject lateinit var viewController: ViewController
-//    @Inject lateinit var mainTabAdapter: MainTabAdapter2
 
-    override fun settingEvents() = mViewModel.run {
+    override fun initViewBinding() {
+
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
         observe(gotoSearchEvent) { viewController.searchFragment() }
         observe(navEvent)        { viewController.navigationFragment() }
 
