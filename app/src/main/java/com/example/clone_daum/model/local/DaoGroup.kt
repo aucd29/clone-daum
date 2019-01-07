@@ -4,7 +4,6 @@ import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.Single
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -83,5 +82,26 @@ interface MyFavoriteDao {
     fun delete(keyword: MyFavorite): Completable
 
     @Query("DELETE FROM myFavorite")
+    fun deleteAll()
+}
+
+@Dao
+interface FrequentlySiteDao {
+    @Query("SELECT * FROM frequentlySite ORDER BY count DESC LIMIT 4")
+    fun select(): Flowable<List<FrequentlySite>>
+
+    @Query("SELECT COUNT(*) FROM frequentlySite WHERE url=:url")
+    fun hasUrl(url: String): Maybe<Int>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(site: FrequentlySite): Completable
+
+//    @Update
+//    fun update(keyword: FrequentlySite): Completable
+
+    @Delete
+    fun delete(keyword: FrequentlySite): Completable
+
+    @Query("DELETE FROM frequentlySite")
     fun deleteAll()
 }

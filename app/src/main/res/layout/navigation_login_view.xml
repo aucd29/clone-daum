@@ -4,24 +4,26 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel"/>
+        <variable name="model"
+                  type="com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
+            android:id="@+id/navi_login_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+    >
 
         <TextView
-                android:id="@+id/navi_login_Logo"
+                android:id="@+id/navi_login_icon"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/navi_login_text"
                 android:text="@string/fa_lock"
                 android:textAppearance="@style/solid"
-                android:textSize="80sp"
-                android:layout_marginBottom="10dp"
+                android:textSize="70sp"
+                android:layout_marginBottom="20dp"
         />
 
         <TextView
@@ -35,6 +37,7 @@
         />
 
         <Button
+                android:id="@+id/navi_login_btn_cafe"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/navi_show_cafe"
                 android:visibility="@{model.visibleBtn}"

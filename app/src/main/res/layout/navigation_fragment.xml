@@ -120,13 +120,17 @@
                         android:onClick="@{() -> model.eventBookMark()}"
                 />
 
-                <!-- line 2 -->
+                <!-- line 2
+                radio group + checked button 으로 하면 원하는 ui 가 나올거 같긴하지만
+                그 구조가 그닥 이라서 일단 BottomNavigationView 으로 대체
+                -->
 
                 <com.google.android.material.bottomnavigation.BottomNavigationView
                         android:id="@+id/navi_tab"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:menu="@menu/navigation"
+                        app:itemTextColor="@drawable/selector_navi_tab_bgcolor"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/navi_user_photo"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -138,7 +142,6 @@
                         android:id="@+id/navi_tab_container"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:background="#dedede"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/navi_tab"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -156,7 +159,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                 >
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                             style="@style/navi_bottom_button"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/navi_vertical_bar"
@@ -166,16 +169,38 @@
                         <TextView
                                 style="@style/navi_icon"
                                 android:text="@string/fa_comment_alt"
+                                app:layout_constraintEnd_toStartOf="@+id/navi_notification_title"
                         />
 
                         <TextView
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:id="@+id/navi_notification_title"
                                 android:text="@string/navi_notice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintHorizontal_bias="0.6"
+                                android:textSize="16sp"
                         />
 
-                    </LinearLayout>
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/fa_plus_circle"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:textAppearance="@style/solid"
+                                android:layout_marginStart="8dp"
+                                app:layout_constraintStart_toEndOf="@+id/navi_notification_title"
+                                app:layout_constraintTop_toTopOf="@+id/navi_notification_title"
+                                app:layout_constraintBottom_toBottomOf="@+id/navi_notification_title"
+                                android:visibility="@{model.newIcon}"
+                        />
 
-                    <LinearLayout
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                             style="@style/navi_bottom_button"
                             app:layout_constraintStart_toEndOf="@+id/navi_vertical_bar"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -185,14 +210,23 @@
                         <TextView
                                 style="@style/navi_icon"
                                 android:text="@string/fa_sign_in_alt"
+                                app:layout_constraintEnd_toStartOf="@+id/navi_login_title"
                         />
 
                         <TextView
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:id="@+id/navi_login_title"
                                 android:text="@string/navi_login"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintHorizontal_bias="0.6"
                         />
 
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
                             android:id="@+id/navi_vertical_bar"

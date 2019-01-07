@@ -3,7 +3,9 @@ package com.example.clone_daum.ui.main.navigation
 import android.app.Application
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import com.example.common.IFinishFragmentAware
 import com.example.common.arch.SingleLiveEvent
@@ -25,6 +27,7 @@ class NavigationViewModel @Inject constructor(
     override val finishEvent = SingleLiveEvent<Void>()
 
     val itemSelected = ObservableField<(MenuItem) -> Unit>()
+    val newIcon      = ObservableInt(View.GONE)
 
 
     fun eventSetting() {

@@ -12,6 +12,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -46,6 +47,27 @@ inline fun FragmentActivity.observeDialog(event: SingleLiveEvent<DialogParam>, d
     event.observe(this, Observer { dialog(it, disposable) })
 }
 
+inline fun Activity.generateLayoutName(): String {
+    val name = javaClass.simpleName
+    var layoutName = name.get(0).toLowerCase().toString()
+
+    name.substring(1, name.length).forEach {
+        layoutName += if (it.isUpperCase()) {
+            "_${it.toLowerCase()}"
+        } else {
+            it
+        }
+    }
+
+    return layoutName
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 data class DialogParam (
     var message: String,
     var positiveStr: String? = null,
@@ -74,6 +96,12 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
             .take(1).subscribe { dlg.dismiss() })
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BackPressedManager
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 open class BackPressedManager(var mActivity: AppCompatActivity, var view: View? = null) {
     companion object {

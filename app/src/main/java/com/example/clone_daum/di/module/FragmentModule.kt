@@ -17,11 +17,17 @@ import dagger.Module
 
 @Module(includes = [MainFragment.Module::class
     , MainWebviewFragment.Module::class
+
+    // NAVIGATION
     , NavigationFragment.Module::class
     , CafeFragment.Module::class
     , MailFragment.Module::class
     , ShortcutFragment.Module::class
+
+    // SEARCH
     , SearchFragment.Module::class
+
+    // BROWSER
     , BrowserFragment.Module::class
     , BrowserSubmenuFragment.Module::class
 ])

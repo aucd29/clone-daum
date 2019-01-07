@@ -576,7 +576,7 @@
 //
 ////
 ////    @Deprecated(
-////        "Use {@link #addOnTabSelectedListener(OnTabSelectedListener)} and {@link\n" +
+////        "Use {@url #addOnTabSelectedListener(OnTabSelectedListener)} and {@url\n" +
 ////                "   *     #removeOnTabSelectedListener(OnTabSelectedListener)}."
 ////    )
 ////    fun setOnTabSelectedListener(listener: OnTabSelectedListener?) {
@@ -595,7 +595,7 @@
 //
 //
 ////    @Deprecated(
-////        "Use {@link #addOnTabSelectedListener(OnTabSelectedListener)} and {@link\n" +
+////        "Use {@url #addOnTabSelectedListener(OnTabSelectedListener)} and {@url\n" +
 ////                "   *     #removeOnTabSelectedListener(OnTabSelectedListener)}."
 ////    )
 ////    fun setOnTabSelectedListener(@Nullable listener: BaseOnTabSelectedListener<*>) {
@@ -625,7 +625,7 @@
 ////     *
 ////     * @param listener listener to add
 ////     */
-////    @Deprecated("use {@link #addOnTabSelectedListener(OnTabSelectedListener)}")
+////    @Deprecated("use {@url #addOnTabSelectedListener(OnTabSelectedListener)}")
 ////    fun addOnTabSelectedListener(@Nullable listener: BaseOnTabSelectedListener<*>) {
 ////        addOnTabSelectedListener(wrapOnTabSelectedListener(listener))
 ////    }
@@ -645,7 +645,7 @@
 ////     *
 ////     * @param listener listener to remove
 ////     */
-////    @Deprecated("use {@link #removeOnTabSelectedListener(OnTabSelectedListener)}")
+////    @Deprecated("use {@url #removeOnTabSelectedListener(OnTabSelectedListener)}")
 ////    fun removeOnTabSelectedListener(@Nullable listener: BaseOnTabSelectedListener<*>) {
 ////        removeOnTabSelectedListener(wrapOnTabSelectedListener(listener))
 ////    }
@@ -1160,7 +1160,7 @@
 //     * This is the same as calling [.setupWithViewPager] with
 //     * auto-refresh enabled.
 //     *
-//     * @param viewPager the ViewPager to link to, or `null` to clear any previous link
+//     * @param viewPager the ViewPager to url to, or `null` to clear any previous url
 //     */
 //    fun setupWithViewPager(@Nullable viewPager: ViewPager?) {
 //        setupWithViewPager(viewPager, true)
@@ -1170,7 +1170,7 @@
 //     * The one-stop shop for setting up this [TabLayout] with a [ViewPager].
 //     *
 //     *
-//     * This method will link the given ViewPager and this TabLayout together so that changes in one
+//     * This method will url the given ViewPager and this TabLayout together so that changes in one
 //     * are automatically reflected in the other. This includes scroll state changes and clicks. The
 //     * tabs displayed in this layout will be populated from the ViewPager adapter's page titles.
 //     *
@@ -1181,7 +1181,7 @@
 //     *
 //     * If the given ViewPager is non-null, it needs to already have a [PagerAdapter] set.
 //     *
-//     * @param viewPager the ViewPager to link to, or `null` to clear any previous link
+//     * @param viewPager the ViewPager to url to, or `null` to clear any previous url
 //     * @param autoRefresh whether this layout should refresh its contents if the given ViewPager's
 //     * content changes
 //     */
@@ -1250,9 +1250,9 @@
 //
 //
 ////    @Deprecated(
-////        "Use {@link #setupWithViewPager(ViewPager)} to link a TabLayout with a ViewPager\n" +
+////        "Use {@url #setupWithViewPager(ViewPager)} to url a TabLayout with a ViewPager\n" +
 ////                "        together. When that method is used, the TabLayout will be automatically updated when the\n" +
-////                "        {@link PagerAdapter} is changed."
+////                "        {@url PagerAdapter} is changed."
 ////    )
 ////    fun setTabsFromPagerAdapter(@Nullable adapter: PagerAdapter?) {
 ////        setPagerAdapter(adapter, false)

@@ -1,20 +1,52 @@
 package com.example.clone_daum.ui.main.navigation.shortcut
 
 import com.example.clone_daum.databinding.ShortcutFragmentBinding
+import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
-import dagger.Module
+import com.example.common.di.module.injectOf
 import dagger.android.ContributesAndroidInjector
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 28. <p/>
  */
 
 class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
-    override fun initViewBinding() {
+    private lateinit var mSitemapViewModel  : SitemapViewModel
+    private lateinit var mFrequentlySiteModel : FrequentlySiteViewModel
+
+    @Inject lateinit var viewController: ViewController
+
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        mViewModelFactory.run {
+            mSitemapViewModel    = injectOf(this@ShortcutFragment, SitemapViewModel::class.java)
+            mFrequentlySiteModel = injectOf(this@ShortcutFragment, FrequentlySiteViewModel::class.java)
+        }
+
+        mBinding.run {
+            sitemapModel        = mSitemapViewModel
+            frequentlySiteModel = mFrequentlySiteModel
+        }
     }
 
-    override fun initViewModelEvents() {
+    override fun initViewBinding() {
 
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
+        observe(brsSitemapEvent) {
+            viewController.browserFragment(it)
+        }
+
+        observe(mSitemapViewModel.brsOpenEvent) {
+            viewController.browserFragment(it)
+        }
+
+        observe(mFrequentlySiteModel.brsOpenEvent) {
+            viewController.browserFragment(it)
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

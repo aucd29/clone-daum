@@ -2,9 +2,9 @@
 package com.example.common
 
 import android.app.ActivityManager
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.*
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Environment
 import android.view.View
 import android.view.Window
@@ -41,6 +41,30 @@ inline fun Context.isForegroundApp(pkgName: String) = systemService(ActivityMana
  * 현재 앱이 foreground 인지 확인
  */
 inline fun Context.isForegroundApp() = isForegroundApp(packageName)
+
+inline fun Context.isInstalledPackage(packageName: String)= try {
+    packageManager?.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+    true
+} catch (e: PackageManager.NameNotFoundException) {
+    false
+}
+
+inline fun Context.launchApp(packageName: String) {
+    val intent = if (isInstalledPackage(packageName)) {
+        packageManager.getLaunchIntentForPackage(packageName)
+    } else {
+        try {
+            Intent(Intent.ACTION_VIEW, Uri.parse(
+                "market://details?id=$packageName"))
+        } catch (e: ActivityNotFoundException) {
+            Intent(Intent.ACTION_VIEW, Uri.parse(
+                "https://play.google.com/store/apps/details?id=$packageName"))
+        }
+    }
+
+    startActivity(intent)
+}
+
 
 /**
  * sdcard 내 app 경로 전달

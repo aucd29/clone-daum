@@ -20,27 +20,32 @@ class DbModule {
     @Singleton
     @Provides
     fun provideDb(app: Application): LocalDb =
-            Room.databaseBuilder(app, LocalDb::class.java, DB_NAME)
-                    .fallbackToDestructiveMigration()
-                    .build()
+        Room.databaseBuilder(app, LocalDb::class.java, DB_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Singleton
     @Provides
     fun provideSearchHistoryDao(db: LocalDb)=
-            db.searchHistoryDao()
+        db.searchHistoryDao()
 
     @Singleton
     @Provides
     fun providePopularKeywordDao(db: LocalDb)=
-            db.popularKeywordDao()
+        db.popularKeywordDao()
 
     @Singleton
     @Provides
     fun provideUrlHistoryDao(db: LocalDb) =
-            db.urlHistoryDao()
+        db.urlHistoryDao()
 
     @Singleton
     @Provides
     fun provideMyFavoriteDao(db: LocalDb) =
         db.myFavoriteDao()
+
+    @Singleton
+    @Provides
+    fun provideFrequentlySiteDao(db: LocalDb) =
+        db.frequentlySiteDao()
 }

@@ -4,14 +4,95 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel" />
+        <variable name="model"
+                  type="com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel"/>
+        <variable name="sitemapModel"
+                  type="com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel"/>
+        <variable name="frequentlySiteModel"
+                  type="com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/shotcut_container"
+            android:id="@+id/shortcut_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="15dp"
     >
+        <TextView
+                android:id="@+id/sitemap_title"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/shortcut_sitemap_title"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:onClick="@{() -> model.eventSitemap()}"
+        />
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/sitemap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sitemap_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="20dp"
+                android:fillViewport="true"
+                app:bindLockedGridLayoutManager="@{sitemapModel.gridCount}"
+                app:bindAdapter="@{sitemapModel.adapter}"
+                app:bindItems="@{sitemapModel.items}"
+        />
+
+        <View
+                android:id="@+id/underline"
+                style="@style/line1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sitemap"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="-20dp"
+                android:layout_marginEnd="-20dp"
+        />
+
+        <TextView
+                android:id="@+id/frequently_site_title"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/underline"
+                android:text="@string/shortcut_favorite_title"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+        />
+
+        <TextView
+                android:id="@+id/frequently_site_icon"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textAppearance="@style/solid"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:text="@string/fa_question_circle"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                app:layout_constraintStart_toEndOf="@+id/frequently_site_title"
+                app:layout_constraintTop_toTopOf="@+id/frequently_site_title"
+                app:layout_constraintBottom_toBottomOf="@+id/frequently_site_title"
+                android:onClick="@{() -> model.eventFrequentlySite()}"
+        />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/frequently_site"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/frequently_site_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:bindLockedGridLayoutManager="@{frequentlySiteModel.gridCount}"
+                app:bindAdapter="@{frequentlySiteModel.adapter}"
+                app:bindItems="@{frequentlySiteModel.items}"
+        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

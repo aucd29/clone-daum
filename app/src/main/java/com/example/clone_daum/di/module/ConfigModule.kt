@@ -8,14 +8,17 @@ import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.BrowserSubMenu
+import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.local.PopularKeyword
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.GithubService
+import com.example.clone_daum.model.remote.Sitemap
 import com.example.common.jsonParse
 import com.example.common.stringId
 import com.example.common.systemService
 import dagger.Module
 import dagger.Provides
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,7 +29,6 @@ import javax.inject.Singleton
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 14. <p/>
  */
-
 
 @Module
 class ConfigModule {
@@ -92,6 +94,7 @@ class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable
 
     val tabLabelList: List<TabData>
     lateinit var brsSubMenu: List<BrowserSubMenu>
+    lateinit var naviSitemap: List<Sitemap>
 
     init {
         dp.add(dm.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
@@ -122,10 +125,33 @@ class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable
             }
             .subscribe { brsSubMenu = it })
 
+        dp.add(Observable.just(assets.open("res/navi_services.json").readBytes())
+            .observeOn(Schedulers.io())
+            .map { it.jsonParse<List<Sitemap>>() }
+            .subscribe { naviSitemap = it })
+
+        dp.add(db.frequentlySiteDao.select().subscribe {
+            if (it.size == 0) {
+                val ob1 = db.frequentlySiteDao.insert(FrequentlySite(title = "KAKAO TV"
+                    , url = "http://m.tv.kakao.com", count = 0))
+                val ob2 = db.frequentlySiteDao.insert(FrequentlySite(title = "DIC"
+                    , url = "http://m.dic.kakao.com", count = 0))
+                val ob3 = db.frequentlySiteDao.insert(FrequentlySite(title = "MAP"
+                    , url = "http://m.map.kakao.com", count = 0))
+                val ob4 = db.frequentlySiteDao.insert(FrequentlySite(title = "TSTORY"
+                    , url = "http://m.tstory.com", count = 0))
+
+                Flowable.just(ob1, ob2, ob3, ob4).subscribe {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("INSERT PRELOAD DATA (CONNECTED SITE)")
+                    }
+                }
+            }
+        })
+
         tabLabelList = Observable.just(assets.open("res/tab.json").readBytes())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
-
     }
 }

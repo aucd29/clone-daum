@@ -72,8 +72,8 @@
     </style>
 
     <style name="navi_bottom_button">
-        <item name="android:gravity">center|center_vertical</item>
-        <item name="android:orientation">horizontal</item>
+        <!--<item name="android:gravity">center|center_vertical</item>-->
+        <!--<item name="android:orientation">horizontal</item>-->
         <item name="android:paddingTop">25dp</item>
         <item name="android:paddingBottom">10dp</item>
         <item name="android:layout_width">0dp</item>

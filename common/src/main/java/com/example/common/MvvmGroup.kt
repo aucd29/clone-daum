@@ -221,7 +221,6 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
 
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId(), container, false)
         mBinding.root.isClickable = true
@@ -243,7 +242,6 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
-
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()

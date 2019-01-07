@@ -7,6 +7,8 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 8. <p/>
@@ -146,3 +148,35 @@ inline fun Window.lpww() {
     attributes = WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT)
 }
+
+// Constraint
+//
+//inline fun ConstraintLayout.lp(w: Int, h: Int) {
+//    layoutParams = ConstraintLayout.LayoutParams(w, h)
+//}
+//
+inline fun ConstraintLayout.lpmm(applyTo: ConstraintLayout) {
+    ConstraintSet().run {
+        connect(id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
+        connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
+        connect(id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)
+        connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
+
+        applyTo(applyTo)
+    }
+}
+//
+//inline fun ConstraintLayout.lpmw() {
+//    layoutParams = ConstraintLayout.LayoutParams(
+//        ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+//}
+//
+//inline fun ConstraintLayout.lpwm() {
+//    layoutParams = ConstraintLayout.LayoutParams(
+//        ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
+//}
+//
+//inline fun ConstraintLayout.lpww() {
+//    layoutParams = ConstraintLayout.LayoutParams(
+//        ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+//}

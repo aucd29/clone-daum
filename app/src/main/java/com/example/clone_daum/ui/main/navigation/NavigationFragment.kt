@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.main.navigation
 
-import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout

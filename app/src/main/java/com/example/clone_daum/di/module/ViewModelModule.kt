@@ -10,7 +10,9 @@ import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationViewModel
 import com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel
 import com.example.clone_daum.ui.main.navigation.mail.MailViewModel
+import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
+import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
@@ -48,6 +50,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ShortcutViewModel::class)
     abstract fun bindShortcutViewModel(vm: ShortcutViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SitemapViewModel::class)
+    abstract fun bindSitemapViewModel(vm: SitemapViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FrequentlySiteViewModel::class)
+    abstract fun bindFrequentlySiteViewModel(vm: FrequentlySiteViewModel): ViewModel
 
     @Binds
     @IntoMap

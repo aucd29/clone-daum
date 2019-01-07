@@ -4,10 +4,10 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MailFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
-import com.example.common.BaseDaggerFragment
-import com.example.common.dataBinding
+import com.example.common.*
 import com.example.common.di.module.injectOf
 import dagger.android.ContributesAndroidInjector
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 28. <p/>
@@ -24,12 +24,22 @@ class MailFragment: BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
     }
 
     override fun initViewBinding() = mBinding.run {
-        mLoginDataBinding = dataBinding(R.layout.mail_fragment)
+        // LOGOUT STATUS
+        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
+        mLoginDataBinding.model = mLoginViewModel
 
-//        mailContainer
+        mailContainer.addView(mLoginDataBinding.naviLoginContainer)
+        mLoginDataBinding.naviLoginContainer.lpmm(mailContainer)
+
+        loginViewModelEvents()
     }
 
-    override fun initViewModelEvents() {
+    override fun initViewModelEvents() = mViewModel.run {
+
+    }
+
+    private fun loginViewModelEvents() = mLoginViewModel.run {
+        message.set(R.string.navi_require_login_check_mail)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

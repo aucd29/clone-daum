@@ -43,8 +43,8 @@ object GlideBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("android:src")
-    fun imagePath(view: ImageView, path: String) {
+    @BindingAdapter("bindImage")
+    fun bindImage(view: ImageView, path: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND IMAGE : $path")
         }

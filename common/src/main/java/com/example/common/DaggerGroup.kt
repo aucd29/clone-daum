@@ -8,6 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import com.example.common.di.module.DaggerViewModelFactory
+import com.example.common.di.module.injectOfActivity
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -23,6 +24,7 @@ import javax.inject.Inject
 ////////////////////////////////////////////////////////////////////////////////////
 
 private const val SET_VIEW_MODEL = "setModel"
+private const val LAYOUT         = "layout"
 
 abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
     : BaseActivity<T>() {
@@ -31,6 +33,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
     protected lateinit var mViewModel: M
+    protected var mLayoutName = generateLayoutName()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +49,8 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         initViewBinding()
         initViewModelEvents()
     }
+
+    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
 
     private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
@@ -78,6 +83,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
             observe(finishEvent) { finish() }
         }
     }
+
 
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()

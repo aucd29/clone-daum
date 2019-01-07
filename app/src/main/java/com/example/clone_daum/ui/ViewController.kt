@@ -77,10 +77,13 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             SearchFragment::class.java, anim = FragmentAnim.ALPHA))
     }
 
-    fun browserFragment(bundle: Bundle) {
+    fun browserFragment(url: String) {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER FRAGMENT")
         }
+
+        val bundle = Bundle()
+        bundle.putString("url", url)
 
         manager.show(FragmentParams(CONTAINER,
             BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = bundle))

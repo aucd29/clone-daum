@@ -20,8 +20,6 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.main_activity
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)

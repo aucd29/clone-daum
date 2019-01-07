@@ -52,3 +52,15 @@ data class MyFavorite (
 ) : IRecyclerDiff {
     override fun compare(item: IRecyclerDiff)= this._id == (item as MyFavorite)._id
 }
+
+@Entity(tableName = "frequentlySite")
+data class FrequentlySite(
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val title: String,
+    val url: String,
+    val count: Long
+) : IRecyclerDiff {
+    override fun compare(item: IRecyclerDiff)=
+        this.url == (item as FrequentlySite).url
+}

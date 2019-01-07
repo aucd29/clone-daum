@@ -23,7 +23,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
         private const val TIMEOUT_RELOAD_ICO = 4L
-        private var IS_CLOSED_SPLASH = false
+        private var IS_CLOSED_SPLASH         = false
     }
 
     private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
@@ -93,10 +93,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
                             mLog.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
-                        val bundle = Bundle()
-                        bundle.putString("url", it)
-
-                        viewController.browserFragment(bundle)
+                        viewController.browserFragment(it)
                     } else {
                         if (mLog.isDebugEnabled) {
                             mLog.debug("JUST LOAD URL : $url")
