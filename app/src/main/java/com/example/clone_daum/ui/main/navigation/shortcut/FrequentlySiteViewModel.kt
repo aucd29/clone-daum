@@ -38,8 +38,8 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
     }
 
     fun eventIconText(url: String) =
-        url.replace("http://".toRegex(), "")
-            .replace("https://".toRegex(), "").substring(0, 1)
+        url.replace("^(http|https)://".toRegex(), "")
+            .substring(0, 1)
             .toUpperCase()
 
     fun eventIconBackground(url: String) =
