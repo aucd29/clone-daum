@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 
 import android.app.Application
 import androidx.databinding.ObservableInt
+import com.example.clone_daum.R
 import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.local.FrequentlySiteDao
 import com.example.common.RecyclerViewModel
@@ -30,15 +31,24 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
         initAdapter("frequently_item")
 
         disposable.add(frequentlySiteDao.select().subscribe {
+            (it as ArrayList<FrequentlySite>).add(FrequentlySite(
+                title = "사이트이동", url = "http://daum.net", count = 1))
             items.set(it)
         })
     }
 
-    fun eventOpen(url: String) {
-        if (url == FAVORITE_FRAGMENT) {
-//            app.launchApp(url)
-        } else {
-            brsOpenEvent.value = url
+    fun eventIconText(url: String) =
+        url.replace("http://".toRegex(), "")
+            .replace("https://".toRegex(), "").substring(0, 1)
+            .toUpperCase()
+
+    fun eventIconBackground(url: String) =
+        when (eventIconText(url).toCharArray().get(0).toInt() % 2) {
+            0    -> R.drawable.shape_frequently_0_background
+            else -> R.drawable.shape_frequently_1_background
         }
+
+    fun eventOpen(url: String) {
+        brsOpenEvent.value = url
     }
 }

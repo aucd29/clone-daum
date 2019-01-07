@@ -21,6 +21,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:gravity="center|center_vertical"
+                android:textSize="30sp"
+                android:paddingStart="13dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="13dp"
+                android:paddingBottom="5dp"
+                android:textColor="@android:color/white"
+                android:background="@{model.eventIconBackground(item.url)}"
+                android:text="@{model.eventIconText(item.url)}"
         />
 
         <TextView
@@ -30,7 +39,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="10dp"
-                android:text="@{item.url}"
+                android:text="@{item.title}"
+                android:lines="1"
+                android:maxLines="1"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
