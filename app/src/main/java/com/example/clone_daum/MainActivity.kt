@@ -10,9 +10,11 @@ import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.rxkotlin.Observables
 import org.slf4j.LoggerFactory
-import java.lang.Exception
-import java.lang.reflect.Field
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
@@ -50,6 +52,10 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
             if (mLog.isInfoEnabled) {
                 mLog.info("GONE SPLASH")
             }
+
+            // 만약을 위해 등록한 splash 쪽 composite disposable 를
+            // clear 하여 timer 가 explode 되지 않도록 한다.
+            disposable.clear()
 
             visibleSplash.set(View.GONE)
             // remove view
