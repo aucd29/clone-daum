@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
+import com.example.clone_daum.MainApp
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -88,10 +89,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                             sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
                         } else it?.cancel()
                     }))
-            } , pageStarted  = {
+            }, pageStarted  = {
                 visibleProgress.set(View.VISIBLE)
                 reloadIconResId.set(R.drawable.ic_clear_black_24dp)
-            } , pageFinished = {
+            }, pageFinished = {
                 visibleProgress.set(View.GONE)
                 reloadIconResId.set(R.drawable.ic_replay_black_24dp)
             }

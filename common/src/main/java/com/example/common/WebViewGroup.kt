@@ -106,6 +106,8 @@ enum class WebViewEvent {
 
 inline fun WebView.free() {
     try {
+        webViewClient = null
+
         clearHistory()
         removeAllViews()
 

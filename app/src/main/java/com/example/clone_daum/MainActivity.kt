@@ -11,6 +11,8 @@ import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
+import java.lang.Exception
+import java.lang.reflect.Field
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
