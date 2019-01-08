@@ -2,6 +2,8 @@ package com.example.clone_daum.ui.browser
 
 import android.content.Intent
 import android.view.View
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -30,6 +32,9 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     private var mUrl: String? = null
 
+    override fun viewModelProvider()
+            = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
+
     override fun initViewBinding() = mBinding.run {
         mUrl = arguments?.getString("url")
 
@@ -39,14 +44,16 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
 
         animateIn()
+
         brsWebview.loadUrl(mUrl)
-        mViewModel.applyUrl(mUrl!!)
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         if (mUrl == null) {
             return@run
         }
+
+        applyUrl(mUrl!!)
 
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
