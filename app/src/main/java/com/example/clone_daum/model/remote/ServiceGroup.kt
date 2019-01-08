@@ -16,6 +16,11 @@ interface GithubService {
 }
 
 interface DaumService {
+    @GET("/")
+    fun main(): Observable<String>
+}
+
+interface DaumSuggestService {
     // https://msuggest.search.daum.net/sushi/mobile/get?htype=position&q=d
     /*
     {

@@ -10,11 +10,9 @@ import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.rxkotlin.Observables
 import org.slf4j.LoggerFactory
-import java.util.concurrent.TimeUnit
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
@@ -25,7 +23,9 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     @Inject lateinit var viewController: ViewController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        exceptionCatcher()
         setTheme(R.style.AppTheme)
+
         super.onCreate(savedInstanceState)
 
         if (mLog.isDebugEnabled) {
@@ -72,6 +72,27 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
                 }
 
                 WebView.setWebContentsDebuggingEnabled(true)
+            }
+        }
+    }
+
+    private fun exceptionCatcher() {
+        // setting exception
+        val handler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            val os = ByteArrayOutputStream()
+            val s = PrintStream(os)
+            e.printStackTrace(s)
+            s.flush()
+
+            mLog.error("ERROR: ${os.toString()}")
+
+            if (handler != null) {
+                handler.uncaughtException(t, e)
+            } else {
+                mLog.error("ERROR: EXCEPTION HANDLER == null")
+
+                android.os.Process.killProcess(android.os.Process.myPid())
             }
         }
     }

@@ -7,9 +7,8 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
-import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.SearchHistory
-import com.example.clone_daum.model.remote.DaumService
+import com.example.clone_daum.model.remote.DaumSuggestService
 import com.example.clone_daum.model.ISearchRecyclerData
 import com.example.clone_daum.model.local.SearchHistoryDao
 import com.example.clone_daum.model.remote.SuggestItem
@@ -35,7 +34,7 @@ class SearchViewModel @Inject constructor(app: Application)
         const val K_RECENT_SEARCH     = "search-recent-search"
     }
 
-    @Inject lateinit var daum: DaumService
+    @Inject lateinit var daum: DaumSuggestService
     @Inject lateinit var searchDao: SearchHistoryDao
     @Inject lateinit var disposable: CompositeDisposable
 

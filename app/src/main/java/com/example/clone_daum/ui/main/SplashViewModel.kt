@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.clone_daum.di.module.Config
 import com.example.common.arch.SingleLiveEvent
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
@@ -38,8 +39,10 @@ class SplashViewModel @Inject constructor(val config: Config
 
         // 로딩 완료가 안뜨는 경우가 존재할 수 있으니 이를 보안하기 위한 타이머 추가
         disposable.add(Observable.timer(10, TimeUnit.SECONDS)
-            .take(1).subscribe {
-                mLog.error("ERROR: SPLASH TIMEROUT")
+            .take(1)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                mLog.error("ERROR: SPLASH TIMEOUT")
                 closeEvent.call()
             })
     }

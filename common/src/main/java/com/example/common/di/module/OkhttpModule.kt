@@ -10,6 +10,7 @@ import org.slf4j.Logger
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -51,12 +52,20 @@ class OkhttpModule {
     fun provideJacksonConverterFactory() =
         JacksonConverterFactory.create(Json.mapper)
 
+    // https://stackoverflow.com/questions/36523972/how-to-get-string-response-from-retrofit2
+    @Provides
+    @Singleton
+    fun provideScalarsConverterFactory() =
+        ScalarsConverterFactory.create()
+
     @Provides
     fun provideRetrofit(rxAdapter: RxJava2CallAdapterFactory,
                         jacksonFactory: JacksonConverterFactory,
+                        scalarsConverterFactory: ScalarsConverterFactory,
                         okhttpclient: OkHttpClient) =
         Retrofit.Builder()
             .addCallAdapterFactory(rxAdapter)
+            .addConverterFactory(scalarsConverterFactory)
             .addConverterFactory(jacksonFactory)
             .client(okhttpclient)
 }
