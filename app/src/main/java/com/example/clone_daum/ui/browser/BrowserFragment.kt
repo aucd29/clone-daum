@@ -117,6 +117,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         super.onResume()
     }
 
+    override fun onDestroyView() {
+        mBinding.brsWebview.free()
+
+        super.onDestroyView()
+    }
+
     private fun animateIn() = mViewModel.run {
         brsUrlBarAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
