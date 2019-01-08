@@ -10,6 +10,7 @@ import com.example.common.app
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.launchApp
 import io.reactivex.disposables.CompositeDisposable
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -21,7 +22,9 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
     , val frequentlySiteDao: FrequentlySiteDao)
     : RecyclerViewModel<FrequentlySite>(app) {
     companion object {
-        const val FAVORITE_FRAGMENT = "favListFragment"
+        private val mLog = LoggerFactory.getLogger(FrequentlySiteViewModel::class.java)
+
+        const val DEFAULT_TITLE = "사이트이동"
     }
 
     val gridCount    = ObservableInt(5)
@@ -31,21 +34,21 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
         initAdapter("frequently_item")
 
         disposable.add(frequentlySiteDao.select().subscribe {
+            // 마지막 아이템에 기본 값을 추가 함
             (it as ArrayList<FrequentlySite>).add(FrequentlySite(
-                title = "사이트이동", url = "http://daum.net", count = 1))
+                title = DEFAULT_TITLE, url = "http://m.daum.net", count = 1))
+
             items.set(it)
         })
     }
 
-    fun eventIconText(url: String) =
-        url.replace("^(http|https)://".toRegex(), "")
-            .substring(0, 1)
-            .toUpperCase()
-
-    fun eventIconBackground(url: String) =
-        when (eventIconText(url).toCharArray().get(0).toInt() % 2) {
-            0    -> R.drawable.shape_frequently_0_background
-            else -> R.drawable.shape_frequently_1_background
+    fun eventIconText(item: FrequentlySite) =
+        if (item.title == DEFAULT_TITLE) {
+            "http"
+        } else {
+            item.url.replace("^(http|https)://".toRegex(), "")
+                .substring(0, 1)
+                .toUpperCase()
         }
 
     fun eventOpen(url: String) {

@@ -18,7 +18,6 @@ import com.example.common.stringId
 import com.example.common.systemService
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -42,6 +41,12 @@ class ConfigModule {
                              assetManager: AssetManager, context: Context) =
         PreloadConfig(dm, db, dp, assetManager, context)
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Config
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 class Config(val context: Context) {
     val USER_AGENT: String
@@ -85,9 +90,14 @@ class Config(val context: Context) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+// PreloadConfig
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable, assets: AssetManager,
                     context: Context) {
-
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
@@ -100,15 +110,19 @@ class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable
         dp.add(dm.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
             db.popularKeywordDao.run {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETE ALL POPULAR KEYWORD")
+                    mLog.debug("DELETE ALL PopularKeyword")
                 }
                 deleteAll()
 
+                val dataList = arrayListOf<PopularKeyword>()
                 it.forEach {
+                    dataList.add(PopularKeyword(keyword = it))
+                }
+
+                insertAll(dataList).subscribe {
                     if (mLog.isDebugEnabled) {
-                        mLog.debug("INSERT POPULAR KEYWORD $it")
+                        mLog.debug("INSERTED PopularKeyword")
                     }
-                    insert(PopularKeyword(keyword = it)).subscribe()
                 }
             }
         }, { e -> mLog.error("ERROR: ${e.message}") }))
@@ -125,27 +139,35 @@ class PreloadConfig(dm: GithubService, db: DbRepository, dp: CompositeDisposable
             }
             .subscribe { brsSubMenu = it })
 
-        dp.add(Observable.just(assets.open("res/navi_services.json").readBytes())
+        dp.add(Observable.just(assets.open("res/navi_sitemap.json").readBytes())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<Sitemap>>() }
-            .subscribe { naviSitemap = it })
-
-        dp.add(db.frequentlySiteDao.select().subscribe {
-            if (it.size == 0) {
-                val ob1 = db.frequentlySiteDao.insert(FrequentlySite(title = "KAKAO TV"
-                    , url = "http://m.tv.kakao.com", count = 0))
-                val ob2 = db.frequentlySiteDao.insert(FrequentlySite(title = "DIC"
-                    , url = "http://m.dic.kakao.com", count = 0))
-                val ob3 = db.frequentlySiteDao.insert(FrequentlySite(title = "MAP"
-                    , url = "http://m.map.kakao.com", count = 0))
-                val ob4 = db.frequentlySiteDao.insert(FrequentlySite(title = "TSTORY"
-                    , url = "http://m.tstory.com", count = 0))
-
-                Flowable.just(ob1, ob2, ob3, ob4).subscribe {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("INSERT PRELOAD DATA (CONNECTED SITE)")
-                    }
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("PARSE OK : navi_sitemap.json")
                 }
+
+                naviSitemap = it
+            })
+
+        dp.add(db.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
+            if (it.size == 0) {
+                // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
+                // 기본 값 생성하는 것.
+                dp.add(Observable.just(assets.open("res/frequently_site.json").readBytes())
+                    .observeOn(Schedulers.io())
+                    .map { it.jsonParse<List<FrequentlySite>>() }
+                    .subscribe {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("PARSE OK : frequently_site.json ")
+                        }
+
+                        db.frequentlySiteDao.insertAll(it).subscribe {
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("INSERTED FrequentlySite")
+                            }
+                        }
+                    })
             }
         })
 

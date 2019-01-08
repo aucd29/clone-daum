@@ -60,6 +60,9 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     }
 
     override fun initViewModelEvents() = mViewModel.run {
+        observe(brsOpenEvent) {
+            viewController.browserFragment(it)
+        }
     }
 
     override fun onBackPressed() = mBinding.run {

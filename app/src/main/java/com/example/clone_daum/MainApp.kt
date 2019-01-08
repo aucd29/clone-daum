@@ -22,7 +22,7 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
     }
 
     @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-    @Inject lateinit var preConfig: PreloadConfig
+//    @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewPump: ViewPump
 
     override fun onCreate() {

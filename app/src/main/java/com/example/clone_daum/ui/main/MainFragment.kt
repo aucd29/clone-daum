@@ -33,7 +33,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
 
             // https://stackoverflow.com/questions/40896907/can-a-custom-view-be-used-as-a-tabitem
             mBinding.tab.tabs.forEach {
-                val view = layoutInflater.inflate(R.layout.tab_main_custom, null)
+                val view     = inflate(R.layout.tab_main_custom)
                 view.tab_label.text = it?.text
 
                 it?.customView = view

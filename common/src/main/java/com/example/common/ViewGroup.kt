@@ -2,6 +2,7 @@
 package com.example.common
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
@@ -27,3 +28,11 @@ inline fun View.pxToDp(v: Int) = v / context.displayDensity()
 
 inline fun Int.dpToPx(context: Context) = this * context.displayDensity()
 inline fun Int.pxToDp(context: Context) = this / context.displayDensity()
+
+// https://stackoverflow.com/questions/29664993/how-to-convert-dp-px-sp-among-each-other-especially-dp-and-sp
+
+inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics)
+
+inline fun Int.spToPx(context: Context) = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics)

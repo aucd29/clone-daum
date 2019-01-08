@@ -59,8 +59,8 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         if (BuildConfig.DEBUG) {
             // enabled chrome inspector
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ENABLED CHROME INSPECTOR")
+                if (mLog.isInfoEnabled) {
+                    mLog.info("ENABLED CHROME INSPECTOR")
                 }
 
                 WebView.setWebContentsDebuggingEnabled(true)

@@ -35,6 +35,9 @@ interface PopularKeywordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(keyword: PopularKeyword): Completable
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(keyword: List<PopularKeyword>): Completable
+
     @Update
     fun update(keyword: PopularKeyword): Completable
 
@@ -93,8 +96,14 @@ interface FrequentlySiteDao {
     @Query("SELECT COUNT(*) FROM frequentlySite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
 
+    @Query("SELECT COUNT(*) FROM frequentlySite")
+    fun count(): Maybe<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(site: FrequentlySite): Completable
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(site: List<FrequentlySite>): Completable
 
 //    @Update
 //    fun update(keyword: FrequentlySite): Completable

@@ -175,6 +175,7 @@ abstract class BaseFragment<T: ViewDataBinding>
     }
 
     protected fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()
@@ -203,6 +204,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
     }
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
@@ -238,10 +240,12 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
 
     override fun supportFragmentInjector() = childFragmentInjector
 
-    fun activity() = activity as BaseActivity<out ViewDataBinding>
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
+
+    fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
