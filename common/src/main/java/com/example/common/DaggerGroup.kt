@@ -45,6 +45,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         dialogAware()
         finishFragmentAware()
         commandEventAware()
+        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -90,9 +91,15 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) {
+    protected open fun onCommandEvent(cmd: String) { }
 
+    protected fun pairEventAware() = mViewModel.run {
+        if (this is IPairEventAware) {
+            observe(pairEvent) { onPairEvent(it.first, it.second) }
+        }
     }
+
+    protected open fun onPairEvent(cmd: String, obj: Any) { }
 
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()
@@ -131,6 +138,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         dialogAware()
         finishFragmentAware()
         commandEventAware()
+        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -181,9 +189,15 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) {
+    protected open fun onCommandEvent(cmd: String) { }
 
+    protected fun pairEventAware() = mViewModel.run {
+        if (this is IPairEventAware) {
+            observe(pairEvent) { onPairEvent(it.first, it.second) }
+        }
     }
+
+    protected open fun onPairEvent(cmd: String, obj: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -225,6 +239,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 
         finishFragmentAware()
         commandEventAware()
+        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -261,9 +276,15 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) {
+    protected open fun onCommandEvent(cmd: String) { }
 
+    protected fun pairEventAware() = mViewModel.run {
+        if (this is IPairEventAware) {
+            observe(pairEvent) { onPairEvent(it.first, it.second) }
+        }
     }
+
+    protected open fun onPairEvent(cmd: String, obj: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -306,6 +327,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
         finishFragmentAware()
         commandEventAware()
+        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -342,9 +364,15 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) {
+    protected open fun onCommandEvent(cmd: String) { }
 
+    protected fun pairEventAware() = mViewModel.run {
+        if (this is IPairEventAware) {
+            observe(pairEvent) { onPairEvent(it.first, it.second) }
+        }
     }
+
+    protected open fun onPairEvent(cmd: String, obj: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

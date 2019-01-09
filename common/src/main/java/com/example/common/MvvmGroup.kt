@@ -106,6 +106,10 @@ interface ICommandEventAware {
     val commandEvent: SingleLiveEvent<String>
 }
 
+interface IPairEventAware {
+    val pairEvent: SingleLiveEvent<Pair<String, Any>>
+}
+
 interface IFinishFragmentAware {
     val finishEvent: SingleLiveEvent<Void>
 }

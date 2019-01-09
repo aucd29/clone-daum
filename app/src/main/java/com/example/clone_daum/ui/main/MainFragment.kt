@@ -83,7 +83,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    //
+    // Module
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
@@ -91,10 +91,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     abstract class Module {
         @dagger.android.ContributesAndroidInjector
         abstract fun contributeInjector(): MainFragment
-
-//        @Binds
-//        @FragmentKey(MainFragment::class)
-//        abstract fun bindMainTabAdapter(adapter: MainTabAdapter2): FragmentStatePagerAdapter
     }
 }
 

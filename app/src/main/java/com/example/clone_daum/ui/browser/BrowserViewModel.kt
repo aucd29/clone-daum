@@ -26,16 +26,27 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserViewModel @Inject constructor(application: Application
-        , var urlDao: UrlHistoryDao
-        , val favDao: MyFavoriteDao
-        , val disposable: CompositeDisposable)
-    : AndroidViewModel(application)
-    , ISnackbarAware, IFinishFragmentAware {
+class BrowserViewModel @Inject constructor(app: Application
+   , var urlDao: UrlHistoryDao
+   , val favDao: MyFavoriteDao
+   , val disposable: CompositeDisposable
+) : AndroidViewModel(app), ISnackbarAware, IFinishFragmentAware
+  , ICommandEventAware, IPairEventAware {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
+
+        const val CMD_BACK             = "back"
+        const val CMD_SEARCH_FRAGMENT  = "search"
+        const val CMD_SUBMENU_FRAGMENT = "submenu"
+
+        const val PAIR_SHARE_EVENT     = "share"
     }
+
+    override val commandEvent  = SingleLiveEvent<String>()
+    override val snackbarEvent = SingleLiveEvent<String>()
+    override val finishEvent   = SingleLiveEvent<Void>()
+    override val pairEvent     = SingleLiveEvent<Pair<String, Any>>()
 
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
@@ -51,13 +62,7 @@ class BrowserViewModel @Inject constructor(application: Application
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
 
-    val backEvent       = SingleLiveEvent<Void>()
-    val searchEvent     = SingleLiveEvent<Void>()
-    val submenuEvent    = SingleLiveEvent<Void>()
-    val shareEvent      = SingleLiveEvent<String>()
-
-    override val snackbarEvent = SingleLiveEvent<String>()
-    override val finishEvent   = SingleLiveEvent<Void>()
+//    val shareEvent      = SingleLiveEvent<String>()
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {
@@ -84,7 +89,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("BACK PRESSED EVENT")
         }
 
-        backEvent.call()
+        commandEvent.value = CMD_BACK
     }
 
     fun eventReloadBrowser(url : String) {
@@ -180,7 +185,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("SHOW SEARCH FRAGMENT")
         }
 
-        searchEvent.call()
+        commandEvent.value = CMD_SEARCH_FRAGMENT
     }
 
     fun eventShareUrl(url: String) {
@@ -188,7 +193,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("SHARE URL : $url")
         }
 
-        shareEvent.value = url
+        pairEvent.value = PAIR_SHARE_EVENT to url
     }
 
     fun eventSubMenu() {
@@ -196,7 +201,7 @@ class BrowserViewModel @Inject constructor(application: Application
             mLog.debug("SUB MENU ")
         }
 
-        submenuEvent.call()
+        commandEvent.value = CMD_SUBMENU_FRAGMENT
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

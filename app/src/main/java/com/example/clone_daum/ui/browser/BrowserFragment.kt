@@ -59,10 +59,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
 
-        observe(backEvent)    { onBackPressed() }
-        observe(searchEvent)  { viewController.searchFragment() }
-        observe(shareEvent)   { shareLink(it) }
-        observe(submenuEvent) { viewController.browserSubFragment() }
+//        observe(shareEvent)   { shareLink(it) }
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
         brsSetting.set(WebViewSettingParams(
@@ -99,6 +96,20 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             , canGoForward = { enableForward.set(it) }
             , userAgent    = { config.USER_AGENT }
         ))
+    }
+
+    override fun onCommandEvent(cmd: String) {
+        when (cmd) {
+            BrowserViewModel.CMD_BACK             -> onBackPressed()
+            BrowserViewModel.CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
+            BrowserViewModel.CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
+        }
+    }
+
+    override fun onPairEvent(cmd: String, obj: Any) {
+        when (cmd) {
+            BrowserViewModel.PAIR_SHARE_EVENT -> shareLink(obj.toString())
+        }
     }
 
     override fun onBackPressed() = mBinding.run {
