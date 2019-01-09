@@ -12,6 +12,7 @@
     </string>
 
     <!-- main -->
+    <string name="main_realtime_issue_network_error">NetErr</string>
 
     <!-- navigation -->
     <string name="navi_require_login">로그인하시오</string>

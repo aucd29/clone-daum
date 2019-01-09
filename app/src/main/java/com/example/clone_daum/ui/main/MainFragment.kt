@@ -20,8 +20,9 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        observe(gotoSearchEvent) { viewController.searchFragment() }
+        observe(gotoSearchEvent) { viewController.searchFragment()     }
         observe(navEvent)        { viewController.navigationFragment() }
+        observe(brsOpenEvent)    { viewController.browserFragment(it)  }
 
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
         tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
@@ -54,6 +55,18 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
             mBinding.searchArea.alpha   = 1.0f - percentage
             appbarOffsetLiveEvent.value = offset
         }
+    }
+
+    override fun onPause() {
+        mViewModel.stopRealtimeIssue()
+
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        mViewModel.startRealtimeIssue()
     }
 
     override fun onDestroy() {

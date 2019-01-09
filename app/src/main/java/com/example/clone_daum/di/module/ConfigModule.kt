@@ -13,6 +13,7 @@ import com.example.clone_daum.model.local.PopularKeyword
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.GithubService
+import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.common.*
 import dagger.Module
@@ -96,14 +97,14 @@ class Config(val context: Context) {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class PreloadConfig(github: GithubService, dmMain: DaumService,
+class PreloadConfig(github: GithubService, daum: DaumService,
                     db: DbRepository, dp: CompositeDisposable, assets: AssetManager,
                     context: Context) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
 
-    val tabLabelList: List<TabData>
+    lateinit var tabLabelList: List<TabData>
     lateinit var brsSubMenu: List<BrowserSubMenu>
     lateinit var naviSitemap: List<Sitemap>
     lateinit var realtimeIssue: List<RealtimeIssue>
@@ -173,14 +174,18 @@ class PreloadConfig(github: GithubService, dmMain: DaumService,
             }
         })
 
-        dp.add(dmMain.main().subscribe {
-            parseRealtimeIssue(it)
-        })
+//        dp.add(Observable.just(assets.open("res/tab.json").readBytes())
+//            .observeOn(Schedulers.io())
+//            .map { it.jsonParse<List<TabData>>() }
+//            .subscribe { tabLabelList = it })
 
         tabLabelList = Observable.just(assets.open("res/tab.json").readBytes())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
+
+        val mainHtml = daum.main().blockingFirst()
+        parseRealtimeIssue(mainHtml)
     }
 
     private fun parseRealtimeIssue(main: String) {
@@ -191,7 +196,7 @@ class PreloadConfig(github: GithubService, dmMain: DaumService,
         val f = main.indexOf("""<div class='keyissue_area '>""")
         val e = main.indexOf("""</div>""", f)
 
-        // 이건 파싱을 방지하려고 이래 놓은건가? (혹은 엿먹으라고.. -_ -?)
+        // 이건 파싱을 방지하려고 이래 놓은건가?
         // https://www.w3schools.com/tags/ref_urlencode.asp
         val issue = main.substring(f, e + "</div>".length).replace(" class='keyissue_area '", "")
             .replace("(\n|\t)".toRegex(), "").replace("&amp;", "%26")
@@ -201,7 +206,7 @@ class PreloadConfig(github: GithubService, dmMain: DaumService,
             mLog.debug("ISSUE : $issue")
         }
 
-        val parse = RealtimeIssueParse()
+        val parse = RealtimeIssueParser()
         parse.loadXml(issue)
 
         if (mLog.isDebugEnabled) {
@@ -212,25 +217,27 @@ class PreloadConfig(github: GithubService, dmMain: DaumService,
     }
 }
 
-//        <div class='keyissue_area '>
-//        <strong class="screen_out">전체 이슈검색어</strong>
-//        <ul class="list_issue">
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EC%A7%84%ED%98%95&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">1</em><span class="screen_out">위</span><span class="txt_issue">진형</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%ED%95%98%EC%97%B0%EC%88%98&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">2</em><span class="screen_out">위</span><span class="txt_issue">하연수</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%A7%B9%EC%9C%A0%EB%82%98&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">3</em><span class="screen_out">위</span><span class="txt_issue">맹유나</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%85%B8%EC%98%81%EB%AF%BC&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">4</em><span class="screen_out">위</span><span class="txt_issue">노영민</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%ED%8C%8C%EC%9D%B8%ED%85%8D&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">5</em><span class="screen_out">위</span><span class="txt_issue">파인텍</span></a></li>
-//        </ul>
-//        <ul class="list_issue">
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%ED%99%8D%EC%88%98%ED%98%84&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">6</em><span class="screen_out">위</span><span class="txt_issue">홍수현</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EC%9D%B4%ED%95%98%EC%9D%B4&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">7</em><span class="screen_out">위</span><span class="txt_issue">이하이</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EC%A7%84%EC%98%81&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">8</em><span class="screen_out">위</span><span class="txt_issue">진영</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EB%8B%B7&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">9</em><span class="screen_out">위</span><span class="txt_issue">마이크로닷</span></a></li>
-//        <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%82%B4%EC%95%88%EC%9D%98+%EA%B7%B8%EB%86%88&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">10</em><span class="screen_out">위</span><span class="txt_issue">내안의 그놈</span></a></li>
-//        </ul>
-//        </div>
-class RealtimeIssueParse: BaseXPath() {
+class RealtimeIssueParser: BaseXPath() {
     val realtimeIssueList = arrayListOf<RealtimeIssue>()
+
+// SAMPLE DATA
+//    <div class='keyissue_area '>
+//    <strong class="screen_out">전체 이슈검색어</strong>
+//    <ul class="list_issue">
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EC%A7%84%ED%98%95&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">1</em><span class="screen_out">위</span><span class="txt_issue">진형</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%ED%95%98%EC%97%B0%EC%88%98&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">2</em><span class="screen_out">위</span><span class="txt_issue">하연수</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%A7%B9%EC%9C%A0%EB%82%98&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">3</em><span class="screen_out">위</span><span class="txt_issue">맹유나</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%85%B8%EC%98%81%EB%AF%BC&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">4</em><span class="screen_out">위</span><span class="txt_issue">노영민</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%ED%8C%8C%EC%9D%B8%ED%85%8D&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">5</em><span class="screen_out">위</span><span class="txt_issue">파인텍</span></a></li>
+//    </ul>
+//    <ul class="list_issue">
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%ED%99%8D%EC%88%98%ED%98%84&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">6</em><span class="screen_out">위</span><span class="txt_issue">홍수현</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EC%9D%B4%ED%95%98%EC%9D%B4&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">7</em><span class="screen_out">위</span><span class="txt_issue">이하이</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EC%A7%84%EC%98%81&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">8</em><span class="screen_out">위</span><span class="txt_issue">진영</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%A7%88%EC%9D%B4%ED%81%AC%EB%A1%9C%EB%8B%B7&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">9</em><span class="screen_out">위</span><span class="txt_issue">마이크로닷</span></a></li>
+//    <li><a href="https://m.search.daum.net/search?w=tot&q=%EB%82%B4%EC%95%88%EC%9D%98+%EA%B7%B8%EB%86%88&amp;DA=13H&amp;nil_mtopsearch=issuekwd&amp;logical=issue&amp;pin=issue" class="link_issue"><em class="num_issue">10</em><span class="screen_out">위</span><span class="txt_issue">내안의 그놈</span></a></li>
+//    </ul>
+//    </div>
 
     override fun parsing() {
         var exp = "count(//ul)"
@@ -258,8 +265,3 @@ class RealtimeIssueParse: BaseXPath() {
         }
     }
 }
-
-data class RealtimeIssue (
-    val url: String,
-    val text: String
-)

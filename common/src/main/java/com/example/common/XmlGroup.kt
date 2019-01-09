@@ -66,7 +66,6 @@ abstract class BaseXPath {
 
     /** string 으로 반환 */
     fun string(expr: String) = xpath.evaluate(expr, document, XPathConstants.STRING).toString().trim()
-
     /** int 로 반환 */
     fun int(expr: String)    = string(expr).toInt()
     /** float 으로 반환 */

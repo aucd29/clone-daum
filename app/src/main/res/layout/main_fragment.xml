@@ -90,27 +90,31 @@
                                 android:onClick="@{() -> model.searchExtendMenu()}"
                         />
 
-                        <!-- RANK -->
+                        <!-- REALTIME ISSUE -->
 
                         <TextView
-                                android:id="@+id/search_rank"
+                                android:id="@+id/realtime_issue"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 app:layout_constraintStart_toStartOf="@+id/search_logo"
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 tools:text="4 내용"
-                                android:text="4 내용"
                                 android:layout_marginTop="@dimen/main_search_rank_mgn_t"
+                                android:background="@drawable/selector_button_bgcolor"
+                                android:paddingTop="4dp"
+                                android:text="@{model.realtimeIssueText}"
+                                android:onClick="@{() -> model.realtimeIssueOpenEvent(model.realtimeIssueText)}"
                         />
 
                         <ImageView
                                 android:id="@+id/search_extend_rank"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
-                                app:layout_constraintTop_toTopOf="@+id/search_rank"
+                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toStartOf="@+id/search_vertical_bar"
                                 android:layout_marginEnd="@dimen/main_search_extend_rank_mgn_e"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:paddingTop="4dp"
                                 android:onClick="@{() -> model.searchExtendRank()}"
-                                android:background="@drawable/selector_button_bgcolor"
                         />
 
                         <!-- VERTICAL BAR -->
@@ -121,7 +125,7 @@
                                 tools:text="|"
                                 android:textColor="#dedede"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/search_rank"
+                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toEndOf="parent"
                         />
 
@@ -184,7 +188,7 @@
                                 android:id="@+id/search_underline"
                                 style="@style/dumyView"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/search_rank"
+                                app:layout_constraintTop_toBottomOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
                         />
