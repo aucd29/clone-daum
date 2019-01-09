@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.R
 import com.example.clone_daum.di.module.PreloadConfig
+import com.example.common.ICommandEventAware
 import com.example.common.WebViewEvent
 import com.example.common.WebViewSettingParams
 import com.example.common.arch.SingleLiveEvent
@@ -20,16 +21,21 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 class MainViewModel @Inject constructor(val app: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
-) : AndroidViewModel(app) {
+) : AndroidViewModel(app), ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
         const val INDEX_NEWS = 1
+
+        const val CMD_SEARCH_FRAMGNET         = "search"
+        const val CMD_NAVIGATION_FRAGMENT     = "navigation"
+        const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
     }
+
+    override val commandEvent = SingleLiveEvent<String>()
 
     val tabAdapter         = ObservableField<MainTabAdapter>()
     val viewpager          = ObservableField<ViewPager>()
@@ -38,8 +44,6 @@ class MainViewModel @Inject constructor(val app: Application
     val viewpagerPageLimit = ObservableInt(3)
     val visibleBack        = ObservableInt(View.GONE)
     var gotoNewsEvent      = ObservableInt(0)
-    val gotoSearchEvent    = SingleLiveEvent<Void>()
-    val navEvent           = SingleLiveEvent<Void>()
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
     val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
@@ -63,20 +67,10 @@ class MainViewModel @Inject constructor(val app: Application
     }
 
     fun searchFragment() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
-
-        gotoSearchEvent.call()
+        commandEvent.value = CMD_SEARCH_FRAMGNET
     }
 
     fun searchExtendMenu() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
-    }
-
-    fun searchExtendRank() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
         }
@@ -94,8 +88,8 @@ class MainViewModel @Inject constructor(val app: Application
         }
     }
 
-    fun tabMenu() {
-        navEvent.call()
+    fun openNavigation() {
+        commandEvent.value = CMD_NAVIGATION_FRAGMENT
     }
 
     fun webviewBack() {
@@ -147,5 +141,9 @@ class MainViewModel @Inject constructor(val app: Application
                 return@forEach
             }
         }
+    }
+
+    fun realtimeIssueExtend() {
+        commandEvent.value = CMD_REALTIME_ISSUE_FRAGMENT
     }
 }

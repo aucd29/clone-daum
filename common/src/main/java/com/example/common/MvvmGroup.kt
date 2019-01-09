@@ -102,6 +102,10 @@ interface ISnackbarAware {
     }
 }
 
+interface ICommandEventAware {
+    val commandEvent: SingleLiveEvent<String>
+}
+
 interface IFinishFragmentAware {
     val finishEvent: SingleLiveEvent<Void>
 }
@@ -145,7 +149,6 @@ abstract class BaseActivity<T : ViewDataBinding>
             super.onBackPressed()
         }
     }
-
 
     abstract fun layoutId(): Int
 }

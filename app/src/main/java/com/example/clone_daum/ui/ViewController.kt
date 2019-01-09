@@ -10,6 +10,7 @@ import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
 import org.slf4j.LoggerFactory
@@ -34,6 +35,14 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
 
         manager.show(FragmentParams(CONTAINER,
             MainFragment::class.java, commit = FragmentCommit.NOW, backStack = false))
+    }
+
+    fun realtimeIssueFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("REALTIME ISSUE FRAGMENT")
+        }
+
+        manager.showDialog(RealtimeIssueFragment(), "realtime_issue")
     }
 
     fun navigationFragment() {

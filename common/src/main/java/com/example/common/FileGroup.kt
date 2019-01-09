@@ -105,7 +105,7 @@ private fun InputStream.copyFile(target: File, listener: FileListener? = null) {
             // 이거 이쁘게 하는 방법이 없나. -_ -;
             // jump 는 while 갈 수가 없고...
             if (listener != null && listener.cancel) {
-                // stop file copy event
+                // stop file copy commandEvent
                 listener.finish(FileListener.CANCELED)
                 break;
             }

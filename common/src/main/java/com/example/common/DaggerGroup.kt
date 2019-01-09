@@ -8,7 +8,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import com.example.common.di.module.DaggerViewModelFactory
-import com.example.common.di.module.injectOfActivity
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
@@ -84,7 +83,6 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()
 }
@@ -121,6 +119,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         snackbarAware()
         dialogAware()
         finishFragmentAware()
+        commandEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -165,6 +164,16 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
+    protected fun commandEventAware() = mViewModel.run {
+        if (this is ICommandEventAware) {
+            observe(commandEvent) { onCommandEvent(it) }
+        }
+    }
+
+    protected open fun onCommandEvent(cmd: String) {
+
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ABSTRACT
@@ -204,6 +213,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         super.onActivityCreated(savedInstanceState)
 
         finishFragmentAware()
+        commandEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -232,6 +242,16 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         if (this is IFinishFragmentAware) {
             observe(finishEvent) { dismiss() }
         }
+    }
+
+    protected fun commandEventAware() = mViewModel.run {
+        if (this is ICommandEventAware) {
+            observe(commandEvent) { onCommandEvent(it) }
+        }
+    }
+
+    protected open fun onCommandEvent(cmd: String) {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -274,6 +294,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         super.onActivityCreated(savedInstanceState)
 
         finishFragmentAware()
+        commandEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -302,6 +323,16 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         if (this is IFinishFragmentAware) {
             observe(finishEvent) { dismiss() }
         }
+    }
+
+    protected fun commandEventAware() = mViewModel.run {
+        if (this is ICommandEventAware) {
+            observe(commandEvent) { onCommandEvent(it) }
+        }
+    }
+
+    protected open fun onCommandEvent(cmd: String) {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

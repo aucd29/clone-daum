@@ -2114,7 +2114,7 @@
 //            super.setSelected(selected)
 //
 //            if (changed && selected && Build.VERSION.SDK_INT < 16) {
-//                // Pre-JB we need to manually send the TYPE_VIEW_SELECTED event
+//                // Pre-JB we need to manually send the TYPE_VIEW_SELECTED commandEvent
 //                sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED)
 //            }
 //
@@ -2131,10 +2131,10 @@
 //            }
 //        }
 //
-//        fun onInitializeAccessibilityEvent(event: AccessibilityEvent) {
-//            super.onInitializeAccessibilityEvent(event)
+//        fun onInitializeAccessibilityEvent(commandEvent: AccessibilityEvent) {
+//            super.onInitializeAccessibilityEvent(commandEvent)
 //            // This view masquerades as an action bar tab.
-//            event.className = ActionBar.Tab::class.java!!.getName()
+//            commandEvent.className = ActionBar.Tab::class.java!!.getName()
 //        }
 //
 //        @TargetApi(14)

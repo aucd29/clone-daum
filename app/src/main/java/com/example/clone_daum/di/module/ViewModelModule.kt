@@ -13,6 +13,7 @@ import com.example.clone_daum.ui.main.navigation.mail.MailViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
@@ -28,8 +29,18 @@ import dagger.multibindings.IntoMap
 abstract class ViewModelModule {
     @Binds
     @IntoMap
+    @ViewModelKey(SplashViewModel::class)
+    abstract fun bindSplashViewModel(vm: SplashViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RealtimeIssueViewModel::class)
+    abstract fun bindRealtimeIssueViewModel(vm: RealtimeIssueViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -80,11 +91,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BrowserViewModel::class)
     abstract fun bindBrowserViewModel(vm: BrowserViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SplashViewModel::class)
-    abstract fun bindSplashViewModel(vm: SplashViewModel): ViewModel
 
     @Binds
     @IntoMap
