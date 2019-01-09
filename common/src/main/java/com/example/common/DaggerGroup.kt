@@ -44,6 +44,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         snackbarAware()
         dialogAware()
         finishFragmentAware()
+        commandEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -81,6 +82,16 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         if (this is IFinishFragmentAware) {
             observe(finishEvent) { finish() }
         }
+    }
+
+    protected fun commandEventAware() = mViewModel.run {
+        if (this is ICommandEventAware) {
+            observe(commandEvent) { onCommandEvent(it) }
+        }
+    }
+
+    protected open fun onCommandEvent(cmd: String) {
+
     }
 
     abstract fun initViewBinding()
