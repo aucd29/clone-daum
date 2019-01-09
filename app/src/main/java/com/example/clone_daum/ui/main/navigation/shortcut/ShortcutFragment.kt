@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 
 class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
-    private lateinit var mSitemapViewModel  : SitemapViewModel
+    private lateinit var mSitemapViewModel : SitemapViewModel
     private lateinit var mFrequentlySiteModel : FrequentlySiteViewModel
 
     @Inject lateinit var viewController: ViewController
@@ -21,6 +21,7 @@ class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutView
         super.bindViewModel()
 
         mViewModelFactory.run {
+            // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로 injectOf 를 이용 한다.
             mSitemapViewModel    = injectOf(this@ShortcutFragment, SitemapViewModel::class.java)
             mFrequentlySiteModel = injectOf(this@ShortcutFragment, FrequentlySiteViewModel::class.java)
         }

@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main
 
+import android.os.Build
 import android.os.Bundle
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -11,6 +12,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -149,6 +151,12 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
         mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
 
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        mBinding.webview.free()
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

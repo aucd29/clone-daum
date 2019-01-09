@@ -76,6 +76,9 @@ inline fun Context.externalFilePath() = getExternalFilesDir(null)?.absolutePath
  */
 inline fun Context.displayDensity() = resources.displayMetrics.density
 
+
+// https://stackoverflow.com/questions/34631818/leakcanary-report-leak-in-inputmethodmanager
+
 /**
  * open keyboard
  */
@@ -95,9 +98,8 @@ inline fun Context.showKeyboard(view: View?) {
  */
 inline fun Context.hideKeyboard(view: View?) {
     view?.let {
-        systemService(InputMethodManager::class.java)?.run {
-            hideSoftInputFromWindow(it.windowToken, 0)
-        }
+        val manager = systemService(InputMethodManager::class.java)
+        manager?.hideSoftInputFromWindow(it.windowToken, 0)
     }
 }
 

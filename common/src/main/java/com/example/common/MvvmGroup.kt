@@ -175,6 +175,7 @@ abstract class BaseFragment<T: ViewDataBinding>
     }
 
     protected fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()
@@ -203,6 +204,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
     }
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
@@ -210,7 +212,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-//
+// BaseBottomSheetDialogFragment
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -238,78 +240,13 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
 
     override fun supportFragmentInjector() = childFragmentInjector
 
-    fun activity() = activity as BaseActivity<out ViewDataBinding>
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
 
+    fun activity() = activity as BaseActivity<out ViewDataBinding>
+    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
+
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// BaseRuleFragment
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-abstract class BaseRuleFragment<T: ViewDataBinding>
-    : BaseFragment<T>() {
-
-    protected var mLayoutName = generateLayoutName()
-
-    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (layoutId() == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// BaseRuleDialogFragment
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-abstract class BaseRuleDialogFragment<T: ViewDataBinding>
-    : BaseDialogFragment<T>() {
-
-    protected var mLayoutName = generateLayoutName()
-
-    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (layoutId() == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// BaseRuleBottomSheetDialogFragment
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-abstract class BaseRuleBottomSheetDialogFragment<T: ViewDataBinding>
-    : BaseBottomSheetDialogFragment<T>() {
-
-    protected var mLayoutName = generateLayoutName()
-
-    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (layoutId() == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 }

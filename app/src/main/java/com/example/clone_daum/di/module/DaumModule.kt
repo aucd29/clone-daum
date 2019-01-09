@@ -1,8 +1,9 @@
 package com.example.clone_daum.di.module
 
 import com.example.clone_daum.di.module.common.AssetModule
-import com.example.common.di.module.RxModule
 import com.example.clone_daum.model.remote.DaumService
+import com.example.common.di.module.RxModule
+import com.example.clone_daum.model.remote.DaumSuggestService
 import com.example.clone_daum.model.remote.GithubService
 import com.example.common.di.module.ViewModelFactoryModule
 import dagger.Module
@@ -25,8 +26,9 @@ import javax.inject.Singleton
 ])
 class DaumModule {
     companion object {
-        val GITHUB_BASE_URL = "https://raw.githubusercontent.com/"
-        val DAUM_BASE_URL   = "https://msuggest.search.daum.net/"
+        val GITHUB_BASE_URL       = "https://raw.githubusercontent.com/"
+        val DAUM_BASE_URL         = "https://m.daum.net/"
+        val DAUM_SUGGEST_BASE_URL = "https://msuggest.search.daum.net/"
     }
 
     // 다수개의 retrofit 을 이용해야 하므로 Retrofit.Builder 를 전달 받은 후
@@ -43,4 +45,10 @@ class DaumModule {
     fun provideDaumService(retrofitBuilder: Retrofit.Builder) =
         retrofitBuilder.baseUrl(DAUM_BASE_URL).build()
             .create(DaumService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideDaumSuggestService(retrofitBuilder: Retrofit.Builder) =
+        retrofitBuilder.baseUrl(DAUM_SUGGEST_BASE_URL).build()
+            .create(DaumSuggestService::class.java)
 }

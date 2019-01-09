@@ -96,15 +96,21 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
-    : BaseRuleFragment<T>() {
+    : BaseFragment<T>() {
 
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
-    lateinit var mViewModel: M
+    protected var mLayoutName = generateLayoutName()
+
+    protected lateinit var mViewModel: M
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mViewModel = ViewModelProviders.of(this.activity!!, mViewModelFactory).get(viewModelClass())
+        mViewModel = viewModelProvider()
+
+        if (layoutId() == 0) {
+            return generateEmptyLayout(mLayoutName)
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -120,7 +126,13 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         initViewModelEvents()
     }
 
-    private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
+    override fun layoutId() =
+        resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+
+    protected open fun viewModelProvider() =
+        ViewModelProviders.of(this.activity!!, mViewModelFactory).get(viewModelClass())
+
+    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
     protected open fun viewModelMethodName() = SET_VIEW_MODEL
 
@@ -128,6 +140,12 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     override fun bindViewModel() {
         Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AWARE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     protected open fun snackbarAware() = mViewModel.run {
         if (this is ISnackbarAware) {
@@ -147,6 +165,12 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ABSTRACT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()
 }
@@ -158,15 +182,21 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
-    : BaseRuleDialogFragment<T>() {
+    : BaseDialogFragment<T>() {
 
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
-    lateinit var mViewModel: M
+    protected lateinit var mViewModel: M
+    protected var mLayoutName = generateLayoutName()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mViewModel = ViewModelProviders.of(activity!!, mViewModelFactory).get(viewModelClass())
+        mViewModel = viewModelProvider()
+
+        if (layoutId() == 0) {
+            return generateEmptyLayout(mLayoutName)
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -179,7 +209,12 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         initViewModelEvents()
     }
 
-    private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
+    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+
+    protected open fun viewModelProvider() =
+        ViewModelProviders.of(this.activity!!, mViewModelFactory).get(viewModelClass())
+
+    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
     protected open fun viewModelMethodName() = SET_VIEW_MODEL
 
@@ -187,11 +222,23 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AWARE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
             observe(finishEvent) { dismiss() }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ABSTRACT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()
@@ -204,15 +251,22 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
-    : BaseRuleBottomSheetDialogFragment<T>() {
+    : BaseBottomSheetDialogFragment<T>() {
 
     @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
 
-    lateinit var mViewModel: M
+    protected lateinit var mViewModel: M
+
+    protected var mLayoutName = generateLayoutName()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mViewModel = ViewModelProviders.of(activity!!, mViewModelFactory).get(viewModelClass())
+        mViewModel = viewModelProvider()
+
+        if (layoutId() == 0) {
+            return generateEmptyLayout(mLayoutName)
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -225,6 +279,11 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         initViewModelEvents()
     }
 
+    protected open fun viewModelProvider() =
+        ViewModelProviders.of(this.activity!!, mViewModelFactory).get(viewModelClass())
+
+    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+
     private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
     protected open fun viewModelMethodName() = SET_VIEW_MODEL
@@ -233,11 +292,23 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AWARE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     protected open fun finishFragmentAware() = mViewModel.run {
         if (this is IFinishFragmentAware) {
             observe(finishEvent) { dismiss() }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ABSTRACT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()

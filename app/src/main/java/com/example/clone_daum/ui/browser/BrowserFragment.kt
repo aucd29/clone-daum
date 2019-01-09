@@ -2,6 +2,9 @@ package com.example.clone_daum.ui.browser
 
 import android.content.Intent
 import android.view.View
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProviders
+import com.example.clone_daum.MainApp
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -30,6 +33,9 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     private var mUrl: String? = null
 
+    override fun viewModelProvider()
+            = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
+
     override fun initViewBinding() = mBinding.run {
         mUrl = arguments?.getString("url")
 
@@ -39,14 +45,16 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
 
         animateIn()
+
         brsWebview.loadUrl(mUrl)
-        mViewModel.applyUrl(mUrl!!)
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         if (mUrl == null) {
             return@run
         }
+
+        applyUrl(mUrl!!)
 
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
@@ -81,10 +89,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                             sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
                         } else it?.cancel()
                     }))
-            } , pageStarted  = {
+            }, pageStarted  = {
                 visibleProgress.set(View.VISIBLE)
                 reloadIconResId.set(R.drawable.ic_clear_black_24dp)
-            } , pageFinished = {
+            }, pageFinished = {
                 visibleProgress.set(View.GONE)
                 reloadIconResId.set(R.drawable.ic_replay_black_24dp)
             }
@@ -115,6 +123,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
 
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        mBinding.brsWebview.free()
+
+        super.onDestroyView()
     }
 
     private fun animateIn() = mViewModel.run {

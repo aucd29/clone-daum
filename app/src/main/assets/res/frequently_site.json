@@ -1,7 +1,7 @@
 [
-  {"title":"kakaotv", "url": "http://m.tv.kakao.com"}
-, {"title":"dic", "url": "http://m.dic.kakao.com"}
-, {"title":"map", "url": "http://m.map.kakao.com"}
-, {"title":"tstory", "url": "http://m.tstory.com"}
+  {"title":"kakaotv", "url": "https://tv.kakao.com"}
+, {"title":"dic",     "url": "https://dic.kakao.com"}
+, {"title":"map",     "url": "https://map.kakao.com"}
+, {"title":"tstory",  "url": "https://tstory.com"}
 ]
 

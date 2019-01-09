@@ -11,6 +11,8 @@ import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
@@ -21,7 +23,9 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     @Inject lateinit var viewController: ViewController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        exceptionCatcher()
         setTheme(R.style.AppTheme)
+
         super.onCreate(savedInstanceState)
 
         if (mLog.isDebugEnabled) {
@@ -49,6 +53,10 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
                 mLog.info("GONE SPLASH")
             }
 
+            // 만약을 위해 등록한 splash 쪽 composite disposable 를
+            // clear 하여 timer 가 explode 되지 않도록 한다.
+            disposable.clear()
+
             visibleSplash.set(View.GONE)
             // remove view
             mBinding.root.removeView(mBinding.splash)
@@ -59,11 +67,32 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         if (BuildConfig.DEBUG) {
             // enabled chrome inspector
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ENABLED CHROME INSPECTOR")
+                if (mLog.isInfoEnabled) {
+                    mLog.info("ENABLED CHROME INSPECTOR")
                 }
 
                 WebView.setWebContentsDebuggingEnabled(true)
+            }
+        }
+    }
+
+    private fun exceptionCatcher() {
+        // setting exception
+        val handler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            val os = ByteArrayOutputStream()
+            val s = PrintStream(os)
+            e.printStackTrace(s)
+            s.flush()
+
+            mLog.error("ERROR: ${os.toString()}")
+
+            if (handler != null) {
+                handler.uncaughtException(t, e)
+            } else {
+                mLog.error("ERROR: EXCEPTION HANDLER == null")
+
+                android.os.Process.killProcess(android.os.Process.myPid())
             }
         }
     }

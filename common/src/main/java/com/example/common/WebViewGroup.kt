@@ -3,8 +3,10 @@ package com.example.common
 
 import android.graphics.Bitmap
 import android.net.http.SslError
+import android.os.Build
 import android.webkit.*
 import org.slf4j.LoggerFactory
+import java.lang.Exception
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -100,4 +102,19 @@ data class WebViewSettingParams (
 
 enum class WebViewEvent {
     RELOAD, BACK, FORWARD, STOP_LOADING, PAUSE_TIMER, RESUME_TIMER
+}
+
+inline fun WebView.free() {
+    try {
+        webViewClient = null
+
+        clearHistory()
+        removeAllViews()
+
+        destroyDrawingCache()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT_WATCH) {
+            freeMemory()
+        }
+    } catch (ignored: Exception) {
+    }
 }
