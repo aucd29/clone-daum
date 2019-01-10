@@ -42,6 +42,7 @@
                 android:paddingEnd="@dimen/main_tab_menu_pad"
                 android:paddingStart="@dimen/main_tab_menu_pad"
                 android:background="@drawable/selector_button_bgcolor"
+                android:onClick="@{() -> model.eventFinish()}"
         />
 
         <androidx.viewpager.widget.ViewPager

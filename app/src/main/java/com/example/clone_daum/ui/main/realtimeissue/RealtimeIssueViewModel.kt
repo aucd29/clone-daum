@@ -8,7 +8,9 @@ import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.main.MainTabAdapter
+import com.example.common.IFinishFragmentAware
 import com.example.common.RecyclerViewModel
+import com.example.common.arch.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -21,7 +23,9 @@ import javax.inject.Inject
 class RealtimeIssueViewModel @Inject constructor(app: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
-) : RecyclerViewModel<RealtimeIssue>(app) {
+) : RecyclerViewModel<RealtimeIssue>(app), IFinishFragmentAware {
+
+    override val finishEvent = SingleLiveEvent<Void>()
 
     companion object {
         const val K_ISSUE_ALL   = "전체 이슈검색어"
@@ -45,5 +49,9 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             K_ISSUE_NEWS,
             K_ISSUE_SPORT -> items.set(preConfig.realtimeIssueMap.get(type))
         }
+    }
+
+    fun eventFinish() {
+        finishEvent.call()
     }
 }
