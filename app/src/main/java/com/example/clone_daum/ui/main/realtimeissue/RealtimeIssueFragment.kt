@@ -18,7 +18,6 @@ import javax.inject.Inject
  *
  * rounded dialog
  * - https://gist.github.com/ArthurNagy/1c4a64e6c8a7ddfca58638a9453e4aed
- *
  */
 
 class RealtimeIssueFragment

@@ -42,7 +42,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("REALTIME ISSUE FRAGMENT")
         }
 
-        manager.showDialog(RealtimeIssueFragment(), "realtime_issue")
+        manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
     }
 
     fun navigationFragment() {
@@ -54,24 +54,24 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
     }
 
     fun cafeFragment(child: FragmentManager) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CAFE FRAGMENT")
+        if (mLog.isInfoEnabled) {
+            mLog.info("CAFE FRAGMENT")
         }
 
         child.show(FragmentParams(NAV_TAB_CONTAINER, CafeFragment::class.java, add = false))
     }
 
     fun mailFragment(child: FragmentManager) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("MAIL FRAGMENT")
+        if (mLog.isInfoEnabled) {
+            mLog.info("MAIL FRAGMENT")
         }
 
         child.show(FragmentParams(NAV_TAB_CONTAINER, MailFragment::class.java, add = false))
     }
 
     fun shortcutFragment(child: FragmentManager, add: Boolean = false) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHORTCUT FRAGMENT")
+        if (mLog.isInfoEnabled) {
+            mLog.info("SHORTCUT FRAGMENT")
         }
 
         child.show(FragmentParams(NAV_TAB_CONTAINER, ShortcutFragment::class.java, add = add))
@@ -103,6 +103,6 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("BROWSER SUBMENU FRAGMENT")
         }
 
-        manager.showDialog(BrowserSubmenuFragment(), "submenu")
+        manager.showDialog(BrowserSubmenuFragment(), "brs-submenu")
     }
 }
