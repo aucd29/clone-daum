@@ -37,10 +37,6 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val tabAdapter  = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager   = ObservableField<ViewPager>()
 
-    // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
-    val viewpagerLoadedEvent = ObservableField<() -> Unit>()
-    val viewpagerPageLimit   = ObservableInt(4)
-
     fun type(type: String) {
         initAdapter("realtime_issue_child_item")
         when (type) {
