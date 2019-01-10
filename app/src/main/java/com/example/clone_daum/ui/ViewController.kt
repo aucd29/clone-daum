@@ -88,7 +88,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
 
     fun browserFragment(url: String) {
         if (mLog.isInfoEnabled) {
-            mLog.info("BROWSER FRAGMENT")
+            mLog.info("BROWSER FRAGMENT $url")
         }
 
         val bundle = Bundle()

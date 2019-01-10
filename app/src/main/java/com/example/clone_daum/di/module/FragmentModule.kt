@@ -8,6 +8,7 @@ import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildFragment
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import dagger.Module
@@ -18,7 +19,10 @@ import dagger.Module
 
 @Module(includes = [MainFragment.Module::class
     , MainWebviewFragment.Module::class
+
+    // REALTIME ISSUE
     , RealtimeIssueFragment.Module::class
+    , RealtimeIssueChildFragment.Module::class
 
     // NAVIGATION
     , NavigationFragment.Module::class

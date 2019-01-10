@@ -101,6 +101,8 @@
                                 android:layout_marginTop="@dimen/main_search_rank_mgn_t"
                                 android:background="@drawable/selector_button_bgcolor"
                                 android:paddingTop="4dp"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="10dp"
                                 android:text="@{model.realtimeIssueText}"
                                 android:onClick="@{() -> model.realtimeIssueOpenEvent(model.realtimeIssueText)}"
                         />

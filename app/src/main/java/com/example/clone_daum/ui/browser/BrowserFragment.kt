@@ -59,8 +59,6 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
 
-//        observe(shareEvent)   { shareLink(it) }
-
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
         brsSetting.set(WebViewSettingParams(
             progress = {

@@ -9,11 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.R
 import com.example.clone_daum.di.module.PreloadConfig
-import com.example.common.ICommandEventAware
-import com.example.common.WebViewEvent
-import com.example.common.WebViewSettingParams
+import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
-import com.example.common.string
 import com.google.android.material.appbar.AppBarLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -24,7 +21,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(val app: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
-) : AndroidViewModel(app), ICommandEventAware {
+) : AndroidViewModel(app), ICommandEventAware, IPairEventAware {
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
@@ -33,17 +31,22 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_SEARCH_FRAMGNET         = "search"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
+
+        const val PAIR_BRS_OPEN               = "brs-open"
+
+        const val K_ALL_ISSUE                 = "전체 이슈검색어"
     }
 
-    override val commandEvent = SingleLiveEvent<String>()
+    override val commandEvent   = SingleLiveEvent<String>()
+    override val pairEvent      = SingleLiveEvent<Pair<String, Any>>()
 
-    val tabAdapter         = ObservableField<MainTabAdapter>()
-    val viewpager          = ObservableField<ViewPager>()
-    val brsSetting         = ObservableField<WebViewSettingParams>()
-    val brsEvent           = ObservableField<WebViewEvent>()
-    val viewpagerPageLimit = ObservableInt(3)
-    val visibleBack        = ObservableInt(View.GONE)
-    var gotoNewsEvent      = ObservableInt(0)
+    val tabAdapter              = ObservableField<MainTabAdapter>()
+    val viewpager               = ObservableField<ViewPager>()
+    val brsSetting              = ObservableField<WebViewSettingParams>()
+    val brsEvent                = ObservableField<WebViewEvent>()
+    val viewpagerPageLimit      = ObservableInt(3)
+    val visibleBack             = ObservableInt(View.GONE)
+    var gotoNewsEvent           = ObservableInt(0)
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
     val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
@@ -52,7 +55,6 @@ class MainViewModel @Inject constructor(val app: Application
 
     val realtimeIssueText        = ObservableField<String>()
     var realtimeCount            = 0
-    val brsOpenEvent             = SingleLiveEvent<String>()
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {
@@ -99,7 +101,7 @@ class MainViewModel @Inject constructor(val app: Application
     }
 
     fun startRealtimeIssue() {
-        if (preConfig.realtimeIssue.size == 0) {
+        if (preConfig.realtimeIssueMap.size == 0) {
             realtimeIssueText.set(string(R.string.main_realtime_issue_network_error))
             return
         }
@@ -108,22 +110,24 @@ class MainViewModel @Inject constructor(val app: Application
             mLog.debug("START REALTIME ISSUE")
         }
 
-        val index = realtimeCount % preConfig.realtimeIssue.size
-        val issue = preConfig.realtimeIssue.get(index)
-
-        realtimeIssueText.set("${index + 1} ${issue.text}")
-
-        disposable.add(Observable.interval(5, TimeUnit.SECONDS).repeat().subscribe {
-            val index = realtimeCount % preConfig.realtimeIssue.size
-            val issue = preConfig.realtimeIssue.get(index)
+        preConfig.realtimeIssueMap.get(K_ALL_ISSUE)?.let { issueList ->
+            val index = realtimeCount % issueList.size
+            val issue = issueList.get(index)
 
             realtimeIssueText.set("${index + 1} ${issue.text}")
 
-            ++realtimeCount
-            if (mLog.isDebugEnabled) {
-                mLog.debug("TIMER EXPLODE $realtimeCount ${issue.text} ")
-            }
-        })
+            disposable.add(Observable.interval(5, TimeUnit.SECONDS).repeat().subscribe {
+                val index = realtimeCount % issueList.size
+                val issue = issueList.get(index)
+
+                realtimeIssueText.set("${index + 1} ${issue.text}")
+
+                ++realtimeCount
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("TIMER EXPLODE $realtimeCount ${issue.text} ")
+                }
+            })
+        }
     }
 
     fun stopRealtimeIssue() {
@@ -135,10 +139,27 @@ class MainViewModel @Inject constructor(val app: Application
     }
 
     fun realtimeIssueOpenEvent(text: String) {
-        preConfig.realtimeIssue.forEach {
-            if (it.text == text) {
-                brsOpenEvent.value = it.url
-                return@forEach
+        if (mLog.isDebugEnabled) {
+            mLog.debug("realtimeIssueOpenEvent : $text")
+        }
+
+        val newText = text.replace("[0-9]".toRegex(), "").trim()
+        preConfig.realtimeIssueMap.get(K_ALL_ISSUE)?.let { list ->
+            var i = 0
+            while (i < list.size) {
+                val it = list.get(i)
+
+                if (it.text == newText) {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("REALTIME ISSUE OPEN : ${it.text} : ${it.url}")
+                    }
+
+                    pairEvent.value = PAIR_BRS_OPEN to it.url
+
+                    break
+                }
+
+                ++i
             }
         }
     }

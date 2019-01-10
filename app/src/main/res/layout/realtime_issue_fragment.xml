@@ -8,18 +8,55 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
+            android:id="@+id/realtime_issue_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+    >
+        <!--android:background="@drawable/shape_realtime_issue_background"-->
 
-        <TextView
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/lorem"
+        <com.google.android.material.tabs.TabLayout
+                style="@style/realtime_issue_tab_layout"
+                android:id="@+id/realtime_issue_tab"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/main_tab_height"
+                app:tabMode="scrollable"
+                app:tabPaddingStart="0dp"
+                app:tabPaddingEnd="0dp"
+                app:tabGravity="fill"
+                app:tabMinWidth="0dp"
+                android:requiresFadingEdge="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_tab_menu"
+                app:layout_constraintTop_toTopOf="parent"
+                app:bindSetupWithViewPager="@{model.viewpager}"
+        />
+
+        <ImageView
+                android:id="@+id/realtime_issue_tab_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:src="@drawable/ic_clear_black_24dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_tab"
+                android:paddingEnd="@dimen/main_tab_menu_pad"
+                android:paddingStart="@dimen/main_tab_menu_pad"
+                android:background="@drawable/selector_button_bgcolor"
         />
+
+        <androidx.viewpager.widget.ViewPager
+                android:id="@+id/realtime_issue_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/realtime_issue_tab"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:bindPagerAdapter="@{model.tabAdapter}"
+        />
+
+        <!--app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"-->
+        <!--app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

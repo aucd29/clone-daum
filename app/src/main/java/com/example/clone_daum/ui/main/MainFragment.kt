@@ -20,8 +20,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        observe(brsOpenEvent) { viewController.browserFragment(it)  }
-
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
         tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
         viewpager.set(mBinding.viewpager)
@@ -60,6 +58,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
             CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
             CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
             CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
+        }
+    }
+
+    override fun onPairEvent(cmd: String, obj: Any) = MainViewModel.run {
+        when (cmd) {
+            PAIR_BRS_OPEN -> viewController.browserFragment(obj.toString())
         }
     }
 

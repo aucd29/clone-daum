@@ -58,6 +58,33 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="realtime_issue_tab_layout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/realtime_tab_text</item>
+        <item name="tabSelectedTextColor">@color/colorAccent</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+    </style>
+
+    <style name="realtime_tab_text" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--
+    라운드 다이얼로그
+    https://gist.github.com/ArthurNagy/1c4a64e6c8a7ddfca58638a9453e4aed
+
+    Theme_Design_Light_BottomSheetDialog
+    -->
+    <style name="round_background_bottom_sheet_modal" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/shape_realtime_issue_background</item>
+    </style>
+
+    <style name="round_bottom_sheet_dialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/round_background_bottom_sheet_modal</item>
+    </style>
+
     <!--
      navigation
     -->
