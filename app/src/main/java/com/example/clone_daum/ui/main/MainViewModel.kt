@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(val app: Application
     var gotoNewsEvent           = ObservableInt(0)
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
-    val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
+//    val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
     val appbarOffsetChangedEvent = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLiveEvent    = MutableLiveData<Int>()
 

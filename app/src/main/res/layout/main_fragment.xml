@@ -22,11 +22,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:bindPagerAdapter="@{model.tabAdapter}"
-                    app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
+
                     app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             />
 
-            <!--app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"-->
+            <!--
+            app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
+            app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
+            -->
 
             <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/search_bar"
@@ -219,8 +222,8 @@
                             android:layout_height="@dimen/main_tab_height"
                             android:layout_gravity="bottom"
                             app:tabMode="scrollable"
-                            app:tabPaddingStart="0dp"
-                            app:tabPaddingEnd="0dp"
+                            app:tabPaddingStart="5dp"
+                            app:tabPaddingEnd="5dp"
                             app:tabGravity="fill"
                             app:tabMinWidth="0dp"
                             app:bindTabSelect="@{model.gotoNewsEvent}"

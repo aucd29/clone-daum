@@ -1,12 +1,6 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
-import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -14,11 +8,8 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.RealtimeIssueFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.common.BaseDaggerBottomSheetDialogFragment
-import com.example.common.tabs
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.ContributesAndroidInjector
-import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -41,6 +32,7 @@ class RealtimeIssueFragment
 
     private val mLabelList: ArrayList<String> = arrayListOf()
 
+    // changed style for rounded edge
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         BottomSheetDialog(context!!, R.style.round_bottom_sheet_dialog)
 
@@ -52,16 +44,6 @@ class RealtimeIssueFragment
 
             mLabelList.add(it.key)
         })
-
-//        dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-//        realtimeIssueTab.tabs.forEach {
-//            val view     = inflate(R.layout.realtime_tab_custom)
-//            view.tab_label.text = it?.text
-//
-//            it?.customView = view
-//        }
-
     }
 
     override fun initViewModelEvents() = mViewModel.run {
@@ -81,6 +63,12 @@ class RealtimeIssueFragment
         abstract fun contributeInjector(): RealtimeIssueFragment
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// RealtimeIssueTabAdapter
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 class RealtimeIssueTabAdapter constructor(fm: FragmentManager, val mLabelList: ArrayList<String>)
     : FragmentStatePagerAdapter(fm) {

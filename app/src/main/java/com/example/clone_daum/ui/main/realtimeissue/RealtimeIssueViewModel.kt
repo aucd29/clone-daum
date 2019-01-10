@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
@@ -31,6 +32,10 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     val tabAdapter  = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager   = ObservableField<ViewPager>()
+
+    // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
+    val viewpagerLoadedEvent = ObservableField<() -> Unit>()
+    val viewpagerPageLimit   = ObservableInt(4)
 
     fun type(type: String) {
         initAdapter("realtime_issue_child_item")

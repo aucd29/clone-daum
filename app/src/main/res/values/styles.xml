@@ -50,6 +50,7 @@
         <item name="tabTextAppearance">@style/MyCustomTabText</item>
         <item name="tabSelectedTextColor">@android:color/black</item>
         <item name="tabIndicatorColor">@android:color/black</item>
+        <item name="tabIndicatorFullWidth">false</item>
     </style>
 
     <style name="MyCustomTabText" parent="TextAppearance.AppCompat.Button">
@@ -62,12 +63,18 @@
         <item name="tabTextAppearance">@style/realtime_tab_text</item>
         <item name="tabSelectedTextColor">@color/colorAccent</item>
         <item name="tabIndicatorColor">@color/colorAccent</item>
+        <!--
+         indicator width 조정
+         https://code.i-harness.com/en/q/269afa3
+         -->
+        <item name="tabIndicatorFullWidth">false</item>
     </style>
 
-    <style name="realtime_tab_text" parent="TextAppearance.AppCompat.Button">
+    <style name="realtime_tab_text" parent="TextAppearance.AppCompat.Widget.Button">
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
     <!--

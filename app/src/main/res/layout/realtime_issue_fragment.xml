@@ -13,7 +13,6 @@
             android:layout_height="wrap_content"
             android:padding="20dp"
     >
-        <!--android:background="@drawable/shape_realtime_issue_background"-->
 
         <com.google.android.material.tabs.TabLayout
                 style="@style/realtime_issue_tab_layout"
@@ -21,15 +20,15 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/main_tab_height"
                 app:tabMode="scrollable"
-                app:tabPaddingStart="0dp"
-                app:tabPaddingEnd="0dp"
+                app:tabPaddingStart="10dp"
+                app:tabPaddingEnd="10dp"
                 app:tabGravity="fill"
                 app:tabMinWidth="0dp"
-                android:requiresFadingEdge="horizontal"
+                app:bindSetupWithViewPager="@{model.viewpager}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/realtime_issue_tab_menu"
                 app:layout_constraintTop_toTopOf="parent"
-                app:bindSetupWithViewPager="@{model.viewpager}"
+                android:requiresFadingEdge="horizontal"
         />
 
         <ImageView

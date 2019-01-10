@@ -23,19 +23,19 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
         tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
         viewpager.set(mBinding.viewpager)
-        viewpagerLoadedEvent.set {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("TAB LOADED (COUNT :${mBinding.tab.tabCount})")
-            }
-
-            // https://stackoverflow.com/questions/40896907/can-a-custom-view-be-used-as-a-tabitem
-            mBinding.tab.tabs.forEach {
-                val view     = inflate(R.layout.tab_main_custom)
-                view.tab_label.text = it?.text
-
-                it?.customView = view
-            }
-        }
+//        viewpagerLoadedEvent.set {
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("TAB LOADED (COUNT :${mBinding.tab.tabCount})")
+//            }
+//
+////            // https://stackoverflow.com/questions/40896907/can-a-custom-view-be-used-as-a-tabitem
+//            mBinding.tab.tabs.forEach {
+//                val view     = inflate(R.layout.tab_main_custom)
+//                view.tab_label.text = it?.text
+//
+//                it?.customView = view
+//            }
+//        }
 
         // n 사도 그렇지만 k 사도 search 쪽을 view 로 가려서 하는 데
         // -_ - 이러한 구조를 가져가는게
