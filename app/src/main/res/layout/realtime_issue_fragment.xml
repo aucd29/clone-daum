@@ -12,7 +12,10 @@
             android:id="@+id/realtime_issue_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="18dp"
+            android:paddingStart="13dp"
+            android:paddingTop="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="23dp"
     >
 
         <com.google.android.material.tabs.TabLayout
@@ -40,9 +43,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_tab"
-                android:paddingEnd="@dimen/main_tab_menu_pad"
-                android:paddingStart="@dimen/main_tab_menu_pad"
-                android:background="@drawable/selector_button_bgcolor"
+                android:paddingEnd="13dp"
+                android:paddingStart="13dp"
+                android:background="?selectableItemBackgroundBorderless"
                 android:onClick="@{() -> model.eventFinish()}"
         />
 

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.RealtimeIssueFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
@@ -28,6 +29,7 @@ class RealtimeIssueFragment
     }
 
     @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var viewController: ViewController
 
     private val mLabelList: ArrayList<String> = arrayListOf()
 
@@ -48,6 +50,17 @@ class RealtimeIssueFragment
     override fun initViewModelEvents() = mViewModel.run {
         tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mLabelList))
         viewpager.set(mBinding.realtimeIssueViewpager)
+    }
+
+    override fun onCommandEvent(cmd: String, data: Any?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMENT EVENT : $cmd = $data")
+        }
+
+        when(cmd) {
+            RealtimeIssueViewModel.CMD_BRS_OPEN ->
+                viewController.browserFragment(data.toString())
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

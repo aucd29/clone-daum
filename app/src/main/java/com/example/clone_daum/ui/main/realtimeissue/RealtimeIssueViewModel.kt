@@ -5,6 +5,7 @@ import androidx.databinding.ObservableField
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
+import com.example.common.ICommandEventAware
 import com.example.common.IFinishFragmentAware
 import com.example.common.RecyclerViewModel
 import com.example.common.arch.SingleLiveEvent
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class RealtimeIssueViewModel @Inject constructor(app: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
-) : RecyclerViewModel<RealtimeIssue>(app), IFinishFragmentAware {
+) : RecyclerViewModel<RealtimeIssue>(app), IFinishFragmentAware, ICommandEventAware {
+
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
@@ -29,6 +31,8 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         const val K_ISSUE_NEWS  = "뉴스 이슈검색어"
         const val K_ISSUE_ENTER = "연예 이슈검색어"
         const val K_ISSUE_SPORT = "스포츠 이슈검색어"
+
+        const val CMD_BRS_OPEN  = "brs-open"
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -37,14 +41,17 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override val finishEvent = SingleLiveEvent<Void>()
+    override val finishEvent  = SingleLiveEvent<Void>()
+    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 
 
     val tabAdapter  = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager   = ObservableField<ViewPager>()
 
+
     fun type(type: String) {
         initAdapter("realtime_issue_child_item")
+
         when (type) {
             K_ISSUE_ALL,
             K_ISSUE_ENTER,
@@ -59,5 +66,9 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
                 items.set(list)
             }
         }
+    }
+
+    override fun commandEvent(cmd: String, data: Any?) {
+        super.commandEvent(cmd, data)
     }
 }

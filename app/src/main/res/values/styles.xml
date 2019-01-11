@@ -77,9 +77,9 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="realtime_item">
+    <style name="realtime_issue_item">
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <!--

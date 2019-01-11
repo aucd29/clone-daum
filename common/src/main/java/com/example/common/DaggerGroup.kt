@@ -303,7 +303,6 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
         finishFragmentAware()
         commandEventAware()
-//        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -336,7 +335,9 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
+            observe(commandEvent) {
+                onCommandEvent(it.first, it.second)
+            }
         }
     }
 
