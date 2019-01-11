@@ -2,9 +2,7 @@ package com.example.clone_daum.ui.browser
 
 import android.content.Intent
 import android.view.View
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
-import com.example.clone_daum.MainApp
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -96,17 +94,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         ))
     }
 
-    override fun onCommandEvent(cmd: String) {
+    override fun onCommandEvent(cmd: String, obj: Any?) {
         when (cmd) {
             BrowserViewModel.CMD_BACK             -> onBackPressed()
             BrowserViewModel.CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
             BrowserViewModel.CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
-        }
-    }
-
-    override fun onPairEvent(cmd: String, obj: Any) {
-        when (cmd) {
-            BrowserViewModel.PAIR_SHARE_EVENT -> shareLink(obj.toString())
+            BrowserViewModel.CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
         }
     }
 

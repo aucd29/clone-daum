@@ -24,9 +24,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchViewModel @Inject constructor(app: Application)
-    : RecyclerViewModel<ISearchRecyclerData>(app)
-    , ISnackbarAware, IDialogAware, IFinishFragmentAware {
+class SearchViewModel @Inject constructor(app: Application
+) : RecyclerViewModel<ISearchRecyclerData>(app), ISnackbarAware, IDialogAware
+    , IFinishFragmentAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
@@ -94,7 +94,7 @@ class SearchViewModel @Inject constructor(app: Application)
 
                     searchKeyword.set("")
                     reloadHistoryData()
-                }, { e -> snackbarEvent(e.message) }
+                }, { e -> snackbar(e.message) }
             ))
 
             searchEvent.value = it
@@ -153,7 +153,7 @@ class SearchViewModel @Inject constructor(app: Application)
                 }
 
                 reloadHistoryData()
-            }, { e -> snackbarEvent(e.message) }))
+            }, { e -> snackbar(e.message) }))
     }
 
     fun eventDeleteAllHistory() {
@@ -193,12 +193,13 @@ class SearchViewModel @Inject constructor(app: Application)
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
                 it.subkeys.forEach { key ->
-                    val newkey = key.replace(it.q, "<font color='#ff7b39'><b>${it.q}</b></font>")
+                    val newkey = key.replace(it.q,
+                        "<font color='#ff7b39'><b>${it.q}</b></font>")
                     suggestList.add(SuggestItem(newkey))
                 }
 
                 items.set(suggestList.toList())
-            }, { e -> snackbarEvent(e.message) }))
+            }, { e -> snackbar(e.message) }))
     }
 
     fun eventSearchSuggest(keyword: String) {
@@ -232,11 +233,11 @@ class SearchViewModel @Inject constructor(app: Application)
     ////////////////////////////////////////////////////////////////////////////////////
 
     private fun snackbarEvent(@StringRes resid: Int) =
-        snackbarEvent(string(resid))
+        snackbar(string(resid))
 
-    override fun snackbarEvent(msg: String?) {
+    override fun snackbar(msg: String?) {
         mLog.error("ERROR: $msg")
 
-        super.snackbarEvent(msg)
+        super.snackbar(msg)
     }
 }

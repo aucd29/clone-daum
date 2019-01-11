@@ -38,17 +38,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
         }
     }
 
-    override fun onCommandEvent(cmd: String) = MainViewModel.run {
+    override fun onCommandEvent(cmd: String, obj: Any?) = MainViewModel.run {
         when (cmd) {
             CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
             CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
             CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
-        }
-    }
-
-    override fun onPairEvent(cmd: String, obj: Any) = MainViewModel.run {
-        when (cmd) {
-            PAIR_BRS_OPEN -> viewController.browserFragment(obj.toString())
+            CMD_BRS_OPEN               -> obj?.let { viewController.browserFragment(it.toString()) } ?: Unit
         }
     }
 

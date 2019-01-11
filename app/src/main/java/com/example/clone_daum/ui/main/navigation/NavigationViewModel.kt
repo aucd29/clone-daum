@@ -1,13 +1,11 @@
 package com.example.clone_daum.ui.main.navigation
 
 import android.app.Application
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
-import com.example.clone_daum.ui.ViewController
 import com.example.common.IFinishFragmentAware
 import com.example.common.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
@@ -26,11 +24,19 @@ class NavigationViewModel @Inject constructor(
         const val URL_NOTIFICATION = "https://m.daum.net/channel/notice_an"
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AWARE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override val finishEvent = SingleLiveEvent<Void>()
+
 
     val itemSelected = ObservableField<(MenuItem) -> Unit>()
     val newIcon      = ObservableInt(View.GONE)
     val brsOpenEvent = SingleLiveEvent<String>()
+
 
     fun eventSetting() {
 
@@ -42,10 +48,6 @@ class NavigationViewModel @Inject constructor(
 
     fun eventWebViewTextSize() {
 
-    }
-
-    fun eventFinishFragment() {
-        finishEvent.call()
     }
 
     fun eventBookMark() {

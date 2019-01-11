@@ -73,7 +73,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="X"
-                        android:onClick="@{() -> model.eventFinishFragment()}"
+                        android:onClick="@{() -> model.eventFinish()}"
                 />
 
                 <!-- line 1 -->

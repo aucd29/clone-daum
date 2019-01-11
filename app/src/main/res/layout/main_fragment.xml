@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:bindPagerAdapter="@{model.tabAdapter}"
-
                     app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             />
 
@@ -64,7 +63,7 @@
                                 android:layout_marginEnd="@dimen/main_search_mgn_e"
                                 android:focusable="false"
                                 android:background="@drawable/shape_search_background"
-                                android:onClick="@{() -> model.searchFragment()}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAMGNET, ``)}"
                         />
 
                         <!-- ICONS FROM SEARCH BAR -->
@@ -121,7 +120,7 @@
                                 android:layout_marginEnd="@dimen/main_search_extend_rank_mgn_e"
                                 android:background="?selectableItemBackgroundBorderless"
                                 android:paddingTop="4dp"
-                                android:onClick="@{() -> model.realtimeIssueExtend()}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT, ``)}"
                         />
 
                         <!-- VERTICAL BAR -->
@@ -258,7 +257,7 @@
                             android:paddingEnd="@dimen/main_tab_menu_pad"
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
-                            android:onClick="@{() -> model.openNavigation()}"
+                            android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT, ``)}"
                     />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>

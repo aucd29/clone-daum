@@ -21,7 +21,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(val app: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
-) : AndroidViewModel(app), ICommandEventAware, IPairEventAware {
+) : AndroidViewModel(app), ICommandEventAware {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
@@ -31,25 +31,22 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_SEARCH_FRAMGNET         = "search"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
-
-        const val PAIR_BRS_OPEN               = "brs-open"
+        const val CMD_BRS_OPEN                = "brs-open"
 
         const val K_ALL_ISSUE                 = "전체 이슈검색어"
     }
 
-    override val commandEvent   = SingleLiveEvent<String>()
-    override val pairEvent      = SingleLiveEvent<Pair<String, Any>>()
+    override val commandEvent    = SingleLiveEvent<Pair<String, Any?>>()
 
-    val tabAdapter              = ObservableField<MainTabAdapter>()
-    val viewpager               = ObservableField<ViewPager>()
-    val brsSetting              = ObservableField<WebViewSettingParams>()
-    val brsEvent                = ObservableField<WebViewEvent>()
-    val viewpagerPageLimit      = ObservableInt(3)
-    val visibleBack             = ObservableInt(View.GONE)
-    var gotoNewsEvent           = ObservableInt(0)
+    val tabAdapter               = ObservableField<MainTabAdapter>()
+    val viewpager                = ObservableField<ViewPager>()
+    val brsSetting               = ObservableField<WebViewSettingParams>()
+    val brsEvent                 = ObservableField<WebViewEvent>()
+    val viewpagerPageLimit       = ObservableInt(3)
+    val visibleBack              = ObservableInt(View.GONE)
+    var gotoNewsEvent            = ObservableInt(0)
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
-//    val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
     val appbarOffsetChangedEvent = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLiveEvent    = MutableLiveData<Int>()
 
@@ -68,10 +65,6 @@ class MainViewModel @Inject constructor(val app: Application
         }
     }
 
-    fun searchFragment() {
-        commandEvent.value = CMD_SEARCH_FRAMGNET
-    }
-
     fun searchExtendMenu() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
@@ -88,10 +81,6 @@ class MainViewModel @Inject constructor(val app: Application
         if (mLog.isDebugEnabled) {
             mLog.debug("")
         }
-    }
-
-    fun openNavigation() {
-        commandEvent.value = CMD_NAVIGATION_FRAGMENT
     }
 
     fun webviewBack() {
@@ -116,13 +105,13 @@ class MainViewModel @Inject constructor(val app: Application
 
             realtimeIssueText.set("${index + 1} ${issue.text}")
 
-            disposable.add(Observable.interval(5, TimeUnit.SECONDS).repeat().subscribe {
+            disposable.add(Observable.interval(7, TimeUnit.SECONDS).repeat().subscribe {
                 val index = realtimeCount % issueList.size
                 val issue = issueList.get(index)
 
                 realtimeIssueText.set("${index + 1} ${issue.text}")
-
                 ++realtimeCount
+
                 if (mLog.isDebugEnabled) {
                     mLog.debug("TIMER EXPLODE $realtimeCount ${issue.text} ")
                 }
@@ -154,17 +143,12 @@ class MainViewModel @Inject constructor(val app: Application
                         mLog.debug("REALTIME ISSUE OPEN : ${it.text} : ${it.url}")
                     }
 
-                    pairEvent.value = PAIR_BRS_OPEN to it.url
-
+                    commandEvent(CMD_BRS_OPEN, it.url)
                     break
                 }
 
                 ++i
             }
         }
-    }
-
-    fun realtimeIssueExtend() {
-        commandEvent.value = CMD_REALTIME_ISSUE_FRAGMENT
     }
 }

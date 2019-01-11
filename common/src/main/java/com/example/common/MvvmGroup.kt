@@ -89,30 +89,55 @@ inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: I
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
+// aware 에 fun 을 만들지 않다가 생각해보니 xml 에서 call 하려면 필요하다..
 
 interface IDialogAware {
     val dlgEvent: SingleLiveEvent<DialogParam>
+
+    fun dialog(dialog: DialogParam) {
+        dlgEvent.value = dialog
+    }
 }
 
 interface ISnackbarAware {
     val snackbarEvent: SingleLiveEvent<String>
 
-    fun snackbarEvent(msg: String?) {
+    fun snackbar(msg: String?) {
         msg?.let { snackbarEvent.value = it }
     }
 }
 
+// command 을 삭제하고 pair 로 가는게 나을 듯?
 interface ICommandEventAware {
-    val commandEvent: SingleLiveEvent<String>
+    val commandEvent: SingleLiveEvent<Pair<String, Any?>>
+
+    fun commandEvent(cmd: String, data: Any? = null) {
+        commandEvent.value = cmd to data
+    }
 }
 
-interface IPairEventAware {
-    val pairEvent: SingleLiveEvent<Pair<String, Any>>
-}
+//interface IPairEventAware {
+//    val pairEvent: SingleLiveEvent<Pair<String, Any>>
+//
+//    fun pairEvent(cmd:String, data: Any) {
+//        pairEvent.value = cmd to data
+//    }
+//}
 
 interface IFinishFragmentAware {
     val finishEvent: SingleLiveEvent<Void>
+
+    fun eventFinish() {
+        finishEvent.call()
+    }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////
+
 
 interface OnBackPressedListener {
     fun onBackPressed(): Boolean

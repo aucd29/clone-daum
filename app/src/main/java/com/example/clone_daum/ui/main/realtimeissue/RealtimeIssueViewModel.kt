@@ -2,16 +2,14 @@ package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
 import androidx.databinding.ObservableField
-import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
-import com.example.clone_daum.ui.main.MainTabAdapter
 import com.example.common.IFinishFragmentAware
 import com.example.common.RecyclerViewModel
 import com.example.common.arch.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -24,18 +22,27 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
 ) : RecyclerViewModel<RealtimeIssue>(app), IFinishFragmentAware {
-
-    override val finishEvent = SingleLiveEvent<Void>()
-
     companion object {
+        private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
+
         const val K_ISSUE_ALL   = "전체 이슈검색어"
         const val K_ISSUE_NEWS  = "뉴스 이슈검색어"
         const val K_ISSUE_ENTER = "연예 이슈검색어"
         const val K_ISSUE_SPORT = "스포츠 이슈검색어"
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AWARE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override val finishEvent = SingleLiveEvent<Void>()
+
+
     val tabAdapter  = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager   = ObservableField<ViewPager>()
+
 
     fun type(type: String) {
         initAdapter("realtime_issue_child_item")
@@ -43,11 +50,13 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             K_ISSUE_ALL,
             K_ISSUE_ENTER,
             K_ISSUE_NEWS,
-            K_ISSUE_SPORT -> items.set(preConfig.realtimeIssueMap.get(type))
-        }
-    }
+            K_ISSUE_SPORT -> {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("")
+                }
 
-    fun eventFinish() {
-        finishEvent.call()
+                items.set(preConfig.realtimeIssueMap.get(type))
+            }
+        }
     }
 }

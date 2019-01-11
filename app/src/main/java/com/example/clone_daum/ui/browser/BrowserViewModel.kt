@@ -30,23 +30,25 @@ class BrowserViewModel @Inject constructor(app: Application
    , var urlDao: UrlHistoryDao
    , val favDao: MyFavoriteDao
    , val disposable: CompositeDisposable
-) : AndroidViewModel(app), ISnackbarAware, IFinishFragmentAware
-  , ICommandEventAware, IPairEventAware {
-
+) : AndroidViewModel(app), ISnackbarAware, IFinishFragmentAware, ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
         const val CMD_BACK             = "back"
         const val CMD_SEARCH_FRAGMENT  = "search"
         const val CMD_SUBMENU_FRAGMENT = "submenu"
-
-        const val PAIR_SHARE_EVENT     = "share"
+        const val CMD_SHARE_EVENT      = "share"
     }
 
-    override val commandEvent  = SingleLiveEvent<String>()
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // AWARE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override val commandEvent  = SingleLiveEvent<Pair<String, Any?>>()
     override val snackbarEvent = SingleLiveEvent<String>()
     override val finishEvent   = SingleLiveEvent<Void>()
-    override val pairEvent     = SingleLiveEvent<Pair<String, Any>>()
 
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
@@ -61,8 +63,6 @@ class BrowserViewModel @Inject constructor(app: Application
     val brsEvent        = ObservableField<WebViewEvent>()
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
-
-//    val shareEvent      = SingleLiveEvent<String>()
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {
@@ -82,14 +82,6 @@ class BrowserViewModel @Inject constructor(app: Application
         }
 
         brsCount.set("$count")
-    }
-
-    fun eventBack() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED EVENT")
-        }
-
-        commandEvent.value = CMD_BACK
     }
 
     fun eventReloadBrowser(url : String) {
@@ -180,41 +172,17 @@ class BrowserViewModel @Inject constructor(app: Application
             }))
     }
 
-    fun eventSearchFragment() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHOW SEARCH FRAGMENT")
-        }
-
-        commandEvent.value = CMD_SEARCH_FRAGMENT
-    }
-
-    fun eventShareUrl(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHARE URL : $url")
-        }
-
-        pairEvent.value = PAIR_SHARE_EVENT to url
-    }
-
-    fun eventSubMenu() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SUB MENU ")
-        }
-
-        commandEvent.value = CMD_SUBMENU_FRAGMENT
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ISnackbarAware
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private fun snackbarEvent(@StringRes resid: Int) =
-        snackbarEvent(string(resid))
+    private fun snackbar(@StringRes resid: Int) =
+        snackbar(string(resid))
 
     private inline fun observeSnackbarEvent(msg: String?) {
         disposable.add(Single.just(msg).subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe { msg, _ -> snackbarEvent(msg) })
+            .subscribe { msg, _ -> snackbar(msg) })
     }
 }

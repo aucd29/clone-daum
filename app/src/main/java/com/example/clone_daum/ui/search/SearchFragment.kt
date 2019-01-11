@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.search
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.databinding.SearchFragmentBinding
+import com.example.clone_daum.ui.ViewController
 import com.example.common.di.module.injectOfActivity
 import com.example.common.*
 import dagger.android.ContributesAndroidInjector
@@ -20,11 +21,13 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     lateinit var popularviewVm: PopularViewModel
 
     @Inject lateinit var layoutManager: ChipsLayoutManager
+    @Inject lateinit var viewController: ViewController
 
     override fun bindViewModel() = mBinding.run {
         super.bindViewModel()
 
-        popularviewVm = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
+        popularviewVm = mViewModelFactory.injectOfActivity(this@SearchFragment,
+            PopularViewModel::class.java)
         popularviewVm.chipLayoutManager.set(layoutManager)
 
         popularmodel = popularviewVm
@@ -52,7 +55,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     }
 
     private fun browserFragment(url: String) {
-        
+        viewController.browserFragment(url)
     }
 
     override fun onDestroyView() {

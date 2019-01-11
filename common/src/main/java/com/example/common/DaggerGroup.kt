@@ -45,7 +45,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         dialogAware()
         finishFragmentAware()
         commandEventAware()
-        pairEventAware()
+//        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -87,19 +87,11 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
 
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it) }
+            observe(commandEvent) { onCommandEvent(it.first, it.second) }
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) { }
-
-    protected fun pairEventAware() = mViewModel.run {
-        if (this is IPairEventAware) {
-            observe(pairEvent) { onPairEvent(it.first, it.second) }
-        }
-    }
-
-    protected open fun onPairEvent(cmd: String, obj: Any) { }
+    protected open fun onCommandEvent(cmd: String, data: Any?) { }
 
     abstract fun initViewBinding()
     abstract fun initViewModelEvents()
@@ -138,7 +130,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         dialogAware()
         finishFragmentAware()
         commandEventAware()
-        pairEventAware()
+//        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -185,19 +177,11 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it) }
+            observe(commandEvent) { onCommandEvent(it.first, it.second) }
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) { }
-
-    protected fun pairEventAware() = mViewModel.run {
-        if (this is IPairEventAware) {
-            observe(pairEvent) { onPairEvent(it.first, it.second) }
-        }
-    }
-
-    protected open fun onPairEvent(cmd: String, obj: Any) { }
+    protected open fun onCommandEvent(cmd: String, data: Any?) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -239,7 +223,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 
         finishFragmentAware()
         commandEventAware()
-        pairEventAware()
+//        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -272,19 +256,11 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it) }
+            observe(commandEvent) { onCommandEvent(it.first, it.second) }
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) { }
-
-    protected fun pairEventAware() = mViewModel.run {
-        if (this is IPairEventAware) {
-            observe(pairEvent) { onPairEvent(it.first, it.second) }
-        }
-    }
-
-    protected open fun onPairEvent(cmd: String, obj: Any) { }
+    protected open fun onCommandEvent(cmd: String, data: Any?) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -327,7 +303,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
         finishFragmentAware()
         commandEventAware()
-        pairEventAware()
+//        pairEventAware()
 
         initViewBinding()
         initViewModelEvents()
@@ -360,19 +336,11 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it) }
+            observe(commandEvent) { onCommandEvent(it.first, it.second) }
         }
     }
 
-    protected open fun onCommandEvent(cmd: String) { }
-
-    protected fun pairEventAware() = mViewModel.run {
-        if (this is IPairEventAware) {
-            observe(pairEvent) { onPairEvent(it.first, it.second) }
-        }
-    }
-
-    protected open fun onPairEvent(cmd: String, obj: Any) { }
+    protected open fun onCommandEvent(cmd: String, data: Any?) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
