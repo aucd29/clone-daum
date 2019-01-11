@@ -112,8 +112,8 @@ class MainViewModel @Inject constructor(val app: Application
                 realtimeIssueText.set("${index + 1} ${issue.text}")
                 ++realtimeCount
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("TIMER EXPLODE $realtimeCount ${issue.text} ")
+                if (mLog.isTraceEnabled) {
+                    mLog.trace("TIMER EXPLODE $realtimeCount ${issue.text} ")
                 }
             })
         }

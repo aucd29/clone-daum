@@ -4,6 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="java.lang.String" />
         <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.remote.RealtimeIssue"/>
     </data>
@@ -12,32 +13,41 @@
             android:id="@+id/realtime_issue_child_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-    android:background="#dedede">
+            android:paddingTop="5dp"
+            android:paddingStart="5dp"
+            android:paddingBottom="5dp"
+    >
 
         <TextView
                 android:id="@+id/num"
+                style="@style/realtime_item"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="@{item.index}"
+                android:text="@{String.valueOf(item.index)}"
         />
 
         <TextView
                 android:id="@+id/issue"
+                style="@style/realtime_item"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/num"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="10dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxWidth="250dp"
                 android:text="@{item.text}"
         />
-
+        <!--android:text="@{item.text}"-->
         <TextView
                 android:id="@+id/rank"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:textColor="@color/colorAccent"
                 android:text="000"
+                android:textColor="@color/colorAccent"
+                android:textSize="13sp"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

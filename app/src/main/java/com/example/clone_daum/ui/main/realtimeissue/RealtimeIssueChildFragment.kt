@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
+import androidx.lifecycle.ViewModelProviders
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.common.BaseDaggerFragment
@@ -20,6 +21,9 @@ class RealtimeIssueChildFragment
     }
 
     @Inject lateinit var preConfig: PreloadConfig
+
+    override fun viewModelProvider()
+            = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 
     override fun initViewBinding() {
         if (mLog.isDebugEnabled) {

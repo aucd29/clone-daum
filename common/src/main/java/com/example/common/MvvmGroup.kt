@@ -107,7 +107,8 @@ interface ISnackbarAware {
     }
 }
 
-// command 을 삭제하고 pair 로 가는게 나을 듯?
+// xml 에서는 다음과 같이 사용할 수 있다.
+// android:onClick="@{() -> model.commandEvent(model.CMD_YOUR_COMMAND, ``)}"
 interface ICommandEventAware {
     val commandEvent: SingleLiveEvent<Pair<String, Any?>>
 
@@ -115,14 +116,6 @@ interface ICommandEventAware {
         commandEvent.value = cmd to data
     }
 }
-
-//interface IPairEventAware {
-//    val pairEvent: SingleLiveEvent<Pair<String, Any>>
-//
-//    fun pairEvent(cmd:String, data: Any) {
-//        pairEvent.value = cmd to data
-//    }
-//}
 
 interface IFinishFragmentAware {
     val finishEvent: SingleLiveEvent<Void>
@@ -207,7 +200,7 @@ abstract class BaseFragment<T: ViewDataBinding>
     }
 
     protected fun activity() = activity as BaseActivity<out ViewDataBinding>
-    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
+//    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()
@@ -236,7 +229,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
     }
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
-    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
+//    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
@@ -277,7 +270,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     }
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
-    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
+//    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()

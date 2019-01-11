@@ -103,12 +103,14 @@
                                 android:layout_marginTop="@dimen/main_search_rank_mgn_t"
                                 android:background="@drawable/selector_button_bgcolor"
                                 android:paddingTop="4dp"
-                                android:paddingStart="10dp"
                                 android:paddingEnd="10dp"
                                 android:text="@{model.realtimeIssueText}"
                                 android:maxLines="1"
+                                android:maxWidth="120dp"
                                 android:ellipsize="end"
                                 android:onClick="@{() -> model.realtimeIssueOpenEvent(model.realtimeIssueText)}"
+                                android:textColor="@android:color/black"
+                                android:textSize="15sp"
                         />
 
                         <ImageView

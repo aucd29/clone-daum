@@ -43,7 +43,6 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val tabAdapter  = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager   = ObservableField<ViewPager>()
 
-
     fun type(type: String) {
         initAdapter("realtime_issue_child_item")
         when (type) {
@@ -51,11 +50,13 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             K_ISSUE_ENTER,
             K_ISSUE_NEWS,
             K_ISSUE_SPORT -> {
+                val list = preConfig.realtimeIssueMap.get(type)
+
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("")
+                    mLog.debug("TYPE: $type\n${list.toString()}")
                 }
 
-                items.set(preConfig.realtimeIssueMap.get(type))
+                items.set(list)
             }
         }
     }
