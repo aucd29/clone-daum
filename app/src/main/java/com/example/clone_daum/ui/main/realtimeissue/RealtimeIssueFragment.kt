@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.RealtimeIssueFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -31,24 +32,15 @@ class RealtimeIssueFragment
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
 
-    private val mLabelList: ArrayList<String> = arrayListOf()
-
-    // changed style for rounded edge
+    // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         BottomSheetDialog(context!!, R.style.round_bottom_sheet_dialog)
 
     override fun initViewBinding() = mBinding.run {
-        preConfig.realtimeIssueMap.forEach({
-            if (mLog.isDebugEnabled) {
-                mLog.debug("TAB LABEL : ${it.key}")
-            }
-
-            mLabelList.add(it.key)
-        })
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mLabelList))
+        tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, preConfig.realtimeIssueList))
         viewpager.set(mBinding.realtimeIssueViewpager)
     }
 
@@ -82,13 +74,14 @@ class RealtimeIssueFragment
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class RealtimeIssueTabAdapter constructor(fm: FragmentManager, val mLabelList: ArrayList<String>)
+class RealtimeIssueTabAdapter constructor(fm: FragmentManager,
+    val mRealtimeIssue: List<Pair<String, List<RealtimeIssue>>>)
     : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         val frgmt  = RealtimeIssueChildFragment()
         val bundle = Bundle()
-        bundle.putString("key", mLabelList.get(position))
+        bundle.putInt("position", position)
 
         frgmt.arguments = bundle
 
@@ -97,7 +90,7 @@ class RealtimeIssueTabAdapter constructor(fm: FragmentManager, val mLabelList: A
 
     // 이슈 검색어 단어는 삭제하고 타이틀을 생성한다.
     override fun getPageTitle(position: Int) =
-        mLabelList.get(position).replace(" 이슈검색어", "")
+        mRealtimeIssue.get(position).first
 
-    override fun getCount() = mLabelList.size
+    override fun getCount() = mRealtimeIssue.size
 }

@@ -109,7 +109,8 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
     lateinit var tabLabelList: List<TabData>
     lateinit var brsSubMenu: List<BrowserSubMenu>
     lateinit var naviSitemap: List<Sitemap>
-    lateinit var realtimeIssueMap: Map<String, List<RealtimeIssue>>
+//    lateinit var realtimeIssueMap: Map<String, List<RealtimeIssue>>
+    lateinit var realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
 
     init {
         dp.add(github.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
@@ -188,10 +189,10 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
         val mainHtml = daum.main().blockingFirst()
 
         // 전체 이슈 하나만 있는 줄 알았더니만... 3개 더 있네.. ㄷ ㄷ ㄷ
-        realtimeIssueMap = parseRealtimeIssue(mainHtml)
+        realtimeIssueList = parseRealtimeIssue(mainHtml)
     }
 
-    private fun parseRealtimeIssue(main: String): Map<String, List<RealtimeIssue>> {
+    private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {
         if (mLog.isDebugEnabled) {
             mLog.debug("PARSE REALTIME ISSUE")
         }
@@ -212,21 +213,24 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
         parse.loadXml(issue)
 
         if (mLog.isDebugEnabled) {
-            parse.realtimeIssueMap.forEach({
-                mLog.debug("${it.key} : (${it.value.size})")
+            parse.realtimeIssueList.forEach({
+                mLog.debug("${it.first} : (${it.second.size})")
             })
         }
 
-        return parse.realtimeIssueMap
+        return parse.realtimeIssueList
     }
 }
 
 class RealtimeIssueParser: BaseXPath() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueParser::class.java)
+        private const val REMOVE_WORD    = " 이슈검색어"
+        private const val REALTIME_ISSUE = "실시간이슈"
     }
 
-    val realtimeIssueMap = hashMapOf<String, List<RealtimeIssue>>()
+//    val realtimeIssueMap = hashMapOf<String, List<RealtimeIssue>>()
+    val realtimeIssueList = arrayListOf<Pair<String, List<RealtimeIssue>>>()
 
 // 파싱을 방지하려고 url 을 이래 놓은건가?
 // --
@@ -282,7 +286,10 @@ class RealtimeIssueParser: BaseXPath() {
         var k = 1
         while(k <= strongCnt) {
             exp = "/div/div[$k]/strong/text()"
-            val label = string(exp)
+            var label = string(exp).replace(REMOVE_WORD, "")
+            if ("전체" == label) {
+                label = REALTIME_ISSUE
+            }
 
             if (mLog.isDebugEnabled) {
                 mLog.debug("LABEL : $label")
@@ -316,7 +323,8 @@ class RealtimeIssueParser: BaseXPath() {
                 ++i
             }
 
-            realtimeIssueMap.put(label, issueList)
+            realtimeIssueList.add(label to issueList)
+//            realtimeIssueMap.put(label, issueList)
             ++k
         }
     }

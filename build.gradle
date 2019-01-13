@@ -1,9 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 ext {
-    hsp_compile_sdk = 28
-    hsp_min_sdk     = 18
-    hsp_target_sdk  = 28
+    compile_sdk = 28
+    min_sdk     = 18
+    target_sdk  = 28
 
     androidx    = '1.0.0'
     appcompat   = '1.0.2'

@@ -13,12 +13,11 @@
             android:id="@+id/realtime_issue_child_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingStart="5dp"
-            android:paddingBottom="5dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"
+            android:padding="5dp"
     >
+        <!--android:onClick="@{() -> model.testEvent(model.CMD_BRS_OPEN, item.url)}"-->
+        <!--android:background="?selectableItemBackgroundBorderless"-->
+        <!--android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"-->
 
         <TextView
                 android:id="@+id/num"
@@ -27,7 +26,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/issue"
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="@{String.valueOf(item.index)}"
-                android:gravity="right"
                 android:layout_marginEnd="10dp"
         />
 
@@ -37,7 +35,7 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="30dp"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:maxWidth="250dp"

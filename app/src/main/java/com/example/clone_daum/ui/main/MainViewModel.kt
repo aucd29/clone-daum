@@ -90,7 +90,7 @@ class MainViewModel @Inject constructor(val app: Application
     }
 
     fun startRealtimeIssue() {
-        if (preConfig.realtimeIssueMap.size == 0) {
+        if (preConfig.realtimeIssueList.size == 0) {
             realtimeIssueText.set(string(R.string.main_realtime_issue_network_error))
             return
         }
@@ -99,7 +99,7 @@ class MainViewModel @Inject constructor(val app: Application
             mLog.debug("START REALTIME ISSUE")
         }
 
-        preConfig.realtimeIssueMap.get(K_ALL_ISSUE)?.let { issueList ->
+        preConfig.realtimeIssueList.get(0).second.let { issueList ->
             val index = realtimeCount % issueList.size
             val issue = issueList.get(index)
 
@@ -133,7 +133,7 @@ class MainViewModel @Inject constructor(val app: Application
         }
 
         val newText = text.replace("[0-9]".toRegex(), "").trim()
-        preConfig.realtimeIssueMap.get(K_ALL_ISSUE)?.let { list ->
+        preConfig.realtimeIssueList.get(0).second.let { list ->
             var i = 0
             while (i < list.size) {
                 val it = list.get(i)

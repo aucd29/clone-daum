@@ -27,11 +27,6 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
-        const val K_ISSUE_ALL   = "전체 이슈검색어"
-        const val K_ISSUE_NEWS  = "뉴스 이슈검색어"
-        const val K_ISSUE_ENTER = "연예 이슈검색어"
-        const val K_ISSUE_SPORT = "스포츠 이슈검색어"
-
         const val CMD_BRS_OPEN  = "brs-open"
     }
 
@@ -44,31 +39,18 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     override val finishEvent  = SingleLiveEvent<Void>()
     override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 
+    val tabAdapter = ObservableField<RealtimeIssueTabAdapter>()
+    val viewpager  = ObservableField<ViewPager>()
 
-    val tabAdapter  = ObservableField<RealtimeIssueTabAdapter>()
-    val viewpager   = ObservableField<ViewPager>()
-
-
-    fun type(type: String) {
+    fun init(position: Int) {
         initAdapter("realtime_issue_child_item")
 
-        when (type) {
-            K_ISSUE_ALL,
-            K_ISSUE_ENTER,
-            K_ISSUE_NEWS,
-            K_ISSUE_SPORT -> {
-                val list = preConfig.realtimeIssueMap.get(type)
+        if (position < 0 && position > preConfig.realtimeIssueList.size) {
+            mLog.error("ERROR: REALTIME ISSUE INVALID POSITION")
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("TYPE: $type\n${list.toString()}")
-                }
-
-                items.set(list)
-            }
+            return
         }
-    }
 
-    override fun commandEvent(cmd: String, data: Any?) {
-        super.commandEvent(cmd, data)
+        items.set(preConfig.realtimeIssueList.get(position).second)
     }
 }

@@ -32,8 +32,8 @@ class RealtimeIssueChildFragment
     }
 
     override fun initViewModelEvents() {
-        arguments?.getString("key")?.let {
-            mViewModel.type(it)
+        arguments?.getInt("position")?.let {
+            mViewModel.init(it)
         }
     }
 
