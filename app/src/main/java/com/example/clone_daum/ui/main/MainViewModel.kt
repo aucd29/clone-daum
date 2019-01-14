@@ -32,8 +32,6 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_BRS_OPEN                = "brs-open"
-
-        const val K_ALL_ISSUE                 = "전체 이슈검색어"
     }
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any?>>()

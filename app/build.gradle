@@ -76,9 +76,10 @@ dependencies {
 
     kapt "com.google.dagger:dagger-compiler:$dagger2"
     kapt "com.google.dagger:dagger-android-processor:2.16"  // 애는 버전이 낮음
-    // di
-    implementation "com.radutopor.viewmodelfactory:annotations:1.0.0"
-    kapt "com.radutopor.viewmodelfactory:processor:1.0.0"   // use `annotationProcessor` for Java
+
+//    // di
+//    implementation "com.radutopor.viewmodelfactory:annotations:1.0.0"
+//    kapt "com.radutopor.viewmodelfactory:processor:1.0.0"   // use `annotationProcessor` for Java
 
     // material
     implementation "com.google.android.material:material:$androidx"

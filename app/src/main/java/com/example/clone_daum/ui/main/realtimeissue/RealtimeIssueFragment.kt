@@ -10,6 +10,7 @@ import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment
+import com.example.common.finish
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -45,13 +46,11 @@ class RealtimeIssueFragment
     }
 
     override fun onCommandEvent(cmd: String, data: Any?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMENT EVENT : $cmd = $data")
-        }
-
         when(cmd) {
-            RealtimeIssueViewModel.CMD_BRS_OPEN ->
+            RealtimeIssueViewModel.CMD_BRS_OPEN -> {
                 viewController.browserFragment(data.toString())
+                dismiss()
+            }
         }
     }
 

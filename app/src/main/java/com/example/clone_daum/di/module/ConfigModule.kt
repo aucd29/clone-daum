@@ -109,7 +109,6 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
     lateinit var tabLabelList: List<TabData>
     lateinit var brsSubMenu: List<BrowserSubMenu>
     lateinit var naviSitemap: List<Sitemap>
-//    lateinit var realtimeIssueMap: Map<String, List<RealtimeIssue>>
     lateinit var realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
 
     init {
@@ -229,7 +228,6 @@ class RealtimeIssueParser: BaseXPath() {
         private const val REALTIME_ISSUE = "실시간이슈"
     }
 
-//    val realtimeIssueMap = hashMapOf<String, List<RealtimeIssue>>()
     val realtimeIssueList = arrayListOf<Pair<String, List<RealtimeIssue>>>()
 
 // 파싱을 방지하려고 url 을 이래 놓은건가?
@@ -324,7 +322,6 @@ class RealtimeIssueParser: BaseXPath() {
             }
 
             realtimeIssueList.add(label to issueList)
-//            realtimeIssueMap.put(label, issueList)
             ++k
         }
     }

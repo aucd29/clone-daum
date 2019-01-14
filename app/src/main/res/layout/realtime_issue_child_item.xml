@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"
     >
         <!--android:onClick="@{() -> model.testEvent(model.CMD_BRS_OPEN, item.url)}"-->
         <!--android:background="?selectableItemBackgroundBorderless"-->
@@ -41,7 +42,7 @@
                 android:maxWidth="250dp"
                 android:text="@{item.text}"
         />
-        <!--android:text="@{item.text}"-->
+
         <TextView
                 android:id="@+id/rank"
                 style="@style/realtime_issue_item"
