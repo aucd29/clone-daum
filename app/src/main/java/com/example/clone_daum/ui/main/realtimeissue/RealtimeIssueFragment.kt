@@ -37,8 +37,7 @@ class RealtimeIssueFragment
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         BottomSheetDialog(context!!, R.style.round_bottom_sheet_dialog)
 
-    override fun initViewBinding() = mBinding.run {
-    }
+    override fun initViewBinding() { }
 
     override fun initViewModelEvents() = mViewModel.run {
         tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, preConfig.realtimeIssueList))

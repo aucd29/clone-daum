@@ -14,6 +14,7 @@ import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewMode
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
+import com.example.clone_daum.ui.main.weather.WeatherViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
@@ -41,6 +42,13 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RealtimeIssueViewModel::class)
     abstract fun bindRealtimeIssueViewModel(vm: RealtimeIssueViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(WeatherViewModel::class)
+    abstract fun bindWeatherViewModel(vm: WeatherViewModel): ViewModel
+
+
 
     @Binds
     @IntoMap

@@ -39,11 +39,16 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     }
 
     override fun onCommandEvent(cmd: String, obj: Any?) = MainViewModel.run {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND EVENT : $cmd")
+        }
+
         when (cmd) {
             CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
             CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
             CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
-            CMD_BRS_OPEN               -> obj?.let { viewController.browserFragment(it.toString()) } ?: Unit
+            CMD_WEATHER_FRAGMENT        -> viewController.weatherFragment()
+            CMD_BRS_OPEN                -> obj?.let { viewController.browserFragment(it.toString()) } ?: Unit
         }
     }
 

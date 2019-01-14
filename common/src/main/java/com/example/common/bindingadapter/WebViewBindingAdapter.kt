@@ -37,8 +37,14 @@ object WebViewBindingAdapter {
                 WebViewEvent.BACK         -> goBack()
                 WebViewEvent.STOP_LOADING -> stopLoading()
                 WebViewEvent.RELOAD       -> reload()
-                WebViewEvent.PAUSE_TIMER  -> pauseTimers()
-                WebViewEvent.RESUME_TIMER -> resumeTimers()
+                WebViewEvent.PAUSE_TIMER  -> {
+                    pauseTimers()
+                    onPause()
+                }
+                WebViewEvent.RESUME_TIMER -> {
+                    onResume()
+                    resumeTimers()
+                }
                 else -> {
                     if (mLog.isDebugEnabled) {
                         mLog.debug("UNKNOWN EVENT")

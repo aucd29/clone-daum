@@ -81,11 +81,11 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         val handler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
             val os = ByteArrayOutputStream()
-            val s = PrintStream(os)
+            val s  = PrintStream(os)
             e.printStackTrace(s)
             s.flush()
 
-            mLog.error("ERROR: ${os.toString()}")
+            mLog.error("ERROR: $os")
 
             if (handler != null) {
                 handler.uncaughtException(t, e)

@@ -10,6 +10,7 @@ import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildFragment
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
+import com.example.clone_daum.ui.main.weather.WeatherFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import dagger.Module
 
@@ -23,6 +24,9 @@ import dagger.Module
     // REALTIME ISSUE
     , RealtimeIssueFragment.Module::class
     , RealtimeIssueChildFragment.Module::class
+
+    // WEATHER
+    , WeatherFragment.Module::class
 
     // NAVIGATION
     , NavigationFragment.Module::class

@@ -11,6 +11,7 @@ import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
+import com.example.clone_daum.ui.main.weather.WeatherFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
 import org.slf4j.LoggerFactory
@@ -43,6 +44,14 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
+    }
+
+    fun weatherFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("WEATHER FRAGMENT")
+        }
+
+        manager.showDialog(WeatherFragment(), "weather")
     }
 
     fun navigationFragment() {

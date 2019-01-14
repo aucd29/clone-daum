@@ -148,7 +148,8 @@
                                 app:layout_constraintStart_toEndOf="@+id/search_vertical_bar"
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 app:layout_constraintBottom_toTopOf="@+id/search_underline"
-                                android:onClick="@{() -> model.weatherDetail()}">
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_WEATHER_FRAGMENT, ``)}">
 
                             <TextView
                                     android:id="@+id/search_weather_text"

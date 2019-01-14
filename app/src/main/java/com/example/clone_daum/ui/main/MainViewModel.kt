@@ -31,6 +31,7 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_SEARCH_FRAMGNET         = "search"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
+        const val CMD_WEATHER_FRAGMENT        = "weahter"
         const val CMD_BRS_OPEN                = "brs-open"
     }
 
@@ -63,29 +64,11 @@ class MainViewModel @Inject constructor(val app: Application
         }
     }
 
-    fun searchExtendMenu() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
-    }
-
-    fun weatherDetail() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
-    }
-
-    fun confirmGps() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
-    }
-
-    fun webviewBack() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
-        }
-    }
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // REALTIME ISSUE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     fun startRealtimeIssue() {
         if (preConfig.realtimeIssueList.size == 0) {
@@ -149,4 +132,23 @@ class MainViewModel @Inject constructor(val app: Application
             }
         }
     }
+
+    fun searchExtendMenu() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
+    fun confirmGps() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
+    fun webviewBack() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
 }
