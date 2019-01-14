@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main
 
+import android.Manifest
 import android.app.Application
 import android.view.View
 import androidx.databinding.ObservableField
@@ -11,6 +12,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
+import com.example.common.runtimepermission.RuntimePermission
 import com.google.android.material.appbar.AppBarLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -33,6 +35,7 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_WEATHER_FRAGMENT        = "weahter"
         const val CMD_BRS_OPEN                = "brs-open"
+        const val CMD_PERMISSION_GPS          = "permission-gps"
     }
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any?>>()
@@ -43,6 +46,7 @@ class MainViewModel @Inject constructor(val app: Application
     val brsEvent                 = ObservableField<WebViewEvent>()
     val viewpagerPageLimit       = ObservableInt(3)
     val visibleBack              = ObservableInt(View.GONE)
+    val visibleGps               = ObservableInt(View.VISIBLE)
     var gotoNewsEvent            = ObservableInt(0)
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
@@ -63,6 +67,14 @@ class MainViewModel @Inject constructor(val app: Application
             gotoNewsEvent.set(INDEX_NEWS)
         }
     }
+
+
+    fun searchExtendMenu() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("")
+        }
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -130,12 +142,6 @@ class MainViewModel @Inject constructor(val app: Application
 
                 ++i
             }
-        }
-    }
-
-    fun searchExtendMenu() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
         }
     }
 

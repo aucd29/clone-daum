@@ -148,6 +148,7 @@
                                 app:layout_constraintStart_toEndOf="@+id/search_vertical_bar"
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 app:layout_constraintBottom_toTopOf="@+id/search_underline"
+                                app:layout_constraintEnd_toStartOf="@+id/search_gps_icon"
                                 android:background="?selectableItemBackgroundBorderless"
                                 android:onClick="@{() -> model.commandEvent(model.CMD_WEATHER_FRAGMENT, ``)}">
 
@@ -192,7 +193,8 @@
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toTopOf="@+id/search_underline"
                                 android:padding="@dimen/main_gps_pad"
-                                android:onClick="@{() -> model.confirmGps()}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_PERMISSION_GPS, ``)}"
+                                android:visibility="@{model.visibleGps}"
                         />
 
                         <View
@@ -203,7 +205,6 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
                         />
-
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>

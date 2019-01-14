@@ -1,8 +1,13 @@
 package com.example.clone_daum.ui.main
 
+import android.Manifest
+import android.view.View
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
+import com.example.common.runtimepermission.PermissionParams
+import com.example.common.runtimepermission.RuntimePermission
+import com.example.common.runtimepermission.runtimePermission
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -36,6 +41,11 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
             mBinding.searchArea.alpha   = 1.0f - percentage
             appbarOffsetLiveEvent.value = offset
         }
+
+        val result = RuntimePermission.checkPermissions(context!!
+            , permissions = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION))
+
+        visibleGps.set(if (result) View.GONE else View.VISIBLE)
     }
 
     override fun onCommandEvent(cmd: String, obj: Any?) = MainViewModel.run {
@@ -49,6 +59,13 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
             CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
             CMD_WEATHER_FRAGMENT        -> viewController.weatherFragment()
             CMD_BRS_OPEN                -> obj?.let { viewController.browserFragment(it.toString()) } ?: Unit
+            CMD_PERMISSION_GPS          -> {
+                runtimePermission(PermissionParams(activity(), { req, res ->
+                    when (res) {
+                        true -> mViewModel.visibleGps.set(View.GONE)
+                    }
+                }, 79).permission(Manifest.permission.ACCESS_FINE_LOCATION))
+            }
         }
     }
 
