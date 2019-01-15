@@ -22,6 +22,7 @@ import javax.inject.Singleton
     , AssetModule::class
     , ConfigModule::class
     , RxModule::class
+    , RxLocationModule::class
     , CalligraphyModule::class
 ])
 class DaumModule {

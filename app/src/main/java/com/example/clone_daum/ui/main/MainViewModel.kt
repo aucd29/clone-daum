@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.main
 
-import android.Manifest
 import android.app.Application
 import android.view.View
 import androidx.databinding.ObservableField
@@ -9,10 +8,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.R
+import com.example.clone_daum.di.module.Config
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
-import com.example.common.runtimepermission.RuntimePermission
 import com.google.android.material.appbar.AppBarLayout
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -21,6 +20,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(val app: Application
+    , val config: Config
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
 ) : AndroidViewModel(app), ICommandEventAware {
@@ -46,7 +46,7 @@ class MainViewModel @Inject constructor(val app: Application
     val brsEvent                 = ObservableField<WebViewEvent>()
     val viewpagerPageLimit       = ObservableInt(3)
     val visibleBack              = ObservableInt(View.GONE)
-    val visibleGps               = ObservableInt(View.VISIBLE)
+    val visibleGps               = ObservableInt(if (config.HAS_PERMISSION_GPS) View.GONE else View.VISIBLE)
     var gotoNewsEvent            = ObservableInt(0)
 
     // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
@@ -55,6 +55,7 @@ class MainViewModel @Inject constructor(val app: Application
 
     val realtimeIssueText        = ObservableField<String>()
     var realtimeCount            = 0
+
 
     fun gotoNews() {
         if (mLog.isDebugEnabled) {
@@ -68,13 +69,11 @@ class MainViewModel @Inject constructor(val app: Application
         }
     }
 
-
     fun searchExtendMenu() {
         if (mLog.isDebugEnabled) {
             mLog.debug("")
         }
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -142,12 +141,6 @@ class MainViewModel @Inject constructor(val app: Application
 
                 ++i
             }
-        }
-    }
-
-    fun confirmGps() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("")
         }
     }
 

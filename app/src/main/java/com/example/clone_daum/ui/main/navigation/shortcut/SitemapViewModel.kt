@@ -23,7 +23,7 @@ class SitemapViewModel @Inject constructor(app: Application
 
     init {
         initAdapter("sitemap_item")
-        items.set(preConfig.naviSitemap)
+        items.set(preConfig.naviSitemapList)
     }
 
     fun eventOpen(item: Sitemap) {

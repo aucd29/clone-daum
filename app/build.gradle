@@ -68,8 +68,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room"
     implementation "androidx.room:room-rxjava2:$room"
 
-    // dagger
-    // https://google.github.io/dagger/android
+    // dagger : https://google.github.io/dagger/android
     implementation "com.google.dagger:dagger:$dagger2"
     implementation "com.google.dagger:dagger-android:$dagger2"
     implementation "com.google.dagger:dagger-android-support:$dagger2" // if you use the support libraries
@@ -97,7 +96,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
-//    implementation "com.squareup.picasso:picasso:$picasso"
 
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
@@ -112,6 +110,10 @@ dependencies {
 
     // chip layout
     implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
+
+    // rxlocation : https://github.com/patloew/RxLocation
+    implementation 'com.patloew.rxlocation:rxlocation:1.0.5'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 
     // local lib
     implementation project(path: ':common')

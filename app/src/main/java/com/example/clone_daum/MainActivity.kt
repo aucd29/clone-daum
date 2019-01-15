@@ -1,6 +1,5 @@
 package com.example.clone_daum
 
-import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -10,8 +9,6 @@ import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.common.*
-import com.example.common.runtimepermission.PermissionParams
-import com.example.common.runtimepermission.runtimePermission
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
@@ -48,6 +45,7 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     }
 
     override fun initViewBinding() {
+
     }
 
     override fun initViewModelEvents() = mViewModel.run {

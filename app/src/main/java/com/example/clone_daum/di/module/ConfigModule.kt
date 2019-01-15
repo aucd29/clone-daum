@@ -55,14 +55,17 @@ class Config(val context: Context) {
     val SCREEN = Point()
     val STATUS_BAR_HEIGHT: Int
 
+    var HAS_PERMISSION_GPS = false
+    var DEFAULT_LOCATION   = "서울"
+
     init {
         //
         // USER AGENT
         //
         val release = Build.VERSION.RELEASE
         val country = Locale.getDefault().country
-        val language = Locale.getDefault().language
-        val param = "service"   // LoginActorDeleteToken
+        val language= Locale.getDefault().language
+        val param          = "service"   // LoginActorDeleteToken
         val version = BuildConfig.VERSION_NAME
 
         USER_AGENT = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
@@ -88,6 +91,12 @@ class Config(val context: Context) {
         STATUS_BAR_HEIGHT = if (resourceId > 0) {
             context.resources.getDimensionPixelSize(resourceId)
         } else 0
+
+        //
+        // PERMISSION
+        //
+        HAS_PERMISSION_GPS = RuntimePermission.checkPermissions(context
+            , permissions = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION))
     }
 }
 
@@ -105,12 +114,9 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
     }
 
     lateinit var tabLabelList: List<TabData>
-    lateinit var brsSubMenu: List<BrowserSubMenu>
-    lateinit var naviSitemap: List<Sitemap>
+    lateinit var brsSubMenuList: List<BrowserSubMenu>
+    lateinit var naviSitemapList: List<Sitemap>
     lateinit var realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
-
-    var permissionGps = false
-    var location = "서울"
 
     init {
         dp.add(github.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
@@ -143,7 +149,7 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
 
                 it
             }
-            .subscribe { brsSubMenu = it })
+            .subscribe { brsSubMenuList = it })
 
         dp.add(Observable.just(assets.open("res/navi_sitemap.json").readBytes())
             .observeOn(Schedulers.io())
@@ -153,7 +159,7 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
                     mLog.debug("PARSE OK : navi_sitemap.json")
                 }
 
-                naviSitemap = it
+                naviSitemapList = it
             })
 
         dp.add(db.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
@@ -182,10 +188,6 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
 
-        permissionGps = RuntimePermission.checkPermissions(context
-            , permissions = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION))
-
-
         htmlParse()
     }
 
@@ -201,8 +203,15 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
             mLog.debug("PARSE REALTIME ISSUE")
         }
 
+        val parse = RealtimeIssueParser()
         val f = main.indexOf("""<div id="footerHotissueRankingDiv_channel_news1">""")
         val e = main.indexOf("""<div class="d_foot">""")
+
+        if (f == -1 || e == -1) {
+            mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
+
+            return parse.realtimeIssueList
+        }
 
         // https://www.w3schools.com/tags/ref_urlencode.asp
         var issue = main.substring(f, e)
@@ -213,7 +222,6 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
             .replace("&", "%26")
         issue = issue.substring(0, issue.length - "</div>".length)
 
-        val parse = RealtimeIssueParser()
         parse.loadXml(issue)
 
         if (mLog.isDebugEnabled) {

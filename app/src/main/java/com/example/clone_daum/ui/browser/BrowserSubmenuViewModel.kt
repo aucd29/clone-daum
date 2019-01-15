@@ -35,11 +35,11 @@ class BrowserSubmenuViewModel @Inject constructor(
 
     init {
         if (mLog.isDebugEnabled) {
-            mLog.debug("ITEM (${config.brsSubMenu.size})\n${config.brsSubMenu}")
+            mLog.debug("ITEM (${config.brsSubMenuList.size})\n${config.brsSubMenuList}")
         }
 
         initAdapter("browser_submenu_item")
-        items.set(config.brsSubMenu)
+        items.set(config.brsSubMenuList)
     }
 
     fun event(event: String) {

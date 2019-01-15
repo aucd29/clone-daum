@@ -77,11 +77,11 @@ object RuntimePermission {
     }
 }
 
-inline fun FragmentActivity.runtimePermission(params: PermissionParams) {
+inline fun FragmentActivity.runtimePermissions(params: PermissionParams) {
     RuntimePermission.check(params)
 }
 
-inline fun Fragment.runtimePermission(params: PermissionParams) {
+inline fun Fragment.runtimePermissions(params: PermissionParams) {
     RuntimePermission.check(params)
 }
 
@@ -92,11 +92,12 @@ inline fun Fragment.runtimePermission(params: PermissionParams) {
 ////////////////////////////////////////////////////////////////////////////////////
 
 data class PermissionParams(
-    val activity: FragmentActivity,
-    val listener: (Int, Boolean) -> Unit,
-    val reqCode: Int = RuntimePermission.REQ_MAIN,
-    val permissions: ArrayList<String> = arrayListOf()
+    val activity    : FragmentActivity,
+    val permissions : ArrayList<String>,
+    val listener    : (Int, Boolean) -> Unit,
+    val reqCode     : Int = RuntimePermission.REQ_MAIN
 ) {
+    // 마치 builder pattern 처럼.. add 할 수 있도록
     fun permission(permission: String): PermissionParams {
         permissions.add(permission)
         return this
