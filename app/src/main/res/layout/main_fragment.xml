@@ -28,7 +28,7 @@
                     app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             />
 
-            <!--
+            <!-- 
             app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
             app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
             -->
