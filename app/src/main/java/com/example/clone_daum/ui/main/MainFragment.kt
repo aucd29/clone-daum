@@ -29,7 +29,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mWeatherViewModel = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
+        mWeatherViewModel     = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
+        mBinding.weatherModel = mWeatherViewModel
     }
 
     override fun initViewBinding() { }

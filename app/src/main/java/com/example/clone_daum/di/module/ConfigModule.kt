@@ -117,6 +117,7 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
     lateinit var brsSubMenuList: List<BrowserSubMenu>
     lateinit var naviSitemapList: List<Sitemap>
     lateinit var realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
+    lateinit var weatherDetailList: List<WeatherDetail>
 
     init {
         dp.add(github.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
@@ -160,6 +161,17 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
                 }
 
                 naviSitemapList = it
+            })
+
+        dp.add(Observable.just(assets.open("res/weather_default.json").readBytes())
+            .observeOn(Schedulers.io())
+            .map { it.jsonParse<List<WeatherDetail>>() }
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("PARSE OK : weather_default.json")
+                }
+
+                weatherDetailList = it
             })
 
         dp.add(db.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {

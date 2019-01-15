@@ -6,6 +6,9 @@
 
     <data>
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel" />
+        <variable name="weatherModel"
+                  type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -155,7 +158,7 @@
                             <TextView
                                     android:id="@+id/search_weather_text"
                                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:text="서울"
+                                    android:text="@{weatherModel.thoroughfare}"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintBottom_toBottomOf="parent"

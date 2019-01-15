@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
@@ -16,9 +17,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.example.common.arch.SingleLiveEvent
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.*
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -243,6 +246,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
 
 abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     : BottomSheetDialogFragment(), HasSupportFragmentInjector {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(BaseBottomSheetDialogFragment::class.java)
+    }
 
     protected lateinit var mBinding : T
 
@@ -253,6 +259,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
         mBinding.root.isClickable = true
 
         bindViewModel()
+        stateCallback()
 
         return mBinding.root
     }
@@ -270,7 +277,51 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     }
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
-//    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        stateCallback()
+//        wrapContentHeight()
+    }
+
+    fun stateCallback() {
+        mBinding.root.layoutListener {
+            BottomSheetBehavior.from(mBinding.root.parent as View).run {
+                setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(p0: View, p1: Float) {}
+
+                    @SuppressLint("SwitchIntDef")
+                    override fun onStateChanged(view: View, state: Int) {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("STATE CHANGED $state")
+                        }
+
+                        when (state) {
+                            BottomSheetBehavior.STATE_COLLAPSED,
+                            BottomSheetBehavior.STATE_HIDDEN -> {
+                                if (mLog.isDebugEnabled) {
+                                    mLog.debug("STATE HIDDEN | STATE_COLLAPSED")
+                                }
+
+                                dismiss()
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    // https://stackoverflow.com/questions/45614271/bottomsheetdialogfragment-doesnt-show-full-height-in-landscape-mode
+    fun wrapContentHeight() {
+        mBinding.root.layoutListener {
+            BottomSheetBehavior.from(mBinding.root.parent as View).run {
+                state      = BottomSheetBehavior.STATE_EXPANDED
+                peekHeight = 0
+            }
+        }
+    }
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()

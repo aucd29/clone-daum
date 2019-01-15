@@ -1,0 +1,57 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="model" type="com.example.clone_daum.ui.main.weather.WeatherViewModel" />
+        <variable name="item" type="com.example.clone_daum.model.remote.WeatherDetail" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/weather_item_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/weather_item_pad"
+    >
+
+<!--
+icon 은 없어서 일단 데이터 타입은 주었으나 넣어두진 않음 아마도 아이콘은 서버에서 다운로드해서 출력하면 되므로
+bindding adapter 를 이용하면 될듯
+-->
+
+        <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_android_black_14dp"
+        />
+
+
+        <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@{item.description}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="통합대기"
+                android:gravity="center"
+        />
+
+        <TextView
+                android:id="@+id/value"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@{item.value}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="매우나쁨"
+                android:textColor="@color/colorAccent"
+                android:gravity="center"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

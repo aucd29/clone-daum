@@ -1,13 +1,23 @@
 [
-  {"name":"mail", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png", "url": "http://m.mail.daum.net/hanmailex/mobile/basic/Top.daum", "isApp": false}
-, {"name":"miznet", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20170704041915131.png", "url": "http://m.miznet.daum.net/", "isApp": false}
-, {"name":"cafe", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20161010114328347.png", "url": "http://m.cafe.daum.net/", "isApp": false}
-, {"name":"tstory", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20181022040630985.png", "url": "http://www.tistory.com/m/", "isApp": false}
-, {"name":"tip", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20170704035750877.png", "url": "http://m.tip.daum.net/", "isApp": false}
-, {"name":"webtoon", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171117040352478.png", "url": "http://m.webtoon.daum.net", "isApp": false}
-, {"name":"finance", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20170704042101000.png", "url": "http://m.finance.daum.net/", "isApp": false}
-, {"name":"realty", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20170704042101000.png", "url": "https://m.realty.daum.net/", "isApp": true}
-, {"name":"brunch", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20170704042039266.png", "url": "https://brunch.co.kr/", "isApp": true}
-, {"name":"kakaomap", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20180326032502508.png", "url": "net.daum.android.map", "isApp": true}
+  {"name":"mail", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035331895.png",
+    "url": "http://m.mail.daum.net/hanmailex/mobile/basic/Top.daum", "isApp": false}
+, {"name":"miznet", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160331025136769.png",
+  "url": "http://m.miznet.daum.net/", "isApp": false}
+, {"name":"cafe", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20161010114405648.png",
+  "url": "http://m.cafe.daum.net/", "isApp": false}
+, {"name":"tstory", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035815572.png",
+  "url": "http://www.tistory.com/m/", "isApp": false}
+, {"name":"tip", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316040100520.png",
+  "url": "http://m.tip.daum.net/", "isApp": false}
+, {"name":"webtoon", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160317083145697.png",
+  "url": "http://m.webtoon.daum.net", "isApp": false}
+, {"name":"finance", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160411012743629.png",
+  "url": "http://m.finance.daum.net/", "isApp": false}
+, {"name":"dic", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035953037.png",
+  "url": "net.daum.android.dictionary", "isApp": true}
+, {"name":"brunch", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035453251.png",
+  "url": "com.daumkakao.android.brunchapp", "isApp": true}
+, {"name":"map", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160919111944771.png",
+  "url": "net.daum.android.map", "isApp": true}
 ]
 

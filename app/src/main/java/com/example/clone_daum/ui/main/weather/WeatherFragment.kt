@@ -1,15 +1,24 @@
 package com.example.clone_daum.ui.main.weather
 
+import android.Manifest
 import android.os.Bundle
+import android.view.View
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.WeatherFragmentBinding
+import com.example.clone_daum.di.module.Config
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment
+import com.example.common.layoutListener
+import com.example.common.runtimepermission.PermissionParams
+import com.example.common.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -25,6 +34,7 @@ class WeatherFragment
         private const val MORE_DETAIL_URL = """https://m.search.daum.net/search?w=tot&q=%EC%A0%84%EA%B5%AD%EB%82%A0%EC%94%A8&DA=G29&f=androidapp&DN=ADDA&nil_app=daumapp&enc_all=utf8"""
     }
 
+    @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
 
@@ -32,23 +42,59 @@ class WeatherFragment
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         BottomSheetDialog(context!!, R.style.round_bottom_sheet_dialog)
 
+    // content 높이만큼 bottom sheet dialog 가 transition (height) 되도록 함
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        wrapContentHeight()
+    }
+
     override fun initViewBinding() {
     }
 
-    override fun initViewModelEvents() {
+    override fun initViewModelEvents() = mViewModel.run {
+        initRecycler()
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any?) = WeatherViewModel.run {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND EVENT : $cmd")
         }
 
         when (cmd) {
-            WeatherViewModel.CMD_MORE_DETAIL -> {
+            CMD_MORE_DETAIL -> {
                 viewController.browserFragment(MORE_DETAIL_URL)
+
                 dismiss()
             }
+
+            CMD_REFRESH_LOCATION -> mViewModel.run {
+                visibleProgress.set(false)
+
+            }
+
+            CMD_CHECK_PERMISSION_AND_LOAD_GPS -> mViewModel.run {
+                visibleProgress.set(true)
+
+                // 뷰를 위해서 타이머를 주긴했는데
+                // 원래는 안줘야 됨 ...
+                disposable.add(Observable.interval(2, TimeUnit.SECONDS)
+                    .take(1)
+                    .subscribe {
+                        runtimePermissions(PermissionParams(activity()
+                            , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                            , listener = { req, res ->
+                                config.HAS_PERMISSION_GPS = res
+
+                                if (res) {
+                                    refreshCurrentLocation()
+                                }
+                            }))
+                })
+            }
         }
+
+        Unit
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

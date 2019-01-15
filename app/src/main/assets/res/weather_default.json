@@ -1,0 +1,16 @@
+[
+  {"description": "통합대기", "value": "매우나쁨", "type": 0,
+   "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png"}
+, {"description": "미세먼지", "value": "나쁨 135", "type": 0,
+    "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png"}
+, {"description": "초미세먼지", "value": "매우나쁨 90", "type": 0,
+  "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png"}
+
+, {"description": "자외선", "value": "낮음 2", "type": 1,
+  "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png"}
+, {"description": "황사", "value": "보통 136", "type": 1,
+  "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png"}
+, {"description": "오존", "value": "오존 0.0029", "type": 1,
+  "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20171116060910538.png"}
+]
+

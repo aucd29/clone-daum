@@ -58,4 +58,22 @@
     <dimen name="brs_sub_item_ico_mgn_t">20dp</dimen>
     <dimen name="brs_sub_item_text_mgn_t">10dp</dimen>
     <dimen name="brs_sub_item_text">10sp</dimen>
+
+    <!-- weather -->
+    <dimen name="weather_out_pad">25dp</dimen>
+    <dimen name="weather_locality_txt">18sp</dimen>
+    <dimen name="weather_current_position">16sp</dimen>
+    <dimen name="weather_txt">14sp</dimen>
+    <dimen name="weather_large_icon_mgn_t">30dp</dimen>
+    <dimen name="weather_large_icon_mgn_s">20dp</dimen>
+    <dimen name="weather_refresh_location_icon">5dp</dimen>
+    <dimen name="weather_current_txt_pad">20dp</dimen>
+    <dimen name="weather_more_detail_pad">20dp</dimen>
+    <dimen name="weather_current_temperature">40sp</dimen>
+    <dimen name="weather_current_temperature_description_maxwidth">180dp</dimen>
+    <dimen name="weather_current_humidity_pad">85dp</dimen>
+    <dimen name="weather_current_wind_mgn_t">6dp</dimen>
+    <dimen name="weather_dumy_line_mgn_t">20dp</dimen>
+    <dimen name="weather_recycler_mgn_t">20dp</dimen>
+    <dimen name="weather_item_pad">10dp</dimen>
 </resources>

@@ -36,7 +36,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sitemap_title"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:fillViewport="true"
                 app:bindLockedGridLayoutManager="@{sitemapModel.gridCount}"
                 app:bindAdapter="@{sitemapModel.adapter}"
@@ -49,7 +49,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sitemap"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="-20dp"
                 android:layout_marginEnd="-20dp"
         />
@@ -62,7 +62,7 @@
                 android:text="@string/shortcut_favorite_title"
                 android:textStyle="bold"
                 android:textSize="15sp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
         />
 
         <TextView

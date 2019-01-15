@@ -10,3 +10,5 @@ import com.example.common.IRecyclerItem
 interface ISearchRecyclerData : IRecyclerDiff, IRecyclerItem
 
 interface IBrowserRecyclerData : IRecyclerDiff, IRecyclerItem
+
+interface IWeatherRecyclerData : IRecyclerDiff, IRecyclerItem

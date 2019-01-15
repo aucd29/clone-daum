@@ -4,24 +4,27 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
         <variable name="model"
                   type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/weather_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="13dp"
-            android:paddingTop="13dp"
-            android:paddingEnd="13dp"
-            android:paddingBottom="20dp"
+            android:paddingStart="@dimen/weather_out_pad"
+            android:paddingTop="@dimen/weather_out_pad"
+            android:paddingEnd="@dimen/weather_out_pad"
     >
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/weather_area"
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="wrap_content">
+
+            <!-- TOP -->
 
             <TextView
                     android:id="@+id/weather_current_location"
@@ -29,8 +32,9 @@
                     android:text="@{model.currentLocation}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/weather_locality_txt"
                     android:textStyle="bold"
+                    android:textColor="@android:color/black"
                     tools:text="중구 명동"
             />
 
@@ -41,11 +45,8 @@
                     android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:paddingEnd="13dp"
-                    android:paddingStart="13dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.eventFinish()}"
-
             />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.refreshCurrentLocation()}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_CHECK_PERMISSION_AND_LOAD_GPS, ``)}"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/weather_close"
                     app:layout_constraintBottom_toBottomOf="@+id/weather_current_location"
@@ -68,20 +69,135 @@
                         android:textColor="@color/colorAccent"
                         android:text="@string/main_weather_current_position"
                         tools:text="현위치"
+                        android:textSize="@dimen/weather_current_position"
+                        android:visibility="@{model.visibleProgress ? View.GONE : View.VISIBLE}"
                 />
 
                 <ImageView
-                        android:id="@+id/refresh_location_icon"
+                        android:id="@+id/weather_refresh_location_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingEnd="13dp"
-                        android:paddingStart="13dp"
                         android:src="@drawable/ic_gps_not_fixed_orange_24dp"
                         app:layout_constraintStart_toEndOf="@+id/weather_current_position"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginStart="@dimen/weather_refresh_location_icon"
+                        android:visibility="@{model.visibleProgress ? View.GONE : View.VISIBLE}"
                 />
+
+                <ProgressBar
+                        android:id="@+id/weather_progress"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:visibility="@{model.visibleProgress ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- WEAHTER INFO -->
+
+            <ImageView
+                    android:id="@+id/weather_large_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@{model.weather.largeIcon}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_current_location"
+                    android:layout_marginTop="@dimen/weather_large_icon_mgn_t"
+                    android:layout_marginStart="@dimen/weather_large_icon_mgn_s"
+            />
+
+            <TextView
+                    android:id="@+id/weather_current_text"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@{model.weather.weatherText}"
+                    app:layout_constraintStart_toEndOf="@+id/weather_large_icon"
+                    app:layout_constraintTop_toTopOf="@+id/weather_large_icon"
+                    android:textSize="@dimen/weather_txt"
+                    android:textStyle="bold"
+                    tools:text="눈"
+                    android:layout_marginStart="@dimen/weather_current_txt_pad"
+                    android:textColor="@android:color/black"
+            />
+
+            <TextView
+                    android:id="@+id/weather_current_temperature"
+                    android:layout_width="wrap_content" android:layout_height="0dp"
+                    android:text="@{model.weather.temperature}"
+                    app:layout_constraintStart_toStartOf="@+id/weather_current_text"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_current_text"
+                    app:layout_constraintBottom_toTopOf="@+id/weather_current_temperature_description"
+                    android:textSize="@dimen/weather_current_temperature"
+                    tools:text="1℃"
+                    android:textColor="@android:color/black"
+                    android:gravity="center_vertical"
+            />
+
+            <TextView
+                    android:id="@+id/weather_current_temperature_description"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@{model.weather.temperatureDescription}"
+                    app:layout_constraintStart_toStartOf="@+id/weather_current_text"
+                    app:layout_constraintBottom_toBottomOf="@+id/weather_large_icon"
+                    tools:text="어제보다 낮음, 체감온도 낮음"
+                    android:maxLines="1"
+                    android:maxWidth="@dimen/weather_current_temperature_description_maxwidth"
+                    android:textSize="@dimen/weather_txt"
+                    android:ellipsize="end"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"
+            />
+
+            <TextView
+                    android:id="@+id/weather_current_humidity"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@{model.weather.humidity}"
+                    app:layout_constraintStart_toStartOf="@+id/weather_current_text"
+                    app:layout_constraintTop_toTopOf="@+id/weather_current_text"
+                    tools:text="습도 60%"
+                    android:maxLines="1"
+                    android:layout_marginStart="@dimen/weather_current_humidity_pad"
+            />
+
+            <TextView
+                    android:id="@+id/weather_current_wind"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@{model.weather.wind}"
+                    app:layout_constraintStart_toStartOf="@+id/weather_current_humidity"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_current_humidity"
+                    tools:text="풍속 3.5m/s"
+                    android:layout_marginTop="@dimen/weather_current_wind_mgn_t"
+            />
+
+            <View
+                    android:id="@+id/weather_dumy_line"
+                    style="@style/line1dp"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_current_temperature_description"
+                    android:layout_marginTop="@dimen/weather_dumy_line_mgn_t"
+            />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/weather_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_dumy_line"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="@dimen/weather_recycler_mgn_t"
+                    app:bindItems="@{model.items}"
+                    app:bindAdapter="@{model.adapter}"
+                    app:bindLockedGridLayoutManager="@{model.gridCount}"
+            />
+
+            <View
+                    android:id="@+id/weather_dumy_line2"
+                    style="@style/line1dp"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_recycler"
+                    android:layout_marginTop="@dimen/weather_dumy_line_mgn_t"
+            />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -89,12 +205,13 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/main_weather_more"
                 android:gravity="center_horizontal|center_vertical"
-                android:padding="10dp"
+                android:padding="@dimen/weather_more_detail_pad"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/weather_area"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="@{() -> model.commandEvent(model.CMD_MORE_DETAIL, ``)}"
+                android:textColor="@android:color/black"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

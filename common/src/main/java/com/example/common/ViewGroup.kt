@@ -2,14 +2,35 @@
 package com.example.common
 
 import android.content.Context
+import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.TextView
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
+
+/**
+ * https://antonioleiva.com/kotlin-ongloballayoutlistener/\
+ * https://stackoverflow.com/questions/38827186/what-is-the-difference-between-crossinline-and-noinline-in-kotlin
+ */
+@Suppress("DEPRECATION")
+inline fun View.layoutListener(crossinline f: () -> Unit) = with (viewTreeObserver) {
+    addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            } else {
+                viewTreeObserver.removeGlobalOnLayoutListener(this)
+            }
+
+            f()
+        }
+    })
+}
 
 inline fun View.layoutHeight(height: Int) = layoutParams.run {
     this.height = height
