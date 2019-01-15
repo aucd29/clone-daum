@@ -18,9 +18,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
 
     @Inject lateinit var viewController: ViewController
 
-    override fun initViewBinding() {
-
-    }
+    override fun initViewBinding() { }
 
     override fun initViewModelEvents() = mViewModel.run {
         // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
