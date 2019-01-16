@@ -1,7 +1,5 @@
 package com.example.clone_daum.ui.main
 
-import android.os.Build
-import android.os.Bundle
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.di.module.Config
 import com.example.common.di.module.injectOfActivity
@@ -12,7 +10,6 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -70,17 +67,26 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
                     swipeRefresh.isRefreshing = false
                 })
         }
-
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         // appbar 이동 시 webview 도 동일하게 이동 시킴
-        observe(appbarOffsetLiveEvent) {
+        observe(appbarOffsetLive) {
             if (mLog.isTraceEnabled()) {
                 mLog.trace("WEBVIEW TRANSLATION Y : $it")
             }
 
             mBinding.webview.translationY = it.toFloat()
+        }
+
+        // appbar 에 가려져 있는 progress 를 보이게 하기 위해 offset 값이 필요함
+        observe(appbarHeightLive) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("PROGRESS VIEW OFFSET $it")
+            }
+
+            mBinding.swipeRefresh.setProgressViewOffset(false,
+                it, (it * 1.3f).toInt())
         }
 
         brsSetting.set(WebViewSettingParams(

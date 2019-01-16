@@ -44,16 +44,13 @@ inline fun TextView.gravityCenter() {
     gravity = Gravity.CENTER
 }
 
-inline fun View.dpToPx(v: Int) = v * context.displayDensity()
-inline fun View.pxToDp(v: Int) = v / context.displayDensity()
-
-inline fun Int.dpToPx(context: Context) = this * context.displayDensity()
-inline fun Int.pxToDp(context: Context) = this / context.displayDensity()
-
-// https://stackoverflow.com/questions/29664993/how-to-convert-dp-px-sp-among-each-other-especially-dp-and-sp
-
-inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
+inline fun View.dpToPx(v: Float) = v * context.displayDensity()
+inline fun View.pxToDp(v: Float) = v / context.displayDensity()
+inline fun View.spToPx(v: Float) = TypedValue.applyDimension(
     TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics)
 
-inline fun Int.spToPx(context: Context) = TypedValue.applyDimension(
-    TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics)
+inline fun View.dpToPx(v: Int) = (v * context.displayDensity()).toInt()
+inline fun View.pxToDp(v: Int) = (v / context.displayDensity()).toInt()
+// https://stackoverflow.com/questions/29664993/how-to-convert-dp-px-sp-among-each-other-especially-dp-and-sp
+inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics).toInt()

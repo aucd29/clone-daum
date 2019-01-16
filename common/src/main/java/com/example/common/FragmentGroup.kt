@@ -11,6 +11,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Observer
 import com.example.common.arch.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
@@ -18,6 +19,12 @@ import io.reactivex.disposables.CompositeDisposable
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 8. <p/>
  */
+
+inline fun Fragment.dpToPx(v: Float) = v * context!!.displayDensity()
+inline fun Fragment.pxToDp(v: Float) = v / context!!.displayDensity()
+inline fun Fragment.dpToPx(v: Int) = dpToPx(v.toFloat()).toInt()
+inline fun Fragment.pxToDp(v: Int) = pxToDp(v.toFloat()).toInt()
+
 
 inline fun Fragment.string(@StringRes resid: Int): String? = context?.string(resid)
 

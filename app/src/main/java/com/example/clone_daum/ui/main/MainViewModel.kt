@@ -48,13 +48,14 @@ class MainViewModel @Inject constructor(val app: Application
     val visibleBack              = ObservableInt(View.GONE)
     val visibleGps               = ObservableInt(if (config.HAS_PERMISSION_GPS) View.GONE else View.VISIBLE)
     var gotoNewsEvent            = ObservableInt(0)
-
-    // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
-    val appbarOffsetChangedEvent = ObservableField<(AppBarLayout, Int) -> Unit>()
-    val appbarOffsetLiveEvent    = MutableLiveData<Int>()
-
     val realtimeIssueText        = ObservableField<String>()
     var realtimeCount            = 0
+
+    // viewpager 에 adapter 가 set 된 이후 시점을 알려줌 (ViewPagerBindingAdapter)
+//    val viewpagerLoadedEvent     = ObservableField<() -> Unit>()
+    val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
+    val appbarOffsetLive        = MutableLiveData<Int>()
+    var appbarHeightLive        = MutableLiveData<Int>()
 
 
     fun gotoNews() {

@@ -28,7 +28,7 @@
                     app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             />
 
-            <!-- 
+            <!--
             app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
             app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
             -->
@@ -38,7 +38,7 @@
                     android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedEvent}">
+                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                         android:id="@+id/toolbar_layout"

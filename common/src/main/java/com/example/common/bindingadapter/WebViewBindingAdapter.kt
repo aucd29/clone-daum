@@ -29,7 +29,7 @@ object WebViewBindingAdapter {
     fun bindWebViewEvent(view: WebView, event: WebViewEvent?) = view.run {
         event?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("bindWebViewEvent commandEvent : ${it}")
+                mLog.debug("bindWebViewEvent : ${it}")
             }
 
             when (it) {

@@ -1,9 +1,23 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common
 
+import android.content.Context
+import android.util.TypedValue
+
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
+
+
+inline fun Float.dpToPx(context: Context) = this * context.displayDensity()
+inline fun Float.pxToDp(context: Context) = this / context.displayDensity()
+inline fun Float.spToPx(context: Context) = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_SP, this, context.resources.displayMetrics)
+
+inline fun Int.dpToPx(context: Context) = (this * context.displayDensity()).toInt()
+inline fun Int.pxToDp(context: Context) = (this / context.displayDensity()).toInt()
+inline fun Int.spToPx(context: Context) = TypedValue.applyDimension(
+    TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics).toInt()
 
 
 const val UNIT_STRING: String = " KMGTPE"
