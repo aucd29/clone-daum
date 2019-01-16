@@ -4,6 +4,7 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
+import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
@@ -27,6 +28,9 @@ import dagger.Module
 
     // WEATHER
     , WeatherFragment.Module::class
+
+    // MEDIA SEARCH
+    , MediaSearchFragment.Module::class
 
     // NAVIGATION
     , NavigationFragment.Module::class

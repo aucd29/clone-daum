@@ -94,7 +94,7 @@
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:layout_marginEnd="@dimen/main_search_extend_mgn_e"
-                                android:onClick="@{() -> model.searchExtendMenu()}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_MEDIA_SEARCH_FRAGMENT, ``)}"
                         />
 
                         <!-- REALTIME ISSUE -->

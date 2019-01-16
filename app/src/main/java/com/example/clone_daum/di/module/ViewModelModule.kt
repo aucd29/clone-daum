@@ -6,6 +6,7 @@ import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
+import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationViewModel
 import com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel
@@ -28,6 +29,12 @@ import dagger.multibindings.IntoMap
 
 @Module
 abstract class ViewModelModule {
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MAIN
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     @Binds
     @IntoMap
     @ViewModelKey(SplashViewModel::class)
@@ -48,7 +55,16 @@ abstract class ViewModelModule {
     @ViewModelKey(WeatherViewModel::class)
     abstract fun bindWeatherViewModel(vm: WeatherViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(MediaSearchViewModel::class)
+    abstract fun bindMediaSearchViewModel(vm: MediaSearchViewModel): ViewModel
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // NAVIATION
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     @Binds
     @IntoMap

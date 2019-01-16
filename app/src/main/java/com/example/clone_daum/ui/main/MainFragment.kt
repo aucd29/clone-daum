@@ -69,11 +69,13 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>() {
             mLog.debug("COMMAND EVENT : $cmd")
         }
 
+        // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
         when (cmd) {
             CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
             CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
             CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
             CMD_WEATHER_FRAGMENT        -> viewController.weatherFragment()
+            CMD_MEDIA_SEARCH_FRAGMENT   -> viewController.mediaSearchFragment()
             CMD_BRS_OPEN                -> obj?.let { viewController.browserFragment(it.toString()) } ?: Unit
             CMD_PERMISSION_GPS          -> {
                 runtimePermissions(PermissionParams(activity()

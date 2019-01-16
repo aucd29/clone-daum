@@ -17,7 +17,12 @@
     <string name="main_weather_more">더 보기 &gt;</string>
     <string name="main_weather_current_position">현위치</string>
 
-
+    <!-- media search -->
+    <string name="media_search_history">히스토리</string>
+    <string name="media_search_voice">음성검색</string>
+    <string name="media_search_music">음악검색</string>
+    <string name="media_search_flower">꽃검색</string>
+    <string name="media_search_code">코드검색</string>
 
     <!-- navigation -->
     <string name="navi_require_login">로그인하시오</string>

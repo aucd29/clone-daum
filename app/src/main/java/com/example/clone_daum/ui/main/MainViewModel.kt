@@ -34,6 +34,7 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_WEATHER_FRAGMENT        = "weahter"
+        const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
         const val CMD_BRS_OPEN                = "brs-open"
         const val CMD_PERMISSION_GPS          = "permission-gps"
     }
