@@ -23,4 +23,5 @@ class MediaSearchViewModel @Inject constructor(application: Application)
 
     val containerTransY = ObservableField<AnimParams>()
     val dimmingBgAlpha  = ObservableField<AnimParams>()
+    val bounceTransY    = ObservableField<AnimParams>()
 }

@@ -14,7 +14,7 @@
             >
 
         <View
-                android:id="@+id/dimming_background"
+                android:id="@+id/media_search_dimming_background"
                 android:layout_width="match_parent" android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +48,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:bindTranslateY="@{model.bounceTransY}"
+                    android:translationY="-400dp"
             >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -192,6 +194,7 @@
         <!-- 스크롤시 화면에 가려져야하는 영역 -->
 
         <View
+                android:id="@+id/media_search_background"
                 android:layout_width="match_parent" android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

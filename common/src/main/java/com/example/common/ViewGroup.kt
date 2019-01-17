@@ -32,12 +32,18 @@ inline fun View.layoutListener(crossinline f: () -> Unit) = with (viewTreeObserv
     })
 }
 
-inline fun View.layoutHeight(height: Int) = layoutParams.run {
-    this.height = height
+inline fun View.layoutHeight(height: Int) {
+    val lp = layoutParams
+    lp.height = height
+
+    layoutParams = lp
 }
 
-inline fun View.layoutWidth(width: Int) = layoutParams.run {
-    this.width = width
+inline fun View.layoutWidth(width: Int) {
+    val lp = layoutParams
+    lp.width = width
+
+    layoutParams = lp
 }
 
 inline fun TextView.gravityCenter() {

@@ -1,9 +1,14 @@
 package com.example.common.bindingadapter
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.view.View
 import android.view.ViewPropertyAnimator
+import android.view.animation.Animation
 import android.view.animation.Interpolator
 import androidx.databinding.BindingAdapter
+import com.example.common.aniEndListener
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 14. <p/>
@@ -17,8 +22,13 @@ object AnimationBindingAdapter {
             return
         }
 
-        params.initValue?.run { view.translationY = this }
-        animStart(view.animate().translationY(params.value), params)
+        val anim = if (params.initValue == null) {
+            ObjectAnimator.ofFloat(view, "translationY", params.value)
+        } else {
+            ObjectAnimator.ofFloat(view, "translationY", params.initValue, params.value)
+        }
+
+        objectAnim(anim, params)
     }
 
     @JvmStatic
@@ -28,8 +38,13 @@ object AnimationBindingAdapter {
             return
         }
 
-        params.initValue?.run { view.translationX = this }
-        animStart(view.animate().translationX(params.value), params)
+        val anim = if (params.initValue == null) {
+            ObjectAnimator.ofFloat(view, "translationX", params.value)
+        } else {
+            ObjectAnimator.ofFloat(view, "translationX", params.initValue, params.value)
+        }
+
+        objectAnim(anim, params)
     }
 
     @JvmStatic
@@ -39,15 +54,29 @@ object AnimationBindingAdapter {
             return
         }
 
-        params.initValue?.run { view.alpha = this }
-        animStart(view.animate().alpha(params.value), params)
+        val anim = if (params.initValue == null) {
+            ObjectAnimator.ofFloat(view, "alpha", params.value)
+        } else {
+            ObjectAnimator.ofFloat(view, "alpha", params.initValue, params.value)
+        }
+
+        objectAnim(anim, params)
     }
 
-    private fun animStart(anim: ViewPropertyAnimator, params: AnimParams) {
-        params.interpolator?.let { anim.setInterpolator { it } }
-        params.endListener?.let { anim.withEndAction(it) }
+    private fun objectAnim(anim: ObjectAnimator, params: AnimParams) {
+        params.run {
+            anim.setDuration(duration)
+            endListener?.let { anim.aniEndListener(it) }
+            interpolator?.let { anim.setInterpolator(it) }
+            startDelay?.let { anim.setStartDelay(it) }
+            if (reverse) {
+                anim.repeatMode = ValueAnimator.REVERSE
+                anim.repeatCount = 1
+                anim.reverse()
+            }
 
-        anim.setDuration(params.duration).start()
+            anim.start()
+        }
     }
 }
 
@@ -55,6 +84,8 @@ data class AnimParams(
     val value: Float,
     val initValue: Float? = null,
     val duration: Long = 300,
-    val endListener: (() -> Unit)? = null,
-    val interpolator: Interpolator? = null
+    val endListener: ((Animator?) -> Unit)? = null,
+    val interpolator: Interpolator? = null,
+    val startDelay: Long? = null,
+    val reverse: Boolean = false
 )
