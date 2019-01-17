@@ -1,8 +1,8 @@
 package com.example.common.bindingadapter
 
-import android.graphics.Interpolator
 import android.view.View
 import android.view.ViewPropertyAnimator
+import android.view.animation.Interpolator
 import androidx.databinding.BindingAdapter
 
 /**
@@ -12,21 +12,33 @@ import androidx.databinding.BindingAdapter
 object AnimationBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindTranslateY")
-    fun bindTranslateY(view: View, params: AnimParams) {
+    fun bindTranslateY(view: View, params: AnimParams?) {
+        if (params == null) {
+            return
+        }
+
         params.initValue?.run { view.translationY = this }
         animStart(view.animate().translationY(params.value), params)
     }
 
     @JvmStatic
     @BindingAdapter("bindTranslateX")
-    fun bindTranslateX(view: View, params: AnimParams) {
+    fun bindTranslateX(view: View, params: AnimParams?) {
+        if (params == null) {
+            return
+        }
+
         params.initValue?.run { view.translationX = this }
         animStart(view.animate().translationX(params.value), params)
     }
 
     @JvmStatic
     @BindingAdapter("bindAlpha")
-    fun bindAlpha(view: View, params: AnimParams) {
+    fun bindAlpha(view: View, params: AnimParams?) {
+        if (params == null) {
+            return
+        }
+
         params.initValue?.run { view.alpha = this }
         animStart(view.animate().alpha(params.value), params)
     }

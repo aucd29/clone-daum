@@ -11,7 +11,194 @@
             android:id="@+id/media_search_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white">
+            >
+
+        <View
+                android:id="@+id/dimming_background"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="#8F000000"
+                app:bindAlpha="@{model.dimmingBgAlpha}"
+                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH, ``)}"
+                android:alpha="0"
+                />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/media_search_extend_menu_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:paddingTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/media_search"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:bindTranslateY="@{model.containerTransY}"
+                android:translationY="-500dp"
+        >
+
+            <LinearLayout
+                    android:id="@+id/media_search_button_layout"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+            >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                >
+                    <ImageView
+                            android:id="@+id/search_voice"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mic_none_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_0"
+                            android:padding="15dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                    />
+                    <TextView
+                            android:id="@+id/search_voice_text"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/search_voice"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
+                            tools:text="음성검색"
+                            android:text="@string/media_search_voice"
+                    />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                >
+                    <ImageView
+                            android:id="@+id/search_music"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mic_none_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_0"
+                            android:padding="15dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                    />
+                    <TextView
+                            android:id="@+id/search_music_text"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/search_music"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
+                            tools:text="음성검색"
+                            android:text="@string/media_search_music"
+                    />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                >
+                    <ImageView
+                            android:id="@+id/search_flower"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mic_none_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_0"
+                            android:padding="15dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                    />
+                    <TextView
+                            android:id="@+id/search_flower_text"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/search_flower"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
+                            tools:text="음성검색"
+                            android:text="@string/media_search_flower"
+                    />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                >
+                    <ImageView
+                            android:id="@+id/search_code"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:src="@drawable/ic_mic_none_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_0"
+                            android:padding="15dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                    />
+                    <TextView
+                            android:id="@+id/search_code_text"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/search_code"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:gravity="center"
+                            android:layout_marginTop="5dp"
+                            tools:text="음성검색"
+                            android:text="@string/media_search_code"
+                    />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <View
+                    android:id="@+id/button_underline"
+                    style="@style/line1dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/media_search_button_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+            />
+
+            <TextView
+                    android:id="@+id/media_search_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/media_search_history"
+                    android:padding="15dp"
+                    android:gravity="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/button_underline"
+                    app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 스크롤시 화면에 가려져야하는 영역 -->
+
+        <View
+                android:layout_width="match_parent" android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/media_search"
+        />
 
         <TextView
                 android:id="@+id/media_search"
@@ -48,176 +235,9 @@
                 app:layout_constraintTop_toTopOf="@+id/media_search"
                 app:layout_constraintEnd_toEndOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
-                android:layout_marginEnd="@dimen/main_search_extend_mgn_e"
+                android:padding="@dimen/main_search_extend_pad"
+                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH, ``)}"
         />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/media_search_extend_menu_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/media_search"
-                app:layout_constraintEnd_toEndOf="parent"
-        >
-
-            <LinearLayout
-                    android:id="@+id/media_search_button_layout"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-            >
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                >
-
-                    <ImageView
-                            android:id="@+id/search_voice"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
-                            android:padding="15dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                    />
-
-                    <TextView
-                            android:id="@+id/search_voice_text"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/search_voice"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:gravity="center"
-                            android:layout_marginTop="5dp"
-                            tools:text="음성검색"
-                            android:text="@string/media_search_voice"
-                    />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                >
-
-                    <ImageView
-                            android:id="@+id/search_music"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
-                            android:padding="15dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                    />
-
-                    <TextView
-                            android:id="@+id/search_music_text"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/search_music"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:gravity="center"
-                            android:layout_marginTop="5dp"
-                            tools:text="음성검색"
-                            android:text="@string/media_search_music"
-                    />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                >
-
-                    <ImageView
-                            android:id="@+id/search_flower"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
-                            android:padding="15dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                    />
-
-                    <TextView
-                            android:id="@+id/search_flower_text"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/search_flower"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:gravity="center"
-                            android:layout_marginTop="5dp"
-                            tools:text="음성검색"
-                            android:text="@string/media_search_flower"
-                    />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                >
-
-                    <ImageView
-                            android:id="@+id/search_code"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
-                            android:padding="15dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                    />
-
-                    <TextView
-                            android:id="@+id/search_code_text"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/search_code"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:gravity="center"
-                            android:layout_marginTop="5dp"
-                            tools:text="음성검색"
-                            android:text="@string/media_search_code"
-                    />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            </LinearLayout>
-
-            <View
-                    android:id="@+id/button_underline"
-                    style="@style/line1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/media_search_button_layout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="20dp"
-            />
-
-            <TextView
-                    android:id="@+id/media_search_history"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/media_search_history"
-                    android:padding="20dp"
-                    android:gravity="center"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/button_underline"
-                    app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -48,7 +48,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/search_edit"
                 app:layout_constraintBottom_toBottomOf="@+id/search_edit"
                 android:src="@drawable/ic_view_comfy_black_24dp"
-                android:padding="20sp"
+                android:padding="@dimen/main_search_extend_pad"
                 android:onClick="@{() -> model.eventSearch(model.searchKeyword)}"
         />
 

@@ -7,6 +7,7 @@
     <dimen name="main_search_mgn_e">15dp</dimen>
     <dimen name="main_search_logo_mgn_s">15dp</dimen>
     <dimen name="main_search_extend_mgn_e">15dp</dimen>
+    <dimen name="main_search_extend_pad">15dp</dimen>
     <dimen name="main_search_rank_mgn_t">10dp</dimen>
     <dimen name="main_search_extend_rank_mgn_e">10dp</dimen>
     <dimen name="main_weather_mgn_s">20dp</dimen>
