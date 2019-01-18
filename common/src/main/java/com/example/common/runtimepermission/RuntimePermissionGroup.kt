@@ -95,7 +95,7 @@ data class PermissionParams(
     val activity    : FragmentActivity,
     val permissions : ArrayList<String>,
     val listener    : (Int, Boolean) -> Unit,
-    val reqCode     : Int = RuntimePermission.REQ_MAIN
+    var reqCode     : Int = RuntimePermission.REQ_MAIN
 ) {
     // 마치 builder pattern 처럼.. add 할 수 있도록
     fun permission(permission: String): PermissionParams {

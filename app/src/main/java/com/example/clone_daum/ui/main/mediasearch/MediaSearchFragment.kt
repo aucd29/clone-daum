@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main.mediasearch
 
+import android.Manifest
 import android.animation.Animator
 import android.os.Build
 import android.view.animation.*
@@ -8,6 +9,8 @@ import com.example.clone_daum.databinding.MediaSearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
+import com.example.common.runtimepermission.PermissionParams
+import com.example.common.runtimepermission.runtimePermissions
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -25,6 +28,8 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
         private const val ANIM_DURATION     = 400L
         private const val ANIM_START_DELAY  = 250L
+
+        private const val REQ_RECORD_VOICE  = 7811
     }
 
     init {
@@ -115,7 +120,13 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
     override fun onCommandEvent(cmd: String, data: Any?) = MediaSearchViewModel.run {
         when (cmd) {
             CMD_ANIM_FINISH  -> onBackPressed()
-            CMD_SEARCH_VOICE -> animateOut { viewController.speechFragment() }
+            CMD_SEARCH_VOICE -> runtimePermissions(PermissionParams(activity()
+                , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                , { req, res ->
+                    if (res) {
+                        animateOut { viewController.speechFragment() }
+                    }
+                } , REQ_RECORD_VOICE))
         }
 
         Unit
