@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.example.common.ICommandEventAware
+import com.example.common.IFinishFragmentAware
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
 import javax.inject.Inject
@@ -13,15 +14,17 @@ import javax.inject.Inject
  */
 
 class MediaSearchViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application), ICommandEventAware {
-
+    : AndroidViewModel(application), ICommandEventAware, IFinishFragmentAware {
     companion object {
-        const val CMD_ANIM_FINISH = "anim-finish"
+        const val CMD_ANIM_FINISH  = "anim-finish"
+        const val CMD_SEARCH_VOICE = "search-voice"
     }
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
+    override val finishEvent  = SingleLiveEvent<Void>()
 
     val containerTransY = ObservableField<AnimParams>()
     val dimmingBgAlpha  = ObservableField<AnimParams>()
-    val bounceTransY    = ObservableField<AnimParams>()
+    val overshootTransY = ObservableField<AnimParams>()
+    val bgScale         = ObservableField<AnimParams>()
 }

@@ -68,7 +68,7 @@
                                 android:layout_marginEnd="@dimen/main_search_mgn_e"
                                 android:focusable="false"
                                 android:background="@drawable/shape_search_background"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAMGNET, ``)}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAMGNET)}"
                         />
 
                         <!-- ICONS FROM SEARCH BAR -->
@@ -94,7 +94,7 @@
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:padding="@dimen/main_search_extend_pad"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_MEDIA_SEARCH_FRAGMENT, ``)}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
                         />
 
                         <!-- REALTIME ISSUE -->
@@ -127,7 +127,7 @@
                                 android:layout_marginEnd="@dimen/main_search_extend_rank_mgn_e"
                                 android:background="?selectableItemBackgroundBorderless"
                                 android:paddingTop="4dp"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT, ``)}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                         />
 
                         <!-- VERTICAL BAR -->
@@ -152,8 +152,8 @@
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 app:layout_constraintBottom_toTopOf="@+id/search_underline"
                                 app:layout_constraintEnd_toStartOf="@+id/search_gps_icon"
-                                android:background="?selectableItemBackgroundBorderless"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_WEATHER_FRAGMENT, ``)}">
+                                android:background="@drawable/selector_button_bgcolor"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_WEATHER_FRAGMENT)}">
 
                             <TextView
                                     android:id="@+id/search_weather_text"
@@ -196,7 +196,7 @@
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toTopOf="@+id/search_underline"
                                 android:padding="@dimen/main_gps_pad"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_PERMISSION_GPS, ``)}"
+                                android:onClick="@{() -> model.commandEvent(model.CMD_PERMISSION_GPS)}"
                                 android:visibility="@{model.visibleGps}"
                         />
 
@@ -266,7 +266,7 @@
                             android:paddingEnd="@dimen/main_tab_menu_pad"
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
-                            android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT, ``)}"
+                            android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT)}"
                     />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>

@@ -26,6 +26,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+
+        // NEXUS FROM KAKAO
+        maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
     }
 }
 

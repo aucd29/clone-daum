@@ -22,7 +22,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="#8F000000"
                 app:bindAlpha="@{model.dimmingBgAlpha}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH, ``)}"
+                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
                 android:alpha="0"
                 />
 
@@ -48,7 +48,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:bindTranslateY="@{model.bounceTransY}"
+                    app:bindTranslateY="@{model.overshootTransY}"
                     android:translationY="-400dp"
             >
 
@@ -56,6 +56,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_VOICE)}"
                 >
                     <ImageView
                             android:id="@+id/search_voice"
@@ -88,8 +89,8 @@
                     <ImageView
                             android:id="@+id/search_music"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
+                            android:src="@drawable/ic_music_note_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_1"
                             android:padding="15dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -116,8 +117,8 @@
                     <ImageView
                             android:id="@+id/search_flower"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
+                            android:src="@drawable/ic_spa_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_2"
                             android:padding="15dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -131,7 +132,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             android:gravity="center"
                             android:layout_marginTop="5dp"
-                            tools:text="음성검색"
+                            tools:text="꽃검색"
                             android:text="@string/media_search_flower"
                     />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -144,8 +145,8 @@
                     <ImageView
                             android:id="@+id/search_code"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mic_none_white_24dp"
-                            android:background="@drawable/shape_media_search_circle_0"
+                            android:src="@drawable/ic_visibility_white_24dp"
+                            android:background="@drawable/shape_media_search_circle_3"
                             android:padding="15dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
@@ -159,7 +160,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             android:gravity="center"
                             android:layout_marginTop="5dp"
-                            tools:text="음성검색"
+                            tools:text="코드검색"
                             android:text="@string/media_search_code"
                     />
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -239,7 +240,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
                 android:padding="@dimen/main_search_extend_pad"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH, ``)}"
+                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

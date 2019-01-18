@@ -22,8 +22,11 @@ import javax.inject.Inject
 class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
+        private const val WEBVIEW_SLIDING = 3
+    }
 
-        const val WEBVIEW_SLIDING = 3
+    init {
+        mViewModelScope = SCOPE_FRAGMENT
     }
 
     @Inject lateinit var viewController: ViewController
@@ -31,8 +34,6 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     private var mUrl: String? = null
 
-    override fun viewModelProvider()
-            = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 
     override fun initViewBinding() = mBinding.run {
         mUrl = arguments?.getString("url")

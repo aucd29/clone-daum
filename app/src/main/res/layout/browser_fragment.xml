@@ -19,7 +19,11 @@
                 android:id="@+id/brs_url_bar"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:padding="@dimen/brs_urlbar_pad"
-                app:bindTranslateY="@{model.brsUrlBarAni}">
+                app:bindTranslateY="@{model.brsUrlBarAni}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+        >
 
             <ImageView
                     android:id="@+id/brs_back"
@@ -28,7 +32,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK, ``)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK)}"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
             />
@@ -152,7 +156,7 @@
                     android:id="@+id/brs_bottom_back"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_chevron_left_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK, ``)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK)}"
             />
 
             <ImageButton
@@ -181,21 +185,21 @@
                     android:id="@+id/brs_bottom_search"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_search_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAGMENT, ``)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAGMENT)}"
             />
 
             <ImageView
                     android:id="@+id/brs_bottom_share"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_share_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SHARE_EVENT, ``)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SHARE_EVENT)}"
             />
 
             <ImageView
                     android:id="@+id/brs_bottom_menu"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_menu_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU_FRAGMENT, ``)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU_FRAGMENT)}"
             />
 
         </LinearLayout>

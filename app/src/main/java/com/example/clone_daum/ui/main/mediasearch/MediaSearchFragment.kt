@@ -1,19 +1,16 @@
 package com.example.clone_daum.ui.main.mediasearch
 
 import android.animation.Animator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Build
 import android.view.animation.*
-import android.widget.ViewAnimator
-import androidx.interpolator.view.animation.FastOutLinearInInterpolator
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModelProviders
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
+import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 16. <p/>
@@ -23,7 +20,6 @@ import org.slf4j.LoggerFactory
 // 다이얼로그로 하는게 나으려나?
 class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
     , OnBackPressedListener {
-
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 
@@ -31,8 +27,11 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         private const val ANIM_START_DELAY  = 250L
     }
 
-    override fun viewModelProvider()
-        = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
+    init {
+        mViewModelScope = SCOPE_FRAGMENT
+    }
+
+    @Inject lateinit var viewController: ViewController
 
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.run {
@@ -59,77 +58,64 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         }
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
-
-    }
+    override fun initViewModelEvents() { }
 
     override fun onBackPressed(): Boolean {
         animateOut()
         return true
     }
 
-    lateinit var objani: ObjectAnimator
+    private var pauseAnimator: Animator? = null
 
     private fun animateIn() {
+        val mediaSearchButtonLayoutHeight = mBinding.mediaSearchButtonLayout.height.toFloat() * -1
+        val overshootAnim = AnimParams(0f
+            , initValue    = mediaSearchButtonLayoutHeight
+            , duration     = ANIM_DURATION
+            , startDelay   = ANIM_START_DELAY
+            , interpolator = OvershootInterpolator(2.3f)
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            overshootAnim.reverse = {
+                pauseAnimator = it
+                it?.pause()
+            }
+        }
+
         mViewModel.run {
+            // animate set 을 쓰는게 나으려나?
             dimmingBgAlpha.set(AnimParams(1f, duration = ANIM_DURATION))
             containerTransY.set(AnimParams(0f, duration = ANIM_DURATION))
-//            bounceTransY.set(AnimParams(0f
-//                , initValue    = mBinding.mediaSearchButtonLayout.height.toFloat() * -1
-//                , duration     = ANIM_DURATION
-//                , startDelay   = ANIM_START_DELAY
-//                , interpolator = OvershootInterpolator(2.3f)
-//            ))
-            objani = ObjectAnimator.ofFloat(mBinding.mediaSearchButtonLayout
-                , "translationY"
-                , mBinding.mediaSearchButtonLayout.height.toFloat() * -1
-                , 0f)
-            objani.setDuration(ANIM_DURATION)
-            objani.setInterpolator(OvershootInterpolator(2.3f))
-            objani.setStartDelay(ANIM_START_DELAY)
-            objani.repeatCount = 1
-            objani.repeatMode  = ValueAnimator.REVERSE
-            objani.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(p0: Animator?) {}
-                override fun onAnimationCancel(p0: Animator?) {}
-                override fun onAnimationRepeat(p0: Animator?) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        p0?.pause()
-                    }
-                }
-                override fun onAnimationEnd(animation: Animator?) {}
-            })
-
-            objani.start()
+            overshootTransY.set(overshootAnim)
         }
     }
 
-    private fun animateOut() {
+    private fun animateOut(endCallback: (() -> Unit)? = null) {
+        val searchExtendMenuHeight = mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
+        val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
+        val containerTransYAnim = AnimParams(searchExtendMenuHeight, duration = ANIM_DURATION
+            , endListener = {
+                finish()
+                endCallback?.invoke()
+            })
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            dimmingBgAlphaAnim.startDelay  = ANIM_START_DELAY
+            containerTransYAnim.startDelay = ANIM_START_DELAY
+            pauseAnimator?.resume()
+        }
+
         mViewModel.run {
-            dimmingBgAlpha.set(AnimParams(0f
-                , duration     = ANIM_DURATION
-                , startDelay   = ANIM_START_DELAY
-            ))
-            containerTransY.set(AnimParams(
-                mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
-                , duration     = ANIM_DURATION
-                , startDelay   = ANIM_START_DELAY
-                , endListener  = { finish() }
-            ))
-
-            objani.resume()
-
-//            bounceTransY.set(AnimParams(mBinding.mediaSearchButtonLayout.height.toFloat() * -1
-//                , duration     = ANIM_DURATION
-//                , interpolator = OvershootInterpolator(2.3f)
-//                , reverse      = true
-//            ))
+            dimmingBgAlpha.set(dimmingBgAlphaAnim)
+            containerTransY.set(containerTransYAnim)
         }
     }
 
     override fun onCommandEvent(cmd: String, data: Any?) = MediaSearchViewModel.run {
         when (cmd) {
-            CMD_ANIM_FINISH -> onBackPressed()
+            CMD_ANIM_FINISH  -> onBackPressed()
+            CMD_SEARCH_VOICE -> animateOut { viewController.speechFragment() }
         }
 
         Unit

@@ -113,12 +113,18 @@ interface ISnackbarAware {
 }
 
 // xml 에서는 다음과 같이 사용할 수 있다.
-// android:onClick="@{() -> model.commandEvent(model.CMD_YOUR_COMMAND, ``)}"
+// android:onClick="@{() -> model.commandEvent(model.CMD_YOUR_COMMAND)}"
 interface ICommandEventAware {
     val commandEvent: SingleLiveEvent<Pair<String, Any?>>
 
-    fun commandEvent(cmd: String, data: Any? = null) {
+    // 기존에 Any? = null 형태일때 xml 에서 문제됨.
+    fun commandEvent(cmd: String, data: Any) {
         commandEvent.value = cmd to data
+    }
+
+    // xml 에서 호출이 쉽게 하도록 추가
+    fun commandEvent(cmd: String) {
+        commandEvent.value = cmd to null
     }
 }
 
@@ -186,9 +192,7 @@ abstract class BaseActivity<T : ViewDataBinding>
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseFragment<T: ViewDataBinding>
-    : DaggerFragment() {
-
+abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     protected lateinit var mBinding : T
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

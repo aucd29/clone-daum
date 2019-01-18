@@ -162,6 +162,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                             style="@style/navi_bottom_button"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/navi_vertical_bar"
                             android:onClick="@{() -> model.eventNotification()}"
                     >
@@ -169,6 +170,7 @@
                         <TextView
                                 style="@style/navi_icon"
                                 android:text="@string/fa_comment_alt"
+                                app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/navi_notification_title"
                         />
 
@@ -203,6 +205,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                             style="@style/navi_bottom_button"
                             app:layout_constraintStart_toEndOf="@+id/navi_vertical_bar"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:onClick="@{() -> model.eventLogin()}"
                     >
@@ -210,6 +213,7 @@
                         <TextView
                                 style="@style/navi_icon"
                                 android:text="@string/fa_sign_in_alt"
+                                app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/navi_login_title"
                         />
 

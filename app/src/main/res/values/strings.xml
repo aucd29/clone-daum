@@ -24,6 +24,9 @@
     <string name="media_search_flower">꽃검색</string>
     <string name="media_search_code">코드검색</string>
 
+    <!-- voice -->
+    <string name="voice_pls_speak_search_keyword">검색어를 말해주세요</string>
+
     <!-- navigation -->
     <string name="navi_require_login">로그인하시오</string>
     <string name="navi_tab_shortcut">바로가기</string>
@@ -72,8 +75,10 @@
     <string name="brs_exist_fav_url">이미 입력된 url 임</string>
     <string name="brs_fav_url_ok">저장되었삼</string>
 
-
     <!-- error -->
     <string name="error_empty_keyword">검색어가 없습니다.</string>
+
+    <!-- kakao -->
+    <string name="kakao_app_key">7cc23090d656d2c236cfefae310450a2</string>
 
 </resources>
