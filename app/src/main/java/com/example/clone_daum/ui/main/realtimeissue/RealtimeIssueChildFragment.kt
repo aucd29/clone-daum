@@ -1,9 +1,7 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
-import androidx.lifecycle.ViewModelProviders
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
-import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -19,6 +17,10 @@ class RealtimeIssueChildFragment
 
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
+    }
+
+    init {
+        mViewModelScope = SCOPE_FRAGMENT
     }
 
     @Inject lateinit var preConfig: PreloadConfig
