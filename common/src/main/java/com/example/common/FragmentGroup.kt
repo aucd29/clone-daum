@@ -59,6 +59,9 @@ inline fun Fragment.hideKeyboard(view: View) =
 inline fun Fragment.finish() =
     fragmentManager?.pop()
 
+inline fun Fragment.keepScreen(on: Boolean) {
+    activity?.keepScreen(on)
+}
 
 object FragmentAnim {
     val LEFT: String

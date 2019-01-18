@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.os.Build
 import android.view.View
+import android.view.WindowManager
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.annotation.DimenRes
@@ -60,6 +61,14 @@ inline fun Activity.generateLayoutName(): String {
     }
 
     return layoutName
+}
+
+inline fun Activity.keepScreen(on: Boolean) {
+    if (on) {
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    } else {
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
