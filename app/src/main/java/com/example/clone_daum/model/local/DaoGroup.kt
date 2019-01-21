@@ -26,27 +26,27 @@ interface SearchHistoryDao {
     @Query("DELETE FROM searchHistory")
     fun deleteAll()
 }
-
-@Dao
-interface PopularKeywordDao {
-    @Query("SELECT * FROM popularKeyword")
-    fun list(): Flowable<List<PopularKeyword>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(keyword: PopularKeyword): Completable
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(keyword: List<PopularKeyword>): Completable
-
-    @Update
-    fun update(keyword: PopularKeyword): Completable
-
-    @Delete
-    fun delete(keyword: PopularKeyword): Completable
-
-    @Query("DELETE FROM popularKeyword")
-    fun deleteAll()
-}
+//
+//@Dao
+//interface PopularKeywordDao {
+//    @Query("SELECT * FROM popularKeyword")
+//    fun list(): Flowable<List<PopularKeyword>>
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insert(keyword: PopularKeyword): Completable
+//
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    fun insertAll(keyword: List<PopularKeyword>): Completable
+//
+//    @Update
+//    fun update(keyword: PopularKeyword): Completable
+//
+//    @Delete
+//    fun delete(keyword: PopularKeyword): Completable
+//
+//    @Query("DELETE FROM popularKeyword")
+//    fun deleteAll()
+//}
 
 @Dao
 interface UrlHistoryDao {

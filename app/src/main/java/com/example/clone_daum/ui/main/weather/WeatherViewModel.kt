@@ -49,7 +49,9 @@ class WeatherViewModel @Inject constructor(application: Application
     val thoroughfare     = ObservableField<String>(config.DEFAULT_LOCATION)
     val weather          = ObservableField<Weather>()
     val gridCount        = ObservableInt(3)
+
     val visibleProgress  = ObservableBoolean(false)
+    val visibleProgressFromMain = ObservableInt(View.VISIBLE)
 
     init {
         refreshCurrentLocation()
@@ -75,6 +77,8 @@ class WeatherViewModel @Inject constructor(application: Application
     }
 
     fun refreshWeather() {
+        visibleProgressFromMain.set(View.GONE)
+
         // 날씨 가져오는 OPEN API 들이 죄다 유료라서 이건 일단 생략
         weather.set(Weather(R.drawable.ic_android_black_100dp
             , "눈"
@@ -85,7 +89,9 @@ class WeatherViewModel @Inject constructor(application: Application
     }
 
     fun initRecycler() {
-        initAdapter(arrayOf("weather_dust_item", "weather_other_item"))
-        items.set(preConfig.weatherDetailList)
+        preConfig.weatherData {
+            initAdapter(arrayOf("weather_dust_item", "weather_other_item"))
+            items.set(it)
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.main.mediasearch.speech
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.view.WindowManager
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.common.BaseDaggerFragment

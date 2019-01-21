@@ -22,7 +22,7 @@ object ViewPagerBindingAdapter {
     @BindingAdapter("bindOffscreenPageLimit")
     fun bindOffscreenPageLimit(viewpager: ViewPager, limit: Int) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("bindOffscreenPageLimit")
+            mLog.debug("bindOffscreenPageLimit : $limit")
         }
         viewpager.offscreenPageLimit = limit
     }

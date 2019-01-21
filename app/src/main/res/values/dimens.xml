@@ -17,6 +17,7 @@
     <dimen name="main_tab_pad">0dp</dimen>
     <dimen name="main_tab_menu_pad">15dp</dimen>
     <dimen name="main_over_back_pad">10dp</dimen>
+    <dimen name="main_mini_progress">20dp</dimen>
 
     <!-- main tag -->
     <dimen name="main_tab_label_text">16sp</dimen>

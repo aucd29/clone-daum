@@ -21,22 +21,29 @@ object RecyclerBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(*["bindAdapter", "bindItems"])
-    fun <T: IRecyclerDiff> bindAdapter(recycler: RecyclerView, adapter: RecyclerAdapter<T>,
+    fun <T: IRecyclerDiff> bindAdapter(recycler: RecyclerView, adapter: RecyclerAdapter<T>?,
                                        items: List<T>?) {
+        if (adapter == null || items == null) {
+            return
+        }
+
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND ADAPTER (${recycler.id}), ITEM COUNT (${items?.count()})")
         }
 
-        val myadapter: RecyclerAdapter<T>
-        if (recycler.adapter == null) {
-            myadapter = adapter
-            recycler.adapter = myadapter
-        } else {
-            myadapter = recycler.adapter as RecyclerAdapter<T>
+        var myadapter: RecyclerAdapter<T>? = null
+
+        adapter?.let {
+            if (recycler.adapter == null) {
+                myadapter = it
+                recycler.adapter = myadapter
+            } else {
+                myadapter = recycler.adapter as RecyclerAdapter<T>
+            }
         }
 
         items?.let {
-            myadapter.setItems(recycler, it)
+            myadapter?.setItems(recycler, it)
         }
     }
 
@@ -70,12 +77,12 @@ object RecyclerBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindLayoutManager")
-    fun bindLayoutManager(recycler: RecyclerView, manager: RecyclerView.LayoutManager) {
+    fun bindLayoutManager(recycler: RecyclerView, manager: RecyclerView.LayoutManager?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND LAYOUT MANAGER")
         }
 
-        recycler.layoutManager = manager
+        manager?.run { recycler.layoutManager = this }
     }
 
     @JvmStatic

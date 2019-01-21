@@ -7,11 +7,11 @@ import android.graphics.Point
 import android.location.Geocoder
 import android.os.Build
 import android.view.WindowManager
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.BrowserSubMenu
 import com.example.clone_daum.model.local.FrequentlySite
-import com.example.clone_daum.model.local.PopularKeyword
 import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.*
 import com.example.common.*
@@ -19,6 +19,7 @@ import com.example.common.runtimepermission.RuntimePermission
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
@@ -37,10 +38,10 @@ class ConfigModule {
 
     @Singleton
     @Provides
-    fun providePreloadConfig(github: GithubService, dmMain: DaumService,
+    fun providePreloadConfig(dmMain: DaumService,
                              db: DbRepository, dp: CompositeDisposable,
                              assetManager: AssetManager, context: Context) =
-        PreloadConfig(github, dmMain, db, dp, assetManager, context)
+        PreloadConfig(dmMain, db, dp, assetManager, context)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -106,9 +107,12 @@ class Config(val context: Context) {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class PreloadConfig(github: GithubService, val daum: DaumService,
-                    db: DbRepository, dp: CompositeDisposable, assets: AssetManager,
-                    val context: Context) {
+class PreloadConfig(val daum: DaumService
+    , val db: DbRepository
+    , val dp: CompositeDisposable
+    , val assets: AssetManager
+    , val context: Context
+) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
@@ -116,30 +120,14 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
     lateinit var tabLabelList: List<TabData>
     lateinit var brsSubMenuList: List<BrowserSubMenu>
     lateinit var naviSitemapList: List<Sitemap>
-    lateinit var realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
-    lateinit var weatherDetailList: List<WeatherDetail>
 
+    // 초기 로딩 문제로 사용하는 곳에서 async 하게 call 하도록 수정
+    // 근데 여기에서도 async 하게 호출해도  되는거 아닌가?
+    // html parsing 이 sync 해서 느렸던건가?
+    // DOM + XPATH 가 느리긴 하지만... -_ - [aucd29][2019. 1. 21.]
+//    lateinit var weatherDetailList: List<WeatherDetail>
+//    val realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
     init {
-        dp.add(github.popularKeywordList().subscribeOn(Schedulers.io()).subscribe ({
-            db.popularKeywordDao.run {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETE ALL PopularKeyword")
-                }
-                deleteAll()
-
-                val dataList = arrayListOf<PopularKeyword>()
-                it.forEach {
-                    dataList.add(PopularKeyword(keyword = it))
-                }
-
-                insertAll(dataList).subscribe {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("INSERTED PopularKeyword")
-                    }
-                }
-            }
-        }, { e -> mLog.error("ERROR: ${e.message}") }))
-
         dp.add(Observable.just(assets.open("res/brs_submenu.json").readBytes())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<BrowserSubMenu>>() }
@@ -161,17 +149,6 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
                 }
 
                 naviSitemapList = it
-            })
-
-        dp.add(Observable.just(assets.open("res/weather_default.json").readBytes())
-            .observeOn(Schedulers.io())
-            .map { it.jsonParse<List<WeatherDetail>>() }
-            .subscribe {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("PARSE OK : weather_default.json")
-                }
-
-                weatherDetailList = it
             })
 
         dp.add(db.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
@@ -200,14 +177,20 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
 
-        htmlParse()
+//        htmlParse()
     }
 
-    fun htmlParse() {
-        val mainHtml = daum.main().blockingFirst()
+    fun realtimeIssue(callback: (List<Pair<String, List<RealtimeIssue>>>) -> Unit) {
+        dp.add(daum.main()
+            .observeOn(Schedulers.io())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("LOADED MAIN PAGE")
+                }
 
-        // 전체 이슈 하나만 있는 줄 알았더니만... 3개 더 있네.. ㄷ ㄷ ㄷ
-        realtimeIssueList = parseRealtimeIssue(mainHtml)
+                callback.invoke(parseRealtimeIssue(it))
+            }, { e -> mLog.error("ERROR: ${e.message}") })
+        )
     }
 
     private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {
@@ -245,9 +228,23 @@ class PreloadConfig(github: GithubService, val daum: DaumService,
         return parse.realtimeIssueList
     }
 
+    fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
+        dp.add(Observable.just(assets.open("res/weather_default.json").readBytes())
+            .observeOn(Schedulers.io())
+            .map { it.jsonParse<List<WeatherDetail>>() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("PARSE OK : weather_default.json")
+                }
+
+                callback.invoke(it)
+            })
+    }
+
+
     private fun loadGeoCode() {
         val geocoder = Geocoder(context, Locale.getDefault())
-
     }
 }
 

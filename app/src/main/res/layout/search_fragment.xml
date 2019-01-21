@@ -116,6 +116,7 @@
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="@dimen/search_popular_pad"
+                        android:visibility="@{popularmodel.visiablePopular}"
                         />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -130,7 +131,7 @@
                         app:bindItems="@{popularmodel.items}"
                         app:bindAdapter="@{popularmodel.adapter}"
                         app:bindLayoutManager="@{popularmodel.chipLayoutManager}"
-
+                        android:visibility="@{popularmodel.visiablePopular}"
                 />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -209,8 +210,9 @@
                     app:layout_constraintHorizontal_bias=".95"
                     android:layout_marginStart="@dimen/search_bottom_cancel_mgn_s"
                     android:textColor="@android:color/black"
-                    android:onClick="@{() -> model.eventCloseSearchFragment()}"
+                    android:onClick="@{() -> model.eventFinish()}"
             />
+            <!--android:onClick="@{() -> model.eventCloseSearchFragment()}"-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class DbRepository @Inject constructor(
 //    val searchHistoryDao: SearchHistoryDao,
-    val popularKeywordDao: PopularKeywordDao,
+//    val popularKeywordDao: PopularKeywordDao,
 //    val urlHistoryDao: UrlHistoryDao,
 //    val myFavoriteDao: MyFavoriteDao,
     val frequentlySiteDao: FrequentlySiteDao

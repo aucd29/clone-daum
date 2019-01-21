@@ -22,33 +22,25 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
         private const val TIMEOUT_RELOAD_ICO = 4L
-        private var IS_CLOSED_SPLASH         = false
     }
-
-    private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
-    private lateinit var mSplashViewModel: SplashViewModel
-    var webviewUrl: String? = null
 
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
+    private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
+    private lateinit var mSplashViewModel: SplashViewModel
+    private var mIsClosedSplash = false
+
+    var webviewUrl: String? = null
+
     override fun bindViewModel() {
         super.bindViewModel()
+
 
         mSplashViewModel = mViewModelFactory.injectOfActivity(this, SplashViewModel::class.java)
     }
 
     override fun initViewBinding() = mBinding.run {
-        webviewUrl = arguments?.getString("url")
-
-        if (webviewUrl == null) {
-            mLog.error("ERROR: URL == null")
-
-            return
-        }
-
-        webview.loadUrl(webviewUrl)
-
         swipeRefresh.setOnRefreshListener {
             if (mLog.isDebugEnabled) {
                 mLog.debug("RELOAD $webviewUrl")
@@ -80,7 +72,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
         }
 
         // appbar 에 가려져 있는 progress 를 보이게 하기 위해 offset 값이 필요함
-        observe(appbarHeightLive) {
+        observe(progressViewOffsetLive) {
             if (mLog.isDebugEnabled) {
                 mLog.debug("PROGRESS VIEW OFFSET $it")
             }
@@ -135,9 +127,14 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
             }
             , userAgent = { config.USER_AGENT }
             , progress  = {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("TAB WEBVIEW PROGRESS: $it")
+                }
+
                 if (it == 100)  {
-                    if (!IS_CLOSED_SPLASH) {
-                        IS_CLOSED_SPLASH = true
+                    // companison 이라서 초기화 안되는 버그 수정 [aucd29][2019. 1. 21.]
+                    if (!mIsClosedSplash) {
+                        mIsClosedSplash = true
 
                         mSplashViewModel.closeEvent.call()
                     }
@@ -156,14 +153,43 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainVi
     override fun onResume() {
         mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
 
+        // 초기 로딩이 다소 느려서 이를 해소 하고자 selected 된 tab 만 webview 를
+        // 로딩 하도록 수정 [aucd29][2019. 1. 21.]
+        val position = arguments?.getInt(MainTabAdapter.K_POSITION)
+        if (mViewModel.selectedTabPosition == position) {
+            webviewUrl = arguments?.getString(MainTabAdapter.K_URL)
+
+            if (webviewUrl == null) {
+                mLog.error("ERROR: URL == null")
+
+                return
+            }
+
+            mBinding.webview.loadUrl(webviewUrl)
+        }
+
         super.onResume()
     }
 
     override fun onDestroyView() {
         mBinding.webview.free()
 
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DESTORY VIEW ${mBinding.webview}")
+        }
+
         super.onDestroyView()
     }
+
+//    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+//        super.setUserVisibleHint(isVisibleToUser)
+//
+//        // https://code.i-harness.com/ko-kr/q/99b47e
+//        // https://stackoverflow.com/questions/24161160/setuservisiblehint-called-before-oncreateview-in-fragment
+//        if (isVisibleToUser && view != null) {
+//
+//        }
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

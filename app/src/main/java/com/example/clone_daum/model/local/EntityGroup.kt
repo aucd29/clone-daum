@@ -23,14 +23,14 @@ data class SearchHistory (
     override fun type() = SearchRecyclerType.T_HISTORY
 }
 
-@Entity(tableName = "popularKeyword")
-data class PopularKeyword (
-    @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
-    val keyword: String
-) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
-}
+//@Entity(tableName = "popularKeyword")
+//data class PopularKeyword (
+//    @PrimaryKey(autoGenerate = true)
+//    val _id: Int = 0,
+//    val keyword: String
+//) : IRecyclerDiff {
+//    override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
+//}
 
 @Entity(tableName = "urlHistory")
 data class UrlHistory (

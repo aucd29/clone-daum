@@ -39,9 +39,17 @@ class RealtimeIssueFragment
 
     override fun initViewBinding() { }
 
-    override fun initViewModelEvents() = mViewModel.run {
-        tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, preConfig.realtimeIssueList))
-        viewpager.set(mBinding.realtimeIssueViewpager)
+    override fun initViewModelEvents() {
+        mViewModel.run {
+            mRealtimeIssueList?.let {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("INIT TAB ADAPTER")
+                }
+
+                tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, it))
+                viewpager.set(mBinding.realtimeIssueViewpager)
+            }
+        }
     }
 
     override fun onCommandEvent(cmd: String, data: Any?) {

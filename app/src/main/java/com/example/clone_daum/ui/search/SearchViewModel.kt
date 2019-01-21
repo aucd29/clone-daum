@@ -26,17 +26,25 @@ import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(app: Application
 ) : RecyclerViewModel<ISearchRecyclerData>(app), ISnackbarAware, IDialogAware
-    , IFinishFragmentAware {
+    , IFinishFragmentAware, ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
         const val RECENT_SEARCH_LIMIT = 4L
         const val K_RECENT_SEARCH     = "search-recent-search"
+
+        const val CMD_BRS_OPEN        = "brs-open"
+        const val CMD_BRS_SEARCH      = "brs-search"
     }
 
     @Inject lateinit var daum: DaumSuggestService
     @Inject lateinit var searchDao: SearchHistoryDao
     @Inject lateinit var disposable: CompositeDisposable
+
+    override val commandEvent    = SingleLiveEvent<Pair<String, Any?>>()
+    override val dlgEvent        = SingleLiveEvent<DialogParam>()
+    override val snackbarEvent   = SingleLiveEvent<String>()
+    override val finishEvent     = SingleLiveEvent<Void>()
 
     val searchKeyword            = ObservableField<String>()
     var showSearchRecyclerLayout = prefs().getBoolean(K_RECENT_SEARCH, true)
@@ -48,11 +56,7 @@ class SearchViewModel @Inject constructor(app: Application
     val visibleSearchEmpty       = ObservableInt(View.GONE)
     val visibleBottomButtons     = ObservableInt(View.VISIBLE)
 
-    val searchEvent              = SingleLiveEvent<String>()
-
-    override val dlgEvent        = SingleLiveEvent<DialogParam>()
-    override val snackbarEvent   = SingleLiveEvent<String>()
-    override val finishEvent     = SingleLiveEvent<Void>()
+//    val searchEvent              = SingleLiveEvent<String>()
 
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
     val itemAnimator             = ObservableField<RecyclerView.ItemAnimator?>()
@@ -61,7 +65,6 @@ class SearchViewModel @Inject constructor(app: Application
     fun init() {
         editorAction.set {
             eventSearch(it)
-
             true
         }
 
@@ -97,7 +100,7 @@ class SearchViewModel @Inject constructor(app: Application
                 }, { e -> snackbar(e.message) }
             ))
 
-            searchEvent.value = it
+            commandEvent(CMD_BRS_SEARCH, it)
         } ?: snackbarEvent(R.string.error_empty_keyword)
     }
 
@@ -174,15 +177,6 @@ class SearchViewModel @Inject constructor(app: Application
         )
     }
 
-    fun eventCloseSearchFragment() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FINISH SEARCH FRAGMENT")
-        }
-
-        searchKeyword.set("")
-        finishEvent.call()
-    }
-
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
 
     fun suggest(keyword: String) {
@@ -195,18 +189,18 @@ class SearchViewModel @Inject constructor(app: Application
                 it.subkeys.forEach { key ->
                     val newkey = key.replace(it.q,
                         "<font color='#ff7b39'><b>${it.q}</b></font>")
-                    suggestList.add(SuggestItem(newkey))
+                    suggestList.add(SuggestItem(newkey, key))
                 }
 
                 items.set(suggestList.toList())
             }, { e -> snackbar(e.message) }))
     }
 
-    fun eventSearchSuggest(keyword: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("EVENT SEARCH SUGGEST : $keyword")
-        }
-    }
+//    fun eventSearchSuggest(keyword: String) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("EVENT SEARCH SUGGEST : $keyword")
+//        }
+//    }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         if (mLog.isDebugEnabled) {

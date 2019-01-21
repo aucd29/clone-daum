@@ -8,7 +8,8 @@
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel" />
         <variable name="weatherModel"
                   type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>
-
+        <variable name="realtimeIssueModel"
+                  type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,12 +26,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:bindPagerAdapter="@{model.tabAdapter}"
-                    app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             />
 
             <!--
             app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
             app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
+            app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             -->
 
             <com.google.android.material.appbar.AppBarLayout
@@ -82,7 +83,7 @@
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:layout_marginStart="@dimen/main_search_logo_mgn_s"
-                                android:onClick="@{() -> model.gotoNews()}"
+                                android:onClick="@{() -> model.eventGotoNews()}"
                         />
 
                         <ImageView
@@ -109,13 +110,23 @@
                                 android:background="@drawable/selector_button_bgcolor"
                                 android:paddingTop="4dp"
                                 android:paddingEnd="10dp"
-                                android:text="@{model.realtimeIssueText}"
                                 android:maxLines="1"
                                 android:maxWidth="120dp"
                                 android:ellipsize="end"
-                                android:onClick="@{() -> model.realtimeIssueOpenEvent(model.realtimeIssueText)}"
                                 android:textColor="@android:color/black"
                                 android:textSize="15sp"
+                                android:text="@{realtimeIssueModel.realtimeIssueText}"
+                                android:onClick="@{() -> realtimeIssueModel.openIssue(realtimeIssueModel.realtimeIssueText)}"
+                        />
+
+                        <ProgressBar
+                                android:layout_width="@dimen/main_mini_progress"
+                                android:layout_height="@dimen/main_mini_progress"
+                                app:layout_constraintStart_toStartOf="@+id/realtime_issue"
+                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
+                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
+                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
+                                android:visibility="@{realtimeIssueModel.visibleProgress}"
                         />
 
                         <ImageView
@@ -185,6 +196,16 @@
                             />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <ProgressBar
+                                android:layout_width="@dimen/main_mini_progress"
+                                android:layout_height="@dimen/main_mini_progress"
+                                app:layout_constraintStart_toStartOf="@+id/weather_layout"
+                                app:layout_constraintTop_toTopOf="@+id/weather_layout"
+                                app:layout_constraintEnd_toEndOf="@+id/weather_layout"
+                                app:layout_constraintBottom_toBottomOf="@+id/weather_layout"
+                                android:visibility="@{weatherModel.visibleProgressFromMain}"
+                        />
 
                         <!-- GPS -->
 

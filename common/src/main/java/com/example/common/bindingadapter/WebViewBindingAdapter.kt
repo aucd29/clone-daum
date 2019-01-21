@@ -17,8 +17,8 @@ object WebViewBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindWebViewSetting")
     fun bindWebViewSetting(webview: WebView, params: WebViewSettingParams) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindWebViewSetting")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("bindWebViewSetting")
         }
 
         webview.defaultSetting(params)

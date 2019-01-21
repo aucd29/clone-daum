@@ -2,9 +2,10 @@ package com.example.clone_daum.ui.search
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.databinding.SearchFragmentBinding
+import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
-import com.example.common.di.module.injectOfActivity
 import com.example.common.*
+import com.example.common.di.module.injectOf
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -18,19 +19,26 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
-    lateinit var popularviewVm: PopularViewModel
-
+    @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var viewController: ViewController
 
-    override fun bindViewModel() = mBinding.run {
+    private lateinit var mPopularViewModel: PopularViewModel
+
+    init {
+        mViewModelScope = SCOPE_FRAGMENT
+    }
+
+    override fun bindViewModel() {
         super.bindViewModel()
 
-        popularviewVm = mViewModelFactory.injectOfActivity(this@SearchFragment,
-            PopularViewModel::class.java)
-        popularviewVm.chipLayoutManager.set(layoutManager)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("INJECT POPULAR VIEW MODEL")
+        }
 
-        popularmodel = popularviewVm
+        mPopularViewModel = mViewModelFactory.injectOf(this@SearchFragment
+            , PopularViewModel::class.java)
+        mBinding.popularmodel = mPopularViewModel
     }
 
     override fun initViewBinding() {
@@ -38,37 +46,48 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     override fun initViewModelEvents() = mViewModel.run {
         init()
-        observe(searchEvent) { browserFragment(it) }
-
-        popularEvents()
+        initPopularViewModelEvents()
     }
 
-    fun popularEvents() = popularviewVm.run {
+    fun initPopularViewModelEvents() = mPopularViewModel.run {
         init()
+        chipLayoutManager.set(layoutManager)
+
+        observe(commandEvent) { onCommandEvent(it.first, it.second) }
     }
 
-    override fun finishFragmentAware() = mViewModel.run {
-        observe(finishEvent) {
-            finish()
-            hideKeyboard(mBinding.searchEdit)
+    override fun onCommandEvent(cmd: String, data: Any?) {
+        mViewModel.finishEvent.call()
+
+        when (cmd) {
+            SearchViewModel.CMD_BRS_OPEN -> {
+                viewController.browserFragment(data!!.toString())
+            }
+
+            PopularViewModel.CMD_BRS_SEARCH -> {
+                val url = "https://m.search.daum.net/search?w=tot&q=${data!!.toString().urlencode()}&DA=13H"
+                viewController.browserFragment(url)
+            }
         }
     }
 
-    private fun browserFragment(url: String) {
-        viewController.browserFragment(url)
+    // fragment 종료 시 키보드도 종료 시킨다.
+    override fun finishFragmentAware() = mViewModel.run {
+        observe(finishEvent) {
+            hideKeyboard(mBinding.searchEdit)
+            finish()
+        }
     }
 
     override fun onDestroyView() {
-        mViewModel.run {
-            searchKeyword.set("")
-        }
+        mPopularViewModel.dp.clear()
 
         super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    //
+    // Module
     //
     ////////////////////////////////////////////////////////////////////////////////////
 

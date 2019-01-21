@@ -20,6 +20,8 @@ class SplashViewModel @Inject constructor(val config: Config
 ) : ViewModel() {
     companion object {
         private val mLog = LoggerFactory.getLogger(SplashViewModel::class.java)
+
+        private val SPLASH_TIMEOUT = 5L
     }
 
     val visibleSplash = ObservableInt(View.VISIBLE)
@@ -38,7 +40,7 @@ class SplashViewModel @Inject constructor(val config: Config
         // 여지껏 커스텀 뷰를 만들어서 재활용한 적이 별로 없다.. -_ -;
 
         // 로딩 완료가 안뜨는 경우가 존재할 수 있으니 이를 보안하기 위한 타이머 추가
-        disposable.add(Observable.timer(10, TimeUnit.SECONDS)
+        disposable.add(Observable.timer(SPLASH_TIMEOUT, TimeUnit.SECONDS)
             .take(1)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

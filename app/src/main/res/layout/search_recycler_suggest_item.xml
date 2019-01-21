@@ -13,7 +13,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/suggest_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_SEARCH, item.rawKeyword)}"
+            >
 
         <TextView
                 android:id="@+id/suggest_keyword"
@@ -37,9 +39,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="@dimen/search_item_suggest_mgn_e"
                 android:padding="@dimen/search_item_suggest_pad"
-                android:onClick="@{() -> model.eventSearchSuggest(item.keyword)}"
         />
-
+        <!--android:onClick="@{() -> model.eventSearchSuggest(item.keyword)}"-->
 
         <View
                 android:id="@+id/bottom_area_underline"

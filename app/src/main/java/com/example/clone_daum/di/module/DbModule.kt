@@ -29,10 +29,10 @@ class DbModule {
     fun provideSearchHistoryDao(db: LocalDb)=
         db.searchHistoryDao()
 
-    @Singleton
-    @Provides
-    fun providePopularKeywordDao(db: LocalDb)=
-        db.popularKeywordDao()
+//    @Singleton
+//    @Provides
+//    fun providePopularKeywordDao(db: LocalDb)=
+//        db.popularKeywordDao()
 
     @Singleton
     @Provides
