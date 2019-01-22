@@ -5,6 +5,7 @@ import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.main.MainViewModel
+import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
@@ -14,6 +15,7 @@ import com.example.clone_daum.ui.main.navigation.mail.MailViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.weather.WeatherViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
@@ -47,8 +49,18 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(MainWebViewViewModel::class)
+    abstract fun bindMainWebViewViewModel(vm: MainWebViewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(RealtimeIssueViewModel::class)
     abstract fun bindRealtimeIssueViewModel(vm: RealtimeIssueViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RealtimeIssueChildViewModel::class)
+    abstract fun bindRealtimeIssueChildViewModel(vm: RealtimeIssueChildViewModel): ViewModel
 
     @Binds
     @IntoMap

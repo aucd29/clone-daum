@@ -5,7 +5,7 @@
 
     <data>
         <import type="java.lang.String" />
-        <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.remote.RealtimeIssue"/>
     </data>
 

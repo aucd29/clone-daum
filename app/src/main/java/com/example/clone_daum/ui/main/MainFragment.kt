@@ -51,24 +51,30 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         tab.addOnTabSelectedListener(this@MainFragment)
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
-        // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
-        tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
-        viewpager.set(mBinding.viewpager)
+    override fun initViewModelEvents() {
+        mViewModel.run {
+            // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
+            tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
+            viewpager.set(mBinding.viewpager)
 
-        // n 사도 그렇지만 k 사도 search 쪽을 view 로 가려서 하는 데
-        // -_ - 이러한 구조를 가져가는게
-        // 딱히 득이 될건 없어 보이는데 흠; 전국적으로 헤더 만큼에 패킷 낭비가...
-        appbarOffsetChangedLive.set { appbar, offset ->
-            val maxScroll = appbar.getTotalScrollRange()
-            val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
+            // n 사도 그렇지만 k 사도 search 쪽을 view 로 가려서 하는 데
+            // -_ - 이러한 구조를 가져가는게
+            // 딱히 득이 될건 없어 보이는데 흠; 전국적으로 헤더 만큼에 패킷 낭비가...
+            appbarOffsetChangedLive.set { appbar, offset ->
+                val maxScroll = appbar.getTotalScrollRange()
+                val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
 
-            if (mLog.isTraceEnabled) {
-                mLog.trace("APP BAR (ALPHA) : $percentage")
+                if (mLog.isTraceEnabled) {
+                    mLog.trace("APP BAR (ALPHA) : $percentage")
+                }
+
+                mBinding.searchArea.alpha = 1.0f - percentage
+                appbarOffsetLive.value    = offset
             }
+        }
 
-            mBinding.searchArea.alpha = 1.0f - percentage
-            appbarOffsetLive.value    = offset
+        observe(mRealtimeIssueViewModel.commandEvent) {
+            onCommandEvent(it.first, it.second)
         }
     }
 
@@ -84,21 +90,19 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
             CMD_WEATHER_FRAGMENT        -> viewController.weatherFragment()
             CMD_MEDIA_SEARCH_FRAGMENT   -> viewController.mediaSearchFragment()
-            CMD_BRS_OPEN                -> obj?.let { viewController.browserFragment(it.toString()) } ?: Unit
-            CMD_PERMISSION_GPS          -> {
-                runtimePermissions(PermissionParams(activity()
-                    , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-                    , { req, res ->
-                        when (res) {
-                            true -> {
-                                mViewModel.run {
-                                    visibleGps.set(View.GONE)
-                                    mWeatherViewModel.refreshCurrentLocation()
-                                }
+            CMD_BRS_OPEN                -> viewController.browserFragment(obj?.toString())
+            CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
+                , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                , { req, res ->
+                    when (res) {
+                        true -> {
+                            mViewModel.run {
+                                visibleGps.set(View.GONE)
+                                mWeatherViewModel.refreshCurrentLocation()
                             }
                         }
-                    }, REQ_RUNTIME_PERMISSION))
-            }
+                    }
+                }, REQ_RUNTIME_PERMISSION))
         }
     }
 

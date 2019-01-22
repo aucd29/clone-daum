@@ -38,8 +38,8 @@ class MainViewModel @Inject constructor(val app: Application
 
     val tabAdapter              = ObservableField<MainTabAdapter>()
     val viewpager               = ObservableField<ViewPager>()
-    val brsSetting              = ObservableField<WebViewSettingParams>()
-    val brsEvent                = ObservableField<WebViewEvent>()
+//    val brsSetting              = ObservableField<WebViewSettingParams>()
+//    val brsEvent                = ObservableField<WebViewEvent>()
     var gotoNewsEvent           = ObservableInt(0)
     var selectedTabPosition: Int = 0
 

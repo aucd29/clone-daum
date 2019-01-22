@@ -59,7 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.5"
-                android:text="@string/voice_pls_speak_search_keyword"
+                android:text="@{model.speechMessageResId}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

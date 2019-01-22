@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

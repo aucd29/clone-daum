@@ -78,7 +78,4 @@
     <!-- error -->
     <string name="error_empty_keyword">검색어가 없습니다.</string>
 
-    <!-- kakao -->
-    <string name="kakao_app_key">7cc23090d656d2c236cfefae310450a2</string>
-
 </resources>

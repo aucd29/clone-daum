@@ -114,16 +114,18 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             SearchFragment::class.java, anim = FragmentAnim.ALPHA))
     }
 
-    fun browserFragment(url: String) {
+    fun browserFragment(url: String?) {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER FRAGMENT $url")
         }
 
-        val bundle = Bundle()
-        bundle.putString("url", url)
+        url?.let {
+            val bundle = Bundle()
+            bundle.putString("url", it)
 
-        manager.show(FragmentParams(CONTAINER,
-            BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = bundle))
+            manager.show(FragmentParams(CONTAINER,
+                BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = bundle))
+        }
     }
 
     fun browserSubFragment() {

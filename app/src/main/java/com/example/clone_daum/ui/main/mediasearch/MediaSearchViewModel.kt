@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.mediasearch
 import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import com.example.clone_daum.R
 import com.example.common.ICommandEventAware
 import com.example.common.IFinishFragmentAware
 import com.example.common.arch.SingleLiveEvent
@@ -27,4 +28,6 @@ class MediaSearchViewModel @Inject constructor(application: Application)
     val dimmingBgAlpha  = ObservableField<AnimParams>()
     val overshootTransY = ObservableField<AnimParams>()
     val bgScale         = ObservableField<AnimParams>()
+
+    val speechMessageResId = ObservableField<Int>(R.string.voice_pls_speak_search_keyword)
 }

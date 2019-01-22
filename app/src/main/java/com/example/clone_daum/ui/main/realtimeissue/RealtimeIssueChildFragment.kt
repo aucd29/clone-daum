@@ -2,7 +2,10 @@ package com.example.clone_daum.ui.main.realtimeissue
 
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
+import com.example.common.di.module.injectOfActivity
+import com.example.common.finish
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -13,7 +16,7 @@ import javax.inject.Inject
  */
 
 class RealtimeIssueChildFragment
-    : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueViewModel>() {
+    : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
@@ -24,16 +27,38 @@ class RealtimeIssueChildFragment
     }
 
     @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var viewController: ViewController
 
-    override fun initViewBinding() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BINDING CHILD FRAGMENT")
-        }
+    lateinit var mRealtimeIssueViewModel: RealtimeIssueViewModel
+
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
     }
+
+    override fun initViewBinding() { }
 
     override fun initViewModelEvents() {
         arguments?.getInt("position")?.let {
-            mViewModel.init(it)
+            if (mLog.isDebugEnabled) {
+                mLog.debug("POSITION : $it")
+            }
+
+            // main 에서 load 한 데이터를 읽어다가 출력
+            mRealtimeIssueViewModel.issueList(it)?.let {
+                mViewModel.initAdapter(it)
+            }
+        }
+    }
+
+    override fun onCommandEvent(cmd: String, data: Any?) {
+        when (cmd) {
+            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data?.let {
+                mRealtimeIssueViewModel.eventFinish()
+
+                viewController.browserFragment(it.toString())
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import android.app.Application
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
@@ -25,13 +26,13 @@ import javax.inject.Inject
 
 class RealtimeIssueViewModel @Inject constructor(app: Application
     , val preConfig: PreloadConfig
-) : RecyclerViewModel<RealtimeIssue>(app), IFinishFragmentAware, ICommandEventAware {
+) : AndroidViewModel(app), IFinishFragmentAware, ICommandEventAware {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
-        const val INTERVAL      = 7L
-        const val CMD_BRS_OPEN  = "brs-open"
+        const val INTERVAL     = 7L
+        const val CMD_BRS_OPEN = "brs-open"
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -66,19 +67,8 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         }
     }
 
-    fun init(position: Int) {
-        initAdapter("realtime_issue_child_item")
-
-        mRealtimeIssueList?.let {
-            if (position < 0 && position > it.size) {
-                mLog.error("ERROR: REALTIME ISSUE INVALID POSITION")
-
-                return
-            }
-
-            items.set(it.get(position).second)
-        }
-    }
+    fun issueList(position: Int) =
+        mRealtimeIssueList?.get(position)?.second
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
