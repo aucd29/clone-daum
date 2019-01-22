@@ -31,7 +31,7 @@ class DbModule {
 
 //    @Singleton
 //    @Provides
-//    fun providePopularKeywordDao(db: LocalDb)=
+//    fun providePopularKeywordDao(db: LocalDb) =
 //        db.popularKeywordDao()
 
     @Singleton

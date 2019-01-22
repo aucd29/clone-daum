@@ -122,7 +122,6 @@ class PreloadConfig(val daum: DaumService
     lateinit var naviSitemapList: List<Sitemap>
 
     // 초기 로딩 문제로 사용하는 곳에서 async 하게 call 하도록 수정
-    // 근데 여기에서도 async 하게 호출해도  되는거 아닌가?
     // html parsing 이 sync 해서 느렸던건가?
     // DOM + XPATH 가 느리긴 하지만... -_ - [aucd29][2019. 1. 21.]
 //    lateinit var weatherDetailList: List<WeatherDetail>
