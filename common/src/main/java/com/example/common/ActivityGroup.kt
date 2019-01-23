@@ -3,17 +3,14 @@ package com.example.common
 
 import android.app.Activity
 import android.content.DialogInterface
-import android.os.Build
 import android.view.View
 import android.view.WindowManager
-import android.webkit.WebView
 import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar

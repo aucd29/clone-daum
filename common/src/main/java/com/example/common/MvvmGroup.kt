@@ -131,7 +131,7 @@ interface ICommandEventAware {
 interface IFinishFragmentAware {
     val finishEvent: SingleLiveEvent<Void>
 
-    fun eventFinish() {
+    fun finishEvent() {
         finishEvent.call()
     }
 }

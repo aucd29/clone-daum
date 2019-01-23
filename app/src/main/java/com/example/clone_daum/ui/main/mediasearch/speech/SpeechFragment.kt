@@ -2,21 +2,21 @@ package com.example.clone_daum.ui.main.mediasearch.speech
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
-import com.example.common.BaseDaggerFragment
-import com.example.common.OnBackPressedListener
+import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
-import com.example.common.finish
-import com.example.common.keepScreen
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
+import com.kakao.sdk.newtoneapi.impl.view.SpecialSearchRenderer
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -48,6 +48,8 @@ i.putExtra(SpeechRecognizerActivity.EXTRA_KEY_SERVICE_TYPE, serviceType);
 startActivityForResult(i, 0);
 
 
+ // https://developers.kakao.com/docs/android/speech
+
  */
 
 class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewModel>()
@@ -60,7 +62,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
         private val V_SCALE_DURATION = 500L
     }
 
-    lateinit var recognizer: SpeechRecognizerClient
+    var recognizer: SpeechRecognizerClient? = null
 
     // https://code.i-harness.com/ko-kr/q/254ae5
     val animList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
@@ -73,6 +75,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
             return
         }
 
+        // 인증 오류로 일단 대기
         initSpeechRecognizerClient()
     }
 
@@ -83,6 +86,12 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
     override fun onDestroyView() {
         keepScreen(false)
 
+        if (SpeechRecognizerManager.getInstance().isInitialized) {
+            SpeechRecognizerManager.getInstance().finalizeLibrary()
+        }
+
+        recognizer?.setSpeechRecognizeListener(null)
+
         super.onDestroyView()
     }
 
@@ -90,6 +99,55 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
         finish()
 
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startRecording()
+    }
+
+    override fun onPause() {
+        stopRecording()
+
+        super.onPause()
+    }
+
+    private fun startRecording() {
+        context?.run {
+            if (!isNetworkConntected()) {
+                mLog.error("ERROR: NETWORK DISCONNECTED")
+                return
+            }
+
+            recognizer?.startRecording(true)?.let {
+                    if (!it) {
+                        mLog.error("ERROR: ALREADY_STARTED")
+
+                        return
+                    }
+
+                systemService(AudioManager::class.java)?.run {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0)
+                    } else {
+                        setStreamMute(AudioManager.STREAM_MUSIC, true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun stopRecording() {
+        recognizer?.cancelRecording()
+
+        context?.systemService(AudioManager::class.java)?.run {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE, 0)
+            } else {
+                setStreamMute(AudioManager.STREAM_MUSIC, false)
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -116,9 +174,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
     }
 
     private fun animateOut() {
-        animList.forEach {
-            it.cancel()
-        }
+        animList.forEach { it.cancel() }
         animList.clear()
     }
 
@@ -134,11 +190,11 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
         }
 
         val builder = SpeechRecognizerClient.Builder()
-//            .setUserDictionary(intent.getStringExtra(EXTRA_KEY_USER_DICTIONARY))
+            .setUserDictionary(null)
             .setServiceType(SpeechRecognizerClient.SERVICE_TYPE_WEB)
 
         recognizer = builder.build()
-        recognizer.setSpeechRecognizeListener(this)
+        recognizer?.setSpeechRecognizeListener(this)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -148,26 +204,58 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onReady() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SPEECH READY")
+        }
     }
 
     override fun onFinished() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SPEECH FINISHED")
+        }
     }
 
     override fun onPartialResult(partialResult: String?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SPEECH PARTIAL RESULT")
+        }
     }
 
-    override fun onBeginningOfSpeech() = animateIn()
+    override fun onBeginningOfSpeech() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SPEECH BEGINNING")
+        }
 
-    override fun onEndOfSpeech() = animateOut()
+        animateIn()
+    }
+
+    override fun onEndOfSpeech() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SPEECH END")
+        }
+
+        animateOut()
+    }
 
     override fun onAudioLevel(audioLevel: Float) {
+        if (audioLevel < 0.2f) {
+            return
+        }
+
+        if (mLog.isTraceEnabled) {
+            mLog.trace("AUDIO LEVEL : $audioLevel")
+        }
     }
 
     override fun onError(errorCode: Int, errorMsg: String?) {
+        mLog.error("ERROR: $errorMsg")
 
     }
 
     override fun onResults(results: Bundle?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RESULT = $results")
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

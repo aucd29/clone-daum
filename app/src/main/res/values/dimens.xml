@@ -23,6 +23,19 @@
     <dimen name="main_tab_label_text">16sp</dimen>
     <dimen name="main_tab_label_pad">5dp</dimen>
 
+    <!-- barcode -->
+    <dimen name="barcode_finder_pad">10dp</dimen>
+    <dimen name="barcode_finder_text_pad">25dp</dimen>
+    <dimen name="barcode_finder_text">16sp</dimen>
+    <dimen name="barcode_back_text">18sp</dimen>
+    <dimen name="barcode_back_text_pad_s">60dp</dimen>
+    <dimen name="barcode_back_text_pad">20dp</dimen>
+    <dimen name="barcode_back_icon_pad">20dp</dimen>
+    <dimen name="barcode_input_mgn">10dp</dimen>
+    <dimen name="barcode_input_pad_tb">10dp</dimen>
+    <dimen name="barcode_input_pad_se">20dp</dimen>
+    <dimen name="barcode_input_btn_round">20dp</dimen>
+
     <!-- search frgmt -->
     <dimen name="search_empty_area_pad">50dp</dimen>
     <dimen name="search_popular_pad">10dp</dimen>

@@ -7,6 +7,8 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
+import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
+import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
@@ -70,6 +72,24 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         manager.show(FragmentParams(CONTAINER, SpeechFragment::class.java
+            , anim = FragmentAnim.RIGHT))
+    }
+
+    fun barcodeFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("BARCORD FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, BarcodeFragment::class.java
+            , anim = FragmentAnim.RIGHT))
+    }
+
+    fun barcodeInputFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("BARCODE INPUT FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, BarcodeInputFragment::class.java
             , anim = FragmentAnim.RIGHT))
     }
 

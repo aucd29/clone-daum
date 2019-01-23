@@ -56,7 +56,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_VOICE)}"
+                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_SPEECH)}"
                 >
                     <ImageView
                             android:id="@+id/search_voice"
@@ -85,6 +85,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_MUSIC)}"
                 >
                     <ImageView
                             android:id="@+id/search_music"
@@ -113,6 +114,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FLOWER)}"
                 >
                     <ImageView
                             android:id="@+id/search_flower"
@@ -141,6 +143,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_BARCODE)}"
                 >
                     <ImageView
                             android:id="@+id/search_code"

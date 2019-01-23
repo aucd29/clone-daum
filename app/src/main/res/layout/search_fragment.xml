@@ -210,7 +210,7 @@
                     app:layout_constraintHorizontal_bias=".95"
                     android:layout_marginStart="@dimen/search_bottom_cancel_mgn_s"
                     android:textColor="@android:color/black"
-                    android:onClick="@{() -> model.eventFinish()}"
+                    android:onClick="@{() -> model.finishEvent()}"
             />
             <!--android:onClick="@{() -> model.eventCloseSearchFragment()}"-->
 

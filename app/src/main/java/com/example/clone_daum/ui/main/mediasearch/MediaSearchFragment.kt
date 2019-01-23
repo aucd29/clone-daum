@@ -4,7 +4,6 @@ import android.Manifest
 import android.animation.Animator
 import android.os.Build
 import android.view.animation.*
-import androidx.lifecycle.ViewModelProviders
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
@@ -29,7 +28,8 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         private const val ANIM_DURATION     = 400L
         private const val ANIM_START_DELAY  = 250L
 
-        private const val REQ_RECORD_VOICE  = 7811
+        private const val REQ_RECORD_SPEECH  = 7811
+        private const val REQ_RECORD_BARCODE = 7812
     }
 
     init {
@@ -119,14 +119,25 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
     override fun onCommandEvent(cmd: String, data: Any?) = MediaSearchViewModel.run {
         when (cmd) {
-            CMD_ANIM_FINISH  -> onBackPressed()
-            CMD_SEARCH_VOICE -> runtimePermissions(PermissionParams(activity()
-                , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                , { req, res ->
-                    if (res) {
-                        animateOut { viewController.speechFragment() }
-                    }
-                } , REQ_RECORD_VOICE))
+            CMD_ANIM_FINISH    -> onBackPressed()
+            CMD_SEARCH_SPEECH  -> animateOut {
+                runtimePermissions(PermissionParams(activity()
+                    , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    , { req, res -> if (res) { viewController.speechFragment() } }
+                    , REQ_RECORD_SPEECH))
+            }
+            CMD_SEARCH_MUSIC   -> animateOut {
+                snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
+            }
+            CMD_SEARCH_FLOWER  -> animateOut {
+                snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
+            }
+            CMD_SEARCH_BARCODE -> animateOut {
+                runtimePermissions(PermissionParams(activity()
+                    , arrayListOf(Manifest.permission.CAMERA)
+                    , { req, res -> if (res) { viewController.barcodeFragment() } }
+                    , REQ_RECORD_BARCODE))
+            }
         }
 
         Unit

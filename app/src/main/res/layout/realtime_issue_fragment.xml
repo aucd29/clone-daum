@@ -46,7 +46,7 @@
                 android:paddingEnd="13dp"
                 android:paddingStart="13dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.eventFinish()}"
+                android:onClick="@{() -> model.finishEvent()}"
         />
 
         <com.example.clone_daum.common.widget.BkViewPager

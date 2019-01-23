@@ -8,6 +8,7 @@ import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
+import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationViewModel
 import com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel
@@ -71,6 +72,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MediaSearchViewModel::class)
     abstract fun bindMediaSearchViewModel(vm: MediaSearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BarcodeViewModel::class)
+    abstract fun bindBarcodeViewModel(vm: BarcodeViewModel): ViewModel
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

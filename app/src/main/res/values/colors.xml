@@ -9,4 +9,13 @@
     <color name="button_over">#7fbcbcbc</color>
     <color name="light_gray">#f1f1f1</color>
     <color name="light_blue">#5498ff</color>
+
+    <!-- zxing -->
+    <color name="zxing_viewfinder_laser">@android:color/transparent</color>
+    <color name="zxing_possible_result_points">@android:color/transparent</color>
+
+    <!-- barcode -->
+    <color name="barcode_button_pressed">#ADADAD</color>
+    <color name="barcode_finder_background">#61000000</color>
+
 </resources>

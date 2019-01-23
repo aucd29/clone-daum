@@ -47,10 +47,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.eventFinish()}"
+                android:onClick="@{() -> model.finishEvent()}"
         />
 
         <TextView
+                android:id="@+id/speech_message"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="25sp"
                 android:gravity="center"
@@ -60,6 +61,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.5"
                 android:text="@{model.speechMessageResId}"
+        />
+
+        <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/speech_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="Powered by kakako"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

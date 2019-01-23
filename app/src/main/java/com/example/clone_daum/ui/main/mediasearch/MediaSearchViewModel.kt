@@ -17,8 +17,11 @@ import javax.inject.Inject
 class MediaSearchViewModel @Inject constructor(application: Application)
     : AndroidViewModel(application), ICommandEventAware, IFinishFragmentAware {
     companion object {
-        const val CMD_ANIM_FINISH  = "anim-finish"
-        const val CMD_SEARCH_VOICE = "search-voice"
+        const val CMD_ANIM_FINISH    = "anim-finish"
+        const val CMD_SEARCH_SPEECH  = "search-speech"
+        const val CMD_SEARCH_MUSIC   = "search-music"
+        const val CMD_SEARCH_FLOWER  = "search-flower"
+        const val CMD_SEARCH_BARCODE = "search-barcode"
     }
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()

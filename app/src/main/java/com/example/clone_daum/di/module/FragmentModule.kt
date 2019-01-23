@@ -5,6 +5,8 @@ import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
+import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
+import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
@@ -33,6 +35,8 @@ import dagger.Module
     // MEDIA SEARCH
     , MediaSearchFragment.Module::class
     , SpeechFragment.Module::class
+    , BarcodeFragment.Module::class
+    , BarcodeInputFragment.Module::class
 
     // NAVIGATION
     , NavigationFragment.Module::class

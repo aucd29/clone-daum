@@ -118,6 +118,9 @@ dependencies {
     // KAKAO
     implementation 'com.kakao.sdk:newtone:6.0.1'
 
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation 'com.google.zxing:core:3.3.2'
+
     // local lib
     implementation project(path: ':common')
     implementation project(path: ':dingbat')

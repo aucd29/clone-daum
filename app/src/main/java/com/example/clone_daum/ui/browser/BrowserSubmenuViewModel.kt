@@ -47,6 +47,6 @@ class BrowserSubmenuViewModel @Inject constructor(
             mLog.debug("EVENT : $event")
         }
 
-        eventFinish()
+        finishEvent()
     }
 }

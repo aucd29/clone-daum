@@ -5,8 +5,6 @@ import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
 import com.example.common.di.module.injectOfActivity
-import com.example.common.finish
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -55,7 +53,7 @@ class RealtimeIssueChildFragment
     override fun onCommandEvent(cmd: String, data: Any?) {
         when (cmd) {
             RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data?.let {
-                mRealtimeIssueViewModel.eventFinish()
+                mRealtimeIssueViewModel.finishEvent()
 
                 viewController.browserFragment(it.toString())
             }
