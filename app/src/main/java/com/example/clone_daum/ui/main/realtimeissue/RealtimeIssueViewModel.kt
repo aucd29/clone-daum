@@ -47,9 +47,9 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     private var mAllIssueList: List<RealtimeIssue>? = null
     private var mRealtimeCount = 0
 
-    val dp                = CompositeDisposable()
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
 
+    val dp                = CompositeDisposable()
     val tabAdapter        = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager         = ObservableField<ViewPager>()
     val realtimeIssueText = ObservableField<String>()

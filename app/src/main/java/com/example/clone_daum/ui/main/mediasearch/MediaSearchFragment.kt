@@ -40,7 +40,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.run {
-            layoutListener {
+            globalLayoutListener {
                 translationY = height.toFloat() * -1
                 mBinding.mediaSearchButtonLayout.translationY =
                         mBinding.mediaSearchButtonLayout.height.toFloat() * -1
@@ -50,7 +50,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         }
 
         mediaSearchBackground.run {
-            layoutListener {
+            globalLayoutListener {
                 // 숨김 영역을 조금 감춤
 
                 val newHeight = height + 20.dpToPx(context!!)

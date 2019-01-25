@@ -14,24 +14,16 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 18. <p/>
  */
 
-class BrowserSubmenuViewModel @Inject constructor(
-    application: Application, config: PreloadConfig
-) : RecyclerViewModel<BrowserSubMenu>(application)
-    , IFinishFragmentAware {
+class BrowserSubmenuViewModel @Inject constructor(application: Application
+    , config: PreloadConfig
+) : RecyclerViewModel<BrowserSubMenu>(application), IFinishFragmentAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
     override val finishEvent = SingleLiveEvent<Void>()
 
     val gridCount = ObservableInt(4)
-
 
     init {
         if (mLog.isDebugEnabled) {

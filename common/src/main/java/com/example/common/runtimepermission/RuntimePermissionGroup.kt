@@ -181,11 +181,12 @@ class PermissionFragment : Fragment() {
             return
         }
 
-        dialog(DialogParam(string(R.string.permission_message)!!
-            , title       = string(R.string.permission_title)
-            , positiveStr = string(R.string.permission_set)
-            , negativeStr = string(android.R.string.cancel)
-            , listener    = { result, dlg ->
+        dialog(DialogParam(context = context!!
+            , messageId  = R.string.permission_message
+            , titleId    = R.string.permission_title
+            , positiveId = R.string.permission_set
+            , negativeId = android.R.string.cancel
+            , listener   = { result, dlg ->
                 if (result) {
                     startActivityForResult(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                         setData(Uri.parse(("package:${mParams.activity.packageName}")))

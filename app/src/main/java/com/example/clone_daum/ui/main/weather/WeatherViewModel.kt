@@ -50,7 +50,7 @@ class WeatherViewModel @Inject constructor(application: Application
     val weather          = ObservableField<Weather>()
     val gridCount        = ObservableInt(3)
 
-    val visibleProgress  = ObservableBoolean(false)
+    val visibleProgress         = ObservableBoolean(false)
     val visibleProgressFromMain = ObservableInt(View.VISIBLE)
 
     init {

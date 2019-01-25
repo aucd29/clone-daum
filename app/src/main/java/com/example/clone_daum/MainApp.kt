@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import androidx.multidex.MultiDexApplication
 import com.example.clone_daum.di.component.DaggerAppComponent
-import com.example.clone_daum.di.module.PreloadConfig
-import com.example.common.availMem
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.DispatchingAndroidInjector

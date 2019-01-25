@@ -12,12 +12,17 @@
     <dimen name="main_search_extend_rank_mgn_e">10dp</dimen>
     <dimen name="main_weather_mgn_s">20dp</dimen>
     <dimen name="main_temperature_mgn_s">10dp</dimen>
-    <dimen name="main_gps_pad">8dp</dimen>
+    <dimen name="main_gps_pad">10dp</dimen>
     <dimen name="main_tab_height">45dp</dimen>
     <dimen name="main_tab_pad">0dp</dimen>
     <dimen name="main_tab_menu_pad">15dp</dimen>
     <dimen name="main_over_back_pad">10dp</dimen>
+
+    <dimen name="main_realtime_issue_max_width">120dp</dimen>
+    <dimen name="main_realtime_issue_text">15sp</dimen>
+    <dimen name="main_realtime_issue_text_pad">12sp</dimen>
     <dimen name="main_mini_progress">20dp</dimen>
+    <dimen name="main_weather_layout_pad">10dp</dimen>
 
     <!-- main tag -->
     <dimen name="main_tab_label_text">16sp</dimen>
@@ -35,6 +40,13 @@
     <dimen name="barcode_input_pad_tb">10dp</dimen>
     <dimen name="barcode_input_pad_se">20dp</dimen>
     <dimen name="barcode_input_btn_round">20dp</dimen>
+    <dimen name="barcode_input_icon">85sp</dimen>
+    <dimen name="barcode_input_icon_pad_tb">40dp</dimen>
+    <dimen name="barcode_input_number_mgn_b">20dp</dimen>
+    <dimen name="barcode_input_pls_input_text">18sp</dimen>
+    <dimen name="barcode_input_pls_input_mgn_t">20dp</dimen>
+    <dimen name="barcode_input_edt_pad">10dp</dimen>
+    <dimen name="barcode_input_edt_mgn">20dp</dimen>
 
     <!-- search frgmt -->
     <dimen name="search_empty_area_pad">50dp</dimen>

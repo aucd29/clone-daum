@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -97,10 +98,24 @@ inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: I
 // aware 에 fun 을 만들지 않다가 생각해보니 xml 에서 call 하려면 필요하다..
 
 interface IDialogAware {
-    val dlgEvent: SingleLiveEvent<DialogParam>
+    val dialogEvent: SingleLiveEvent<DialogParam>
 
     fun dialog(dialog: DialogParam) {
-        dlgEvent.value = dialog
+        dialogEvent.value = dialog
+    }
+
+    fun alert(context: Context, messageId: Int, titleId: Int? = null) {
+        dialog(DialogParam(context = context
+            , messageId = messageId
+            , titleId   = titleId))
+    }
+
+    fun confirm(context: Context, messageId: Int, titleId: Int? = null, listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+        dialog(DialogParam(context = context
+            , messageId  = messageId
+            , titleId    = titleId
+            , negativeId = android.R.string.cancel
+            , listener   = listener))
     }
 }
 
@@ -292,7 +307,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     }
 
     fun stateCallback() {
-        mBinding.root.layoutListener {
+        mBinding.root.globalLayoutListener {
             BottomSheetBehavior.from(mBinding.root.parent as View).run {
                 setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(p0: View, p1: Float) {}
@@ -321,7 +336,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
 
     // https://stackoverflow.com/questions/45614271/bottomsheetdialogfragment-doesnt-show-full-height-in-landscape-mode
     fun wrapContentHeight() {
-        mBinding.root.layoutListener {
+        mBinding.root.globalLayoutListener {
             BottomSheetBehavior.from(mBinding.root.parent as View).run {
                 state      = BottomSheetBehavior.STATE_EXPANDED
                 peekHeight = 0

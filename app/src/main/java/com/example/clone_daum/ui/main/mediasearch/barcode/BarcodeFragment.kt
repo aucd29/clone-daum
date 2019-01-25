@@ -31,6 +31,10 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
 
     @Inject lateinit var viewController: ViewController
 
+    init {
+        mViewModelScope = SCOPE_FRAGMENT
+    }
+
     override fun initViewBinding() {
         mBinding.barcodeScanner.run {
             barcodeView.decoderFactory = DefaultDecoderFactory(
@@ -128,13 +132,38 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
         }
 
         result?.run {
-            if (text.substring(0, 4).toLowerCase().startsWith("http")) {
-                mBinding.barcodeScanner.run {
-                    postDelayed({ finish() }, 400)
+            val v = mBinding.barcodeScanner
+            v.postDelayed({ finish() }, 400)
 
-                    postDelayed({ viewController.browserFragment(text) }, 800)
-                }
+            // 단순하게 http 만 했는데, sms, vcard, pdf 등등이 존재
+            if (text.substring(0, 4).toLowerCase().startsWith("http")) {
+                v.postDelayed({ viewController.browserFragment(text) }, 800)
+            } else if (text.startsWith("MATMSG")) {
+                // MATMSG:TO:aucd29@gmail.com;SUB:hello ;BODY:world;;
+                val email = text.split(";")
+            } else if (text.startsWith("BEGIN:VCARD")) {
+//                BEGIN:VCARD
+//                VERSION:3.0
+//                N:dsadf;ada
+//                FN:ada dsadf
+//                ORG:dddf
+//                TITLE:asdf
+//                ADR:;;sdf;asdf;;asdfdf;
+//                TEL;WORK;VOICE:
+//                TEL;CELL:
+//                TEL;FAX:
+//                EMAIL;WORK;INTERNET:
+//                URL:
+//                BDAY:
+//                END:VCARD
+            } else if (text.startsWith("SMSTO")) {
+//                SMSTO:sdfas:dfsadf
             }
+
+            // 히스토리 관리로 디비에 넣어야 함
+            // TODO
+
+            Unit
         }
     }
 

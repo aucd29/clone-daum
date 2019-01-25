@@ -33,9 +33,9 @@ class PopularViewModel @Inject constructor(app: Application
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 
-    val dp                  = CompositeDisposable()
-    val visiablePopular     = ObservableInt(View.GONE)
-    val chipLayoutManager   = ObservableField<ChipsLayoutManager>()
+    val dp                = CompositeDisposable()
+    val visiablePopular   = ObservableInt(View.GONE)
+    val chipLayoutManager = ObservableField<ChipsLayoutManager>()
 
     fun init() {
         dp.add(github.popularKeywordList()

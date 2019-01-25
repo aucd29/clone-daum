@@ -1,7 +1,9 @@
 package com.example.clone_daum.ui.main
 
 import android.app.Application
+import android.content.DialogInterface
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
@@ -19,7 +21,6 @@ class MainViewModel @Inject constructor(val app: Application
     , val config: Config
     , val preConfig: PreloadConfig
 ) : AndroidViewModel(app), ICommandEventAware {
-
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
@@ -38,17 +39,15 @@ class MainViewModel @Inject constructor(val app: Application
 
     val tabAdapter              = ObservableField<MainTabAdapter>()
     val viewpager               = ObservableField<ViewPager>()
-//    val brsSetting              = ObservableField<WebViewSettingParams>()
-//    val brsEvent                = ObservableField<WebViewEvent>()
     var gotoNewsEvent           = ObservableInt(0)
-    var selectedTabPosition: Int = 0
+    var selectedTabPosition     = 0
 
     val visibleBack             = ObservableInt(View.GONE)
     val visibleGps              = ObservableInt(if (config.HAS_PERMISSION_GPS) View.GONE else View.VISIBLE)
 
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()
-    var progressViewOffsetLive        = MutableLiveData<Int>()
+    var progressViewOffsetLive  = MutableLiveData<Int>()
 
 
     fun eventGotoNews() = gotoNewsEvent.run {

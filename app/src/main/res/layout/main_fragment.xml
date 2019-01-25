@@ -21,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
         >
+
             <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewpager"
                     android:layout_width="match_parent"
@@ -30,8 +31,6 @@
 
             <!--
             app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
-            app:bindViewPagerLoaded="@{model.viewpagerLoadedEvent}"
-            app:bindOffscreenPageLimit="@{model.viewpagerPageLimit}"
             -->
 
             <com.google.android.material.appbar.AppBarLayout
@@ -103,23 +102,22 @@
                         <TextView
                                 android:id="@+id/realtime_issue"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                app:layout_constraintStart_toStartOf="@+id/search_logo"
-                                app:layout_constraintTop_toBottomOf="@+id/search"
                                 tools:text="4 내용"
-                                android:layout_marginTop="@dimen/main_search_rank_mgn_t"
                                 android:background="@drawable/selector_button_bgcolor"
-                                android:paddingTop="4dp"
-                                android:paddingEnd="10dp"
                                 android:maxLines="1"
-                                android:maxWidth="120dp"
+                                android:maxWidth="@dimen/main_realtime_issue_max_width"
                                 android:ellipsize="end"
                                 android:textColor="@android:color/black"
-                                android:textSize="15sp"
+                                android:textSize="@dimen/main_realtime_issue_text"
+                                android:padding="@dimen/main_realtime_issue_text_pad"
                                 android:text="@{realtimeIssueModel.realtimeIssueText}"
                                 android:onClick="@{() -> realtimeIssueModel.openIssue(realtimeIssueModel.realtimeIssueText)}"
+                                app:layout_constraintStart_toStartOf="@+id/search_logo"
+                                app:layout_constraintTop_toBottomOf="@+id/search"
                         />
 
                         <ProgressBar
+                                android:id="@+id/realtime_issue_progress"
                                 android:layout_width="@dimen/main_mini_progress"
                                 android:layout_height="@dimen/main_mini_progress"
                                 app:layout_constraintStart_toStartOf="@+id/realtime_issue"
@@ -131,10 +129,11 @@
 
                         <ImageView
                                 android:id="@+id/realtime_issue_extend"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:layout_width="wrap_content" android:layout_height="0dp"
                                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
                                 app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toStartOf="@+id/search_vertical_bar"
+                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
                                 android:layout_marginEnd="@dimen/main_search_extend_rank_mgn_e"
                                 android:background="?selectableItemBackgroundBorderless"
                                 android:paddingTop="4dp"
@@ -151,6 +150,7 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
                         />
 
                         <!-- WEATHER -->
@@ -164,6 +164,7 @@
                                 app:layout_constraintBottom_toTopOf="@+id/search_underline"
                                 app:layout_constraintEnd_toStartOf="@+id/search_gps_icon"
                                 android:background="@drawable/selector_button_bgcolor"
+                                android:padding="@dimen/main_weather_layout_pad"
                                 android:onClick="@{() -> model.commandEvent(model.CMD_WEATHER_FRAGMENT)}">
 
                             <TextView
@@ -198,6 +199,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <ProgressBar
+                                android:id="@+id/weather_progress"
                                 android:layout_width="@dimen/main_mini_progress"
                                 android:layout_height="@dimen/main_mini_progress"
                                 app:layout_constraintStart_toStartOf="@+id/weather_layout"
@@ -219,6 +221,7 @@
                                 android:padding="@dimen/main_gps_pad"
                                 android:onClick="@{() -> model.commandEvent(model.CMD_PERMISSION_GPS)}"
                                 android:visibility="@{model.visibleGps}"
+                                android:background="@drawable/selector_button_bgcolor"
                         />
 
                         <View

@@ -42,12 +42,12 @@ class SearchViewModel @Inject constructor(app: Application
     @Inject lateinit var disposable: CompositeDisposable
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any?>>()
-    override val dlgEvent        = SingleLiveEvent<DialogParam>()
+    override val dialogEvent     = SingleLiveEvent<DialogParam>()
     override val snackbarEvent   = SingleLiveEvent<String>()
     override val finishEvent     = SingleLiveEvent<Void>()
 
-    val searchKeyword            = ObservableField<String>()
     var showSearchRecyclerLayout = prefs().getBoolean(K_RECENT_SEARCH, true)
+    val searchKeyword            = ObservableField<String>()
     val toggleRecentSearchText   = ObservableInt()
     val toggleEmptyAreaText      = ObservableInt()
     val editorAction             = ObservableField<(String?) -> Boolean>()
@@ -56,11 +56,8 @@ class SearchViewModel @Inject constructor(app: Application
     val visibleSearchEmpty       = ObservableInt(View.GONE)
     val visibleBottomButtons     = ObservableInt(View.VISIBLE)
 
-//    val searchEvent              = SingleLiveEvent<String>()
-
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
     val itemAnimator             = ObservableField<RecyclerView.ItemAnimator?>()
-
 
     fun init() {
         editorAction.set {
@@ -70,6 +67,7 @@ class SearchViewModel @Inject constructor(app: Application
 
         initAdapter(arrayOf("search_recycler_history_item", "search_recycler_suggest_item"))
 
+        // FIXME
         val searchList = searchDao.search().limit(RECENT_SEARCH_LIMIT).blockingFirst()
         items.set(searchList)
         visibleSearchRecycler(searchList.size > 0)
@@ -106,12 +104,10 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun eventToggleRecentSearch() {
         if (showSearchRecyclerLayout) {
-            dlgEvent.value = DialogParam(string(R.string.dlg_msg_do_you_want_stop_using_recent_search),
-                title       = string(R.string.dlg_title_stop_using_recent_search),
-                listener    = { res, _ -> if (res) toggleSearchRecyclerLayout() },
-                positiveStr = string(android.R.string.ok),
-                negativeStr = string(android.R.string.cancel)
-            )
+            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search
+                , listener = { res, _ ->
+                    if (res) toggleSearchRecyclerLayout()
+                })
         } else {
             toggleSearchRecyclerLayout()
         }
@@ -160,10 +156,8 @@ class SearchViewModel @Inject constructor(app: Application
     }
 
     fun eventDeleteAllHistory() {
-        dlgEvent.value = DialogParam(
-            title    = string(R.string.dlg_title_delete_all_searched_list),
-            message  = string(R.string.dlg_msg_delete_all_searched_list),
-            listener = { res, _ ->
+        confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
+            , listener   = { res, _ ->
                 if (res) {
                     // delete query 는 왜? Completable 이 안되는가?
                     ioThread {
@@ -171,10 +165,7 @@ class SearchViewModel @Inject constructor(app: Application
                         reloadHistoryData()
                     }
                 }
-            },
-            positiveStr = string(android.R.string.ok),
-            negativeStr = string(android.R.string.cancel)
-        )
+            })
     }
 
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
@@ -195,12 +186,6 @@ class SearchViewModel @Inject constructor(app: Application
                 items.set(suggestList.toList())
             }, { e -> snackbar(e.message) }))
     }
-
-//    fun eventSearchSuggest(keyword: String) {
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("EVENT SEARCH SUGGEST : $keyword")
-//        }
-//    }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         if (mLog.isDebugEnabled) {

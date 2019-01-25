@@ -59,7 +59,8 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
             disposable.clear()
 
             visibleSplash.set(View.GONE)
-            // remove view
+
+            // SPLASH 뷰 삭제
             mBinding.root.removeView(mBinding.splash)
         }
     }

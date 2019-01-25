@@ -18,7 +18,7 @@ import android.widget.TextView
  * https://stackoverflow.com/questions/38827186/what-is-the-difference-between-crossinline-and-noinline-in-kotlin
  */
 @Suppress("DEPRECATION")
-inline fun View.layoutListener(crossinline f: () -> Unit) = with (viewTreeObserver) {
+inline fun View.globalLayoutListener(crossinline f: () -> Unit) = with (viewTreeObserver) {
     addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {

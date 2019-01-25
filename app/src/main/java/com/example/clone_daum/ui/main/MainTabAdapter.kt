@@ -33,7 +33,7 @@ class MainTabAdapter constructor(fm: FragmentManager, val tabListData: List<TabD
     }
 
     override fun getPageTitle(position: Int): String = title(position)
-    override fun getCount() = tabListData.size // Integer.MAX_VALUE     //
+    override fun getCount() = tabListData.size // Integer.MAX_VALUE
 
     private fun url(pos: Int) = divTabList(pos).url
     private fun title(pos: Int) = divTabList(pos).name

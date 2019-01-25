@@ -25,13 +25,17 @@
     <string name="media_search_code">코드검색</string>
 
     <!-- speech -->
-    <string name="voice_pls_speak_search_keyword">검색어를 말해주세요</string>
+    <string name="speech_pls_speak_search_keyword">검색어를 말해주세요</string>
 
     <!-- qr/barcode -->
     <string name="barcode_qr_barcode_search">QR/바코드 검색</string>
+    <string name="barcode_barcode_search">바코드 입력</string>
     <string name="barcode_input">바코드 입력</string>
     <string name="barcode_book_search_only">바코드는 도서검색만 지원?</string>
     <string name="barcode_pls_insert_number_from_barcode_under_number">바코드 하단의 숫자를 입력해주세요</string>
+    <string name="barcode_input_number">0123456789</string>
+    <string name="barcode_not_detacted">코드를 인식할 수 없음</string>
+    <string name="barcode_not_matched_info">해당코드와 일치하는 정보가 없음</string>
 
     <!-- navigation -->
     <string name="navi_require_login">로그인하시오</string>

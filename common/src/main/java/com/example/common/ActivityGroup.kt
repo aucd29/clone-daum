@@ -2,6 +2,7 @@
 package com.example.common
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.view.View
 import android.view.WindowManager
@@ -75,13 +76,28 @@ inline fun Activity.keepScreen(on: Boolean) {
 ////////////////////////////////////////////////////////////////////////////////////
 
 data class DialogParam (
-    var message: String,
-    var positiveStr: String? = null,
+    var message: String? = null,
     var title: String? = null,
+    var positiveStr: String? = null,
     var negativeStr: String? = null,
     var listener: ((Boolean, DialogInterface) -> Unit)? = null,
-    var timer: Int = 0
-)
+    var timer: Int = 0,
+    val context: Context? = null,
+    var messageId: Int? = null,
+    var titleId: Int? = null,
+    var positiveId: Int? = null,
+    var negativeId: Int? = null
+) {
+    init {
+        context?.run {
+            messageId?.run   { message     = string(this) }
+            titleId?.run     { title       = string(this) }
+            negativeStr?.run { negativeStr = string(this) }
+
+            positiveStr = string(if (positiveId != null) positiveId!! else android.R.string.ok)
+        }
+    }
+}
 
 inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
     val bd = AlertDialog.Builder(this)

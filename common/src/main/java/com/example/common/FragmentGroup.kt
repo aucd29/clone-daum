@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -51,6 +52,21 @@ inline fun Fragment.snackbar(view: View, @StringRes resid: Int, length: Int = co
 
 inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
     activity?.dialog(params, disposable)
+}
+
+inline fun Fragment.alert(messageId: Int, titleId: Int? = null) {
+    dialog(DialogParam(context = context
+        , messageId = messageId
+        , titleId   = titleId))
+}
+
+inline fun Fragment.confirm(messageId: Int, titleId: Int? = null
+                            , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+    dialog(DialogParam(context = context
+        , messageId  = messageId
+        , titleId    = titleId
+        , negativeId = android.R.string.cancel
+        , listener   = listener))
 }
 
 inline fun Fragment.hideKeyboard(view: View) =

@@ -5,7 +5,6 @@ import com.example.clone_daum.di.module.Config
 import com.example.common.di.module.injectOfActivity
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
-import com.example.common.di.module.injectOf
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,12 +12,10 @@ import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.log
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
-
 class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWebViewViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
@@ -32,7 +29,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     private lateinit var mSplashViewModel: SplashViewModel
     private lateinit var mMainViewModel: MainViewModel
 
-    private var mTimerDisposable: CompositeDisposable? = CompositeDisposable()
+    private var mTimerDisposable: CompositeDisposable = CompositeDisposable()
     private var mIsClosedSplash = false
 
     var webviewUrl: String? = null
@@ -53,6 +50,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         if (webviewUrl == null) {
             mLog.error("ERROR: URL == null")
 
+            snackbar(mBinding.root, "Invalid URL")?.show()
             return
         }
 
@@ -67,7 +65,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             // 해당 brs 에만 작용하기 위해서 수정
             webview.reload()
 
-            mTimerDisposable?.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
+            mTimerDisposable.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
                 .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXPLODE RELOAD ICO TIMER")
@@ -95,18 +93,16 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     mLog.debug("PROGRESS VIEW OFFSET $it")
                 }
 
-                mBinding.swipeRefresh.setProgressViewOffset(
-                    false,
-                    it, (it * 1.3f).toInt()
-                )
+                mBinding.swipeRefresh.setProgressViewOffset(false,
+                    it, (it * 1.3f).toInt())
             }
         }
 
         mViewModel.run {
             brsSetting.set(WebViewSettingParams(
-                urlLoading = { v, url ->
+                urlLoading = { _, url ->
                     if (mLog.isInfoEnabled) {
-                        mLog.info("URL : $url")
+                        mLog.info("URL LOADING : $url")
                     }
 
                     url?.let {
@@ -133,7 +129,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                         if (isRefreshing) {
                             isRefreshing = false     // hide refresh icon
 
-                            mTimerDisposable?.let {
+                            mTimerDisposable.let {
                                 if (mLog.isDebugEnabled) {
                                     mLog.debug("DISPOSABLE COUNT : ${it.size()}")
                                 }
@@ -153,8 +149,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                         mLog.trace("TAB WEBVIEW PROGRESS: $it")
                     }
 
+                    // 이 값이 구 버전에서는 제대로 안들어왔던 기억이...
                     if (it == 100) {
-                        // companion 이라서 초기화 안되는 버그 수정 [aucd29][2019. 1. 21.]
                         if (!mIsClosedSplash) {
                             mIsClosedSplash = true
 
@@ -173,31 +169,11 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         super.onPause()
 
         mViewModel.brsEvent.set(WebViewEvent.PAUSE_TIMER)
-        mTimerDisposable?.clear()
+        mTimerDisposable.clear()
     }
 
     override fun onResume() {
         mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
-
-        // 초기 로딩이 다소 느려서 이를 해소 하고자 selected 된 tab 만 webview 를
-        // 로딩 하도록 수정 [aucd29][2019. 1. 21.]
-//        val position = arguments?.getInt(MainTabAdapter.K_POSITION)
-//
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("MAIN TAB POSITION : $position")
-//        }
-//
-//        if (mMainViewModel.selectedTabPosition == position) {
-//            webviewUrl = arguments?.getString(MainTabAdapter.K_URL)
-//
-//            if (webviewUrl == null) {
-//                mLog.error("ERROR: URL == null")
-//
-//                return
-//            }
-//
-//            mBinding.webview.loadUrl(webviewUrl)
-//        }
 
         super.onResume()
     }
@@ -214,7 +190,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    //
+    // Module
     //
     ////////////////////////////////////////////////////////////////////////////////////
 

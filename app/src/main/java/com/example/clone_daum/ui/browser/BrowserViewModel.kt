@@ -113,7 +113,7 @@ class BrowserViewModel @Inject constructor(app: Application
             mLog.debug("HOME EVENT")
         }
 
-        finishEvent.call()
+        finishEvent()
     }
 
     fun eventFavorite(url: String) {

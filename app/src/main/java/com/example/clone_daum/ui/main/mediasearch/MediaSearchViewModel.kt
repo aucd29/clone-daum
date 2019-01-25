@@ -32,5 +32,5 @@ class MediaSearchViewModel @Inject constructor(application: Application)
     val overshootTransY = ObservableField<AnimParams>()
     val bgScale         = ObservableField<AnimParams>()
 
-    val speechMessageResId = ObservableField<Int>(R.string.voice_pls_speak_search_keyword)
+    val speechMessageResId = ObservableField<Int>(R.string.speech_pls_speak_search_keyword)
 }

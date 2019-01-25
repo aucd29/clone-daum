@@ -10,18 +10,30 @@ import dagger.android.ContributesAndroidInjector
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 23. <p/>
  */
 
-class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeViewModel>() {
+class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
+    init {
+        mViewModelScope = SCOPE_FRAGMENT
+    }
+
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
     }
 
+    override fun onCommandEvent(cmd: String, data: Any?) {
+        when (cmd) {
+            BarcodeInputViewModel.CMD_HIDE_KEYBOARD -> hideKeyboard()
+        }
+    }
+
     override fun onDestroyView() {
-        context?.hideKeyboard(mBinding.barcodeBack)
+        hideKeyboard()
 
         super.onDestroyView()
     }
+
+    private fun hideKeyboard() = context?.hideKeyboard(mBinding.barcodeEdit)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

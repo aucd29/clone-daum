@@ -22,6 +22,7 @@ import javax.inject.Inject
 class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
+
         private const val WEBVIEW_SLIDING = 3
     }
 
@@ -73,11 +74,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             }, sslError = {
                 mLog.error("ERROR: SSL ")
 
-                dialog(DialogParam(string(R.string.brs_dlg_message_ssl_error),
-                    title        = string(R.string.brs_dlg_title_ssl_error),
-                    positiveStr  = string(R.string.dlg_btn_open),
-                    negativeStr  = string(R.string.dlg_btn_close),
-                    listener     = { res, _ ->
+                dialog(DialogParam(context = context!!,
+                    messageId  = R.string.brs_dlg_message_ssl_error,
+                    titleId    = R.string.brs_dlg_title_ssl_error,
+                    positiveId = R.string.dlg_btn_open,
+                    negativeId = R.string.dlg_btn_close,
+                    listener   = { res, _ ->
                         if (res) {
                             it?.proceed()
                             sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
@@ -95,13 +97,15 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         ))
     }
 
-    override fun onCommandEvent(cmd: String, obj: Any?) {
+    override fun onCommandEvent(cmd: String, obj: Any?) = BrowserViewModel.run {
         when (cmd) {
-            BrowserViewModel.CMD_BACK             -> onBackPressed()
-            BrowserViewModel.CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-            BrowserViewModel.CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
-            BrowserViewModel.CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
+            CMD_BACK             -> onBackPressed()
+            CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
+            CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
+            CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
         }
+
+        Unit
     }
 
     override fun onBackPressed() = mBinding.run {
@@ -156,7 +160,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    //
+    // Module
     //
     ////////////////////////////////////////////////////////////////////////////////////
     

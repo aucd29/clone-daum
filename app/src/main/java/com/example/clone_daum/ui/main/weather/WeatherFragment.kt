@@ -9,15 +9,12 @@ import com.example.clone_daum.di.module.Config
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment
-import com.example.common.layoutListener
 import com.example.common.runtimepermission.PermissionParams
 import com.example.common.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

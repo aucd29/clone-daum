@@ -31,13 +31,15 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     override fun bindViewModel() {
         super.bindViewModel()
+        initPopularViewModel()
+    }
 
+    private fun initPopularViewModel() {
         if (mLog.isDebugEnabled) {
             mLog.debug("INJECT POPULAR VIEW MODEL")
         }
 
-        mPopularViewModel = mViewModelFactory.injectOf(this@SearchFragment
-            , PopularViewModel::class.java)
+        mPopularViewModel = mViewModelFactory.injectOf(this@SearchFragment, PopularViewModel::class.java)
         mBinding.popularmodel = mPopularViewModel
     }
 
@@ -71,15 +73,16 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         }
     }
 
-    // fragment 종료 시 키보드도 종료 시킨다.
-    override fun finishFragmentAware() = mViewModel.run {
-        observe(finishEvent) {
-            hideKeyboard(mBinding.searchEdit)
-            finish()
-        }
-    }
+//    // fragment 종료 시 키보드도 종료 시킨다.
+//    override fun finishFragmentAware() = mViewModel.run {
+//        observe(finishEvent) {
+//
+//            finish()
+//        }
+//    }
 
     override fun onDestroyView() {
+        hideKeyboard(mBinding.searchEdit)
         mPopularViewModel.dp.clear()
 
         super.onDestroyView()

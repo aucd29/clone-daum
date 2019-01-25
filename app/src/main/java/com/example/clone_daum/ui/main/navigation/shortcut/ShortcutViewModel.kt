@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
 import com.example.common.DialogParam
 import com.example.common.IDialogAware
+import com.example.common.app
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.string
 import javax.inject.Inject
@@ -16,7 +17,7 @@ import javax.inject.Inject
 class ShortcutViewModel @Inject constructor(application: Application)
     : AndroidViewModel(application), IDialogAware {
 
-    override val dlgEvent = SingleLiveEvent<DialogParam>()
+    override val dialogEvent = SingleLiveEvent<DialogParam>()
     val brsSitemapEvent   = SingleLiveEvent<String>()
 
     fun eventSitemap() {
@@ -24,7 +25,6 @@ class ShortcutViewModel @Inject constructor(application: Application)
     }
 
     fun eventFrequentlySite() {
-        dlgEvent.value = DialogParam(string(R.string.shortcut_link_history)
-            , positiveStr = string(android.R.string.ok))
+        alert(app, R.string.shortcut_link_history)
     }
 }

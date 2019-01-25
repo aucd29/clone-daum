@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.main
 
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import com.example.clone_daum.di.module.Config
@@ -45,6 +46,7 @@ class SplashViewModel @Inject constructor(val config: Config
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 mLog.error("ERROR: SPLASH TIMEOUT")
+
                 closeEvent.call()
             })
     }

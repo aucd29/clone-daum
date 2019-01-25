@@ -80,7 +80,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
 
     protected open fun dialogAware() = mViewModel.run {
         if (this is IDialogAware) {
-            observeDialog(dlgEvent, mDisposable)
+            observeDialog(dialogEvent, mDisposable)
         }
     }
 
@@ -181,7 +181,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 
     protected open fun dialogAware() = mViewModel.run {
         if (this is IDialogAware) {
-            observeDialog(dlgEvent, mDisposable)
+            observeDialog(dialogEvent, mDisposable)
         }
     }
 

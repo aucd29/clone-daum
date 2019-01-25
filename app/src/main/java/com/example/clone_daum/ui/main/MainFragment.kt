@@ -31,16 +31,23 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     override fun bindViewModel() {
         super.bindViewModel()
 
+        initWeatherViewModel()
+        initRealtimeIssueViewModel()
+    }
+
+    private fun initWeatherViewModel() {
         mWeatherViewModel     = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
         mBinding.weatherModel = mWeatherViewModel
+    }
 
+    private fun initRealtimeIssueViewModel() {
         mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
         mRealtimeIssueViewModel.load()
         mBinding.realtimeIssueModel = mRealtimeIssueViewModel
     }
 
     override fun initViewBinding() = mBinding.run {
-        searchBar.layoutListener {
+        searchBar.globalLayoutListener {
             if (mLog.isDebugEnabled) {
                 mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
             }
@@ -69,6 +76,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 }
 
                 mBinding.searchArea.alpha = 1.0f - percentage
+
+                // scroll 되어 offset 된 값을 webview 쪽으로 전달
                 appbarOffsetLive.value    = offset
             }
         }
