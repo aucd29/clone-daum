@@ -14,15 +14,15 @@ import org.slf4j.LoggerFactory
 object WebViewBindingAdapter {
     private val mLog = LoggerFactory.getLogger(WebViewBindingAdapter::class.java)
 
-    @JvmStatic
-    @BindingAdapter("bindWebViewSetting")
-    fun bindWebViewSetting(webview: WebView, params: WebViewSettingParams) {
-        if (mLog.isTraceEnabled) {
-            mLog.trace("bindWebViewSetting")
-        }
-
-        webview.defaultSetting(params)
-    }
+//    @JvmStatic
+//    @BindingAdapter("bindWebViewSetting")
+//    fun bindWebViewSetting(webview: WebView, params: WebViewSettingParams) {
+//        if (mLog.isTraceEnabled) {
+//            mLog.trace("bindWebViewSetting")
+//        }
+//
+//        webview.defaultSetting(params)
+//    }
 
     @JvmStatic
     @BindingAdapter("bindWebViewEvent")

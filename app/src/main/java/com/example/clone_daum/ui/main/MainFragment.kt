@@ -3,14 +3,17 @@ package com.example.clone_daum.ui.main
 import android.Manifest
 import android.view.View
 import com.example.clone_daum.databinding.MainFragmentBinding
+import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.weather.WeatherViewModel
+import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.common.*
 import com.example.common.di.module.injectOfActivity
 import com.example.common.runtimepermission.PermissionParams
 import com.example.common.runtimepermission.runtimePermissions
 import com.google.android.material.tabs.TabLayout
+import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -23,16 +26,37 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         private val REQ_RUNTIME_PERMISSION = 79
     }
 
+    init {
+        // MainViewModel 를 MainWebViewFragment 와 공유
+        mViewModelScope = SCOPE_ACTIVITY
+    }
+
     @Inject lateinit var viewController: ViewController
+    @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var disposable: CompositeDisposable
 
     private lateinit var mWeatherViewModel: WeatherViewModel
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
+    private lateinit var mPopularViewModel: PopularViewModel
 
     override fun bindViewModel() {
         super.bindViewModel()
 
         initWeatherViewModel()
         initRealtimeIssueViewModel()
+        initPopularViewModel()
+
+        disposable.add(preConfig.daumMain()
+            .subscribe({ html ->
+                mRealtimeIssueViewModel.load(html)
+                mPopularViewModel.load(html)
+            }, { e ->
+                if (mLog.isDebugEnabled) {
+                    e.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${e.message}")
+            }))
     }
 
     private fun initWeatherViewModel() {
@@ -41,21 +65,31 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     private fun initRealtimeIssueViewModel() {
-        mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
-        mRealtimeIssueViewModel.load()
+        mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
         mBinding.realtimeIssueModel = mRealtimeIssueViewModel
     }
 
-    override fun initViewBinding() = mBinding.run {
-        searchBar.globalLayoutListener {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
+    private fun initPopularViewModel() {
+        mPopularViewModel = mViewModelFactory.injectOfActivity(this, PopularViewModel::class.java)
+    }
+
+    override fun initViewBinding() {
+        mBinding.run {
+            searchBar.globalLayoutListener {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
+                }
+
+                mViewModel.progressViewOffsetLive.value = searchBar.height
             }
 
-            mViewModel.progressViewOffsetLive.value = searchBar.height
-        }
+            tab.run {
+                addOnTabSelectedListener(this@MainFragment)
 
-        tab.addOnTabSelectedListener(this@MainFragment)
+                // 1번째 tab 을 focus 해야 됨 (news)
+                postDelayed({ getTabAt(1)?.select() }, 100)
+            }
+        }
     }
 
     override fun initViewModelEvents() {
@@ -93,25 +127,24 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
 
         // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
-        when (cmd) {
-            CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
-            CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
-            CMD_REALTIME_ISSUE_FRAGMENT -> viewController.realtimeIssueFragment()
-            CMD_WEATHER_FRAGMENT        -> viewController.weatherFragment()
-            CMD_MEDIA_SEARCH_FRAGMENT   -> viewController.mediaSearchFragment()
-            CMD_BRS_OPEN                -> viewController.browserFragment(obj?.toString())
-            CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
-                , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-                , { req, res ->
-                    when (res) {
-                        true -> {
+        viewController.run {
+            when (cmd) {
+                CMD_SEARCH_FRAMGNET         -> searchFragment()
+                CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
+                CMD_REALTIME_ISSUE_FRAGMENT -> realtimeIssueFragment()
+                CMD_WEATHER_FRAGMENT        -> weatherFragment()
+                CMD_MEDIA_SEARCH_FRAGMENT   -> mediaSearchFragment()
+                CMD_BRS_OPEN                -> browserFragment(obj?.toString())
+                CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
+                    , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                    , { req, res -> if (res) {
                             mViewModel.run {
                                 visibleGps.set(View.GONE)
                                 mWeatherViewModel.refreshCurrentLocation()
                             }
                         }
-                    }
-                }, REQ_RUNTIME_PERMISSION))
+                    }, REQ_RUNTIME_PERMISSION))
+            }
         }
     }
 
@@ -150,7 +183,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             mLog.debug("TAB SELECTED ${tab.position}")
         }
 
-        mViewModel.selectedTabPosition = tab.position
+        mViewModel.currentTabPositionLive.value = tab.position
     }
     
     ////////////////////////////////////////////////////////////////////////////////////

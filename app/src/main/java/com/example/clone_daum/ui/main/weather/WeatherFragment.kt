@@ -31,6 +31,11 @@ class WeatherFragment
         private const val MORE_DETAIL_URL = """https://m.search.daum.net/search?w=tot&q=%EC%A0%84%EA%B5%AD%EB%82%A0%EC%94%A8&DA=G29&f=androidapp&DN=ADDA&nil_app=daumapp&enc_all=utf8"""
     }
 
+    init {
+        // WeatherViewModel 를 MainFragment 와 공유
+        mViewModelScope = SCOPE_ACTIVITY
+    }
+
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController

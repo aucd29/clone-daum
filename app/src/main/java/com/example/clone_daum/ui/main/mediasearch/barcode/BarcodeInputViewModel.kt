@@ -14,9 +14,7 @@ import javax.inject.Inject
  */
 
 class BarcodeInputViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application), IFinishFragmentAware, ICommandEventAware
-    , IDialogAware {
-
+    : CommandEventViewModel(application), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BarcodeInputViewModel::class.java)
 
@@ -26,8 +24,6 @@ class BarcodeInputViewModel @Inject constructor(application: Application)
     }
 
     override val dialogEvent  = SingleLiveEvent<DialogParam>()
-    override val finishEvent  = SingleLiveEvent<Void>()
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 
     val barcodeNumber = ObservableField<String>()
     val editorAction  = ObservableField<(String?) -> Boolean>()

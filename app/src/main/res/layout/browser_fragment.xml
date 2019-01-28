@@ -115,7 +115,6 @@
                     android:id="@+id/brs_webview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:bindWebViewSetting="@{model.brsSetting}"
                     app:bindWebViewEvent="@{model.brsEvent}"
             />
         </FrameLayout>

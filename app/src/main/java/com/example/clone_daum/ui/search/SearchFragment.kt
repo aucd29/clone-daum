@@ -5,7 +5,7 @@ import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
-import com.example.common.di.module.injectOf
+import com.example.common.di.module.injectOfActivity
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -25,12 +25,9 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     private lateinit var mPopularViewModel: PopularViewModel
 
-    init {
-        mViewModelScope = SCOPE_FRAGMENT
-    }
-
     override fun bindViewModel() {
         super.bindViewModel()
+
         initPopularViewModel()
     }
 
@@ -39,27 +36,23 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
             mLog.debug("INJECT POPULAR VIEW MODEL")
         }
 
-        mPopularViewModel = mViewModelFactory.injectOf(this@SearchFragment, PopularViewModel::class.java)
+        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
         mBinding.popularmodel = mPopularViewModel
     }
 
-    override fun initViewBinding() {
-    }
+    override fun initViewBinding() {}
+    override fun initViewModelEvents() {
+        mViewModel.init()
+        mPopularViewModel.run {
+            init()
+            chipLayoutManager.set(layoutManager)
 
-    override fun initViewModelEvents() = mViewModel.run {
-        init()
-        initPopularViewModelEvents()
-    }
-
-    fun initPopularViewModelEvents() = mPopularViewModel.run {
-        init()
-        chipLayoutManager.set(layoutManager)
-
-        observe(commandEvent) { onCommandEvent(it.first, it.second) }
+            observe(commandEvent) { onCommandEvent(it.first, it.second) }
+        }
     }
 
     override fun onCommandEvent(cmd: String, data: Any?) {
-        mViewModel.finishEvent.call()
+        mViewModel.finishEvent()
 
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN -> {
@@ -72,14 +65,6 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
             }
         }
     }
-
-//    // fragment 종료 시 키보드도 종료 시킨다.
-//    override fun finishFragmentAware() = mViewModel.run {
-//        observe(finishEvent) {
-//
-//            finish()
-//        }
-//    }
 
     override fun onDestroyView() {
         hideKeyboard(mBinding.searchEdit)

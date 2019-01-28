@@ -76,12 +76,13 @@
                         <ImageView
                                 android:id="@+id/search_logo"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="0dp"
                                 android:src="@drawable/ic_android_black_14dp"
                                 app:layout_constraintStart_toStartOf="@+id/search"
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
-                                android:layout_marginStart="@dimen/main_search_logo_mgn_s"
+                                android:paddingStart="@dimen/main_search_logo_pad_se"
+                                android:paddingEnd="@dimen/main_search_logo_pad_se"
                                 android:onClick="@{() -> model.eventGotoNews()}"
                         />
 

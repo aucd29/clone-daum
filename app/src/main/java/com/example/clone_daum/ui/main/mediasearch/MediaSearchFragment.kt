@@ -16,24 +16,22 @@ import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 16. <p/>
- *
  */
 
-// 다이얼로그로 하는게 나으려나?
 class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
     , OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 
-        private const val ANIM_DURATION     = 400L
-        private const val ANIM_START_DELAY  = 250L
+        private const val ANIM_DURATION      = 400L
+        private const val ANIM_START_DELAY   = 250L
 
         private const val REQ_RECORD_SPEECH  = 7811
         private const val REQ_RECORD_BARCODE = 7812
     }
 
     init {
-        mViewModelScope = SCOPE_FRAGMENT
+        mViewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var viewController: ViewController

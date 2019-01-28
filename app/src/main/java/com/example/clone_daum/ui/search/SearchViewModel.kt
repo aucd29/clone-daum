@@ -67,7 +67,7 @@ class SearchViewModel @Inject constructor(app: Application
 
         initAdapter(arrayOf("search_recycler_history_item", "search_recycler_suggest_item"))
 
-        // FIXME
+        // FIXME async 하게 변경해야 됨 일단 귀차니즘으로 보류
         val searchList = searchDao.search().limit(RECENT_SEARCH_LIMIT).blockingFirst()
         items.set(searchList)
         visibleSearchRecycler(searchList.size > 0)

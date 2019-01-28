@@ -11,10 +11,6 @@ import dagger.android.ContributesAndroidInjector
  */
 
 class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
-    init {
-        mViewModelScope = SCOPE_FRAGMENT
-    }
-
     override fun initViewBinding() {
     }
 

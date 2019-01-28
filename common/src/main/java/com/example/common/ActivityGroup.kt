@@ -130,9 +130,9 @@ open class BackPressedManager(var mActivity: AppCompatActivity, var view: View? 
         val delay = 2000
     }
 
-    protected var mPressedTime: Long = 0
     protected var mToast: Toast? = null
     protected var mSnackbar: Snackbar? = null
+    protected var mPressedTime: Long = 0
 
     inline fun time() = mPressedTime + delay
 

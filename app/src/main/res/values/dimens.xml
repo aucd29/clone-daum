@@ -5,7 +5,7 @@
     <dimen name="main_search_mgn_s">15dp</dimen>
     <dimen name="main_search_mgn_t">14dp</dimen>
     <dimen name="main_search_mgn_e">15dp</dimen>
-    <dimen name="main_search_logo_mgn_s">15dp</dimen>
+    <dimen name="main_search_logo_pad_se">15dp</dimen>
     <dimen name="main_search_extend_mgn_e">15dp</dimen>
     <dimen name="main_search_extend_pad">15dp</dimen>
     <dimen name="main_search_rank_mgn_t">10dp</dimen>

@@ -97,14 +97,6 @@
                         android:visibility="@{model.visibleSearchEmpty}"
                 />
 
-                <!--<View-->
-                        <!--android:id="@+id/search_area_line"-->
-                        <!--style="@style/line1dp"-->
-                        <!--app:layout_constraintStart_toStartOf="parent"-->
-                        <!--app:layout_constraintEnd_toEndOf="parent"-->
-                        <!--app:layout_constraintTop_toBottomOf="@+id/search_empty_area"-->
-                <!--/>-->
-
                 <TextView
                         android:id="@+id/popular_keyword"
                         android:layout_width="wrap_content"
@@ -116,7 +108,7 @@
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="@dimen/search_popular_pad"
-                        android:visibility="@{popularmodel.visiablePopular}"
+                        android:visibility="@{popularmodel.visiblePopular}"
                         />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -131,8 +123,9 @@
                         app:bindItems="@{popularmodel.items}"
                         app:bindAdapter="@{popularmodel.adapter}"
                         app:bindLayoutManager="@{popularmodel.chipLayoutManager}"
-                        android:visibility="@{popularmodel.visiablePopular}"
+                        android:visibility="@{popularmodel.visiblePopular}"
                 />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
@@ -212,7 +205,6 @@
                     android:textColor="@android:color/black"
                     android:onClick="@{() -> model.finishEvent()}"
             />
-            <!--android:onClick="@{() -> model.eventCloseSearchFragment()}"-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

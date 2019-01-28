@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 
 class BarcodeViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application), IFinishFragmentAware, ICommandEventAware {
+    : CommandEventViewModel(application) {
 
     // REFERENCE
     // https://zxing.github.io/zxing/
@@ -31,7 +31,4 @@ class BarcodeViewModel @Inject constructor(application: Application)
         const val CMD_FILE_OPEN  = "file-open"
         const val CMD_INPUT_CODE = "input-code"
     }
-
-    override val finishEvent  = SingleLiveEvent<Void>()
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 }

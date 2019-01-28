@@ -15,13 +15,8 @@ import javax.inject.Inject
 
 class RealtimeIssueChildFragment
     : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
-
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
-    }
-
-    init {
-        mViewModelScope = SCOPE_FRAGMENT
     }
 
     @Inject lateinit var preConfig: PreloadConfig

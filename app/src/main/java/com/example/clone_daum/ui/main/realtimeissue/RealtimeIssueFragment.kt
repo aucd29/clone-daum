@@ -25,9 +25,13 @@ import javax.inject.Inject
 
 class RealtimeIssueFragment
     : BaseDaggerBottomSheetDialogFragment<RealtimeIssueFragmentBinding, RealtimeIssueViewModel>() {
-
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueFragment::class.java)
+    }
+
+    init {
+        // RealtimeIssueViewModel 를 MainFragment 와 공유
+        mViewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var preConfig: PreloadConfig

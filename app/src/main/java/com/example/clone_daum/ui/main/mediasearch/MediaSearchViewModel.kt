@@ -1,11 +1,12 @@
 package com.example.clone_daum.ui.main.mediasearch
 
 import android.app.Application
+import android.text.Spannable
+import android.text.Spanned
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
-import com.example.common.ICommandEventAware
-import com.example.common.IFinishFragmentAware
+import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
 import javax.inject.Inject
@@ -15,7 +16,7 @@ import javax.inject.Inject
  */
 
 class MediaSearchViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application), ICommandEventAware, IFinishFragmentAware {
+    : CommandEventViewModel(application) {
     companion object {
         const val CMD_ANIM_FINISH    = "anim-finish"
         const val CMD_SEARCH_SPEECH  = "search-speech"
@@ -24,13 +25,12 @@ class MediaSearchViewModel @Inject constructor(application: Application)
         const val CMD_SEARCH_BARCODE = "search-barcode"
     }
 
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
-    override val finishEvent  = SingleLiveEvent<Void>()
-
     val containerTransY = ObservableField<AnimParams>()
     val dimmingBgAlpha  = ObservableField<AnimParams>()
     val overshootTransY = ObservableField<AnimParams>()
     val bgScale         = ObservableField<AnimParams>()
 
     val speechMessageResId = ObservableField<Int>(R.string.speech_pls_speak_search_keyword)
+    val speechResult = ObservableField<String>("")
+    val kakao = ObservableField<Spanned>("Powered by <b>Kakao</b>".html())
 }

@@ -231,7 +231,7 @@
                 app:layout_constraintStart_toStartOf="@+id/media_search"
                 app:layout_constraintTop_toTopOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
-                android:layout_marginStart="@dimen/main_search_logo_mgn_s"
+                android:layout_marginStart="@dimen/main_search_logo_pad_se"
         />
 
         <ImageView

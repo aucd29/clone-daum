@@ -26,10 +26,6 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         private const val WEBVIEW_SLIDING = 3
     }
 
-    init {
-        mViewModelScope = SCOPE_FRAGMENT
-    }
-
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
@@ -46,27 +42,13 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         animateIn()
 
-        brsWebview.loadUrl(mUrl)
-    }
-
-    override fun initViewModelEvents() = mViewModel.run {
-        if (mUrl == null) {
-            return@run
-        }
-
-        applyUrl(mUrl!!)
-
-        // 임시 코드 추후 db 에서 얻어오도록 해야함
-        applyBrsCount(mBinding.brsArea.childCount)
-
-        sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
-        brsSetting.set(WebViewSettingParams(
+        brsWebview.defaultSetting(WebViewSettingParams(
             progress = {
                 if (mLog.isTraceEnabled()) {
                     mLog.trace("BRS PROGRESS $it")
                 }
 
-                valProgress.set(it)
+                mViewModel.valProgress.set(it)
             }, receivedError = {
                 mLog.error("ERROR: $it")
 
@@ -82,19 +64,35 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                     listener   = { res, _ ->
                         if (res) {
                             it?.proceed()
-                            sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
+                            mViewModel.sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
                         } else it?.cancel()
                     }))
             }, pageStarted  = {
-                visibleProgress.set(View.VISIBLE)
-                reloadIconResId.set(R.drawable.ic_clear_black_24dp)
+                mViewModel.visibleProgress.set(View.VISIBLE)
+                mViewModel.reloadIconResId.set(R.drawable.ic_clear_black_24dp)
             }, pageFinished = {
-                visibleProgress.set(View.GONE)
-                reloadIconResId.set(R.drawable.ic_replay_black_24dp)
+                mViewModel.visibleProgress.set(View.GONE)
+                mViewModel.reloadIconResId.set(R.drawable.ic_replay_black_24dp)
             }
-            , canGoForward = { enableForward.set(it) }
+            , canGoForward = { mViewModel.enableForward.set(it) }
             , userAgent    = { config.USER_AGENT }
         ))
+
+        brsWebview.loadUrl(mUrl)
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
+        if (mUrl == null) {
+            return@run
+        }
+
+        applyUrl(mUrl!!)
+
+        // 임시 코드 추후 db 에서 얻어오도록 해야함
+        applyBrsCount(mBinding.brsArea.childCount)
+
+        sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+//        brsSetting.set()
     }
 
     override fun onCommandEvent(cmd: String, obj: Any?) = BrowserViewModel.run {

@@ -31,10 +31,6 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
 
     @Inject lateinit var viewController: ViewController
 
-    init {
-        mViewModelScope = SCOPE_FRAGMENT
-    }
-
     override fun initViewBinding() {
         mBinding.barcodeScanner.run {
             barcodeView.decoderFactory = DefaultDecoderFactory(

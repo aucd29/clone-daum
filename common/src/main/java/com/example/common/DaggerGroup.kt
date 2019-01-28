@@ -127,7 +127,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     protected lateinit var mViewModel: M
 
     protected var mLayoutName     = generateLayoutName()
-    protected var mViewModelScope = SCOPE_ACTIVITY
+    protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mViewModel = viewModelProvider()
@@ -228,7 +228,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
     protected lateinit var mViewModel: M
 
     protected var mLayoutName     = generateLayoutName()
-    protected var mViewModelScope = BaseDaggerFragment.SCOPE_ACTIVITY
+    protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mViewModel = viewModelProvider()
@@ -315,7 +315,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     protected lateinit var mViewModel: M
 
     protected var mLayoutName = generateLayoutName()
-    protected var mViewModelScope = SCOPE_ACTIVITY
+    protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mViewModel = viewModelProvider()

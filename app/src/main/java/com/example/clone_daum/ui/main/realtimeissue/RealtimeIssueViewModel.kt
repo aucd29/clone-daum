@@ -8,12 +8,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
+import com.example.clone_daum.model.remote.RealtimeIssueParser
+import com.example.common.CommandEventViewModel
 import com.example.common.ICommandEventAware
 import com.example.common.IFinishFragmentAware
 import com.example.common.RecyclerViewModel
 import com.example.common.arch.SingleLiveEvent
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -26,23 +30,13 @@ import javax.inject.Inject
 
 class RealtimeIssueViewModel @Inject constructor(app: Application
     , val preConfig: PreloadConfig
-) : AndroidViewModel(app), IFinishFragmentAware, ICommandEventAware {
-
+) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
         const val INTERVAL     = 7L
         const val CMD_BRS_OPEN = "brs-open"
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    override val finishEvent  = SingleLiveEvent<Void>()
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 
     private var mAllIssueList: List<RealtimeIssue>? = null
     private var mRealtimeCount = 0
@@ -56,15 +50,54 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     val visibleProgress   = ObservableInt(View.VISIBLE)
 
-    fun load() {
-        preConfig.realtimeIssue {
-            visibleProgress.set(View.GONE)
+    fun load(html: String) {
+        dp.add(Observable.just(html)
+            .observeOn(Schedulers.io())
+            .map (::parseRealtimeIssue)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                visibleProgress.set(View.GONE)
 
-            mRealtimeIssueList = it
-            mAllIssueList      = it.get(0).second
+                mRealtimeIssueList = it
+                mAllIssueList      = it.get(0).second
 
-            startRealtimeIssue()
+                startRealtimeIssue()
+            })
+    }
+
+    private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("PARSE REALTIME ISSUE")
         }
+
+        val parse = RealtimeIssueParser()
+        val f = main.indexOf("""<div id="footerHotissueRankingDiv_channel_news1">""")
+        val e = main.indexOf("""<div class="d_foot">""")
+
+        if (f == -1 || e == -1) {
+            mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
+
+            return parse.realtimeIssueList
+        }
+
+        // https://www.w3schools.com/tags/ref_urlencode.asp
+        var issue = main.substring(f, e)
+            .replace(" class='keyissue_area '", "")
+            .replace(" class='keyissue_area on'", "")
+            .replace("(\n|\t)".toRegex(), "")
+            .replace("&amp;", "%26")
+            .replace("&", "%26")
+        issue = issue.substring(0, issue.length - "</div>".length)
+
+        parse.loadXml(issue)
+
+        if (mLog.isDebugEnabled) {
+            parse.realtimeIssueList.forEach({
+                mLog.debug("${it.first} : (${it.second.size})")
+            })
+        }
+
+        return parse.realtimeIssueList
     }
 
     fun issueList(position: Int) =

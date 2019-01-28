@@ -30,7 +30,7 @@ class BrowserViewModel @Inject constructor(app: Application
    , var urlDao: UrlHistoryDao
    , val favDao: MyFavoriteDao
    , val disposable: CompositeDisposable
-) : AndroidViewModel(app), ISnackbarAware, IFinishFragmentAware, ICommandEventAware {
+) : CommandEventViewModel(app), ISnackbarAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
@@ -40,15 +40,7 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_SHARE_EVENT      = "share"
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    override val commandEvent  = SingleLiveEvent<Pair<String, Any?>>()
     override val snackbarEvent = SingleLiveEvent<String>()
-    override val finishEvent   = SingleLiveEvent<Void>()
 
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
