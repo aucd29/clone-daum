@@ -9,6 +9,7 @@ import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputFragment
+import com.example.clone_daum.ui.main.mediasearch.music.MusicFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
@@ -72,6 +73,15 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         manager.show(FragmentParams(CONTAINER, SpeechFragment::class.java
+            , anim = FragmentAnim.RIGHT))
+    }
+
+    fun musicFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("MUSIC FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, MusicFragment::class.java
             , anim = FragmentAnim.RIGHT))
     }
 

@@ -7,7 +7,6 @@
         <variable name="model" type="com.example.clone_daum.ui.main.mediasearch.music.MusicViewModel" />
     </data>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
@@ -15,19 +14,19 @@
             android:background="@android:color/white">
 
         <View
-                android:id="@+id/speech_icon_bg"
+                android:id="@+id/music_icon_bg"
                 android:layout_width="0dp" android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="@+id/music_icon"
                 app:layout_constraintTop_toTopOf="@+id/music_icon"
                 app:layout_constraintEnd_toEndOf="@+id/music_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/music_icon"
                 android:background="@drawable/shape_media_search_circle_0"
-
+                app:bindScaleX="@{model.bgScale}"
+                app:bindScaleY="@{model.bgScale}"
         />
-        <!--app:bindScaleX="@{model.bgScale}"-->
-        <!--app:bindScaleY="@{model.bgScale}"-->
 
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/music_progress"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="@+id/music_icon"
@@ -38,7 +37,8 @@
                 app:cpb_background_progressbar_width="5dp"
                 app:cpb_progressbar_color="#5F5F5F"
                 app:cpb_progressbar_width="10dp"
-                android:padding="10dp"
+                android:scaleX="1.1"
+                android:scaleY="1.1"
                 />
 
         <ImageView
@@ -50,7 +50,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.3"
-                android:src="@drawable/ic_mic_white_60dp"
+                android:src="@drawable/ic_music_note_white_60dp"
                 android:padding="20dp"
                 android:background="@drawable/shape_media_search_circle_1"
         />
@@ -63,8 +63,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:onClick="@{() -> model.finishEvent()}"
         />
-        <!--android:onClick="@{() -> model.finishEvent()}"-->
+
         <TextView
                 android:id="@+id/speech_message"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -75,7 +76,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.5"
+                android:text="아직 API 연결을 안함"
         />
         <!--android:text="@{model.messageResId}"-->
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

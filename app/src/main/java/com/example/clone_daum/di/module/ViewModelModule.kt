@@ -10,6 +10,7 @@ import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeViewModel
+import com.example.clone_daum.ui.main.mediasearch.music.MusicViewModel
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationViewModel
@@ -79,6 +80,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SpeechViewModel::class)
     abstract fun bindSpeechViewModel(vm: SpeechViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MusicViewModel::class)
+    abstract fun bindMusicViewModel(vm: MusicViewModel): ViewModel
 
     @Binds
     @IntoMap

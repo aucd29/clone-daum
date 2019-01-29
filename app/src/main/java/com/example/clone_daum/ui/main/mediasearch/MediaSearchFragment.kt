@@ -26,8 +26,10 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         private const val ANIM_DURATION      = 400L
         private const val ANIM_START_DELAY   = 250L
 
-        private const val REQ_RECORD_SPEECH  = 7811
-        private const val REQ_RECORD_BARCODE = 7812
+        private const val REQ_RECORD_SPEECH = 7811
+        private const val REQ_RECORD_MUSIC  = 7812
+        private const val REQ_FLOWER        = 7813
+        private const val REQ_BARCODE       = 7814
     }
 
     @Inject lateinit var viewController: ViewController
@@ -131,7 +133,10 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                         , REQ_RECORD_SPEECH))
                 }
                 CMD_SEARCH_MUSIC   -> animateOut {
-                    snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
+                    runtimePermissions(PermissionParams(activity()
+                        , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        , { req, res -> if (res) { viewController.musicFragment() } }
+                        , REQ_RECORD_MUSIC))
                 }
                 CMD_SEARCH_FLOWER  -> animateOut {
                     snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
@@ -140,7 +145,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
                         , { req, res -> if (res) { viewController.barcodeFragment() } }
-                        , REQ_RECORD_BARCODE))
+                        , REQ_BARCODE))
                 }
             }
         }

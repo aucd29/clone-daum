@@ -39,16 +39,17 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         keepScreen(true)
 
         if (!DeviceUtils.isSupportedDevice()) {
-            mViewModel.messageResId.set(R.string.com_kakao_sdk_asr_voice_search_warn_not_support_device)
+            alert(R.string.com_kakao_sdk_asr_voice_search_warn_not_support_device
+                , listener = { _, _ -> finish() })
             return
         }
-
-        initClient()
 
         if (!(context?.isNetworkConntected() ?: false)) {
             alert(R.string.error_network, listener = { _, _ -> finish() })
             return
         }
+
+        initClient()
     }
 
     override fun initViewModelEvents() { }
@@ -88,7 +89,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
 
     private fun animateIn()  = mViewModel.run {
         bgScale.set(AnimParams(V_SCALE, objAniCallback = {
-            it.run {
+            it.apply {
                 repeatMode  = ValueAnimator.REVERSE
                 repeatCount = ValueAnimator.INFINITE
                 duration    = V_SCALE_DURATION
@@ -120,6 +121,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
     // https://developers.kakao.com/docs/android/speech#시작하기
 
     private fun initClient() {
+        // SpeechRecognizerManager 의 appContext 에서 memory leak 존재 ..
         if (!SpeechRecognizerManager.getInstance().isInitialized) {
             SpeechRecognizerManager.getInstance().initializeLibrary(context)
         }
