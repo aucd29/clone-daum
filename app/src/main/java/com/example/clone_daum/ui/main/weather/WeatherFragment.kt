@@ -58,45 +58,45 @@ class WeatherFragment
         initRecycler()
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) = WeatherViewModel.run {
+    override fun onCommandEvent(cmd: String, data: Any?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND EVENT : $cmd")
         }
 
-        when (cmd) {
-            CMD_MORE_DETAIL -> {
-                viewController.browserFragment(MORE_DETAIL_URL)
+        WeatherViewModel.apply {
+            when (cmd) {
+                CMD_MORE_DETAIL -> {
+                    viewController.browserFragment(MORE_DETAIL_URL)
 
-                dismiss()
-            }
+                    dismiss()
+                }
 
-            CMD_REFRESH_LOCATION -> mViewModel.run {
-                visibleProgress.set(false)
+                CMD_REFRESH_LOCATION -> mViewModel.apply {
+                    visibleProgress.set(false)
 
-            }
+                }
 
-            CMD_CHECK_PERMISSION_AND_LOAD_GPS -> mViewModel.run {
-                visibleProgress.set(true)
+                CMD_CHECK_PERMISSION_AND_LOAD_GPS -> mViewModel.apply {
+                    visibleProgress.set(true)
 
-                // 뷰를 위해서 타이머를 주긴했는데
-                // 원래는 안줘야 됨 ...
-                disposable.add(Observable.interval(2, TimeUnit.SECONDS)
-                    .take(1)
-                    .subscribe {
-                        runtimePermissions(PermissionParams(activity()
-                            , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-                            , listener = { req, res ->
-                                config.HAS_PERMISSION_GPS = res
+                    // 뷰를 위해서 타이머를 주긴했는데
+                    // 원래는 안줘야 됨 ...
+                    disposable.add(Observable.interval(2, TimeUnit.SECONDS)
+                        .take(1)
+                        .subscribe {
+                            runtimePermissions(PermissionParams(activity()
+                                , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                                , listener = { req, res ->
+                                    config.HAS_PERMISSION_GPS = res
 
-                                if (res) {
-                                    refreshCurrentLocation()
-                                }
-                            }))
-                })
+                                    if (res) {
+                                        refreshCurrentLocation()
+                                    }
+                                }))
+                        })
+                }
             }
         }
-
-        Unit
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

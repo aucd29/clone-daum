@@ -115,6 +115,8 @@ dependencies {
     implementation 'com.patloew.rxlocation:rxlocation:1.0.5'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 
+    implementation 'com.mikhaellopez:circularprogressbar:2.0.0'
+
     // KAKAO
     implementation 'com.kakao.sdk:newtone:6.0.1'
 

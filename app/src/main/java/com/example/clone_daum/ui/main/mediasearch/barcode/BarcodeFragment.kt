@@ -59,7 +59,7 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
     }
 
     override fun onCommandEvent(cmd: String, data: Any?) {
-        BarcodeViewModel.run {
+        BarcodeViewModel.apply {
             when (cmd) {
                 CMD_FILE_OPEN  -> fileOpen()
                 CMD_INPUT_CODE -> viewController.barcodeInputFragment()

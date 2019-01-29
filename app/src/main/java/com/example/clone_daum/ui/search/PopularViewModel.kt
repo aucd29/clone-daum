@@ -5,8 +5,7 @@ import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.example.clone_daum.model.remote.GithubService
-import com.example.clone_daum.model.remote.HotSearchedWord
+import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
 import com.example.common.ICommandEventAware
 import com.example.common.RecyclerViewModel
@@ -17,7 +16,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -34,7 +32,7 @@ class PopularViewModel @Inject constructor(app: Application)
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
 
-    private var mPopularList: HotSearchedWord? = null
+    private var mPopularList: PopularSearchedWord? = null
 
     val dp                = CompositeDisposable()
     val visiblePopular    = ObservableInt(View.GONE)
@@ -63,6 +61,7 @@ class PopularViewModel @Inject constructor(app: Application)
     }
 
     private fun selectPopularList() {
+        // FIXME live data 로 해서 observe 해야 되나 싶은 ??
         mPopularList?.let {
             val pos = System.currentTimeMillis() % it.items.size
             val chooseItem = it.items.get(pos.toInt()).item
@@ -96,8 +95,8 @@ class PopularViewModel @Inject constructor(app: Application)
 //<li class="@4"><a href="https://m.search.daum.net/search?w=tot&amp;q=%EC%BD%94%ED%81%90%ED%85%90&amp;DA=NPT" class="link_suggest">코큐텐 추천</a></li>
 //</ul>
 
-    private fun parsePopular(html: String): HotSearchedWord? {
-        var data: HotSearchedWord? = null
+    private fun parsePopular(html: String): PopularSearchedWord? {
+        var data: PopularSearchedWord? = null
 
         val fk = "hotSearchedWordData = include("
         val ek = ");"
@@ -115,7 +114,17 @@ class PopularViewModel @Inject constructor(app: Application)
         val plaintext = html.subSequence(fp + fk.length, ep - ek.length + 1).trim()
             .replace("(\n|\t)".toRegex(), "")
 
-        data = plaintext.jsonParse()
+        try {
+            data = plaintext.jsonParse()
+        } catch (e: Exception) {
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+
+            mLog.error("ERROR: ${e.message}")
+
+            return null
+        }
 
         return data
     }

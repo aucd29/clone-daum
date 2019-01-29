@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
-import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
@@ -23,7 +22,7 @@ import java.util.*
  *  - https://developers.kakao.com/docs/android/speech
  *  - https://developers.kakao.com/docs/android/getting-started#%ED%82%A4%ED%95%B4%EC%8B%9C-%EB%93%B1%EB%A1%9D
  */
-class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewModel>()
+class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
     , OnBackPressedListener, SpeechRecognizeListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(SpeechFragment::class.java)
@@ -32,25 +31,24 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
         private val V_SCALE_DURATION = 500L
     }
 
-    init {
-        // MediaSearchViewModel 를 MediaSearchFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
-    }
-
-    var recognizer: SpeechRecognizerClient? = null
-
     // https://code.i-harness.com/ko-kr/q/254ae5
-    val animList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
+    private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
+    private var mRecognizer: SpeechRecognizerClient? = null
 
     override fun initViewBinding() = mBinding.run {
         keepScreen(true)
 
         if (!DeviceUtils.isSupportedDevice()) {
-            mViewModel.speechMessageResId.set(R.string.com_kakao_sdk_asr_voice_search_warn_not_support_device)
+            mViewModel.messageResId.set(R.string.com_kakao_sdk_asr_voice_search_warn_not_support_device)
             return
         }
 
         initClient()
+
+        if (!(context?.isNetworkConntected() ?: false)) {
+            alert(R.string.error_network, listener = { _, _ -> finish() })
+            return
+        }
     }
 
     override fun initViewModelEvents() { }
@@ -100,14 +98,14 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
                     mLog.debug("START SCALE ANIM")
                 }
 
-                animList.add(this)
+                mAnimList.add(this)
             }
         }))
     }
 
     private fun animateOut() {
-        animList.forEach { it.cancel() }
-        animList.clear()
+        mAnimList.forEach { it.cancel() }
+        mAnimList.clear()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -130,8 +128,8 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
             .setServiceType(SpeechRecognizerClient.SERVICE_TYPE_WEB)
             .setUserDictionary(null)
 
-        recognizer = builder.build()
-        recognizer?.setSpeechRecognizeListener(this)
+        mRecognizer = builder.build()
+        mRecognizer?.setSpeechRecognizeListener(this)
     }
 
     private fun resetClient() {
@@ -139,7 +137,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
             SpeechRecognizerManager.getInstance().finalizeLibrary()
         }
 
-        recognizer?.setSpeechRecognizeListener(null)
+        mRecognizer?.setSpeechRecognizeListener(null)
     }
 
     private fun startRecording() {
@@ -149,12 +147,12 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
                 return
             }
 
-            recognizer?.startRecording(true)
+            mRecognizer?.startRecording(true)
         }
     }
 
     private fun stopRecording() {
-        recognizer?.cancelRecording()
+        mRecognizer?.cancelRecording()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +175,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
         }
 
         animateIn()
-        mViewModel.speechMessageResId.set(R.string.speech_listening)
+        mViewModel.messageResId.set(R.string.speech_listening)
     }
 
     override fun onFinished() {
@@ -197,7 +195,10 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
             mLog.debug("SPEECH END")
         }
 
-        activity?.runOnUiThread(::animateOut)
+        activity?.runOnUiThread {
+            animateOut()
+            mViewModel.speechResult.set("")
+        }
     }
 
     override fun onAudioLevel(audioLevel: Float) {
@@ -239,7 +240,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
         }
 
         activity?.runOnUiThread {
-            recognizer?.cancelRecording()
+            mRecognizer?.cancelRecording()
 
             val data = results?.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS)
 
@@ -248,7 +249,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
                 it.forEach { str -> resultList += "$str\n" }
 
                 mViewModel.speechResult.set(resultList)
-            } ?: mViewModel.speechMessageResId.set(R.string.speech_no_result)
+            } ?: mViewModel.messageResId.set(R.string.speech_no_result)
         }
     }
 
@@ -261,7 +262,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, MediaSearchViewM
 
         activity?.runOnUiThread(::animateOut)
 
-        mViewModel.speechMessageResId.run {
+        mViewModel.messageResId.run {
             val error = when (errorCode) {
                 SpeechRecognizerClient.ERROR_NO_RESULT -> {
                     set(R.string.speech_no_result)

@@ -92,5 +92,6 @@
 
     <!-- error -->
     <string name="error_empty_keyword">검색어가 없습니다.</string>
+    <string name="error_network">네트워크가 올바르지 않습니다.</string>
 
 </resources>

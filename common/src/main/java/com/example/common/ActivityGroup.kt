@@ -105,10 +105,12 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
 
     params.title?.run { bd.setTitle(this) }
     params.positiveStr?.run { bd.setPositiveButton(this) { dlg, _ ->
+        dlg.dismiss()
         params.listener?.invoke(true, dlg)
     }}
 
     params.negativeStr?.run { bd.setNegativeButton(this) { dlg, _ ->
+        dlg.dismiss()
         params.listener?.invoke(false, dlg)
     }}
 

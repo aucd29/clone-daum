@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white">
-
         <!--
         https://stackoverflow.com/questions/45288013/use-done-button-on-keyboard-in-databinding
         https://goodmorningcody.wordpress.com/tag/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B0%94%EC%9D%B8%EB%94%A9/
@@ -126,7 +125,6 @@
                         android:visibility="@{popularmodel.visiblePopular}"
                 />
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -207,6 +205,5 @@
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -19,6 +19,6 @@ data class PopularItemList (
     val item: List<PopularKeyword>
 )
 
-data class HotSearchedWord (
+data class PopularSearchedWord (
     val items: List<PopularItemList>
 )

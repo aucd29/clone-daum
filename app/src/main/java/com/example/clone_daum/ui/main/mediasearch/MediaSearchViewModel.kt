@@ -28,9 +28,4 @@ class MediaSearchViewModel @Inject constructor(application: Application)
     val containerTransY = ObservableField<AnimParams>()
     val dimmingBgAlpha  = ObservableField<AnimParams>()
     val overshootTransY = ObservableField<AnimParams>()
-    val bgScale         = ObservableField<AnimParams>()
-
-    val speechMessageResId = ObservableField<Int>(R.string.speech_pls_speak_search_keyword)
-    val speechResult = ObservableField<String>("")
-    val kakao = ObservableField<Spanned>("Powered by <b>Kakao</b>".html())
 }

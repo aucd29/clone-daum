@@ -54,10 +54,12 @@ inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable?
     activity?.dialog(params, disposable)
 }
 
-inline fun Fragment.alert(messageId: Int, titleId: Int? = null) {
+inline fun Fragment.alert(messageId: Int, titleId: Int? = null
+                          , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = context
         , messageId = messageId
-        , titleId   = titleId))
+        , titleId   = titleId
+        , listener  = listener))
 }
 
 inline fun Fragment.confirm(messageId: Int, titleId: Int? = null

@@ -30,11 +30,10 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         private const val REQ_RECORD_BARCODE = 7812
     }
 
-    init {
-        mViewModelScope = SCOPE_ACTIVITY
-    }
-
     @Inject lateinit var viewController: ViewController
+
+    private var pauseAnimator: Animator? = null
+
 
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.run {
@@ -64,11 +63,13 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
     override fun initViewModelEvents() { }
 
     override fun onBackPressed(): Boolean {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BACK PRESSED")
+        }
+
         animateOut()
         return true
     }
-
-    private var pauseAnimator: Animator? = null
 
     private fun animateIn() {
         val mediaSearchButtonLayoutHeight = mBinding.mediaSearchButtonLayout.height.toFloat() * -1
@@ -115,30 +116,34 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         }
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) = MediaSearchViewModel.run {
-        when (cmd) {
-            CMD_ANIM_FINISH    -> onBackPressed()
-            CMD_SEARCH_SPEECH  -> animateOut {
-                runtimePermissions(PermissionParams(activity()
-                    , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    , { req, res -> if (res) { viewController.speechFragment() } }
-                    , REQ_RECORD_SPEECH))
-            }
-            CMD_SEARCH_MUSIC   -> animateOut {
-                snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
-            }
-            CMD_SEARCH_FLOWER  -> animateOut {
-                snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
-            }
-            CMD_SEARCH_BARCODE -> animateOut {
-                runtimePermissions(PermissionParams(activity()
-                    , arrayListOf(Manifest.permission.CAMERA)
-                    , { req, res -> if (res) { viewController.barcodeFragment() } }
-                    , REQ_RECORD_BARCODE))
-            }
+    override fun onCommandEvent(cmd: String, data: Any?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND EVENT : $cmd")
         }
 
-        Unit
+        MediaSearchViewModel.apply {
+            when (cmd) {
+                CMD_ANIM_FINISH    -> onBackPressed()
+                CMD_SEARCH_SPEECH  -> animateOut {
+                    runtimePermissions(PermissionParams(activity()
+                        , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        , { req, res -> if (res) { viewController.speechFragment() } }
+                        , REQ_RECORD_SPEECH))
+                }
+                CMD_SEARCH_MUSIC   -> animateOut {
+                    snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
+                }
+                CMD_SEARCH_FLOWER  -> animateOut {
+                    snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
+                }
+                CMD_SEARCH_BARCODE -> animateOut {
+                    runtimePermissions(PermissionParams(activity()
+                        , arrayListOf(Manifest.permission.CAMERA)
+                        , { req, res -> if (res) { viewController.barcodeFragment() } }
+                        , REQ_RECORD_BARCODE))
+                }
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

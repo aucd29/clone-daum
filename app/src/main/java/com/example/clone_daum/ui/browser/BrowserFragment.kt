@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.browser
 
 import android.content.Intent
 import android.view.View
-import androidx.lifecycle.ViewModelProviders
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.di.module.Config
@@ -13,7 +12,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -92,18 +90,17 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
-//        brsSetting.set()
     }
 
-    override fun onCommandEvent(cmd: String, obj: Any?) = BrowserViewModel.run {
-        when (cmd) {
-            CMD_BACK             -> onBackPressed()
-            CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-            CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
-            CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
+    override fun onCommandEvent(cmd: String, obj: Any?) {
+        BrowserViewModel.apply {
+            when (cmd) {
+                CMD_BACK -> onBackPressed()
+                CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
+                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
+                CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
+            }
         }
-
-        Unit
     }
 
     override fun onBackPressed() = mBinding.run {

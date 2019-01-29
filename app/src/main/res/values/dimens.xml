@@ -103,4 +103,11 @@
     <dimen name="weather_dumy_line_mgn_t">20dp</dimen>
     <dimen name="weather_recycler_mgn_t">20dp</dimen>
     <dimen name="weather_item_pad">10dp</dimen>
+
+    <!-- speech -->
+    <dimen name="speech_icon_pad">20dp</dimen>
+    <dimen name="speech_result_txt">25sp</dimen>
+    <dimen name="speech_result_txt_pad_t">10dp</dimen>
+    <dimen name="speech_kakao_txt">12sp</dimen>
+    <dimen name="speech_kakao_txt_pad_t">20dp</dimen>
 </resources>
