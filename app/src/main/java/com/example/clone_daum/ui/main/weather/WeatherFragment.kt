@@ -14,6 +14,7 @@ import com.example.common.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -81,8 +82,9 @@ class WeatherFragment
 
                     // 뷰를 위해서 타이머를 주긴했는데
                     // 원래는 안줘야 됨 ...
-                    disposable.add(Observable.interval(2, TimeUnit.SECONDS)
+                    disposable.add(Observable.interval(1, TimeUnit.SECONDS)
                         .take(1)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             runtimePermissions(PermissionParams(activity()
                                 , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)

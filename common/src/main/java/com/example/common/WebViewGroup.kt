@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.common
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Build
@@ -14,6 +15,7 @@ import java.lang.Exception
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
+@SuppressLint("SetJavaScriptEnabled")
 inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     settings.run {
         setAppCacheEnabled(true)
