@@ -27,6 +27,8 @@ import javax.inject.Singleton
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
 class ViewController @Inject constructor(val manager: FragmentManager) {
+    // 나만의 룰을 만들었더니만 navigation editor 나와버림 =_ = ㅋ
+
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
 

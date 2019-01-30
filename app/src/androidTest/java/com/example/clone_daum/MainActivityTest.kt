@@ -7,10 +7,10 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import androidx.test.runner.AndroidJUnit4
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
@@ -135,7 +135,7 @@ class MainActivityTest {
 
         val appCompatTextView2 = onView(
             allOf(
-                withId(R.id.realtime_issue), withText("9 구제역"),
+                withId(R.id.realtime_issue),
                 childAtPosition(
                     allOf(
                         withId(R.id.search_area),
@@ -155,7 +155,7 @@ class MainActivityTest {
 
         val appCompatTextView3 = onView(
             allOf(
-                withId(R.id.realtime_issue), withText("1 김경수"),
+                withId(R.id.realtime_issue),
                 childAtPosition(
                     allOf(
                         withId(R.id.search_area),
