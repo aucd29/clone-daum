@@ -2,9 +2,7 @@ package com.example.common.bindingadapter
 
 import android.webkit.WebView
 import androidx.databinding.BindingAdapter
-import com.example.common.WebViewEvent
-import com.example.common.WebViewSettingParams
-import com.example.common.defaultSetting
+import com.example.common.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -14,19 +12,15 @@ import org.slf4j.LoggerFactory
 object WebViewBindingAdapter {
     private val mLog = LoggerFactory.getLogger(WebViewBindingAdapter::class.java)
 
-//    @JvmStatic
-//    @BindingAdapter("bindWebViewSetting")
-//    fun bindWebViewSetting(webview: WebView, params: WebViewSettingParams) {
-//        if (mLog.isTraceEnabled) {
-//            mLog.trace("bindWebViewSetting")
-//        }
-//
-//        webview.defaultSetting(params)
-//    }
-
     @JvmStatic
     @BindingAdapter("bindWebViewEvent")
     fun bindWebViewEvent(view: WebView, event: WebViewEvent?) = view.run {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindWebViewEvent $event")
+        }
+
+        // 잠시 잊고 있었다. =_ = observable 에 동일한 값이 들어오면 무시하는걸.. =_ =;
+
         event?.let {
             if (mLog.isDebugEnabled) {
                 mLog.debug("bindWebViewEvent : ${it}")
@@ -35,16 +29,10 @@ object WebViewBindingAdapter {
             when (it) {
                 WebViewEvent.FORWARD      -> goForward()
                 WebViewEvent.BACK         -> goBack()
-                WebViewEvent.STOP_LOADING -> stopLoading()
                 WebViewEvent.RELOAD       -> reload()
-                WebViewEvent.PAUSE_TIMER  -> {
-                    pauseTimers()
-                    onPause()
-                }
-                WebViewEvent.RESUME_TIMER -> {
-                    onResume()
-                    resumeTimers()
-                }
+                WebViewEvent.PAUSE        -> pause()
+                WebViewEvent.RESUME       -> resume()
+                WebViewEvent.STOP_LOADING -> stopLoading()
                 else -> {
                     if (mLog.isDebugEnabled) {
                         mLog.debug("UNKNOWN EVENT")

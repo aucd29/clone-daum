@@ -40,41 +40,43 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         animateIn()
 
-        brsWebview.defaultSetting(WebViewSettingParams(
-            progress = {
-                if (mLog.isTraceEnabled()) {
-                    mLog.trace("BRS PROGRESS $it")
+        mViewModel.run {
+            brsWebview.defaultSetting(WebViewSettingParams(
+                progress = {
+                    if (mLog.isTraceEnabled()) {
+                        mLog.trace("BRS PROGRESS $it")
+                    }
+
+                    valProgress.set(it)
+                }, receivedError = {
+                    mLog.error("ERROR: $it")
+
+                    it?.let { snackbar(brsWebview, it, Snackbar.LENGTH_LONG)?.show() }
+                }, sslError = {
+                    mLog.error("ERROR: SSL ")
+
+                    dialog(DialogParam(context = context!!,
+                        messageId  = R.string.brs_dlg_message_ssl_error,
+                        titleId    = R.string.brs_dlg_title_ssl_error,
+                        positiveId = R.string.dlg_btn_open,
+                        negativeId = R.string.dlg_btn_close,
+                        listener   = { res, _ ->
+                            if (res) {
+                                it?.proceed()
+                                sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
+                            } else it?.cancel()
+                        }))
+                }, pageStarted  = {
+                    visibleProgress.set(View.VISIBLE)
+                    reloadIconResId.set(R.drawable.ic_clear_black_24dp)
+                }, pageFinished = {
+                    visibleProgress.set(View.GONE)
+                    reloadIconResId.set(R.drawable.ic_replay_black_24dp)
                 }
-
-                mViewModel.valProgress.set(it)
-            }, receivedError = {
-                mLog.error("ERROR: $it")
-
-                it?.let { snackbar(mBinding.brsWebview, it, Snackbar.LENGTH_LONG)?.show() }
-            }, sslError = {
-                mLog.error("ERROR: SSL ")
-
-                dialog(DialogParam(context = context!!,
-                    messageId  = R.string.brs_dlg_message_ssl_error,
-                    titleId    = R.string.brs_dlg_title_ssl_error,
-                    positiveId = R.string.dlg_btn_open,
-                    negativeId = R.string.dlg_btn_close,
-                    listener   = { res, _ ->
-                        if (res) {
-                            it?.proceed()
-                            mViewModel.sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
-                        } else it?.cancel()
-                    }))
-            }, pageStarted  = {
-                mViewModel.visibleProgress.set(View.VISIBLE)
-                mViewModel.reloadIconResId.set(R.drawable.ic_clear_black_24dp)
-            }, pageFinished = {
-                mViewModel.visibleProgress.set(View.GONE)
-                mViewModel.reloadIconResId.set(R.drawable.ic_replay_black_24dp)
-            }
-            , canGoForward = { mViewModel.enableForward.set(it) }
-            , userAgent    = { config.USER_AGENT }
-        ))
+                , canGoForward = { enableForward.set(it) }
+                , userAgent    = { config.USER_AGENT }
+            ))
+        }
 
         brsWebview.loadUrl(mUrl)
     }
@@ -95,7 +97,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     override fun onCommandEvent(cmd: String, obj: Any?) {
         BrowserViewModel.apply {
             when (cmd) {
-                CMD_BACK -> onBackPressed()
+                CMD_BACK             -> onBackPressed()
                 CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
                 CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
                 CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
@@ -103,26 +105,34 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
     }
 
-    override fun onBackPressed() = mBinding.run {
-        if (brsWebview.canGoBack()) {
-            mViewModel.brsEvent.set(WebViewEvent.BACK)
-        } else {
-            animateOut()
-            finish()
+    override fun onBackPressed(): Boolean {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BACK PRESSED")
         }
 
-        // 이곳에서 back 관련 처리를 함
-        true
+        mBinding.apply {
+            if (brsWebview.canGoBack()) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("BRS BACK")
+                }
+                mViewModel.webviewEvent(WebViewEvent.BACK)
+            } else {
+                animateOut()
+                finish()
+            }
+        }
+
+        return true
     }
 
     override fun onPause() {
         super.onPause()
 
-        mViewModel.brsEvent.set(WebViewEvent.PAUSE_TIMER)
+        mViewModel.webviewEvent(WebViewEvent.PAUSE)
     }
 
     override fun onResume() {
-        mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
+        mViewModel.webviewEvent(WebViewEvent.RESUME)
 
         super.onResume()
     }

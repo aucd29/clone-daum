@@ -6,7 +6,6 @@ import androidx.annotation.StringRes
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
@@ -30,7 +29,7 @@ class BrowserViewModel @Inject constructor(app: Application
    , var urlDao: UrlHistoryDao
    , val favDao: MyFavoriteDao
    , val disposable: CompositeDisposable
-) : CommandEventViewModel(app), ISnackbarAware {
+) : CommandEventViewModel(app), ISnackbarAware, IWebViewEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
@@ -41,6 +40,7 @@ class BrowserViewModel @Inject constructor(app: Application
     }
 
     override val snackbarEvent = SingleLiveEvent<String>()
+    override val webviewEvent  = ObservableField<WebViewEvent>()
 
     val urlString       = ObservableField<String>()
     val brsCount        = ObservableField<String>()
@@ -51,8 +51,8 @@ class BrowserViewModel @Inject constructor(app: Application
     val visibleSslIcon  = ObservableInt(View.GONE)
     val enableForward   = ObservableBoolean(false)
 
-    val brsSetting      = ObservableField<WebViewSettingParams>()
-    val brsEvent        = ObservableField<WebViewEvent>()
+//    val brsSetting      = ObservableField<WebViewSettingParams>()
+//    val brsEvent        = ObservableField<WebViewEvent>()
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
 
@@ -82,30 +82,14 @@ class BrowserViewModel @Inject constructor(app: Application
                 mLog.debug("STOP")
             }
 
-            brsEvent.set(WebViewEvent.STOP_LOADING)
+            webviewEvent(WebViewEvent.STOP_LOADING)
         } else {
             if (mLog.isDebugEnabled) {
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            brsEvent.set(WebViewEvent.RELOAD)
+            webviewEvent(WebViewEvent.RELOAD)
         }
-    }
-
-    fun eventForward() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FORWARD PRESSED EVENT")
-        }
-
-        brsEvent.set(WebViewEvent.FORWARD)
-    }
-
-    fun eventHome() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("HOME EVENT")
-        }
-
-        finishEvent()
     }
 
     fun eventFavorite(url: String) {

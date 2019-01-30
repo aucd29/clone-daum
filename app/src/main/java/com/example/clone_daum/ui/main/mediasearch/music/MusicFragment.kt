@@ -4,13 +4,14 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MusicFragmentBinding
+import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.android.ContributesAndroidInjector
-import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import java.util.*
+import javax.inject.Inject
 
 
 /**
@@ -29,6 +30,8 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
 
+    @Inject lateinit var viewController: ViewController
+
     override fun initViewBinding() {
         keepScreen(true)
 
@@ -46,17 +49,17 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
         initClient()
         animateIn()
 
-        val animationDuration = 500
-        var current = 0f
-
-        mDisposable.add(io.reactivex.Observable.interval(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-            .take(10)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                current += 10f
-                mBinding.musicProgress.setProgressWithAnimation(current, animationDuration)
-            })
+        val current           = 100f
+        val animationDuration = 10000 // limit time
+        mBinding.musicProgress.setProgressWithAnimation(current, animationDuration)
+        mBinding.musicProgress.setOnProgressChangedListener {
+            if (it == 100f) {
+                dialog(DialogParam("대충 찾았다고 하고", context = context, listener = { _, _ ->
+                    finish()
+                    viewController.browserFragment("http://www.melon.com/song/detail.htm?songId=30985406&ref=W10600")
+                }))
+            }
+        }
     }
 
     override fun initViewModelEvents() {

@@ -34,9 +34,9 @@
                 app:layout_constraintEnd_toEndOf="@+id/music_icon"
                 app:layout_constraintBottom_toBottomOf="@+id/music_icon"
                 app:cpb_background_progressbar_color="@android:color/transparent"
-                app:cpb_background_progressbar_width="5dp"
-                app:cpb_progressbar_color="#5F5F5F"
-                app:cpb_progressbar_width="10dp"
+                app:cpb_background_progressbar_width="3dp"
+                app:cpb_progressbar_color="#994B00"
+                app:cpb_progressbar_width="6dp"
                 android:scaleX="1.1"
                 android:scaleY="1.1"
                 />

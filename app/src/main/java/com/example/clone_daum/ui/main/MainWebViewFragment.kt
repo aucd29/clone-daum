@@ -178,7 +178,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     override fun onPause() {
         super.onPause()
 
-        mViewModel.brsEvent.set(WebViewEvent.PAUSE_TIMER)
+        mViewModel.webviewEvent(WebViewEvent.PAUSE)
         mTimerDisposable.clear()
     }
 
@@ -187,16 +187,13 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             mLog.debug("RESUME WEBVIEW URL : ${mBinding.webview.url}")
         }
 
-        mViewModel.brsEvent.set(WebViewEvent.RESUME_TIMER)
+        mViewModel.webviewEvent(WebViewEvent.RESUME)
 
         super.onResume()
     }
 
     override fun onDestroyView() {
         mBinding.webview.free()
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("DESTROY VIEW ${mBinding.webview}")
-//        }
 
         super.onDestroyView()
     }

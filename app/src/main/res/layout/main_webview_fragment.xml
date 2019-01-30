@@ -28,7 +28,7 @@
                     android:id="@+id/webview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bindWebViewEvent="@{model.brsEvent}"
+                    app:bindWebViewEvent="@{model.webviewEvent}"
             />
 
         </androidx.core.widget.NestedScrollView>

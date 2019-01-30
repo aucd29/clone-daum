@@ -169,7 +169,6 @@ open class CommandEventViewModel(application: Application) : AndroidViewModel(ap
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-
 interface OnBackPressedListener {
     fun onBackPressed(): Boolean
 }

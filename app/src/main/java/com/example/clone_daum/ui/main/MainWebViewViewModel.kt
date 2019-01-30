@@ -3,8 +3,8 @@ package com.example.clone_daum.ui.main
 import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import com.example.common.IWebViewEventAware
 import com.example.common.WebViewEvent
-import com.example.common.WebViewSettingParams
 import javax.inject.Inject
 
 /**
@@ -12,8 +12,7 @@ import javax.inject.Inject
  */
 
 class MainWebViewViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application) {
+    : AndroidViewModel(application), IWebViewEventAware {
 
-    val brsSetting = ObservableField<WebViewSettingParams>()
-    val brsEvent   = ObservableField<WebViewEvent>()
+    override val webviewEvent = ObservableField<WebViewEvent>()
 }
