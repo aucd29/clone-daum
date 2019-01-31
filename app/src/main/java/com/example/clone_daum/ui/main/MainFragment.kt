@@ -22,8 +22,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     , TabLayout.OnTabSelectedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
-
-        private val REQ_RUNTIME_PERMISSION = 79
     }
 
     init {
@@ -74,7 +72,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     override fun initViewBinding() {
-        mBinding.run {
+        mBinding.apply {
             searchBar.globalLayoutListener {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
@@ -83,7 +81,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 mViewModel.progressViewOffsetLive.value = searchBar.height
             }
 
-            tab.run {
+            tab.apply {
                 addOnTabSelectedListener(this@MainFragment)
 
                 // 1번째 tab 을 focus 해야 됨 (news)
@@ -93,7 +91,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     override fun initViewModelEvents() {
-        mViewModel.run {
+        mViewModel.apply {
             // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
             tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
             viewpager.set(mBinding.viewpager)
@@ -121,29 +119,34 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
-    override fun onCommandEvent(cmd: String, obj: Any?) = MainViewModel.run {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND EVENT : $cmd")
-        }
+    override fun onCommandEvent(cmd: String, data: Any) {
+        MainViewModel.apply {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("COMMAND EVENT : $cmd")
+            }
 
-        // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
-        viewController.run {
-            when (cmd) {
-                CMD_SEARCH_FRAMGNET         -> searchFragment()
-                CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
-                CMD_REALTIME_ISSUE_FRAGMENT -> realtimeIssueFragment()
-                CMD_WEATHER_FRAGMENT        -> weatherFragment()
-                CMD_MEDIA_SEARCH_FRAGMENT   -> mediaSearchFragment()
-                CMD_BRS_OPEN                -> browserFragment(obj?.toString())
-                CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
-                    , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-                    , { req, res -> if (res) {
-                            mViewModel.run {
-                                visibleGps.set(View.GONE)
+            // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
+            viewController.apply {
+                when (cmd) {
+                    CMD_SEARCH_FRAMGNET         -> searchFragment()
+                    CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
+                    CMD_REALTIME_ISSUE_FRAGMENT -> realtimeIssueFragment()
+                    CMD_WEATHER_FRAGMENT        -> weatherFragment()
+                    CMD_MEDIA_SEARCH_FRAGMENT   -> mediaSearchFragment()
+                    CMD_BRS_OPEN                -> browserFragment(data.toString())
+                    CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
+                        , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                        , { req, res ->
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("PERMISSION LOCATION : $res")
+                            }
+
+                            if (res) {
+                                mViewModel.visibleGps.set(View.GONE)
                                 mWeatherViewModel.refreshCurrentLocation()
                             }
-                        }
-                    }, REQ_RUNTIME_PERMISSION))
+                        }))
+                }
             }
         }
     }

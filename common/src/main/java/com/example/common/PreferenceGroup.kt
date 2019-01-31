@@ -17,7 +17,7 @@ import java.lang.RuntimeException
 const val K_SHARED_PREFERECE = "burke.prefs"
 
 inline fun Context.prefs()  = getSharedPreferences(K_SHARED_PREFERECE, Context.MODE_PRIVATE)
-inline fun Fragment.prefs() = context?.prefs()
+inline fun Fragment.prefs() = requireContext().prefs()
 inline fun AndroidViewModel.prefs() = getApplication<Application>().prefs()
 
 
@@ -28,7 +28,7 @@ inline fun Context.prefs(commit: Boolean = true, action: SharedPreferences.Edito
 }
 
 inline fun Fragment.prefs(commit: Boolean = true, action: SharedPreferences.Editor.() -> Unit) {
-    context?.prefs(commit, action) ?: throw RuntimeException("context == null")
+    requireContext().prefs(commit, action)
 }
 
 inline fun AndroidViewModel.prefs(commit: Boolean = true, action: SharedPreferences.Editor.() -> Unit) {

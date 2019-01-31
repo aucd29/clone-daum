@@ -45,6 +45,7 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     }
 
     override fun initViewBinding() {
+
     }
 
     override fun initViewModelEvents() = mViewModel.run {

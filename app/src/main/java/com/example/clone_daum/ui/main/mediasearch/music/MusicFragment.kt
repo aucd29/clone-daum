@@ -47,7 +47,7 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
         }
 
         initClient()
-        animateIn()
+        startAnimation()
 
         val current           = 100f
         val animationDuration = 10000 // limit time
@@ -67,7 +67,7 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
 
     override fun onDestroyView() {
         keepScreen(false)
-        animateOut()
+        endAnimation()
         resetClient()
 
         super.onDestroyView()
@@ -93,7 +93,7 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private fun animateIn()  = mViewModel.run {
+    private fun startAnimation()  = mViewModel.run {
         bgScale.set(AnimParams(V_SCALE, objAniCallback = {
             it.apply {
                 repeatMode  = ValueAnimator.REVERSE
@@ -110,7 +110,7 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
         }))
     }
 
-    private fun animateOut() {
+    private fun endAnimation() {
         mAnimList.forEach { it.cancel() }
         mAnimList.clear()
     }

@@ -30,7 +30,9 @@ class RealtimeIssueChildFragment
         mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
     }
 
-    override fun initViewBinding() { }
+    override fun initViewBinding() {
+
+    }
 
     override fun initViewModelEvents() {
         arguments?.getInt("position")?.let {
@@ -45,9 +47,9 @@ class RealtimeIssueChildFragment
         }
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data?.let {
+            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data.let {
                 mRealtimeIssueViewModel.finishEvent()
 
                 viewController.browserFragment(it.toString())

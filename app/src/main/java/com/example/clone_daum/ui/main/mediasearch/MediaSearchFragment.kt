@@ -44,7 +44,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                 mBinding.mediaSearchButtonLayout.translationY =
                         mBinding.mediaSearchButtonLayout.height.toFloat() * -1
 
-                animateIn()
+                startAnimation()
             }
         }
 
@@ -52,7 +52,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             globalLayoutListener {
                 // 숨김 영역을 조금 감춤
 
-                val newHeight = height + 20.dpToPx(context!!)
+                val newHeight = height + 20.dpToPx(requireContext())
                 if (mLog.isDebugEnabled) {
                     mLog.debug("MEDIA SEARCH HEIGHT : ${height} -> ${newHeight}")
                 }
@@ -69,11 +69,11 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             mLog.debug("BACK PRESSED")
         }
 
-        animateOut()
+        endAnimation()
         return true
     }
 
-    private fun animateIn() {
+    private fun startAnimation() {
         val mediaSearchButtonLayoutHeight = mBinding.mediaSearchButtonLayout.height.toFloat() * -1
         val overshootAnim = AnimParams(0f
             , initValue    = mediaSearchButtonLayoutHeight
@@ -97,7 +97,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         }
     }
 
-    private fun animateOut(endCallback: (() -> Unit)? = null) {
+    private fun endAnimation(endCallback: (() -> Unit)? = null) {
         val searchExtendMenuHeight = mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
         val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
         val containerTransYAnim = AnimParams(searchExtendMenuHeight, duration = ANIM_DURATION
@@ -118,7 +118,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         }
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND EVENT : $cmd")
         }
@@ -126,22 +126,28 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         MediaSearchViewModel.apply {
             when (cmd) {
                 CMD_ANIM_FINISH    -> onBackPressed()
-                CMD_SEARCH_SPEECH  -> animateOut {
+                CMD_SEARCH_SPEECH  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         , { req, res -> if (res) { viewController.speechFragment() } }
                         , REQ_RECORD_SPEECH))
                 }
-                CMD_SEARCH_MUSIC   -> animateOut {
+
+                CMD_SEARCH_MUSIC   -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         , { req, res -> if (res) { viewController.musicFragment() } }
                         , REQ_RECORD_MUSIC))
                 }
-                CMD_SEARCH_FLOWER  -> animateOut {
-                    snackbar(mBinding.mediaSearchContainer, "PLEASE WAIT")?.show()
+
+                CMD_SEARCH_FLOWER  -> endAnimation {
+                    runtimePermissions(PermissionParams(activity()
+                        , arrayListOf(Manifest.permission.CAMERA)
+                        , { req, res -> if (res) { viewController.flowerFragment() } }
+                        , REQ_FLOWER))
                 }
-                CMD_SEARCH_BARCODE -> animateOut {
+
+                CMD_SEARCH_BARCODE -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
                         , { req, res -> if (res) { viewController.barcodeFragment() } }

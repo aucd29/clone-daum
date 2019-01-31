@@ -181,7 +181,7 @@ class PermissionFragment : Fragment() {
             return
         }
 
-        dialog(DialogParam(context = context!!
+        dialog(DialogParam(context = requireContext()
             , messageId  = R.string.permission_message
             , titleId    = R.string.permission_title
             , positiveId = R.string.permission_set

@@ -40,10 +40,13 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         mBinding.popularmodel = mPopularViewModel
     }
 
-    override fun initViewBinding() {}
+    override fun initViewBinding() {
+
+    }
+
     override fun initViewModelEvents() {
         mViewModel.init()
-        mPopularViewModel.run {
+        mPopularViewModel.apply {
             init()
             chipLayoutManager.set(layoutManager)
 
@@ -51,16 +54,16 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         }
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         mViewModel.finishEvent()
 
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN -> {
-                viewController.browserFragment(data!!.toString())
+                viewController.browserFragment(data.toString())
             }
 
             PopularViewModel.CMD_BRS_SEARCH -> {
-                val url = "https://m.search.daum.net/search?w=tot&q=${data!!.toString().urlencode()}&DA=13H"
+                val url = "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H"
                 viewController.browserFragment(url)
             }
         }

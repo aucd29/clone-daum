@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<paths xmlns:tools="http://schemas.android.com/tools"
+       xmlns:android="http://schemas.android.com/apk/res/android"
+       tools:ignore="UnusedResources">
+    <!--<external-path name="cache" path="." />-->
+    <external-path name="external_files" path="." />
+</paths>

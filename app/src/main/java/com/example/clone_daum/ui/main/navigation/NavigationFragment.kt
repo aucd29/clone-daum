@@ -26,7 +26,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     @Inject lateinit var viewController: ViewController
 
     override fun initViewBinding() = mBinding.run {
-        naviContainer.run {
+        naviContainer.apply {
             postDelayed({ openDrawer(GravityCompat.END) }, 50)
             addDrawerListener(this@NavigationFragment)
         }
@@ -72,7 +72,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     }
 
     override fun onDestroyView() {
-        mBinding.run {
+        mBinding.apply {
             naviContainer.removeDrawerListener(this@NavigationFragment)
         }
 

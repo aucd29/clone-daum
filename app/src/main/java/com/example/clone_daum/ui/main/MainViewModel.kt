@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(val app: Application
     , val config: Config
-//    , val preConfig: PreloadConfig
 ) : AndroidViewModel(app), ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
@@ -35,7 +34,7 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_PERMISSION_GPS          = "permission-gps"
     }
 
-    override val commandEvent   = SingleLiveEvent<Pair<String, Any?>>()
+    override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
 
     val tabAdapter              = ObservableField<MainTabAdapter>()
     val viewpager               = ObservableField<ViewPager>()

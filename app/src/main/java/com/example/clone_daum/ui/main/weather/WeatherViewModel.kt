@@ -42,7 +42,7 @@ class WeatherViewModel @Inject constructor(application: Application
         const val CMD_CHECK_PERMISSION_AND_LOAD_GPS = "check-permission-and-load-gps"
     }
 
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
     override val finishEvent  = SingleLiveEvent<Void>()
 
     val currentLocation  = ObservableField<String>(config.DEFAULT_LOCATION)

@@ -130,7 +130,7 @@ interface ISnackbarAware {
 // xml 에서는 다음과 같이 사용할 수 있다.
 // android:onClick="@{() -> model.commandEvent(model.CMD_YOUR_COMMAND)}"
 interface ICommandEventAware {
-    val commandEvent: SingleLiveEvent<Pair<String, Any?>>
+    val commandEvent: SingleLiveEvent<Pair<String, Any>>
 
     // 기존에 Any? = null 형태일때 xml 에서 문제됨.
     fun commandEvent(cmd: String, data: Any) {
@@ -139,7 +139,7 @@ interface ICommandEventAware {
 
     // xml 에서 호출이 쉽게 하도록 추가
     fun commandEvent(cmd: String) {
-        commandEvent.value = cmd to null
+        commandEvent.value = cmd to -1
     }
 }
 
@@ -159,7 +159,7 @@ interface IFinishFragmentAware {
 
 open class CommandEventViewModel(application: Application) : AndroidViewModel(application)
     , ICommandEventAware, IFinishFragmentAware {
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
     override val finishEvent  = SingleLiveEvent<Void>()
 }
 
@@ -235,7 +235,6 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     }
 
     protected fun activity() = activity as BaseActivity<out ViewDataBinding>
-//    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()
@@ -264,7 +263,6 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
     }
 
     fun activity() = activity as BaseActivity<out ViewDataBinding>
-//    fun inflate(@LayoutRes resid: Int, root: ViewGroup? = null) = layoutInflater.inflate(resid, root)
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
@@ -314,7 +312,6 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
         super.onViewCreated(view, savedInstanceState)
 
         stateCallback()
-//        wrapContentHeight()
     }
 
     fun stateCallback() {

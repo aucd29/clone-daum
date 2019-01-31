@@ -134,7 +134,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     }
 
     override fun initViewModelEvents() {
-        mMainViewModel.run {
+        mMainViewModel.apply {
             // appbar 이동 시 webview 도 동일하게 이동 시킴
             observe(appbarOffsetLive) {
                 if (mLog.isTraceEnabled()) {

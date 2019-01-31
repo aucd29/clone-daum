@@ -51,8 +51,6 @@ class BrowserViewModel @Inject constructor(app: Application
     val visibleSslIcon  = ObservableInt(View.GONE)
     val enableForward   = ObservableBoolean(false)
 
-//    val brsSetting      = ObservableField<WebViewSettingParams>()
-//    val brsEvent        = ObservableField<WebViewEvent>()
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
 
@@ -70,7 +68,7 @@ class BrowserViewModel @Inject constructor(app: Application
 
     fun applyBrsCount(count: Int) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("SET BRS COUNT : $count")
+            mLog.debug("BRS COUNT : $count")
         }
 
         brsCount.set("$count")

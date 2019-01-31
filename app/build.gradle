@@ -121,6 +121,9 @@ dependencies {
     // https://github.com/lopspower/CircularProgressBar
     implementation 'com.mikhaellopez:circularprogressbar:2.0.0'
 
+    // https://github.com/airbnb/lottie-android
+    implementation 'com.airbnb.android:lottie:2.8.0'
+
     // KAKAO
     implementation 'com.kakao.sdk:newtone:6.0.1'
 

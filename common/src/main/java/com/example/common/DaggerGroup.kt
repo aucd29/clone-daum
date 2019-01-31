@@ -96,7 +96,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun onCommandEvent(cmd: String, data: Any?) { }
+    protected open fun onCommandEvent(cmd: String, data: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -197,7 +197,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun onCommandEvent(cmd: String, data: Any?) { }
+    protected open fun onCommandEvent(cmd: String, data: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -284,7 +284,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun onCommandEvent(cmd: String, data: Any?) { }
+    protected open fun onCommandEvent(cmd: String, data: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -372,7 +372,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         }
     }
 
-    protected open fun onCommandEvent(cmd: String, data: Any?) { }
+    protected open fun onCommandEvent(cmd: String, data: Any) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

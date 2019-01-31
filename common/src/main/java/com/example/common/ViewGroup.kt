@@ -53,7 +53,7 @@ inline fun TextView.gravityCenter() {
 inline fun View.dpToPx(v: Float) = v * context.displayDensity()
 inline fun View.pxToDp(v: Float) = v / context.displayDensity()
 inline fun View.spToPx(v: Float) = TypedValue.applyDimension(
-    TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics)
+    TypedValue.COMPLEX_UNIT_SP, v, context.resources.displayMetrics)
 
 inline fun View.dpToPx(v: Int) = (v * context.displayDensity()).toInt()
 inline fun View.pxToDp(v: Int) = (v / context.displayDensity()).toInt()

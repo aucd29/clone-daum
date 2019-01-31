@@ -92,9 +92,9 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         parse.loadXml(issue)
 
         if (mLog.isDebugEnabled) {
-            parse.realtimeIssueList.forEach({
+            parse.realtimeIssueList.forEach {
                 mLog.debug("${it.first} : (${it.second.size})")
-            })
+            }
         }
 
         return parse.realtimeIssueList

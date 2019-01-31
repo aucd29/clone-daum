@@ -41,7 +41,7 @@ class SearchViewModel @Inject constructor(app: Application
     @Inject lateinit var searchDao: SearchHistoryDao
     @Inject lateinit var disposable: CompositeDisposable
 
-    override val commandEvent    = SingleLiveEvent<Pair<String, Any?>>()
+    override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
     override val snackbarEvent   = SingleLiveEvent<String>()
     override val finishEvent     = SingleLiveEvent<Void>()

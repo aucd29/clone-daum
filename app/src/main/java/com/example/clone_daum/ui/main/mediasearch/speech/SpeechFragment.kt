@@ -56,7 +56,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
 
     override fun onDestroyView() {
         keepScreen(false)
-        animateOut()
+        endAnimation()
         stopRecording()
         resetClient()
 
@@ -87,7 +87,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private fun animateIn()  = mViewModel.run {
+    private fun startAnimation()  = mViewModel.run {
         bgScale.set(AnimParams(V_SCALE, objAniCallback = {
             it.apply {
                 repeatMode  = ValueAnimator.REVERSE
@@ -104,7 +104,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         }))
     }
 
-    private fun animateOut() {
+    private fun endAnimation() {
         mAnimList.forEach { it.cancel() }
         mAnimList.clear()
     }
@@ -176,7 +176,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
             mLog.debug("SPEECH READY")
         }
 
-        animateIn()
+        startAnimation()
         mViewModel.messageResId.set(R.string.speech_listening)
     }
 
@@ -198,7 +198,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         }
 
         activity?.runOnUiThread {
-            animateOut()
+            endAnimation()
             mViewModel.speechResult.set("")
         }
     }
@@ -262,7 +262,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
     override fun onError(errorCode: Int, errorMsg: String?) {
         mLog.error("ERROR: $errorCode $errorMsg")
 
-        activity?.runOnUiThread(::animateOut)
+        activity?.runOnUiThread(::endAnimation)
 
         mViewModel.messageResId.run {
             val error = when (errorCode) {

@@ -38,9 +38,9 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             return@run
         }
 
-        animateIn()
+        startAnimation()
 
-        mViewModel.run {
+        mViewModel.apply {
             brsWebview.defaultSetting(WebViewSettingParams(
                 progress = {
                     if (mLog.isTraceEnabled()) {
@@ -55,7 +55,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }, sslError = {
                     mLog.error("ERROR: SSL ")
 
-                    dialog(DialogParam(context = context!!,
+                    dialog(DialogParam(context = requireContext(),
                         messageId  = R.string.brs_dlg_message_ssl_error,
                         titleId    = R.string.brs_dlg_title_ssl_error,
                         positiveId = R.string.dlg_btn_open,
@@ -94,13 +94,13 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
     }
 
-    override fun onCommandEvent(cmd: String, obj: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         BrowserViewModel.apply {
             when (cmd) {
                 CMD_BACK             -> onBackPressed()
                 CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
                 CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
-                CMD_SHARE_EVENT      -> obj?.let { shareLink(it.toString()) }
+                CMD_SHARE_EVENT      -> shareLink(data.toString())
             }
         }
     }
@@ -117,7 +117,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }
                 mViewModel.webviewEvent(WebViewEvent.BACK)
             } else {
-                animateOut()
+                endAnimation()
                 finish()
             }
         }
@@ -143,12 +143,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         super.onDestroyView()
     }
 
-    private fun animateIn() = mViewModel.run {
+    private fun startAnimation() = mViewModel.run {
         brsUrlBarAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }
 
-    private fun animateOut() = mViewModel.run {
+    private fun endAnimation() = mViewModel.run {
         brsUrlBarAni.set(AnimParams(config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }

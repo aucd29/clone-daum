@@ -30,7 +30,7 @@ class PopularViewModel @Inject constructor(app: Application)
         const val CMD_BRS_SEARCH = "brs-search"
     }
 
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     private var mPopularList: PopularSearchedWord? = null
 

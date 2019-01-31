@@ -21,13 +21,13 @@ import io.reactivex.disposables.CompositeDisposable
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 8. <p/>
  */
 
-inline fun Fragment.dpToPx(v: Float) = v * context!!.displayDensity()
-inline fun Fragment.pxToDp(v: Float) = v / context!!.displayDensity()
+inline fun Fragment.dpToPx(v: Float) = v * requireContext().displayDensity()
+inline fun Fragment.pxToDp(v: Float) = v / requireContext().displayDensity()
 inline fun Fragment.dpToPx(v: Int) = dpToPx(v.toFloat()).toInt()
 inline fun Fragment.pxToDp(v: Int) = pxToDp(v.toFloat()).toInt()
 
 
-inline fun Fragment.string(@StringRes resid: Int): String? = context?.string(resid)
+inline fun Fragment.string(@StringRes resid: Int): String = requireContext().string(resid)
 
 //inline val FragmentManager.childList: List<Fragment?>?
 //    get() = (0..backStackEntryCount - 1).map { findFragmentByTag(getBackStackEntryAt(it).name) }
@@ -56,7 +56,7 @@ inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable?
 
 inline fun Fragment.alert(messageId: Int, titleId: Int? = null
                           , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
-    dialog(DialogParam(context = context
+    dialog(DialogParam(context = requireContext()
         , messageId = messageId
         , titleId   = titleId
         , listener  = listener))
@@ -64,7 +64,7 @@ inline fun Fragment.alert(messageId: Int, titleId: Int? = null
 
 inline fun Fragment.confirm(messageId: Int, titleId: Int? = null
                             , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
-    dialog(DialogParam(context = context
+    dialog(DialogParam(context = requireContext()
         , messageId  = messageId
         , titleId    = titleId
         , negativeId = android.R.string.cancel

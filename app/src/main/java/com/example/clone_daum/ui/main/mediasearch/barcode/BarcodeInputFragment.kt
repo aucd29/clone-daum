@@ -17,7 +17,7 @@ class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, Barc
     override fun initViewModelEvents() {
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         BarcodeInputViewModel.apply {
             when (cmd) {
                 CMD_HIDE_KEYBOARD -> hideKeyboard()

@@ -43,7 +43,7 @@ class WeatherFragment
 
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
-        BottomSheetDialog(context!!, R.style.round_bottom_sheet_dialog)
+        BottomSheetDialog(requireContext(), R.style.round_bottom_sheet_dialog)
 
     // content 높이만큼 bottom sheet dialog 가 transition (height) 되도록 함
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,13 +53,14 @@ class WeatherFragment
     }
 
     override fun initViewBinding() {
+
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         initRecycler()
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND EVENT : $cmd")
         }

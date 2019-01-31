@@ -43,11 +43,11 @@ object TextViewBindingAdapter {
                 setTextColor(0xff000000.toInt())
                 setBackgroundResource(R.drawable.shape_frequently_default_move_site_background)
             } else {
-                // when 이 귀찮으면 나중에 identifier 로~
+                // 배경이 늘어나서 when 이 귀찮으면 나중에 identifier 로~
                 setText(char)
                 setBackgroundResource(
                     when (domain % 2) {
-                        0 -> R.drawable.shape_frequently_0_background
+                        0    -> R.drawable.shape_frequently_0_background
                         else -> R.drawable.shape_frequently_1_background
                     }
                 )

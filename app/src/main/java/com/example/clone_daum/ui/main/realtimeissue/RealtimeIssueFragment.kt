@@ -39,12 +39,12 @@ class RealtimeIssueFragment
 
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
-        BottomSheetDialog(context!!, R.style.round_bottom_sheet_dialog)
+        BottomSheetDialog(requireContext(), R.style.round_bottom_sheet_dialog)
 
     override fun initViewBinding() { }
 
     override fun initViewModelEvents() {
-        mViewModel.run {
+        mViewModel.apply {
             mRealtimeIssueList?.let {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("INIT TAB ADAPTER")
@@ -56,7 +56,7 @@ class RealtimeIssueFragment
         }
     }
 
-    override fun onCommandEvent(cmd: String, data: Any?) {
+    override fun onCommandEvent(cmd: String, data: Any) {
         when(cmd) {
             RealtimeIssueViewModel.CMD_BRS_OPEN -> {
                 viewController.browserFragment(data.toString())

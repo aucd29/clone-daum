@@ -19,7 +19,7 @@ class RealtimeIssueChildViewModel @Inject constructor(app: Application
         const val CMD_BRS_OPEN = "brs-open"
     }
 
-    override val commandEvent = SingleLiveEvent<Pair<String, Any?>>()
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     fun initAdapter(list: List<RealtimeIssue>) {
         if (mLog.isDebugEnabled) {
