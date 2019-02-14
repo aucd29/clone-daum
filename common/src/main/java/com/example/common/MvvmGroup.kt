@@ -316,7 +316,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
 
     fun stateCallback() {
         mBinding.root.globalLayoutListener {
-            BottomSheetBehavior.from(mBinding.root.parent as View).run {
+            BottomSheetBehavior.from(mBinding.root.parent as View).apply {
                 setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(p0: View, p1: Float) {}
 
@@ -345,7 +345,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     // https://stackoverflow.com/questions/45614271/bottomsheetdialogfragment-doesnt-show-full-height-in-landscape-mode
     fun wrapContentHeight() {
         mBinding.root.globalLayoutListener {
-            BottomSheetBehavior.from(mBinding.root.parent as View).run {
+            BottomSheetBehavior.from(mBinding.root.parent as View).apply {
                 state      = BottomSheetBehavior.STATE_EXPANDED
                 peekHeight = 0
             }

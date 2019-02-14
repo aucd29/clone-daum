@@ -33,7 +33,7 @@ fun ioThread(f : () -> Unit) {
 /**
  * pkgName 에 해당하는 앱이 foreground 인지 확인
  */
-inline fun Context.isForegroundApp(pkgName: String) = systemService(ActivityManager::class.java)?.run {
+inline fun Context.isForegroundApp(pkgName: String) = systemService(ActivityManager::class.java)?.apply {
     runningAppProcesses.filter {
         it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
             && it.processName == pkgName
@@ -89,7 +89,7 @@ inline fun Context.showKeyboard(view: View?) {
     view?.let {
         it.postDelayed({
             it.requestFocus()
-            systemService(InputMethodManager::class.java)?.run {
+            systemService(InputMethodManager::class.java)?.apply {
                 showSoftInput(it, InputMethodManager.SHOW_FORCED)
             }
         }, 400)
@@ -110,7 +110,7 @@ inline fun Context.hideKeyboard(view: View?) {
  * force hide keyboard
  */
 inline fun Context.forceHideKeyboard(window: Window?) {
-    window?.run { setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN) }
+    window?.apply { setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN) }
 }
 
 /**

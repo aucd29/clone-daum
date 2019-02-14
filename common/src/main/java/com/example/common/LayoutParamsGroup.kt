@@ -156,7 +156,7 @@ inline fun Window.lpww() {
 //}
 //
 inline fun ConstraintLayout.lpmm(applyTo: ConstraintLayout) {
-    ConstraintSet().run {
+    ConstraintSet().apply {
         connect(id, ConstraintSet.LEFT, ConstraintSet.PARENT_ID, ConstraintSet.LEFT, 0)
         connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
         connect(id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT, 0)

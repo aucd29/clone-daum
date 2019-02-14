@@ -34,7 +34,7 @@ object SwipeRefreshLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindSwipeIsRefreshing")
     fun bindSwipeIsRefreshing(view: SwipeRefreshLayout, callback: ((Boolean) -> Unit)?) {
-        callback?.run {
+        callback?.apply {
             if (mLog.isDebugEnabled) {
                 mLog.debug("bindSwipeIsRefreshing")
             }

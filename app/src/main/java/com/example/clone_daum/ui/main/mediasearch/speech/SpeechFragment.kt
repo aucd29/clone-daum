@@ -143,7 +143,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
     }
 
     private fun startRecording() {
-        context?.run {
+        context?.apply {
             if (!isNetworkConntected()) {
                 mLog.error("ERROR: NETWORK DISCONNECTED")
                 return
@@ -264,7 +264,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
 
         activity?.runOnUiThread(::endAnimation)
 
-        mViewModel.messageResId.run {
+        mViewModel.messageResId.apply {
             val error = when (errorCode) {
                 SpeechRecognizerClient.ERROR_NO_RESULT -> {
                     set(R.string.speech_no_result)

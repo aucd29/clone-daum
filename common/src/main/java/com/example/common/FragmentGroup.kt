@@ -116,40 +116,47 @@ inline fun FragmentManager.show(params: FragmentParams) {
     val frgmt = params.fragment.newInstance() as Fragment
     val transaction = beginTransaction()
 
-    params.bundle?.let { frgmt.arguments = it }
+    params.apply {
+        bundle?.let { frgmt.arguments = it }
 
-    transaction.run {
-        params.anim?.let {
-            when (it) {
-                FragmentAnim.RIGHT -> setCustomAnimations(R.anim.slide_in_current, R.anim.slide_in_next,
-                    R.anim.slide_out_current, R.anim.slide_out_prev)
-                FragmentAnim.LEFT -> setCustomAnimations(R.anim.slide_out_current, R.anim.slide_out_prev,
-                    R.anim.slide_in_current, R.anim.slide_in_next)
-                FragmentAnim.UP -> setCustomAnimations(R.anim.slide_up_current, R.anim.slide_up_next,
-                    R.anim.slide_down_current, R.anim.slide_down_prev)
-                FragmentAnim.ALPHA -> setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
-                else -> { }
+        transaction.apply {
+            anim?.let {
+                FragmentAnim.apply {
+                    when (it) {
+                        RIGHT -> setCustomAnimations(R.anim.slide_in_current,   R.anim.slide_in_next,
+                                                     R.anim.slide_out_current,  R.anim.slide_out_prev)
+                        LEFT  -> setCustomAnimations(R.anim.slide_out_current,  R.anim.slide_out_prev,
+                                                     R.anim.slide_in_current,   R.anim.slide_in_next)
+                        UP    -> setCustomAnimations(R.anim.slide_up_current,   R.anim.slide_up_next,
+                                                     R.anim.slide_down_current, R.anim.slide_down_prev)
+                        ALPHA -> setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+
+                        else -> { }
+                    }
+                }
             }
-        }
 
-        if (params.add) {
-            add(params.containerId, frgmt, frgmt.javaClass.name)
-        } else {
-            replace(params.containerId, frgmt, frgmt.javaClass.name)
-        }
-
-        if (params.backStack) {
-            addToBackStack(frgmt.javaClass.name)
-        }
-
-        params.commit?.let {
-            when (it) {
-                FragmentCommit.ALLOW -> commitAllowingStateLoss()
-                FragmentCommit.NOW -> commitNow()
-                FragmentCommit.NOT_ALLOW -> commitNowAllowingStateLoss()
-                else -> commit()
+            if (add) {
+                add(containerId, frgmt, frgmt.javaClass.name)
+            } else {
+                replace(containerId, frgmt, frgmt.javaClass.name)
             }
-        } ?: commit()
+
+            if (backStack) {
+                addToBackStack(frgmt.javaClass.name)
+            }
+
+            commit?.let {
+                FragmentCommit.apply {
+                    when (it) {
+                        ALLOW     -> commitAllowingStateLoss()
+                        NOW       -> commitNow()
+                        NOT_ALLOW -> commitNowAllowingStateLoss()
+                        else      -> commit()
+                    }
+                }
+            } ?: commit()
+        }
     }
 }
 

@@ -38,7 +38,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
 
     override fun initViewBinding() = mBinding.run {
-        mediaSearchExtendMenuContainer.run {
+        mediaSearchExtendMenuContainer.apply {
             globalLayoutListener {
                 translationY = height.toFloat() * -1
                 mBinding.mediaSearchButtonLayout.translationY =
@@ -48,7 +48,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             }
         }
 
-        mediaSearchBackground.run {
+        mediaSearchBackground.apply {
             globalLayoutListener {
                 // 숨김 영역을 조금 감춤
 
@@ -60,9 +60,13 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                 layoutHeight(newHeight)
             }
         }
+
+        Unit
     }
 
-    override fun initViewModelEvents() { }
+    override fun initViewModelEvents() {
+
+    }
 
     override fun onBackPressed(): Boolean {
         if (mLog.isDebugEnabled) {
@@ -89,7 +93,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             }
         }
 
-        mViewModel.run {
+        mViewModel.apply {
             // animate set 을 쓰는게 나으려나?
             dimmingBgAlpha.set(AnimParams(1f, duration = ANIM_DURATION))
             containerTransY.set(AnimParams(0f, duration = ANIM_DURATION))
@@ -112,7 +116,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             pauseAnimator?.resume()
         }
 
-        mViewModel.run {
+        mViewModel.apply {
             dimmingBgAlpha.set(dimmingBgAlphaAnim)
             containerTransY.set(containerTransYAnim)
         }

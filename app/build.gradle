@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion compile_sdk
@@ -130,7 +131,14 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation 'com.google.zxing:core:3.3.2'
 
+    // firebase
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
+
     // local lib
     implementation project(path: ':common')
     implementation project(path: ':dingbat')
 }
+
+// fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..
+apply plugin: 'com.google.gms.google-services'

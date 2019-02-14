@@ -13,7 +13,7 @@ import android.os.Build
 
 @SuppressLint("MissingPermission")
 inline fun Context.isNetworkConntected(): Boolean {
-    systemService(ConnectivityManager::class.java)?.run {
+    systemService(ConnectivityManager::class.java)?.apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             for (network in allNetworks) {
                 if (getNetworkInfo(network).state == NetworkInfo.State.CONNECTED) {

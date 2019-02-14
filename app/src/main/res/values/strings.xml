@@ -13,9 +13,9 @@
 
     <!-- main -->
     <string name="main_realtime_issue_network_error">NetErr</string>
-
     <string name="main_weather_more">더 보기 &gt;</string>
     <string name="main_weather_current_position">현위치</string>
+    <string name="main_realtime_issue_load_error">실시간 이슈 정보를 제대로 불러오지 못했사옵니다.</string>
 
     <!-- media search -->
     <string name="media_search_history">히스토리</string>
@@ -91,6 +91,7 @@
     <string name="brs_fav_url_ok">저장되었삼</string>
 
     <!-- error -->
+    <string name="error_title">오류</string>
     <string name="error_empty_keyword">검색어가 없습니다.</string>
     <string name="error_network">네트워크가 올바르지 않습니다.</string>
 

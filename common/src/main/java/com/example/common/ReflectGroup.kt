@@ -83,7 +83,7 @@ object Reflect {
 
     inline fun method(obj: Any, name: String, params: Params? = null) {
         try {
-            obj.javaClass.run {
+            obj.javaClass.apply {
                 if (params == null) {
                     getDeclaredMethod(name).invoke(obj)
                 } else {

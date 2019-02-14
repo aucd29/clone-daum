@@ -75,7 +75,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     mLog.debug("PAGE FINISHED")
                 }
 
-                swipeRefresh.run {
+                swipeRefresh.apply {
                     if (isRefreshing) {
                         isRefreshing = false     // hide refresh icon
 
@@ -156,7 +156,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
             observe(currentTabPositionLive) {
                 // current pos 에 web 만 load url 을 하도록 수정
-                mBinding.run {
+                mBinding.apply {
                     if (webview.url.isNullOrEmpty()) {
                         val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
 

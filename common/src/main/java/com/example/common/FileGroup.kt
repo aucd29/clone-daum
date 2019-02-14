@@ -45,7 +45,7 @@ fun File.copy(target: File, listener:FileListener? = null) {
         return
     }
 
-    listener?.run {
+    listener?.apply {
         if (total == 0L) {
             total = totalLength()
         }
@@ -96,7 +96,7 @@ private fun InputStream.copyFile(target: File, listener: FileListener? = null) {
         while (bytes >= 0) {
             osm.write(buff, 0, bytes)
 
-            listener?.run {
+            listener?.apply {
                 current += bytes
                 progress()
                 trace()
@@ -113,7 +113,7 @@ private fun InputStream.copyFile(target: File, listener: FileListener? = null) {
             bytes = read(buff)
         }
 
-        listener?.run {
+        listener?.apply {
             if (cancel) {
                 return
             }

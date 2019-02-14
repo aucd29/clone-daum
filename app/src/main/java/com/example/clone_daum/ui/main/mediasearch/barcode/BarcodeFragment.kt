@@ -32,7 +32,7 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
     @Inject lateinit var viewController: ViewController
 
     override fun initViewBinding() {
-        mBinding.barcodeScanner.run {
+        mBinding.barcodeScanner.apply {
             barcodeView.decoderFactory = DefaultDecoderFactory(
                 arrayListOf(BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39))
 
@@ -127,7 +127,7 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
             mLog.debug("BARCODE RESULT : $result")
         }
 
-        result?.run {
+        result?.apply {
             val v = mBinding.barcodeScanner
             v.postDelayed({ finish() }, 400)
 
@@ -158,8 +158,6 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
 
             // 히스토리 관리로 디비에 넣어야 함
             // TODO
-
-            Unit
         }
     }
 

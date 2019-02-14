@@ -89,10 +89,10 @@ data class DialogParam (
     var negativeId: Int? = null
 ) {
     init {
-        context?.run {
-            messageId?.run   { message     = string(this) }
-            titleId?.run     { title       = string(this) }
-            negativeStr?.run { negativeStr = string(this) }
+        context?.apply {
+            messageId?.apply   { message     = string(this) }
+            titleId?.apply     { title       = string(this) }
+            negativeStr?.apply { negativeStr = string(this) }
 
             positiveStr = string(if (positiveId != null) positiveId!! else android.R.string.ok)
         }
@@ -103,21 +103,22 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
     val bd = AlertDialog.Builder(this)
     bd.setMessage(params.message)
 
-    params.title?.run { bd.setTitle(this) }
-    params.positiveStr?.run { bd.setPositiveButton(this) { dlg, _ ->
-        dlg.dismiss()
-        params.listener?.invoke(true, dlg)
-    }}
+    params.apply {
+        title?.let { bd.setTitle(it) }
+        positiveStr?.let { bd.setPositiveButton(it) { dlg, _ ->
+            dlg.dismiss()
+            listener?.invoke(true, dlg)
+        }}
+        negativeStr?.let { bd.setNegativeButton(it) { dlg, _ ->
+            dlg.dismiss()
+            listener?.invoke(false, dlg)
+        }}
 
-    params.negativeStr?.run { bd.setNegativeButton(this) { dlg, _ ->
-        dlg.dismiss()
-        params.listener?.invoke(false, dlg)
-    }}
-
-    val dlg = bd.show()
-    if (params.timer > 0) {
-        disposable?.add(Observable.interval(1, TimeUnit.SECONDS)
-            .take(1).subscribe { dlg.dismiss() })
+        val dlg = bd.show()
+        if (timer > 0) {
+            disposable?.add(Observable.interval(1, TimeUnit.SECONDS)
+                .take(1).subscribe { dlg.dismiss() })
+        }
     }
 }
 

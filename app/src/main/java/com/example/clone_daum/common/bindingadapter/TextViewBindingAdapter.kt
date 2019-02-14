@@ -35,7 +35,7 @@ object TextViewBindingAdapter {
             mLog.debug("CHAR : $char, MOD : ${domain % 2}")
         }
 
-        view.run {
+        view.apply {
             if (title.equals("사이트이동")) {
                 setText("http")
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)

@@ -101,7 +101,7 @@ object AnimationBindingAdapter {
     }
 
     private fun objectAnim(anim: ObjectAnimator, params: AnimParams) {
-        params.run {
+        params.apply {
             anim.setDuration(duration)
             interpolator?.let { anim.setInterpolator(it) }
             startDelay?.let   { anim.setStartDelay(it) }

@@ -55,7 +55,7 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND DECORATION: hor($horDrawable), ver($verDrawable)")
         }
 
-        recycler.run {
+        recycler.apply {
             decorator(horDrawable)
             decorator(verDrawable, DividerItemDecoration.VERTICAL)
         }
@@ -82,7 +82,7 @@ object RecyclerBindingAdapter {
             mLog.debug("BIND LAYOUT MANAGER")
         }
 
-        manager?.run { recycler.layoutManager = this }
+        manager?.let { recycler.layoutManager = it }
     }
 
     @JvmStatic

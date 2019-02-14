@@ -17,7 +17,7 @@ import java.lang.Exception
 
 @SuppressLint("SetJavaScriptEnabled")
 inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
-    settings.run {
+    settings.apply {
         setAppCacheEnabled(true)
         textZoom                         = 100
         cacheMode                        = WebSettings.LOAD_NO_CACHE

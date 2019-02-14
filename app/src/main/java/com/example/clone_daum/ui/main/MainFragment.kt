@@ -130,7 +130,13 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 when (cmd) {
                     CMD_SEARCH_FRAMGNET         -> searchFragment()
                     CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
-                    CMD_REALTIME_ISSUE_FRAGMENT -> realtimeIssueFragment()
+                    CMD_REALTIME_ISSUE_FRAGMENT -> mRealtimeIssueViewModel.mRealtimeIssueList?.let {
+                        if (it.size > 0) {
+                            realtimeIssueFragment()
+                        } else {
+//                            alert(R.string.main_realtime_issue_load_error, R.string.error_title)
+                        }
+                    }
                     CMD_WEATHER_FRAGMENT        -> weatherFragment()
                     CMD_MEDIA_SEARCH_FRAGMENT   -> mediaSearchFragment()
                     CMD_BRS_OPEN                -> browserFragment(data.toString())
@@ -165,7 +171,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
     override fun onDestroy() {
         mRealtimeIssueViewModel.dp.dispose()
-        mBinding.run {
+        mBinding.apply {
             tab.removeOnTabSelectedListener(this@MainFragment)
             viewpager.adapter = null
         }
