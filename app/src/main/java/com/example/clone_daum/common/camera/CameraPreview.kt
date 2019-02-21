@@ -14,11 +14,7 @@ import android.view.TextureView
 import android.view.ViewGroup
 import android.view.WindowManager
 import com.example.common.systemService
-import com.journeyapps.barcodescanner.RotationCallback
-import com.journeyapps.barcodescanner.RotationListener
-import com.journeyapps.barcodescanner.Size
-import com.journeyapps.barcodescanner.Util
-import com.journeyapps.barcodescanner.camera.*
+import com.example.common.validateMainThread
 import org.slf4j.LoggerFactory
 
 /**
@@ -61,9 +57,14 @@ open class CameraPreview: ViewGroup {
 
     var marginFraction: Double = 0.1
 
-    var previewScalingStrategy: PreviewScalingStrategy? = null
-    var torchOn = false
+    private var previewScalingStrategy: PreviewScalingStrategy? = null
 
+    var isTorchOn = false
+        set(on) {
+            field = on
+            mCameraInstance?.setTorch(on)
+        }
+        get() = field
 
     fun surfaceTextureListener(): TextureView.SurfaceTextureListener {
         return object: TextureView.SurfaceTextureListener {
@@ -92,9 +93,6 @@ open class CameraPreview: ViewGroup {
         }
     }
 
-    val mRotationCallback = RotationCallback {
-        mStateHandler?.postDelayed(::rotationChanged, ROTATION_LISTENER_DELAY_MS)
-    }
 
     constructor(context: Context) : super(context) {
         this.initLayout(null)
@@ -186,7 +184,7 @@ open class CameraPreview: ViewGroup {
         val w = containerSize!!.width
         val h = containerSize!!.height
 
-        surfaceRect = mDisplayConfig.scalePreview(previewSize)
+        surfaceRect = mDisplayConfig.scalePreview(previewSize!!)
         surfaceRect?.let {
             val container = Rect(0, 0, w, h)
             framingRect = calculateFramingRect(container, it)
@@ -213,22 +211,17 @@ open class CameraPreview: ViewGroup {
         }
     }
 
-    fun setTorch(on: Boolean) {
-        torchOn = on
-        mCameraInstance?.setTorch(on)
-    }
-
     private fun containerSized(containerSize: Size) {
         this.containerSize = containerSize
         mCameraInstance?.let {
             if (it.displayConfig == null) {
                 mDisplayConfig = DisplayConfiguration(displayRotation(), containerSize)
-                mDisplayConfig.setPreviewScalingStrategy(previewScalingStrategy())
+                mDisplayConfig.previewScalingStrategy = previewScalingStrategy()
 
                 it.displayConfig(mDisplayConfig)
                 it.configureCamera()
 
-                if (torchOn) {
+                if (isTorchOn) {
                     it.setTorch(true)
                 }
             }
@@ -311,7 +304,7 @@ open class CameraPreview: ViewGroup {
     }
 
     open fun resume() {
-        Util.validateMainThread()
+        validateMainThread()
         if (mLog.isDebugEnabled) {
             mLog.debug("resume()")
         }
@@ -325,11 +318,13 @@ open class CameraPreview: ViewGroup {
         }
 
         requestLayout()
-        mRotationListener?.listen(context, mRotationCallback)
+        mRotationListener?.listen(context) {
+            mStateHandler?.postDelayed(::rotationChanged, ROTATION_LISTENER_DELAY_MS)
+        }
     }
 
     open fun pause() {
-        Util.validateMainThread()
+        validateMainThread()
         if (mLog.isDebugEnabled) {
             mLog.debug("pause()")
         }
@@ -381,8 +376,8 @@ open class CameraPreview: ViewGroup {
 
         mCameraInstance = CameraInstance(context)
         mCameraInstance?.apply {
-            cameraSettings(mCameraSettings)
-            readyHandler = mStateHandler
+            cameraSetting = mCameraSettings
+            readyHandler  = mStateHandler
             open()
 
             openedOrientation = displayRotation()
@@ -434,7 +429,7 @@ open class CameraPreview: ViewGroup {
 
         return Bundle().apply {
             putParcelable("super", state)
-            putBoolean("torch", torchOn)
+            putBoolean("torch", isTorchOn)
         }
     }
 
@@ -442,7 +437,7 @@ open class CameraPreview: ViewGroup {
         if (state is Bundle) {
             state.apply {
                 super.onRestoreInstanceState(getParcelable("super"))
-                torchOn = getBoolean("torch")
+                isTorchOn = getBoolean("torch")
             }
 
             return

@@ -3,12 +3,7 @@ package com.example.clone_daum.common.camera
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
-import android.view.SurfaceHolder
-import com.journeyapps.barcodescanner.Util
-import com.journeyapps.barcodescanner.camera.CameraSettings
-import com.journeyapps.barcodescanner.camera.CameraSurface
-import com.journeyapps.barcodescanner.camera.DisplayConfiguration
-import com.journeyapps.barcodescanner.camera.PreviewCallback
+import com.example.common.validateMainThread
 import org.slf4j.LoggerFactory
 
 /**
@@ -24,7 +19,13 @@ class CameraInstance constructor(val context: Context) {
     private var mManager: CameraManager? = null
 
     private var mOpen = false
-    private var mCameraSetting = CameraSettings()
+    var cameraSetting = CameraSettings()
+        set (cameraSetting) {
+            if (!mOpen) {
+                field = cameraSetting
+                mManager?.settings = cameraSetting
+            }
+        }
 
     lateinit var surface: CameraSurface
 
@@ -112,11 +113,11 @@ class CameraInstance constructor(val context: Context) {
     }
 
     init {
-        Util.validateMainThread()
+        validateMainThread()
 
         mThread  = CameraThread.get
         mManager = CameraManager(context)
-        mManager?.settings = mCameraSetting
+        mManager?.settings = cameraSetting
     }
 
     fun displayConfig(config: DisplayConfiguration) {
@@ -124,23 +125,24 @@ class CameraInstance constructor(val context: Context) {
         mManager?.displayConfig = config
     }
 
-    fun surfaceHolder(holder: SurfaceHolder) {
-        surface = CameraSurface(holder)
-    }
+    // FIXME
+//    fun surfaceHolder(holder: SurfaceHolder) {
+//        surface = CameraSurface(holder)
+//    }
 
-    fun cameraSettings(settings: CameraSettings) {
-        if (!mOpen) {
-            mCameraSetting = settings
-            mManager?.settings = settings
-        }
-    }
+//    fun cameraSettings(settings: CameraSettings) {
+//        if (!mOpen) {
+//            mCameraSetting = settings
+//            mManager?.settings = settings
+//        }
+//    }
 
     fun previewSize() = mManager?.getPreviewSize()
 
     fun cameraRotation() = mManager?.rotationDegrees
 
     fun open() {
-        Util.validateMainThread()
+        validateMainThread()
 
         if (mLog.isDebugEnabled) {
             mLog.debug("CAMERA INSTANCE OPEN")
@@ -151,14 +153,14 @@ class CameraInstance constructor(val context: Context) {
     }
 
     fun configureCamera() {
-        Util.validateMainThread()
+        validateMainThread()
         validateOpen()
 
         mThread?.enqueue(mConfigure)
     }
 
     fun startPreview() {
-        Util.validateMainThread()
+        validateMainThread()
         validateOpen()
 
         if (mLog.isDebugEnabled) {
@@ -169,7 +171,7 @@ class CameraInstance constructor(val context: Context) {
     }
 
     fun setTorch(on: Boolean) {
-        Util.validateMainThread()
+        validateMainThread()
 
         if (mOpen) {
             mThread?.enqueue(Runnable { mManager?.setTorch(on) })
@@ -177,7 +179,7 @@ class CameraInstance constructor(val context: Context) {
     }
 
     fun close() {
-        Util.validateMainThread()
+        validateMainThread()
 
         if (mLog.isDebugEnabled) {
             mLog.debug("CAMERA INSTANCE CLOSE")
@@ -190,7 +192,7 @@ class CameraInstance constructor(val context: Context) {
         mOpen = false
     }
 
-    fun requestPreview(callback: PreviewCallback) {
+    fun requestPreview(callback: (SourceData) -> Unit) {
         validateOpen()
 
         if (mLog.isTraceEnabled) {

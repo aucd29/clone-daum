@@ -39,18 +39,18 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
         true
     }
 
-    private val mPreviewCallback = object: PreviewCallback {
-        override fun onPreviewError(e: Exception?) {
-        }
-
-        override fun onPreview(sourceData: SourceData?) {
-            if (mRunning) {
-                sourceData?.let {
-                    mHandler.obtainMessage(TfConst.DECODE_DECODING, it).sendToTarget()
-                }
-            }
-        }
-    }
+//    private val mPreviewCallback = object: PreviewCallback {
+//        override fun onPreviewError(e: Exception?) {
+//        }
+//
+//        override fun onPreview(sourceData: SourceData?) {
+//            if (mRunning) {
+//                sourceData?.let {
+//                    mHandler.obtainMessage(TfConst.DECODE_DECODING, it).sendToTarget()
+//                }
+//            }
+//        }
+//    }
 
 
     fun start() {
@@ -78,7 +78,11 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     private fun requestNextPreview() {
         mCameraInstance.let {
             if (it.isOpen) {
-                it.requestPreview(mPreviewCallback)
+                it.requestPreview {
+                    if (mRunning) {
+                        mHandler.obtainMessage(TfConst.DECODE_DECODING, it).sendToTarget()
+                    }
+                }
             }
         }
     }

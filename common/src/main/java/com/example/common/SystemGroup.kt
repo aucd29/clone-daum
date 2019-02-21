@@ -6,6 +6,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
+import android.os.Looper
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
@@ -30,4 +31,10 @@ inline fun Context.isNetworkConntected(): Boolean {
     }
 
     return false
+}
+
+fun validateMainThread() {
+    if (Looper.getMainLooper() != Looper.myLooper()) {
+        throw IllegalStateException("Must be called from the main thread.")
+    }
 }

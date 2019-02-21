@@ -3,12 +3,6 @@ package com.example.clone_daum.common.camera
 import android.content.Context
 import android.hardware.Camera
 import android.view.Surface
-import com.google.zxing.client.android.AmbientLightManager
-import com.google.zxing.client.android.camera.CameraConfigurationUtils
-import com.google.zxing.client.android.camera.open.OpenCameraInterface
-import com.journeyapps.barcodescanner.Size
-import com.journeyapps.barcodescanner.SourceData
-import com.journeyapps.barcodescanner.camera.*
 import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.lang.RuntimeException
@@ -44,7 +38,7 @@ class CameraManager constructor(val mContext: Context) {
     private lateinit var mCameraInfo: Camera.CameraInfo
 
     private var mAutoFocusManager: AutoFocusManager? = null
-    private var mAmbientLightManager: AmbientLightManager? = null
+//    private var mAmbientLightManager: AmbientLightManager? = null
 
     private var mPreviewing: Boolean = false
     private var mDefaultParams: String = ""
@@ -58,7 +52,7 @@ class CameraManager constructor(val mContext: Context) {
     var rotationDegrees = -1
 
     inner class CameraPreviewCallback : Camera.PreviewCallback {
-        var callback: PreviewCallback? = null
+        var callback: ((SourceData) -> Unit)? = null
         var resolution: Size? = null
 
         override fun onPreviewFrame(data: ByteArray, camera: Camera) {
@@ -71,7 +65,7 @@ class CameraManager constructor(val mContext: Context) {
                 val format = camera.parameters.previewFormat
                 val src = SourceData(data, it.width, it.height, format, rotationDegrees)
 
-                callback?.onPreview(src)
+                callback?.invoke(src)
             }
         }
     }
@@ -80,12 +74,12 @@ class CameraManager constructor(val mContext: Context) {
 
 
     fun open() {
-        mCamera = OpenCameraInterface.open(settings.getRequestedCameraId())
+        mCamera = OpenCameraInterface.open(settings.requestedCameraId)
         if (mCamera == null) {
             throw RuntimeException("Failed to open camera")
         }
 
-        val id = OpenCameraInterface.getCameraId(settings.getRequestedCameraId())
+        val id = OpenCameraInterface.getCameraId(settings.requestedCameraId)
         mCameraInfo = Camera.CameraInfo()
         Camera.getCameraInfo(id, mCameraInfo)
     }
@@ -100,7 +94,9 @@ class CameraManager constructor(val mContext: Context) {
 
     @Throws(IOException::class)
     fun setPreviewDisplay(surface: CameraSurface) {
-        surface.setPreview(mCamera)
+        mCamera?.let {
+            surface.setPreview(it)
+        }
     }
 
     fun startPreview() {
@@ -109,7 +105,7 @@ class CameraManager constructor(val mContext: Context) {
                 it.startPreview()
 
                 mPreviewing          = true
-                mAutoFocusManager    = AutoFocusManager(mCamera, settings)
+                mAutoFocusManager    = AutoFocusManager(it, settings)
 //                mAmbientLightManager = AmbientLightManager(mContext, this, settings)
 //                mAmbientLightManager?.start()
             }
@@ -120,8 +116,8 @@ class CameraManager constructor(val mContext: Context) {
         mAutoFocusManager?.stop()
         mAutoFocusManager = null
 
-        mAmbientLightManager?.stop()
-        mAmbientLightManager = null
+//        mAmbientLightManager?.stop()
+//        mAmbientLightManager = null
 
         mCamera?.let {
             if (mPreviewing) {
@@ -264,8 +260,8 @@ class CameraManager constructor(val mContext: Context) {
         var degrees = 0
 
         when (rotation) {
-            Surface.ROTATION_0 -> degrees = 0
-            Surface.ROTATION_90 -> degrees = 90
+            Surface.ROTATION_0   -> degrees = 0
+            Surface.ROTATION_90  -> degrees = 90
             Surface.ROTATION_180 -> degrees = 180
             Surface.ROTATION_270 -> degrees = 270
         }
@@ -342,7 +338,7 @@ class CameraManager constructor(val mContext: Context) {
         }
     }
 
-    fun requestPreviewFrame(callback: PreviewCallback) {
+    fun requestPreviewFrame(callback: (SourceData) -> Unit) {
         mCamera?.let {
             if (mPreviewing) {
                 mCameraPreviewCallback.callback = callback

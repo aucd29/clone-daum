@@ -58,9 +58,9 @@
     <dimen name="search_bottom_recent_height">16dp</dimen>
     <dimen name="search_bottom_close_mgn_s">10dp</dimen>
     <dimen name="search_bottom_del_mgn_s">10dp</dimen>
-    <dimen name="search_bottom_cancel_mgn_s">10dp</dimen>
+    <dimen name="search_bottom_cancel_pad">10dp</dimen>
     <dimen name="search_item_search_mgn_s">30dp</dimen>
-    <dimen name="search_item_del_mgn_e">30dp</dimen>
+    <dimen name="search_item_del_mgn_e">15dp</dimen>
     <dimen name="search_item_del_pad">15dp</dimen>
     <dimen name="search_item_underline_pad">20dp</dimen>
     <dimen name="search_item_chip_pad">8dp</dimen>
