@@ -369,10 +369,7 @@ class CameraManager constructor(val mContext: Context) {
     }
 
     fun isTorchOn(): Boolean {
-        val params = mCamera?.parameters
-        if (params == null) {
-            return false
-        }
+        val params = mCamera?.parameters ?: return false
 
         return params.flashMode.run {
              (Camera.Parameters.FLASH_MODE_ON.equals(this@run) ||
