@@ -10,7 +10,7 @@ import android.view.ViewTreeObserver
 import android.widget.TextView
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
 
 /**

@@ -4,7 +4,7 @@ import com.example.common.IRecyclerDiff
 import java.io.Serializable
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
 data class TabData(

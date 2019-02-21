@@ -9,7 +9,7 @@ import com.example.clone_daum.model.SearchRecyclerType
 import com.example.common.IRecyclerDiff
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
 @Entity(tableName = "searchHistory")

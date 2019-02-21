@@ -9,7 +9,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 5. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 5. <p/>
  */
 
 @Module

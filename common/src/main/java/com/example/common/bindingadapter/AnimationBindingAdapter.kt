@@ -8,7 +8,7 @@ import android.view.animation.Interpolator
 import androidx.databinding.BindingAdapter
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 14. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 14. <p/>
  */
 
 // view.animate 가 보기는 좋아서 바꿨다가 기능의 문제로 원래대로 ObjectAnimator 로 변경 OTL

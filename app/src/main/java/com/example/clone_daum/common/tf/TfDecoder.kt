@@ -7,7 +7,7 @@ import com.example.smartlenskotlin.tf.detector.TfRecognition
 import com.journeyapps.barcodescanner.SourceData
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 20. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 20. <p/>
  */
 
 class TfDecoder constructor(val context: Context) {

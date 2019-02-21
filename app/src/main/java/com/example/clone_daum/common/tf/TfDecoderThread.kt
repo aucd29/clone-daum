@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import java.lang.Exception
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 20. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 20. <p/>
  */
 
 class TfDecoderThread(private val mCameraInstance: CameraInstance
@@ -31,7 +31,6 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
 
     private val LOCK = Any()
     private var mRunning = false
-    private var mDecoding = false
     private val mCallback = Handler.Callback {
         when (it.what) {
             TfConst.DECODE_DECODING -> decode(it.obj as (SourceData))
@@ -85,8 +84,8 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     }
 
     private fun decode(srcData: SourceData) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("DECODE START")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("DECODE START")
         }
 
         val start = System.currentTimeMillis()
@@ -97,8 +96,8 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
         mResultHandler?.let {
             Message.obtain(it, if (result != null) {
                 val end = System.currentTimeMillis()
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FOUND BARCODE IN ${(end - start)} ms")
+                if (mLog.isTraceEnabled) {
+                    mLog.trace("FOUND IN ${(end - start)} ms")
                 }
 
                 TfConst.DECODE_SUCCEEDED

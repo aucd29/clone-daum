@@ -6,7 +6,7 @@ import android.view.TextureView
 import android.view.View
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 12. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 12. <p/>
  *
  * https://github.com/wadehuang36/tensorflow_mobilenet_android_example
  */

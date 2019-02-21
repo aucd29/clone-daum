@@ -14,7 +14,7 @@ import java.io.IOException
 import java.lang.RuntimeException
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 15. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 15. <p/>
  */
 
 class CameraManager constructor(val mContext: Context) {

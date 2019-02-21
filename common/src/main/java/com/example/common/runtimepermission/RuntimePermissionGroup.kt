@@ -18,7 +18,7 @@ import com.example.common.string
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 14. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 14. <p/>
  */
 
 object RuntimePermission {

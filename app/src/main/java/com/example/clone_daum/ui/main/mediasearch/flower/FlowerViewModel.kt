@@ -7,7 +7,7 @@ import com.example.common.arch.SingleLiveEvent
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 31. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 31. <p/>
  */
 
 class FlowerViewModel @Inject constructor(app: Application)

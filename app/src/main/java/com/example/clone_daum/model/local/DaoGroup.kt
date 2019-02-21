@@ -6,7 +6,7 @@ import io.reactivex.Flowable
 import io.reactivex.Maybe
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 12. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
 @Dao

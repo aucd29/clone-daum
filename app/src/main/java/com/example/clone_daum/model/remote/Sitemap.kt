@@ -3,7 +3,7 @@ package com.example.clone_daum.model.remote
 import com.example.common.IRecyclerDiff
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 2. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 2. <p/>
  */
 
 data class Sitemap(

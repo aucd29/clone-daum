@@ -15,7 +15,7 @@ import java.util.*
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 12. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 12. <p/>
  */
 
 class TfMobileDetector constructor(val mContext: Context) : TfDetector {

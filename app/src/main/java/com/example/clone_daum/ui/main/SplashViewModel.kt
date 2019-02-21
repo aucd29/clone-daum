@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 14. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 14. <p/>
  */
 
 class SplashViewModel @Inject constructor(val config: Config

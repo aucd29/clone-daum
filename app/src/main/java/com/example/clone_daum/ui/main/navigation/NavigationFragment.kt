@@ -13,7 +13,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.ui.ViewController
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 20. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 20. <p/>
  */
 
 class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()

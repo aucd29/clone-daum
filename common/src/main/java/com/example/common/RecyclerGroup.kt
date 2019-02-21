@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
 
 /** item 비교 인터페이스 */

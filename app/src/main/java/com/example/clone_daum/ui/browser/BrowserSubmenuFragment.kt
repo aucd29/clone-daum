@@ -5,7 +5,7 @@ import com.example.common.BaseDaggerBottomSheetDialogFragment
 import dagger.android.ContributesAndroidInjector
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 18. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 18. <p/>
  *
  * https://gist.github.com/orhanobut/8665372
  *

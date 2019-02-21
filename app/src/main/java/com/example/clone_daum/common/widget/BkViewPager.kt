@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.viewpager.widget.ViewPager
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 11. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 11. <p/>
  */
 
 class BkViewPager: ViewPager {

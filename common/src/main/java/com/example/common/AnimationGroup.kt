@@ -7,7 +7,7 @@ import android.view.View
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 1. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 1. <p/>
  */
 
 typealias  AniListener = (Boolean, Animator?) -> Unit

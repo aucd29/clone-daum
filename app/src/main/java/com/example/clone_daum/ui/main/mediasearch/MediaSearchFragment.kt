@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 16. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 16. <p/>
  */
 
 class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
@@ -23,8 +23,8 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 
-        private const val ANIM_DURATION      = 400L
-        private const val ANIM_START_DELAY   = 250L
+        private const val ANIM_DURATION     = 400L
+        private const val ANIM_START_DELAY  = 250L
 
         private const val REQ_RECORD_SPEECH = 7811
         private const val REQ_RECORD_MUSIC  = 7812

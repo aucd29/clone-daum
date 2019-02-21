@@ -12,7 +12,7 @@ import com.journeyapps.barcodescanner.camera.PreviewCallback
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 18. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 18. <p/>
  */
 
 class CameraInstance constructor(val context: Context) {

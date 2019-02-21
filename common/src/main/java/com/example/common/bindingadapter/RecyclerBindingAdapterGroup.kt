@@ -13,7 +13,7 @@ import com.example.common.RecyclerAdapter
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 6. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
  */
 
 object RecyclerBindingAdapter {

@@ -10,7 +10,6 @@ import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputFragment
 import com.example.clone_daum.ui.main.mediasearch.flower.FlowerFragment
-import com.example.clone_daum.ui.main.mediasearch.flower.FlowerViewModel
 import com.example.clone_daum.ui.main.mediasearch.music.MusicFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
@@ -26,7 +25,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 13. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
 class ViewController @Inject constructor(val manager: FragmentManager) {
     // 나만의 룰을 만들었더니만 navigation editor 나와버림 =_ = ㅋ

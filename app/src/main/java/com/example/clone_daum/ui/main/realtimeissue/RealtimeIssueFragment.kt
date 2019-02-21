@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 9. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 9. <p/>
  *
  * rounded dialog
  * - https://gist.github.com/ArthurNagy/1c4a64e6c8a7ddfca58638a9453e4aed

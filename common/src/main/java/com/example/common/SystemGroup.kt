@@ -8,7 +8,7 @@ import android.net.NetworkInfo
 import android.os.Build
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 22. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
  */
 
 @SuppressLint("MissingPermission")

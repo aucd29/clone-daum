@@ -14,7 +14,7 @@ import java.io.InputStream
 import java.io.Serializable
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2017. 7. 6.. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2017. 7. 6.. <p/>
  *
  * <p>https://github.com/FasterXML/jackson-module-kotlin/blob/master/src/test/kotlin/com/fasterxml/jackson/module/kotlin/test/GithubDatabind1329.kt</p>
  */

@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 1. 23. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 23. <p/>
  */
 
 class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {

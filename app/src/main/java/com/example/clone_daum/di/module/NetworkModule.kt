@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 12. 5. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 5. <p/>
  */
 
 @Module(includes = [OkhttpModule::class])

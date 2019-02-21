@@ -7,7 +7,7 @@ import androidx.viewpager.widget.ViewPager
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2018. 11. 27. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
 object ViewPagerBindingAdapter {
