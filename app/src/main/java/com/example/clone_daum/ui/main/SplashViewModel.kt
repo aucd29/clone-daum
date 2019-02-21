@@ -4,7 +4,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
-import com.example.clone_daum.di.module.Config
+import com.example.clone_daum.common.Config
 import com.example.common.arch.SingleLiveEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

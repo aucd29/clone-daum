@@ -4,7 +4,7 @@ import android.content.Intent
 import android.view.View
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
-import com.example.clone_daum.di.module.Config
+import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams

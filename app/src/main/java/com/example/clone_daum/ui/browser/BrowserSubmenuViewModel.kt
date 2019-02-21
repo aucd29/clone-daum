@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import androidx.databinding.ObservableInt
-import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.local.BrowserSubMenu
 import com.example.common.IFinishFragmentAware
 import com.example.common.RecyclerViewModel

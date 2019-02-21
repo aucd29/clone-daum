@@ -1,7 +1,7 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
-import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
 import com.example.common.di.module.injectOfActivity

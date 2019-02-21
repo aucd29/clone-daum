@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 
 import android.app.Application
 import androidx.databinding.ObservableInt
-import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.common.RecyclerViewModel
 import com.example.common.app

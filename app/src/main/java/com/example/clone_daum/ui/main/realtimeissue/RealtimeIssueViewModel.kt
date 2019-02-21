@@ -6,7 +6,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
-import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.model.remote.RealtimeIssueParser
 import com.example.common.CommandEventViewModel

@@ -1,10 +1,10 @@
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.mediasearch.flower.FlowerViewModel" />
+        <variable name="model" type="com.example.clone_daum.ui.main.mediasearch.flower.FlowerViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +12,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white">
+
+        <com.example.clone_daum.common.tf.TensorflowView
+                android:id="@+id/tensorflow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         <!--flower json 은 어디에? ㄷ ㄷ ㄷ -->
         <com.airbnb.lottie.LottieAnimationView
@@ -25,7 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-            />
+        />
 
         <ImageView
                 android:id="@+id/flower_back"

@@ -2,8 +2,8 @@ package com.example.clone_daum.ui.main
 
 import android.Manifest
 import android.view.View
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
-import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.weather.WeatherViewModel

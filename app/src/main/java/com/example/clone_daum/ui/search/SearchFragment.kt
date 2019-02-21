@@ -1,8 +1,8 @@
 package com.example.clone_daum.ui.search
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.*
 import com.example.common.di.module.injectOfActivity

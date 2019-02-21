@@ -9,8 +9,8 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
-import com.example.clone_daum.di.module.Config
-import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.common.Config
+import com.example.clone_daum.common.PreloadConfig
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.google.android.material.appbar.AppBarLayout

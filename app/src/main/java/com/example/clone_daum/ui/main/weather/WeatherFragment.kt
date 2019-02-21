@@ -4,9 +4,9 @@ import android.Manifest
 import android.os.Bundle
 import android.view.View
 import com.example.clone_daum.R
+import com.example.clone_daum.common.Config
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
-import com.example.clone_daum.di.module.Config
-import com.example.clone_daum.di.module.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment
 import com.example.common.runtimepermission.PermissionParams

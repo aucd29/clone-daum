@@ -1,0 +1,283 @@
+package com.example.clone_daum.common.camera
+
+import android.content.Context
+import android.os.Handler
+import android.os.HandlerThread
+import android.view.SurfaceHolder
+import com.journeyapps.barcodescanner.Util
+import com.journeyapps.barcodescanner.camera.CameraSettings
+import com.journeyapps.barcodescanner.camera.CameraSurface
+import com.journeyapps.barcodescanner.camera.DisplayConfiguration
+import com.journeyapps.barcodescanner.camera.PreviewCallback
+import org.slf4j.LoggerFactory
+
+/**
+ * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 18. <p/>
+ */
+
+class CameraInstance constructor(val context: Context) {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(CameraInstance::class.java)
+    }
+
+    private var mThread: CameraThread? = null
+    private var mManager: CameraManager? = null
+
+    private var mOpen = false
+    private var mCameraSetting = CameraSettings()
+
+    lateinit var surface: CameraSurface
+
+    var displayConfig: DisplayConfiguration? = null
+    var readyHandler: Handler? = null
+
+    val isOpen: Boolean
+        get() = mOpen
+
+    val mOpener = Runnable {
+        try {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("Opening camera")
+            }
+
+            mManager?.open()
+        } catch (e: Exception) {
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+
+            notifyError(e)
+            mLog.error("ERROR: Failed to open camera ${e.message}")
+        }
+    }
+
+    val mConfigure = Runnable {
+        try {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("Configuring camera")
+            }
+
+            mManager?.let {
+                it.configure()
+
+                readyHandler?.obtainMessage(CameraConst.K_PREVIEW_SIZE_READY,
+                    it.getPreviewSize())?.sendToTarget()
+            }
+        } catch (e: Exception) {
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+
+            notifyError(e)
+            mLog.error("ERROR: Failed to configure camera ${e.message}")
+        }
+    }
+
+    val mPreviewStarter = Runnable {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("STATING PREVIEW")
+        }
+
+        try {
+            mManager?.apply {
+                setPreviewDisplay(surface)
+                startPreview()
+            }
+        } catch (e: Exception) {
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+
+            notifyError(e)
+
+            mLog.error("ERROR: Failed to start preview ${e.message}")
+        }
+    }
+
+    val mCloser = Runnable {
+        try {
+            mManager?.apply {
+                stopPreview()
+                close()
+            }
+        } catch (e: Exception) {
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+
+            mLog.error("ERROR: Failed to close camera ${e.message}")
+        }
+
+        mThread?.decrementInstance()
+    }
+
+    init {
+        Util.validateMainThread()
+
+        mThread  = CameraThread.get
+        mManager = CameraManager(context)
+        mManager?.settings = mCameraSetting
+    }
+
+    fun displayConfig(config: DisplayConfiguration) {
+        displayConfig = config
+        mManager?.displayConfig = config
+    }
+
+    fun surfaceHolder(holder: SurfaceHolder) {
+        surface = CameraSurface(holder)
+    }
+
+    fun cameraSettings(settings: CameraSettings) {
+        if (!mOpen) {
+            mCameraSetting = settings
+            mManager?.settings = settings
+        }
+    }
+
+    fun previewSize() = mManager?.getPreviewSize()
+
+    fun cameraRotation() = mManager?.rotationDegrees
+
+    fun open() {
+        Util.validateMainThread()
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CAMERA INSTANCE OPEN")
+        }
+
+        mOpen = true
+        mThread?.incrementAndEnqueue(mOpener)
+    }
+
+    fun configureCamera() {
+        Util.validateMainThread()
+        validateOpen()
+
+        mThread?.enqueue(mConfigure)
+    }
+
+    fun startPreview() {
+        Util.validateMainThread()
+        validateOpen()
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("START PREVIEW")
+        }
+
+        mThread?.enqueue(mPreviewStarter)
+    }
+
+    fun setTorch(on: Boolean) {
+        Util.validateMainThread()
+
+        if (mOpen) {
+            mThread?.enqueue(Runnable { mManager?.setTorch(on) })
+        }
+    }
+
+    fun close() {
+        Util.validateMainThread()
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CAMERA INSTANCE CLOSE")
+        }
+
+        if (mOpen) {
+            mThread?.enqueue(mCloser)
+        }
+
+        mOpen = false
+    }
+
+    fun requestPreview(callback: PreviewCallback) {
+        validateOpen()
+
+        if (mLog.isTraceEnabled) {
+            mLog.trace("REQUEST PREVIEW")
+        }
+
+        mThread?.enqueue(Runnable { mManager?.requestPreviewFrame(callback) })
+    }
+
+    private fun validateOpen() {
+        if (!mOpen) {
+            throw IllegalStateException("CameraInstance is not open")
+        }
+    }
+
+    fun notifyError(e: Exception) {
+        readyHandler?.obtainMessage(CameraConst.K_CAMERA_ERROR, e)?.sendToTarget()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+internal class CameraThread {
+    private object Holder { val INSTANCE = CameraThread() }
+
+    companion object {
+        val get: CameraThread by lazy { Holder.INSTANCE }
+    }
+
+    private var mHandler: Handler? = null
+    private var mThread: HandlerThread? = null
+    private var mOpenCount = 0
+
+    private val LOCK = Any()
+
+    fun enqueue(runnable: Runnable) {
+        synchronized(LOCK) {
+            checkRunning()
+            mHandler?.post(runnable)
+        }
+    }
+
+    fun enqueueDelayed(runnable: Runnable, delayMillis: Long) {
+        synchronized(LOCK) {
+            checkRunning()
+            mHandler?.postDelayed(runnable, delayMillis)
+        }
+    }
+
+    private fun checkRunning() {
+        synchronized(LOCK) {
+            if (mHandler == null) {
+                if (mOpenCount <= 0) {
+                    throw IllegalStateException("CameraThread is not open")
+                }
+
+                mThread = HandlerThread("camera-thread")
+                mThread?.start()
+                mHandler = Handler(mThread?.looper)
+            }
+        }
+    }
+
+    private fun quit() {
+        synchronized(LOCK) {
+            mThread?.quit()
+            mThread = null
+            mHandler = null
+        }
+    }
+
+    fun decrementInstance() {
+        synchronized(LOCK) {
+            if (--mOpenCount == 0) {
+                quit()
+            }
+        }
+    }
+
+    fun incrementAndEnqueue(runnable: Runnable) {
+        synchronized(LOCK) {
+            ++mOpenCount
+            enqueue(runnable)
+        }
+    }
+}

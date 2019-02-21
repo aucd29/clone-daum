@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.RealtimeIssueFragmentBinding
-import com.example.clone_daum.di.module.PreloadConfig
+import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerBottomSheetDialogFragment

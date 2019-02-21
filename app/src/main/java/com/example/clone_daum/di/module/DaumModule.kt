@@ -20,7 +20,6 @@ import javax.inject.Singleton
     , NetworkModule::class
     , DbModule::class
     , AssetModule::class
-    , ConfigModule::class
     , RxModule::class
     , RxLocationModule::class
     , CalligraphyModule::class
