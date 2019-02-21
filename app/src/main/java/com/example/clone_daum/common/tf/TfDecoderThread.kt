@@ -5,12 +5,9 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
 import com.example.clone_daum.common.camera.CameraInstance
-import com.google.zxing.LuminanceSource
-import com.journeyapps.barcodescanner.SourceData
-import com.journeyapps.barcodescanner.Util
-import com.journeyapps.barcodescanner.camera.PreviewCallback
+import com.example.clone_daum.common.camera.SourceData
+import com.example.common.validateMainThread
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 20. <p/>
@@ -54,7 +51,7 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
 
 
     fun start() {
-        Util.validateMainThread()
+        validateMainThread()
 
         mThread = HandlerThread(javaClass.simpleName)
         mThread.start()
@@ -66,7 +63,7 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     }
 
     fun stop() {
-        Util.validateMainThread()
+        validateMainThread()
 
         synchronized(LOCK) {
             mRunning = false
