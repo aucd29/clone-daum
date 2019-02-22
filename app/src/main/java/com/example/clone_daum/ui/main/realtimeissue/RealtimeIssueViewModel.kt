@@ -1,19 +1,17 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
+import android.text.Spanned
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
-import com.example.clone_daum.model.remote.RealtimeIssueParser
-import com.example.common.CommandEventViewModel
-import com.example.common.ICommandEventAware
-import com.example.common.IFinishFragmentAware
-import com.example.common.RecyclerViewModel
-import com.example.common.arch.SingleLiveEvent
+//import com.example.clone_daum.model.remote.RealtimeIssueParser
+import com.example.clone_daum.model.remote.RealtimeIssueType
+import com.example.common.*
+import com.example.common.bindingadapter.AnimParams
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -34,8 +32,12 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
-        const val INTERVAL     = 7L
-        const val CMD_BRS_OPEN = "brs-open"
+        const val ANIM_DURATION     = 400L
+        const val INTERVAL          = 7L
+
+        const val CMD_BRS_OPEN      = "brs-open"
+        const val CMD_ANIM_FINISH   = "anim-finish"
+        const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
     }
 
     private var mAllIssueList: List<RealtimeIssue>? = null
@@ -43,17 +45,25 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
 
-    val dp                = CompositeDisposable()
-    val tabAdapter        = ObservableField<RealtimeIssueTabAdapter>()
-    val viewpager         = ObservableField<ViewPager>()
-    val realtimeIssueText = ObservableField<String>()
+    val dp              = CompositeDisposable()
+    val tabAdapter      = ObservableField<RealtimeIssueTabAdapter>()
+    val viewpager       = ObservableField<ViewPager>()
+    val currentIssue    = ObservableField<RealtimeIssue>()
+    val visibleProgress = ObservableInt(View.VISIBLE)
 
-    val visibleProgress   = ObservableInt(View.VISIBLE)
+    val containerTransY = ObservableField<AnimParams>()
+    val dimmingBgAlpha  = ObservableField<AnimParams>()
+    val tabMenuRotation = ObservableField<AnimParams>()
+    val tabAlpha        = ObservableField<AnimParams>()
+
+    val visibleDetail   = ObservableField<Int>(View.GONE)
+
 
     fun load(html: String) {
         dp.add(Observable.just(html)
             .observeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 visibleProgress.set(View.GONE)
@@ -61,6 +71,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
                 mRealtimeIssueList = it
                 mAllIssueList      = it.get(0).second
 
+                commandEvent(CMD_LOADED_ISSUE)
                 startRealtimeIssue()
             })
     }
@@ -70,34 +81,39 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             mLog.debug("PARSE REALTIME ISSUE")
         }
 
-        val parse = RealtimeIssueParser()
-        val f = main.indexOf("""<div id="footerHotissueRankingDiv_channel_news1">""")
-        val e = main.indexOf("""<div class="d_foot">""")
+        val fText = "var hotissueData = include("
+        val eText = ");"
+        val f = main.indexOf(fText) + fText.length
+        val e = main.indexOf(eText, f)
 
-        if (f == -1 || e == -1) {
+        val issueList: ArrayList<Pair<String, List<RealtimeIssue>>> = arrayListOf()
+        if (f == fText.length || e == -1) {
             mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
 
-            return parse.realtimeIssueList
+            return issueList
         }
 
-        // https://www.w3schools.com/tags/ref_urlencode.asp
-        var issue = main.substring(f, e)
-            .replace(" class='keyissue_area '", "")
-            .replace(" class='keyissue_area on'", "")
+        val issue = main.substring(f, e)
             .replace("(\n|\t)".toRegex(), "")
-            .replace("&amp;", "%26")
-            .replace("&", "%26")
-        issue = issue.substring(0, issue.length - "</div>".length)
+            .replace("  ", "")
 
-        parse.loadXml(issue)
-
-        if (mLog.isDebugEnabled) {
-            parse.realtimeIssueList.forEach {
-                mLog.debug("${it.first} : (${it.second.size})")
+        val realtimeIssueList: List<RealtimeIssueType> = issue.jsonParse()
+        realtimeIssueList.forEach {
+            val type = when (it.type) {
+                "hotissue" -> "실시간이슈"
+                "news"     -> "뉴스"
+                "enter"    -> "연예"
+                else       -> "스포츠"
             }
+
+            if (mLog.isDebugEnabled) {
+                mLog.debug("ISSUE : $type (${it.list.size})")
+            }
+
+            issueList.add(type to it.list)
         }
 
-        return parse.realtimeIssueList
+        return issueList
     }
 
     fun issueList(position: Int) =
@@ -118,13 +134,13 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             val index = mRealtimeCount % list.size
             val issue = list.get(index)
 
-            realtimeIssueText.set("${index + 1} ${issue.text}")
+            currentIssue.set(issue)
 
             dp.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
                 val index = mRealtimeCount % list.size
                 val issue = list.get(index)
 
-                realtimeIssueText.set("${index + 1} ${issue.text}")
+                currentIssue.set(issue)
                 ++mRealtimeCount
 
                 if (mLog.isTraceEnabled) {
@@ -142,29 +158,17 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         dp.clear()
     }
 
-    fun openIssue(text: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("openIssue : $text")
-        }
+    fun titleConvert(issue: RealtimeIssue?): String {
+        return issue?.run { "${index} ${text}" } ?: ""
+    }
 
-        val newText = text.replace("[0-9]".toRegex(), "").trim()
-
-        mAllIssueList?.let { list ->
-            var i = 0
-            while (i < list.size) {
-                val it = list.get(i)
-
-                if (it.text == newText) {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("REALTIME ISSUE OPEN : ${it.text} : ${it.url}")
-                    }
-
-                    commandEvent(CMD_BRS_OPEN, it.url)
-                    break
-                }
-
-                ++i
-            }
-        }
+    fun typeConvert(issue: RealtimeIssue?): Spanned {
+        return issue?.run {
+            when (type) {
+                "+" -> "<font color='red'>↑</font> $value"
+                "-" -> "<font color='blue'>↓</font> $value"
+                else -> "<font color='red'>NEW</font> $value"
+            }.html()
+        } ?: "".html()
     }
 }

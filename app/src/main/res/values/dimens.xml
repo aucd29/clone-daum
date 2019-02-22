@@ -9,7 +9,7 @@
     <dimen name="main_search_extend_mgn_e">15dp</dimen>
     <dimen name="main_search_extend_pad">15dp</dimen>
     <dimen name="main_search_rank_mgn_t">10dp</dimen>
-    <dimen name="main_search_extend_rank_mgn_e">10dp</dimen>
+    <dimen name="main_search_extend_rank_mgn_e">15dp</dimen>
     <dimen name="main_weather_mgn_s">20dp</dimen>
     <dimen name="main_temperature_mgn_s">10dp</dimen>
     <dimen name="main_gps_pad">10dp</dimen>

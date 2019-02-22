@@ -29,13 +29,15 @@ object ViewPagerBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(*arrayOf("bindPagerAdapter", "bindViewPagerLoaded"), requireAll = false)
-    fun bindAdapter(viewpager: ViewPager, adapter: PagerAdapter, viewPagerLoadedCallback: (() -> Unit)? = null) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindPagerAdapter")
-        }
+    fun bindAdapter(viewpager: ViewPager, adapter: PagerAdapter?, viewPagerLoadedCallback: (() -> Unit)? = null) {
+        adapter?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("bindPagerAdapter")
+            }
 
-        viewpager.adapter = adapter
-        viewPagerLoadedCallback?.invoke()
+            viewpager.adapter = it
+            viewPagerLoadedCallback?.invoke()
+        }
     }
 
     @JvmStatic

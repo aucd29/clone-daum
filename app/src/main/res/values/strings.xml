@@ -12,6 +12,7 @@
     </string>
 
     <!-- main -->
+    <string name="main_realtime">실시간</string>
     <string name="main_realtime_issue_network_error">NetErr</string>
     <string name="main_weather_more">더 보기 &gt;</string>
     <string name="main_weather_current_position">현위치</string>

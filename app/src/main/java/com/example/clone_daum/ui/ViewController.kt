@@ -51,7 +51,8 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("REALTIME ISSUE FRAGMENT")
         }
 
-        manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
+        manager.show(FragmentParams(CONTAINER, RealtimeIssueFragment::class.java))
+//        manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
     }
 
     fun weatherFragment() {

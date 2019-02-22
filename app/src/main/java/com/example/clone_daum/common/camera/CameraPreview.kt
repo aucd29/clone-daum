@@ -134,7 +134,7 @@ open class CameraPreview: ViewGroup {
         //framingRectSize = Size(-1, -1)
         previewScalingStrategy = CenterCropStrategy()
 
-        postDelayed(::resume, 100)
+        postDelayed(::resume, 500)
     }
 
     private fun rotationChanged() {

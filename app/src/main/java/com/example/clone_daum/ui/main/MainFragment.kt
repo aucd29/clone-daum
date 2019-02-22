@@ -5,10 +5,13 @@ import android.view.View
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.weather.WeatherViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.common.*
+import com.example.common.bindingadapter.AnimParams
 import com.example.common.di.module.injectOfActivity
 import com.example.common.runtimepermission.PermissionParams
 import com.example.common.runtimepermission.runtimePermissions
@@ -114,8 +117,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             }
         }
 
-        observe(mRealtimeIssueViewModel.commandEvent) {
-            onCommandEvent(it.first, it.second)
+        mRealtimeIssueViewModel.apply {
+            observe(commandEvent) {
+                onCommandEvent(it.first, it.second)
+            }
+
+            viewpager.set(mBinding.realtimeIssueViewpager)
         }
     }
 
@@ -130,14 +137,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 when (cmd) {
                     CMD_SEARCH_FRAMGNET         -> searchFragment()
                     CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
-                    CMD_REALTIME_ISSUE_FRAGMENT -> mRealtimeIssueViewModel.mRealtimeIssueList?.let {
-                        if (it.size > 0) {
-                            realtimeIssueFragment()
-                        } else {
-//                            alert(R.string.main_realtime_issue_load_error, R.string.error_title)
-                        }
-                    }
-                    CMD_WEATHER_FRAGMENT        -> weatherFragment()
+                    CMD_REALTIME_ISSUE_FRAGMENT -> internalRealtimeFragment()
+//                    CMD_WEATHER_FRAGMENT        -> weatherFragment()  // 메인에서 제거 [aucd29][2019. 2. 22.]
                     CMD_MEDIA_SEARCH_FRAGMENT   -> mediaSearchFragment()
                     CMD_BRS_OPEN                -> browserFragment(data.toString())
                     CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
@@ -154,6 +155,38 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                         }))
                 }
             }
+        }
+
+        RealtimeIssueViewModel.apply {
+            when (cmd) {
+                CMD_LOADED_ISSUE -> mRealtimeIssueViewModel.apply {
+                    tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
+                }
+            }
+        }
+    }
+
+    private fun internalRealtimeFragment() {
+        mRealtimeIssueViewModel.apply {
+            if (visibleDetail.get() == View.GONE) {
+                visibleDetail.set(View.VISIBLE)
+                tabMenuRotation.set(AnimParams(180f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+                containerTransY.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+            } else {
+                visibleDetail.set(View.GONE)
+                tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+
+                val height = mBinding.realtimeIssueViewpager.height.toFloat() * -1
+                containerTransY.set(AnimParams(height, duration = RealtimeIssueViewModel.ANIM_DURATION))
+            }
+
+//            mRealtimeIssueList?.let {
+//                if (it.size > 0) {
+////                    viewController.realtimeIssueFragment()
+//                } else {
+////                            alert(R.string.main_realtime_issue_load_error, R.string.error_title)
+//                }
+//            }
         }
     }
 

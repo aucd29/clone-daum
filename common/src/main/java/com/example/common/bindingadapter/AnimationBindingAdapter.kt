@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.view.View
+import android.view.animation.Animation
 import android.view.animation.Interpolator
 import androidx.databinding.BindingAdapter
 
@@ -19,6 +20,7 @@ object AnimationBindingAdapter {
     private const val K_ALPHA         = "alpha"
     private const val K_SCALE_X       = "scaleX"
     private const val K_SCALE_Y       = "scaleY"
+    private const val K_ROTATION      = "rotation"
 
     @JvmStatic
     @BindingAdapter("bindTranslateY")
@@ -95,6 +97,22 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_SCALE_Y, params.value)
         } else {
             ObjectAnimator.ofFloat(view, K_SCALE_Y, params.initValue, params.value)
+        }
+
+        objectAnim(anim, params)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindRotation")
+    fun bindRotation(view: View, params: AnimParams?) {
+        if (params == null) {
+            return
+        }
+
+        val anim = if (params.initValue == null) {
+            ObjectAnimator.ofFloat(view, K_ROTATION, params.value)
+        } else {
+            ObjectAnimator.ofFloat(view, K_ROTATION, params.initValue, params.value)
         }
 
         objectAnim(anim, params)

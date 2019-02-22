@@ -15,6 +15,8 @@ class FlowerFragment: BaseDaggerFragment<FlowerFragmentBinding, FlowerViewModel>
         private val mLog = LoggerFactory.getLogger(FlowerFragment::class.java)
     }
 
+    private var mFirstLoad = true
+
     override fun initViewBinding() {
         mBinding.tensorflow.mResultCallback = {
             it?.let {
@@ -43,7 +45,11 @@ class FlowerFragment: BaseDaggerFragment<FlowerFragmentBinding, FlowerViewModel>
     override fun onResume() {
         super.onResume()
 
-        mBinding.tensorflow.resume()
+        if (mFirstLoad) {
+            mFirstLoad = false
+        } else {
+            mBinding.tensorflow.resume()
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

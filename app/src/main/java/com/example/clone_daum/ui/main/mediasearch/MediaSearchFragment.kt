@@ -34,7 +34,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
     @Inject lateinit var viewController: ViewController
 
-    private var pauseAnimator: Animator? = null
+    private var mPauseAnimator: Animator? = null
 
 
     override fun initViewBinding() = mBinding.run {
@@ -88,7 +88,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             overshootAnim.reverse = {
-                pauseAnimator = it
+                mPauseAnimator = it
                 it?.pause()
             }
         }
@@ -113,7 +113,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             dimmingBgAlphaAnim.startDelay  = ANIM_START_DELAY
             containerTransYAnim.startDelay = ANIM_START_DELAY
-            pauseAnimator?.resume()
+            mPauseAnimator?.resume()
         }
 
         mViewModel.apply {
