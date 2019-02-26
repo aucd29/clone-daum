@@ -274,7 +274,6 @@
                             android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT)}"
                     />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

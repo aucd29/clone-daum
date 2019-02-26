@@ -1,5 +1,7 @@
 package com.example.clone_daum.ui.main
 
+import android.animation.ValueAnimator
+import android.view.MotionEvent
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
@@ -47,6 +49,60 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     override fun initViewBinding() = mBinding.run {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT WEBVIEW SETTING")
+        }
+
+        scrollview.setOnTouchListener { v, ev ->
+            val y  = mMainViewModel.appbarOffsetLive.value!!
+            val max = mMainViewModel.searchAreaHeight * -1
+            val mid = max / 2
+
+            val res = when (ev.action) {
+                MotionEvent.ACTION_UP -> {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("OFFSET : $y , $mid , $max")
+                    }
+
+                    if (y < 0 && y >= mid) {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("SCROLL UP")
+                        }
+
+                        mMainViewModel.testEvent.value = true
+
+                        val ani = ValueAnimator.ofInt(y, 0).setDuration(100)
+                        ani.addUpdateListener {
+                            it.animatedValue?.let {
+                                mMainViewModel.appbarOffsetLive.value = it as Int
+                            }
+                        }
+                        ani.start()
+                    } else if (y < mid && y >= max) {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("SCROLL DOWN")
+                        }
+
+                        mMainViewModel.testEvent.value = false
+
+                        val ani = ValueAnimator.ofInt(y, max).setDuration(100)
+                        ani.addUpdateListener {
+                            it.animatedValue?.let {
+                                mMainViewModel.appbarOffsetLive.value = it as Int
+                            }
+                        }
+                        ani.start()
+                    }
+
+                    true
+                }
+
+                else -> false
+            }
+
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("SCROLL VIEW TOUCH : ${ev.action}")
+//            }
+
+            res
         }
 
         webview.defaultSetting(WebViewSettingParams(
@@ -140,6 +196,10 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                 if (mLog.isTraceEnabled()) {
                     mLog.trace("WEBVIEW TRANSLATION Y : $it")
                 }
+
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("TRANS Y : $it")
+//                }
 
                 mBinding.webview.translationY = it.toFloat()
             }

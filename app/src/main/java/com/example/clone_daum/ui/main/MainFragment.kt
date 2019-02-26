@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main
 
 import android.graphics.Typeface
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -104,12 +105,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
             searchBar.globalLayoutListener {
                 // 검색쪽 위치까지 margin 이동
-                mBinding.apply {
-                    val lp = realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
-                    lp.topMargin = searchArea.height - searchUnderline.height
-                    lp.height = 0
-                    realtimeIssueArea.layoutParams = lp
-                }
+                val lp = realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
+                lp.topMargin = searchArea.height - searchUnderline.height
+                lp.height = 0
+                realtimeIssueArea.layoutParams = lp
+
+                mViewModel.searchAreaHeight = searchBar.height - tabLayout.height
             }
 
             realtimeIssueViewpager.globalLayoutListener {
@@ -139,6 +140,10 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                 // scroll 되어 offset 된 값을 webview 쪽으로 전달
                 appbarOffsetLive.value    = offset
+            }
+
+            observe(testEvent) {
+                mBinding.searchBar.setExpanded(it)
             }
         }
 
@@ -200,19 +205,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                         mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, delay)
                     }
-//                    CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
-//                        , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-//                        , { req, res ->
-//                            if (mLog.isDebugEnabled) {
-//                                mLog.debug("PERMISSION LOCATION : $res")
-//                            }
-//
-//                            if (res) {
-//                                mViewModel.visibleGps.set(View.GONE)
-////                                mWeatherViewModel.refreshCurrentLocation()
-//                            }
-//                        }))
-//                    CMD_WEATHER_FRAGMENT        -> weatherFragment()  // 메인에서 제거 [aucd29][2019. 2. 22.]
                 }
             }
         }

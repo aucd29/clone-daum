@@ -27,8 +27,8 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_BRS_OPEN                = "brs-open"
         const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
-//        const val CMD_WEATHER_FRAGMENT        = "weather"
-//        const val CMD_PERMISSION_GPS          = "permission-gps"
+
+
     }
 
     override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
@@ -38,12 +38,15 @@ class MainViewModel @Inject constructor(val app: Application
     var gotoNewsEvent           = ObservableInt(0)
 
     val visibleBack             = ObservableInt(View.GONE)
-//    val visibleGps              = ObservableInt(if (config.HAS_PERMISSION_GPS) View.GONE else View.VISIBLE)
 
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()
     var progressViewOffsetLive  = MutableLiveData<Int>()
     var currentTabPositionLive  = MutableLiveData<Int>()
+
+    var searchAreaHeight:Int = 0
+
+    val testEvent = SingleLiveEvent<Boolean>()
 
 
     fun eventGotoNews() = gotoNewsEvent.run {
