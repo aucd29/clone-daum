@@ -9,7 +9,7 @@
         <variable name="model" type="com.example.clone_daum.ui.main.MainWebViewViewModel" />
     </data>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:fillViewport="true"
             android:layout_width="match_parent"
@@ -33,6 +33,6 @@
             />
 
         </androidx.core.widget.NestedScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout>
 
 </layout>

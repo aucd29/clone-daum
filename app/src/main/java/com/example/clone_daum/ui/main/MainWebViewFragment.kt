@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.main
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
@@ -27,6 +28,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
         private const val TIMEOUT_RELOAD_ICO = 4L
+        private const val MAGNETIC_DURATION  = 100L
     }
 
     @Inject lateinit var config: Config
@@ -46,64 +48,60 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         mMainViewModel   = mViewModelFactory.injectOfActivity(this, MainViewModel::class.java)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT WEBVIEW SETTING")
         }
 
-        scrollview.setOnTouchListener { v, ev ->
-            val y  = mMainViewModel.appbarOffsetLive.value!!
-            val max = mMainViewModel.searchAreaHeight * -1
+        // 스크롤시 APPBAR 에 스크롤이 걸려 있다면 자석 효과를 줘서 이동
+        scrollview.setOnTouchListener { v, ev -> mMainViewModel.run {
+            val y   = appbarOffsetLive.value!!
+            val max = searchAreaHeight * -1
             val mid = max / 2
 
-            val res = when (ev.action) {
+            when (ev.action) {
                 MotionEvent.ACTION_UP -> {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("OFFSET : $y , $mid , $max")
-                    }
-
-                    if (y < 0 && y >= mid) {
+                    var ani: ValueAnimator? = null
+                    val result = if (y < 0 && y >= mid) {
                         if (mLog.isDebugEnabled) {
-                            mLog.debug("SCROLL UP")
+                            mLog.debug("MAGNET EFFECT SCROLL UP")
                         }
 
-                        mMainViewModel.testEvent.value = true
+                        magneticEvent.value = true
 
-                        val ani = ValueAnimator.ofInt(y, 0).setDuration(100)
-                        ani.addUpdateListener {
-                            it.animatedValue?.let {
-                                mMainViewModel.appbarOffsetLive.value = it as Int
-                            }
-                        }
-                        ani.start()
+                        ani = ValueAnimator.ofInt(y, 0)
+
+                        true
                     } else if (y < mid && y >= max) {
                         if (mLog.isDebugEnabled) {
-                            mLog.debug("SCROLL DOWN")
+                            mLog.debug("MAGNET EFFECT SCROLL DOWN")
                         }
 
-                        mMainViewModel.testEvent.value = false
+                        magneticEvent.value = false
 
-                        val ani = ValueAnimator.ofInt(y, max).setDuration(100)
-                        ani.addUpdateListener {
-                            it.animatedValue?.let {
-                                mMainViewModel.appbarOffsetLive.value = it as Int
-                            }
-                        }
-                        ani.start()
+                        ani = ValueAnimator.ofInt(y, max)
+
+                        true
+                    } else {
+                        false
                     }
 
-                    true
-                }
+                    ani?.let {
+                        it.setDuration(MAGNETIC_DURATION)
+                        it.addUpdateListener {
+                            it.animatedValue?.let {
+                                appbarOffsetLive.value = it as Int
+                            }
+                        }
+                        it.start()
+                    }
 
+                    result
+                }
                 else -> false
             }
-
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("SCROLL VIEW TOUCH : ${ev.action}")
-//            }
-
-            res
-        }
+        } }
 
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
@@ -197,11 +195,10 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     mLog.trace("WEBVIEW TRANSLATION Y : $it")
                 }
 
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("TRANS Y : $it")
-//                }
-
                 mBinding.webview.translationY = it.toFloat()
+
+                // https://stackoverflow.com/questions/30779667/android-collapsingtoolbarlayout-and-swiperefreshlayout-get-stuck
+                mBinding.swipeRefresh.isEnabled = it == 0
             }
 
             // appbar 에 가려져 있는 progress 를 보이게 하기 위해 offset 값이 필요함
@@ -211,7 +208,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                 }
 
                 mBinding.swipeRefresh.setProgressViewOffset(false,
-                    it, (it * 1.3f).toInt())
+                    it.toInt(), (it * 1.3f).toInt())
             }
 
             observe(currentTabPositionLive) {

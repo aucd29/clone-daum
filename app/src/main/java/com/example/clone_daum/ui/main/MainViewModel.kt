@@ -27,8 +27,6 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_BRS_OPEN                = "brs-open"
         const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
-
-
     }
 
     override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
@@ -46,7 +44,7 @@ class MainViewModel @Inject constructor(val app: Application
 
     var searchAreaHeight:Int = 0
 
-    val testEvent = SingleLiveEvent<Boolean>()
+    val magneticEvent = SingleLiveEvent<Boolean>()
 
 
     fun eventGotoNews() = gotoNewsEvent.run {

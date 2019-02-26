@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.main
 
 import android.graphics.Typeface
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -88,14 +87,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
     override fun initViewBinding() {
         mBinding.apply {
-            searchBar.globalLayoutListener {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
-                }
-
-                mViewModel.progressViewOffsetLive.value = searchBar.height
-            }
-
             tab.apply {
                 addOnTabSelectedListener(this@MainFragment)
 
@@ -110,6 +101,11 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 lp.height = 0
                 realtimeIssueArea.layoutParams = lp
 
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
+                }
+
+                mViewModel.progressViewOffsetLive.value = searchBar.height
                 mViewModel.searchAreaHeight = searchBar.height - tabLayout.height
             }
 
@@ -142,7 +138,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 appbarOffsetLive.value    = offset
             }
 
-            observe(testEvent) {
+            observe(magneticEvent) {
                 mBinding.searchBar.setExpanded(it)
             }
         }
