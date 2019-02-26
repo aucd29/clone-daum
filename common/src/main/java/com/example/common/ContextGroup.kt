@@ -13,6 +13,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
@@ -148,7 +149,7 @@ inline fun Context.clipboard(): String? = systemService(ClipboardManager::class.
  * clipboard 떼이터를 설정 한다.
  */
 inline fun Context.clipboard(value: String) = systemService(ClipboardManager::class.java)?.run {
-    primaryClip = ClipData.newPlainText("hspdata", value)
+    primaryClip = ClipData.newPlainText("burke-data", value)
 }
 
 
@@ -161,4 +162,12 @@ inline fun Context.availMem(percent: Int): Long {
     systemService(ActivityManager::class.java)?.getMemoryInfo(mi)
 
     return percent.toLong() * mi.availMem / 100L
+}
+
+inline fun Context.toast(message: String, len: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, message, len).show()
+}
+
+inline fun Context.toast(@StringRes resid: Int, len: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, resid, len).show()
 }

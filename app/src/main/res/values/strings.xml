@@ -90,10 +90,15 @@
     <string name="brs_intent_app_for_sharing">공유에 사용할 앱</string>
     <string name="brs_exist_fav_url">이미 입력된 url 임</string>
     <string name="brs_fav_url_ok">저장되었삼</string>
+    <string name="brs_copied_url">URL 이 클립보드에 복사됨</string>
+    <string name="brs_using_base_brs">기본 브라우저로 열면 로그인 및 위치 정보는 유지 안됨</string>
 
     <!-- error -->
     <string name="error_title">오류</string>
     <string name="error_empty_keyword">검색어가 없습니다.</string>
     <string name="error_network">네트워크가 올바르지 않습니다.</string>
+
+    <!--common-->
+    <string name="common_notify">알림</string>
 
 </resources>

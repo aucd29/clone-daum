@@ -39,9 +39,24 @@ inline fun View.layoutHeight(height: Int) {
     layoutParams = lp
 }
 
+inline fun View.layoutHeight(height: Float) {
+    val lp = layoutParams
+    lp.height = height.toInt()
+
+    layoutParams = lp
+}
+
 inline fun View.layoutWidth(width: Int) {
     val lp = layoutParams
     lp.width = width
+
+    layoutParams = lp
+}
+
+
+inline fun View.layoutWidth(width: Float) {
+    val lp = layoutParams
+    lp.width = width.toInt()
 
     layoutParams = lp
 }

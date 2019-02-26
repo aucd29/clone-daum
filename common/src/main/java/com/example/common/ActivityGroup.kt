@@ -90,9 +90,9 @@ data class DialogParam (
 ) {
     init {
         context?.apply {
-            messageId?.apply   { message     = string(this) }
-            titleId?.apply     { title       = string(this) }
-            negativeStr?.apply { negativeStr = string(this) }
+            messageId?.apply  { message     = string(this) }
+            titleId?.apply    { title       = string(this) }
+            negativeId?.apply { negativeStr = string(this) }
 
             positiveStr = string(if (positiveId != null) positiveId!! else android.R.string.ok)
         }

@@ -99,7 +99,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             when (cmd) {
                 CMD_BACK             -> onBackPressed()
                 CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment()
+                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment(mUrl!!)
                 CMD_SHARE_EVENT      -> shareLink(data.toString())
             }
         }

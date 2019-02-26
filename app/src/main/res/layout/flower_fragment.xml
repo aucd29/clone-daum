@@ -42,7 +42,7 @@
                 android:padding="@dimen/speech_icon_pad"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/ic_arrow_back_black_24dp"
+                android:src="@drawable/ic_arrow_back_white_24dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="@{() -> model.finishEvent()}"
         />
@@ -55,7 +55,11 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.8"
-                android:text="OPEN API 찾는 중"
+                android:text="@{model.message}"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                tools:text="MESSAGE"
+                android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, model.message)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

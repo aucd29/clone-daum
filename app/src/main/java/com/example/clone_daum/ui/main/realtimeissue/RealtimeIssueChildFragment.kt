@@ -22,6 +22,7 @@ class RealtimeIssueChildFragment
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
 
+    // main fragment 와 공유
     lateinit var mRealtimeIssueViewModel: RealtimeIssueViewModel
 
     override fun bindViewModel() {
@@ -50,7 +51,7 @@ class RealtimeIssueChildFragment
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
             RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data.let {
-                mRealtimeIssueViewModel.finishEvent()
+                mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
 
                 viewController.browserFragment(it.toString())
             }

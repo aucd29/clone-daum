@@ -21,6 +21,8 @@ import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 14. <p/>
+ *
+ * 디자인 변경으로 사용되지 않음 [aucd29][2019. 2. 26.]
  */
 
 class WeatherFragment

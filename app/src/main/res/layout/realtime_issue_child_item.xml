@@ -4,7 +4,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="java.lang.String" />
+        <import type="java.lang.String"/>
+
         <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.remote.RealtimeIssue"/>
     </data>
@@ -13,7 +14,10 @@
             android:id="@+id/realtime_issue_child_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:paddingStart="15dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="8dp"
             android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"
     >
 
@@ -41,7 +45,6 @@
                 android:text="@{item.text}"
         />
 
-        <!-- 그냥 하드코딩 -->
         <TextView
                 android:id="@+id/rank"
                 style="@style/realtime_issue_item"

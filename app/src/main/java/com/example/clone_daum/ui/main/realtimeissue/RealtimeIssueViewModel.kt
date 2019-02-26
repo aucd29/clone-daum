@@ -32,18 +32,20 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
-        const val ANIM_DURATION     = 400L
+        const val ANIM_DURATION     = 300L
         const val INTERVAL          = 7L
 
         const val CMD_BRS_OPEN      = "brs-open"
         const val CMD_ANIM_FINISH   = "anim-finish"
         const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
+        const val CMD_CLOSE_ISSUE   = "close-realtime-issue"
     }
 
     private var mAllIssueList: List<RealtimeIssue>? = null
     private var mRealtimeCount = 0
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
+
 
     val dp              = CompositeDisposable()
     val tabAdapter      = ObservableField<RealtimeIssueTabAdapter>()
@@ -57,7 +59,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val tabAlpha        = ObservableField<AnimParams>()
 
     val visibleDetail   = ObservableField<Int>(View.GONE)
-
+    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
 
     fun load(html: String) {
         dp.add(Observable.just(html)

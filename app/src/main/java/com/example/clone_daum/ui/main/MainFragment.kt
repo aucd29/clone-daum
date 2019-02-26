@@ -1,28 +1,28 @@
 package com.example.clone_daum.ui.main
 
-import android.Manifest
+import android.graphics.Typeface
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
-import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
-import com.example.clone_daum.ui.main.weather.WeatherViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.example.common.di.module.injectOfActivity
-import com.example.common.runtimepermission.PermissionParams
-import com.example.common.runtimepermission.runtimePermissions
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-
+import com.example.clone_daum.R
+import com.example.clone_daum.common.Config
 
 class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
-    , TabLayout.OnTabSelectedListener {
+    , TabLayout.OnTabSelectedListener, OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
     }
@@ -33,17 +33,28 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     @Inject lateinit var viewController: ViewController
+    @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var disposable: CompositeDisposable
 
-    private lateinit var mWeatherViewModel: WeatherViewModel
+//    private lateinit var mWeatherViewModel: WeatherViewModel
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel
+
+    val mRealtimeTabSelectedListener = object: TabLayout.OnTabSelectedListener {
+        override fun onTabReselected(p0: TabLayout.Tab?) { }
+        override fun onTabUnselected(p0: TabLayout.Tab?) { }
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            tab?.let {
+                customRealtimeIssueTabText(it.position)
+            }
+        }
+    }
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        initWeatherViewModel()
+//        initWeatherViewModel()
         initRealtimeIssueViewModel()
         initPopularViewModel()
 
@@ -60,10 +71,10 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             }))
     }
 
-    private fun initWeatherViewModel() {
-        mWeatherViewModel     = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
-        mBinding.weatherModel = mWeatherViewModel
-    }
+//    private fun initWeatherViewModel() {
+//        mWeatherViewModel     = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
+//        mBinding.weatherModel = mWeatherViewModel
+//    }
 
     private fun initRealtimeIssueViewModel() {
         mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
@@ -89,6 +100,20 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                 // 1번째 tab 을 focus 해야 됨 (news)
                 postDelayed({ getTabAt(1)?.select() }, 100)
+            }
+
+            searchBar.globalLayoutListener {
+                // 검색쪽 위치까지 margin 이동
+                mBinding.apply {
+                    val lp = realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
+                    lp.topMargin = searchArea.height - searchUnderline.height
+                    lp.height = 0
+                    realtimeIssueArea.layoutParams = lp
+                }
+            }
+
+            realtimeIssueViewpager.globalLayoutListener {
+                realtimeIssueViewpager.translationY = realtimeIssueViewpager.height * -1f
             }
         }
     }
@@ -123,6 +148,32 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             }
 
             viewpager.set(mBinding.realtimeIssueViewpager)
+            viewPagerLoaded.set { customRealtimeIssueTab() }
+        }
+    }
+
+    private fun customRealtimeIssueTab() {
+        mBinding.realtimeIssueTab.apply {
+            addOnTabSelectedListener(mRealtimeTabSelectedListener)
+
+            var i = 0
+
+            tabs.forEach {
+                it?.let { tab ->
+                    val text = tab.text
+                    val custom = LayoutInflater.from(requireContext()).inflate(R.layout.tab_main_custom, null)
+                    // kotlin extension 으로 하고 싶긴한데 먼가 editor 문제인지 import 가 안된다.
+                    custom.findViewById<TextView>(R.id.tab_label).text = text
+
+                    tab.customView = custom
+                }
+
+                mBinding.realtimeIssueTab.tabs[0]?.customView?.let {
+                    if (it is TextView) {
+                        it.setTypeface(it.typeface, Typeface.BOLD)
+                    }
+                }
+            }
         }
     }
 
@@ -138,21 +189,30 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                     CMD_SEARCH_FRAMGNET         -> searchFragment()
                     CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
                     CMD_REALTIME_ISSUE_FRAGMENT -> internalRealtimeFragment()
-//                    CMD_WEATHER_FRAGMENT        -> weatherFragment()  // 메인에서 제거 [aucd29][2019. 2. 22.]
-                    CMD_MEDIA_SEARCH_FRAGMENT   -> mediaSearchFragment()
                     CMD_BRS_OPEN                -> browserFragment(data.toString())
-                    CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
-                        , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
-                        , { req, res ->
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("PERMISSION LOCATION : $res")
-                            }
+                    CMD_MEDIA_SEARCH_FRAGMENT   -> {
+                        var delay = RealtimeIssueViewModel.ANIM_DURATION
+                        if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
+                            internalRealtimeFragment()
+                        } else {
+                            delay = 0
+                        }
 
-                            if (res) {
-                                mViewModel.visibleGps.set(View.GONE)
-                                mWeatherViewModel.refreshCurrentLocation()
-                            }
-                        }))
+                        mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, delay)
+                    }
+//                    CMD_PERMISSION_GPS          -> runtimePermissions(PermissionParams(activity()
+//                        , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
+//                        , { req, res ->
+//                            if (mLog.isDebugEnabled) {
+//                                mLog.debug("PERMISSION LOCATION : $res")
+//                            }
+//
+//                            if (res) {
+//                                mViewModel.visibleGps.set(View.GONE)
+////                                mWeatherViewModel.refreshCurrentLocation()
+//                            }
+//                        }))
+//                    CMD_WEATHER_FRAGMENT        -> weatherFragment()  // 메인에서 제거 [aucd29][2019. 2. 22.]
                 }
             }
         }
@@ -162,31 +222,50 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 CMD_LOADED_ISSUE -> mRealtimeIssueViewModel.apply {
                     tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
                 }
+                CMD_CLOSE_ISSUE -> internalRealtimeFragment()
             }
         }
     }
 
     private fun internalRealtimeFragment() {
+        // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
+
+        val lp = mBinding.realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
+
         mRealtimeIssueViewModel.apply {
             if (visibleDetail.get() == View.GONE) {
                 visibleDetail.set(View.VISIBLE)
+
+                tabAlpha.set(AnimParams(1f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 tabMenuRotation.set(AnimParams(180f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 containerTransY.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+
+                val currentTabHeight = 0f
+                val changeTabHeight = config.SCREEN.y.toFloat() - lp.topMargin
+
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
+                }
+
+                mBinding.realtimeIssueArea.layoutHeight(changeTabHeight)
             } else {
-                visibleDetail.set(View.GONE)
+                tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION, endListener = {
+                    visibleDetail.set(View.GONE)
+                }))
                 tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
-                val height = mBinding.realtimeIssueViewpager.height.toFloat() * -1
+                val height = mBinding.realtimeIssueViewpager.height * -1f
                 containerTransY.set(AnimParams(height, duration = RealtimeIssueViewModel.ANIM_DURATION))
-            }
 
-//            mRealtimeIssueList?.let {
-//                if (it.size > 0) {
-////                    viewController.realtimeIssueFragment()
-//                } else {
-////                            alert(R.string.main_realtime_issue_load_error, R.string.error_title)
-//                }
-//            }
+                val currentTabHeight = mBinding.realtimeIssueArea.height.toFloat()
+                val changeTabHeight = 0f
+
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
+                }
+
+                mBinding.realtimeIssueArea.layoutHeight(0f)
+            }
         }
     }
 
@@ -207,9 +286,19 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         mBinding.apply {
             tab.removeOnTabSelectedListener(this@MainFragment)
             viewpager.adapter = null
+            realtimeIssueTab.removeOnTabSelectedListener(mRealtimeTabSelectedListener)
         }
 
         super.onDestroy()
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
+            internalRealtimeFragment()
+            return true
+        }
+
+        return false
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -219,13 +308,28 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) { }
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+
+    }
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (mLog.isDebugEnabled) {
             mLog.debug("TAB SELECTED ${tab.position}")
         }
 
         mViewModel.currentTabPositionLive.value = tab.position
+    }
+
+    fun customRealtimeIssueTabText(pos: Int) {
+        var i = 0
+        mBinding.realtimeIssueTab.tabs.forEach {
+            val tv = (it?.customView as TextView)
+
+            if (i++ == pos) {
+                tv.setTypeface(tv.typeface, Typeface.BOLD)
+            } else {
+                tv.setTypeface(tv.typeface, Typeface.NORMAL)
+            }
+        }
     }
     
     ////////////////////////////////////////////////////////////////////////////////////

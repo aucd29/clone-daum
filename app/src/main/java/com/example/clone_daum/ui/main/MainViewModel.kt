@@ -1,16 +1,13 @@
 package com.example.clone_daum.ui.main
 
 import android.app.Application
-import android.content.DialogInterface
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.common.Config
-import com.example.clone_daum.common.PreloadConfig
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.google.android.material.appbar.AppBarLayout
@@ -28,10 +25,10 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_SEARCH_FRAMGNET         = "search"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
-        const val CMD_WEATHER_FRAGMENT        = "weahter"
-        const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
         const val CMD_BRS_OPEN                = "brs-open"
-        const val CMD_PERMISSION_GPS          = "permission-gps"
+        const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
+//        const val CMD_WEATHER_FRAGMENT        = "weather"
+//        const val CMD_PERMISSION_GPS          = "permission-gps"
     }
 
     override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
@@ -41,7 +38,7 @@ class MainViewModel @Inject constructor(val app: Application
     var gotoNewsEvent           = ObservableInt(0)
 
     val visibleBack             = ObservableInt(View.GONE)
-    val visibleGps              = ObservableInt(if (config.HAS_PERMISSION_GPS) View.GONE else View.VISIBLE)
+//    val visibleGps              = ObservableInt(if (config.HAS_PERMISSION_GPS) View.GONE else View.VISIBLE)
 
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()

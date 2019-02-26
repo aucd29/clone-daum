@@ -78,7 +78,8 @@
         <!--<item name="android:textSize">17sp</item>-->
         <!--디자인변경으로 삭제 됨 aucd29 -->
         <!--<item name="android:textStyle">bold</item>-->
-        <!--<item name="android:textSize">13sp</item>-->
+
+        <item name="android:textSize">13sp</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>

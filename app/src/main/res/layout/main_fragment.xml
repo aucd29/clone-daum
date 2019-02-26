@@ -5,11 +5,14 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel" />
-        <variable name="weatherModel"
-                  type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>
+        <import type="android.view.View"/>
+
+        <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
+        <!--디자인 변경으로 인해 제거 -->
+        <!--<variable name="weatherModel"-->
+        <!--type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>-->
         <variable name="realtimeIssueModel"
-                  type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel" />
+                  type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,8 +32,20 @@
                     app:bindPagerAdapter="@{model.tabAdapter}"
             />
 
+            <!-- realtime issue 쪽 배경 용 -->
+            <View
+                    android:id="@+id/realtime_issue_background"
+                    android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:background="#52000000"
+                    android:alpha="0"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
+                    app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
+                    android:visibility="@{realtimeIssueModel.visibleDetail}"
+            />
+
             <!--
             app:layout_behavior="com.example.clone_daum.ui.main.MainScrollingViewBehavior"
+            https://stackoverflow.com/questions/31543309/remove-the-shadow-below-tablayout-on-android
             -->
 
             <com.google.android.material.appbar.AppBarLayout
@@ -38,6 +53,7 @@
                     android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:elevation="0dp"
                     app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -99,7 +115,7 @@
                         />
 
                         <!-- REALTIME ISSUE -->
-                        <!-- 디자인 변경...  -->
+                        <!-- 디자인 변경 됨 ...  -->
                         <TextView
                                 android:id="@+id/realtime_label"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -166,7 +182,16 @@
                                 android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                         />
 
-                        <!--pivot 을 변경해야 함 -->
+                        <View
+                                android:id="@+id/search_underline"
+                                style="@style/dumyView"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/realtime_issue_extend"
+                                app:layout_constraintEnd_toEndOf="parent"
+                        />
+
+                        <!-- REALTIME ISSUE TAB LAYOUT -->
+                        <!-- pivot 을 변경해야 함 -->
 
                         <com.google.android.material.tabs.TabLayout
                                 android:id="@+id/realtime_issue_tab"
@@ -174,27 +199,19 @@
                                 android:layout_width="0dp"
                                 android:layout_height="@dimen/main_tab_height"
                                 app:tabMode="scrollable"
-                                app:tabPaddingStart="10dp"
-                                app:tabPaddingEnd="10dp"
                                 app:tabGravity="fill"
                                 app:tabMinWidth="0dp"
+                                android:layout_marginStart="10dp"
                                 app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/realtime_issue_extend"
                                 app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
-                                app:layout_constraintBottom_toBottomOf="@+id/search_underline"
                                 android:requiresFadingEdge="horizontal"
-                                android:visibility="@{realtimeIssueModel.visibleDetail}"
                                 app:tabBackground="@android:color/white"
+                                android:background="@android:color/white"
+                                android:visibility="@{realtimeIssueModel.visibleDetail}"
                                 app:bindSetupWithViewPager="@{realtimeIssueModel.viewpager}"
                                 app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
-                        />
-
-                        <View
-                                android:id="@+id/search_underline"
-                                style="@style/dumyView"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/realtime_issue"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:alpha="0"
                         />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -206,7 +223,9 @@
                         android:id="@+id/tab_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_anchor="@+id/toolbar_layout">
+                        app:layout_anchor="@+id/toolbar_layout"
+                >
+
                     <!--android:selectedItemPosition="@={model.gotoNewsEvent}"-->
                     <!--
                     fade edge :
@@ -230,7 +249,6 @@
                             app:layout_constraintEnd_toStartOf="@+id/tab_menu"
                             android:requiresFadingEdge="horizontal"
                             android:fadingEdgeLength="50dp"
-                            android:elevation="0dp"
                     />
 
                     <View
@@ -245,7 +263,7 @@
                     <ImageView
                             android:id="@+id/tab_menu"
                             android:layout_width="wrap_content"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/main_tab_height"
                             android:src="@drawable/ic_menu_black_24dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -256,26 +274,38 @@
                             android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT)}"
                     />
 
-                    <com.example.clone_daum.common.widget.BkViewPager
-                            android:id="@+id/realtime_issue_viewpager"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:translationY="-500dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:paddingBottom="10dp"
-                            android:visibility="@{realtimeIssueModel.visibleDetail}"
-                            app:bindPagerAdapter="@{realtimeIssueModel.tabAdapter}"
-                            app:bindTranslateY="@{realtimeIssueModel.containerTransY}"
-                    />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <!--
+        appbar 내부에 있으면 layout 을 재 조정해야 하므로 첫 로딩 때
+        버벅이는 문제로 그냥 top level 의 layout 에 view 를 넣는 형태로 변경
+        -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/realtime_issue_area"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+        >
+
+            <com.example.clone_daum.common.widget.BkViewPager
+                    android:id="@+id/realtime_issue_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:bindPagerAdapter="@{realtimeIssueModel.tabAdapter}"
+                    app:bindViewPagerLoaded="@{realtimeIssueModel.viewPagerLoaded}"
+                    app:bindTranslateY="@{realtimeIssueModel.containerTransY}"
+            />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
                 android:id="@+id/over_back"

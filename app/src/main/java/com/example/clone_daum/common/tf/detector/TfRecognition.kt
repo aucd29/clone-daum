@@ -30,7 +30,8 @@ data class TfRecognition(
 ) : IRecyclerDiff {
     override fun compare(item: IRecyclerDiff): Boolean {
         val newItem = item as TfRecognition
-        return id == newItem.id && title == newItem.title
+//        return id == newItem.id && title == newItem.title
+        return title == newItem.title
     }
 
     fun string() =

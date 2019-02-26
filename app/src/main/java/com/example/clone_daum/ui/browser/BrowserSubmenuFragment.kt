@@ -1,7 +1,12 @@
 package com.example.clone_daum.ui.browser
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserSubmenuFragmentBinding
-import com.example.common.BaseDaggerBottomSheetDialogFragment
+import com.example.common.*
 import dagger.android.ContributesAndroidInjector
 
 /**
@@ -16,7 +21,8 @@ import dagger.android.ContributesAndroidInjector
  *  - https://github.com/material-components/material-components-android/tree/master/lib/java/com/google/android/material
  */
 
-class BrowserSubmenuFragment
+@SuppressLint("ValidFragment")
+class BrowserSubmenuFragment (val mUrl: String)
     : BaseDaggerBottomSheetDialogFragment<BrowserSubmenuFragmentBinding, BrowserSubmenuViewModel>() {
     override fun initViewBinding() {
 
@@ -24,6 +30,40 @@ class BrowserSubmenuFragment
 
     override fun initViewModelEvents() {
 
+    }
+
+    override fun onCommandEvent(cmd: String, data: Any) {
+        BrowserSubmenuViewModel.apply {
+            when (cmd) {
+                CMD_SUBMENU -> {
+                    when (data.toString()) {
+                        "URL 복사" -> {
+                            context?.toast(R.string.brs_copied_url)
+                            requireContext().clipboard(mUrl)
+
+//                            dismiss()
+                        }
+                        "기타 브라우저" -> {
+                            confirm(R.string.brs_using_base_brs, R.string.common_notify,
+                                listener = { res, dlg ->
+                                    if (res) {
+                                        showBaseBrs()
+                                    }
+
+//                                    dismiss()
+                                })
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun showBaseBrs() {
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            setData(Uri.parse(mUrl))
+        })
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

@@ -18,6 +18,7 @@ class RealtimeIssueChildViewModel @Inject constructor(app: Application
 ) : RecyclerViewModel<RealtimeIssue>(app), ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildViewModel::class.java)
+
         const val CMD_BRS_OPEN = "brs-open"
     }
 

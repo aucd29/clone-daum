@@ -16,13 +16,10 @@ import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
-import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueFragment
-import com.example.clone_daum.ui.main.weather.WeatherFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import com.example.common.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
@@ -46,22 +43,22 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             MainFragment::class.java, commit = FragmentCommit.NOW, backStack = false))
     }
 
-    fun realtimeIssueFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("REALTIME ISSUE FRAGMENT")
-        }
+//    fun realtimeIssueFragment() {
+//        if (mLog.isInfoEnabled) {
+//            mLog.info("REALTIME ISSUE FRAGMENT")
+//        }
+//
+//        manager.show(FragmentParams(CONTAINER, RealtimeIssueFragment::class.java))
+////        manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
+//    }
 
-        manager.show(FragmentParams(CONTAINER, RealtimeIssueFragment::class.java))
-//        manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
-    }
-
-    fun weatherFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("WEATHER FRAGMENT")
-        }
-
-        manager.showDialog(WeatherFragment(), "weather")
-    }
+//    fun weatherFragment() {
+//        if (mLog.isInfoEnabled) {
+//            mLog.info("WEATHER FRAGMENT")
+//        }
+//
+//        manager.showDialog(WeatherFragment(), "weather")
+//    }
 
     fun mediaSearchFragment() {
         if (mLog.isInfoEnabled) {
@@ -171,11 +168,11 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
     }
 
-    fun browserSubFragment() {
+    fun browserSubFragment(url: String) {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER SUBMENU FRAGMENT")
         }
 
-        manager.showDialog(BrowserSubmenuFragment(), "brs-submenu")
+        manager.showDialog(BrowserSubmenuFragment(url), "brs-submenu")
     }
 }

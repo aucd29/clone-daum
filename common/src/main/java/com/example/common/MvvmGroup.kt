@@ -139,7 +139,7 @@ interface ICommandEventAware {
 
     // xml 에서 호출이 쉽게 하도록 추가
     fun commandEvent(cmd: String) {
-        commandEvent.value = cmd to -1
+        commandEvent(cmd, -1)
     }
 }
 

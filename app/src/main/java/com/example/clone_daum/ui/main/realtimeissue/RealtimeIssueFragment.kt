@@ -25,145 +25,143 @@ import javax.inject.Inject
  * - https://gist.github.com/ArthurNagy/1c4a64e6c8a7ddfca58638a9453e4aed
  *
  * 디자인이 변경됨 =_ = [aucd29][2019. 2. 22.]
- *
  */
 
-class RealtimeIssueFragment
-    : BaseDaggerFragment<RealtimeIssueFragmentBinding, RealtimeIssueViewModel>()
-    , OnBackPressedListener {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(RealtimeIssueFragment::class.java)
-
-        private const val ANIM_DURATION     = 200L
-    }
-
-    init {
-        // RealtimeIssueViewModel 를 MainFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
-    }
-
-    @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
-
-
-//    // 라운드 다이얼로그로 수정
-//    override fun onCreateDialog(savedInstanceState: Bundle?) =
-//        BottomSheetDialog(requireContext(), R.style.round_bottom_sheet_dialog)
-
-    override fun initViewBinding() {
-        mBinding.apply {
-            realtimeIssueViewpager.apply {
-                globalLayoutListener {
-                    translationY = height.toFloat() * -1
-
-                    startAnimation()
-                }
-            }
-
-            realtimeIssueBackground.apply {
-                globalLayoutListener {
-                    val newHeight = height + 20.dpToPx(requireContext())
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("REALTIME ISSUE HEIGHT : ${height} -> ${newHeight}")
-                    }
-
-                    layoutHeight(newHeight)
-                }
-            }
-        }
-    }
-
-    override fun initViewModelEvents() {
-        mViewModel.apply {
-            mRealtimeIssueList?.let {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("INIT TAB ADAPTER")
-                }
-
-                tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, it))
-                viewpager.set(mBinding.realtimeIssueViewpager)
-            }
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
-        }
-
-        endAnimation()
-        return true
-    }
-
-    private fun startAnimation() {
-//        val height = mBinding.realtimeIssueLayout.height.toFloat() * -1
-//        val overshootAnim = AnimParams(0f
-//            , initValue    = height
-//            , duration     = ANIM_DURATION
-//            , startDelay   = ANIM_START_DELAY
-//        )
+//class RealtimeIssueFragment
+//    : BaseDaggerFragment<RealtimeIssueFragmentBinding, RealtimeIssueViewModel>()
+//    , OnBackPressedListener {
+//    companion object {
+//        private val mLog = LoggerFactory.getLogger(RealtimeIssueFragment::class.java)
 //
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            overshootAnim.reverse = {
-//                mPauseAnimator = it
-//                it?.pause()
+//        private const val ANIM_DURATION     = 200L
+//    }
+//
+//    init {
+//        // RealtimeIssueViewModel 를 MainFragment 와 공유
+//        mViewModelScope = SCOPE_ACTIVITY
+//    }
+//
+//    @Inject lateinit var preConfig: PreloadConfig
+//    @Inject lateinit var viewController: ViewController
+//
+////    // 라운드 다이얼로그로 수정
+////    override fun onCreateDialog(savedInstanceState: Bundle?) =
+////        BottomSheetDialog(requireContext(), R.style.round_bottom_sheet_dialog)
+//
+//    override fun initViewBinding() {
+//        mBinding.apply {
+//            realtimeIssueViewpager.apply {
+//                globalLayoutListener {
+//                    translationY = height.toFloat() * -1
+//
+//                    startAnimation()
+//                }
+//            }
+//
+//            realtimeIssueBackground.apply {
+//                globalLayoutListener {
+//                    val newHeight = height + 20.dpToPx(requireContext())
+//                    if (mLog.isDebugEnabled) {
+//                        mLog.debug("REALTIME ISSUE HEIGHT : ${height} -> ${newHeight}")
+//                    }
+//
+//                    layoutHeight(newHeight)
+//                }
 //            }
 //        }
-
-        mViewModel.apply {
-            // animate set 을 쓰는게 나으려나?
-            dimmingBgAlpha.set(AnimParams(1f, duration = ANIM_DURATION))
-            containerTransY.set(AnimParams(0f, duration = ANIM_DURATION))
-            tabMenuRotation.set(AnimParams(180f, duration = ANIM_DURATION))
-//            overshootTransY.set(overshootAnim)
-        }
-    }
-
-    private fun endAnimation(endCallback: (() -> Unit)? = null) {
-        val height = mBinding.realtimeIssueViewpager.height.toFloat() * -1
-        val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
-        val containerTransYAnim = AnimParams(height, duration = ANIM_DURATION
-            , endListener = {
-                finish()
-                endCallback?.invoke()
-            })
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            dimmingBgAlphaAnim.startDelay  = ANIM_START_DELAY
-//            containerTransYAnim.startDelay = ANIM_START_DELAY
-//            mPauseAnimator?.resume()
+//    }
+//
+//    override fun initViewModelEvents() {
+//        mViewModel.apply {
+//            mRealtimeIssueList?.let {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("INIT TAB ADAPTER")
+//                }
+//
+//                tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, it))
+//                viewpager.set(mBinding.realtimeIssueViewpager)
+//            }
 //        }
-
-        mViewModel.apply {
-            dimmingBgAlpha.set(dimmingBgAlphaAnim)
-            containerTransY.set(containerTransYAnim)
-            tabMenuRotation.set(AnimParams(0f, duration = ANIM_DURATION))
-        }
-    }
-
-    override fun onCommandEvent(cmd: String, data: Any) {
-        RealtimeIssueViewModel.apply {
-            when(cmd) {
-                CMD_ANIM_FINISH -> onBackPressed()
-                CMD_BRS_OPEN    -> endAnimation {
-                    viewController.browserFragment(data.toString())
-                }
-            }
-        }
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Module
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    @dagger.Module
-    abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): RealtimeIssueFragment
-    }
-}
+//    }
+//
+//    override fun onBackPressed(): Boolean {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("BACK PRESSED")
+//        }
+//
+//        endAnimation()
+//        return true
+//    }
+//
+//    private fun startAnimation() {
+////        val height = mBinding.realtimeIssueLayout.height.toFloat() * -1
+////        val overshootAnim = AnimParams(0f
+////            , initValue    = height
+////            , duration     = ANIM_DURATION
+////            , startDelay   = ANIM_START_DELAY
+////        )
+////
+////        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////            overshootAnim.reverse = {
+////                mPauseAnimator = it
+////                it?.pause()
+////            }
+////        }
+//
+//        mViewModel.apply {
+//            // animate set 을 쓰는게 나으려나?
+//            dimmingBgAlpha.set(AnimParams(1f, duration = ANIM_DURATION))
+//            containerTransY.set(AnimParams(0f, duration = ANIM_DURATION))
+//            tabMenuRotation.set(AnimParams(180f, duration = ANIM_DURATION))
+////            overshootTransY.set(overshootAnim)
+//        }
+//    }
+//
+//    private fun endAnimation(endCallback: (() -> Unit)? = null) {
+//        val height = mBinding.realtimeIssueViewpager.height.toFloat() * -1
+//        val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
+//        val containerTransYAnim = AnimParams(height, duration = ANIM_DURATION
+//            , endListener = {
+//                finish()
+//                endCallback?.invoke()
+//            })
+//
+////        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////            dimmingBgAlphaAnim.startDelay  = ANIM_START_DELAY
+////            containerTransYAnim.startDelay = ANIM_START_DELAY
+////            mPauseAnimator?.resume()
+////        }
+//
+//        mViewModel.apply {
+//            dimmingBgAlpha.set(dimmingBgAlphaAnim)
+//            containerTransY.set(containerTransYAnim)
+//            tabMenuRotation.set(AnimParams(0f, duration = ANIM_DURATION))
+//        }
+//    }
+//
+//    override fun onCommandEvent(cmd: String, data: Any) {
+//        RealtimeIssueViewModel.apply {
+//            when(cmd) {
+//                CMD_ANIM_FINISH -> onBackPressed()
+//                CMD_BRS_OPEN    -> endAnimation {
+//                    viewController.browserFragment(data.toString())
+//                }
+//            }
+//        }
+//    }
+//
+//    ////////////////////////////////////////////////////////////////////////////////////
+//    //
+//    // Module
+//    //
+//    ////////////////////////////////////////////////////////////////////////////////////
+//
+//    @dagger.Module
+//    abstract class Module {
+//        @ContributesAndroidInjector
+//        abstract fun contributeInjector(): RealtimeIssueFragment
+//    }
+//}
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
