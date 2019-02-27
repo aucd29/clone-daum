@@ -95,11 +95,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             }
 
             searchBar.globalLayoutListener {
-                // 검색쪽 위치까지 margin 이동
-                val lp = realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
-                lp.topMargin = searchArea.height - searchUnderline.height
-                lp.height = 0
-                realtimeIssueArea.layoutParams = lp
+                val result = realtimeIssueAreaMargin()
 
                 if (mLog.isDebugEnabled) {
                     mLog.debug("APP BAR HEIGHT : ${searchBar.height}")
@@ -107,10 +103,44 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                 mViewModel.progressViewOffsetLive.value = searchBar.height
                 mViewModel.searchAreaHeight = searchBar.height - tabLayout.height
+
+                result
             }
 
-            realtimeIssueViewpager.globalLayoutListener {
-                realtimeIssueViewpager.translationY = realtimeIssueViewpager.height * -1f
+            realtimeIssueViewpager.let {
+                it.globalLayoutListener {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("REALTIME ISSUE VIEWPAGER HEIGHT : ${it.height}")
+                    }
+
+                    it.translationY = it.height * -1f
+
+                    if (it.translationY != 0f) {
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        }
+    }
+
+    private fun realtimeIssueAreaMargin(): Boolean {
+        mBinding.apply {
+            realtimeIssueArea.apply {
+                // 검색쪽 위치까지 margin 이동
+                (layoutParams as ConstraintLayout.LayoutParams).let {
+                    it.topMargin = searchArea.height - searchUnderline.height
+
+                    if (mLog.isDebugEnabled) {
+                        mLog.info("REALTIME ISSUE AREA TOP MARGIN : ${it.topMargin}")
+                    }
+
+                    it.height = 0
+                    layoutParams = it
+
+                    return it.topMargin != 0
+                }
             }
         }
     }

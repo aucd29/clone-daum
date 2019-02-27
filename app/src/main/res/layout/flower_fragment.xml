@@ -57,9 +57,11 @@
                 app:layout_constraintVertical_bias="0.8"
                 android:text="@{model.message}"
                 android:textColor="@android:color/white"
-                android:textSize="17sp"
+                android:textSize="20sp"
                 tools:text="MESSAGE"
                 android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, model.message)}"
+                android:padding="10dp"
+                android:background="@drawable/selector_button_bgcolor"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

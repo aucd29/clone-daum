@@ -37,11 +37,20 @@ class BrowserSubmenuFragment (val mUrl: String)
             when (cmd) {
                 CMD_SUBMENU -> {
                     when (data.toString()) {
+                        "즐겨찾기목록" -> {
+
+                        }
+                        "즐겨찾기추가" -> {
+
+                        }
+                        "방문기록" -> {
+
+                        }
                         "URL 복사" -> {
                             context?.toast(R.string.brs_copied_url)
                             requireContext().clipboard(mUrl)
 
-//                            dismiss()
+                            dismiss()
                         }
                         "기타 브라우저" -> {
                             confirm(R.string.brs_using_base_brs, R.string.common_notify,
@@ -50,8 +59,26 @@ class BrowserSubmenuFragment (val mUrl: String)
                                         showBaseBrs()
                                     }
 
-//                                    dismiss()
+                                    dismiss()
                                 })
+                        }
+                        "화면 내 검색" -> {
+
+                        }
+                        "화면 캡쳐" -> {
+
+                        }
+                        "글자 크기" -> {
+
+                        }
+                        "홈 화면에 추가" -> {
+
+                        }
+                        "전체화면 보기" -> {
+
+                        }
+                        "앱설정" -> {
+
                         }
                     }
                 }
@@ -60,7 +87,7 @@ class BrowserSubmenuFragment (val mUrl: String)
     }
 
     fun showBaseBrs() {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
+        activity?.startActivity(Intent(Intent.ACTION_VIEW).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             setData(Uri.parse(mUrl))
         })

@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory
  */
 
 class VerticalSwipeRefreshLayout: SwipeRefreshLayout {
-    private val mLog = LoggerFactory.getLogger(VerticalSwipeRefreshLayout::class.java)
-
     private var touchSlop: Int
     private var prevX: Float = 0f
     private var decliend: Boolean = false

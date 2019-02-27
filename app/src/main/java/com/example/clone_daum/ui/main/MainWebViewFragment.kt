@@ -65,7 +65,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     var ani: ValueAnimator? = null
                     val result = if (y < 0 && y >= mid) {
                         if (mLog.isDebugEnabled) {
-                            mLog.debug("MAGNET EFFECT SCROLL UP")
+                            mLog.debug("MAGNETIC EFFECT SCROLL UP $y")
                         }
 
                         magneticEvent.value = true
@@ -74,16 +74,24 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
                         true
                     } else if (y < mid && y >= max) {
+                        // 자석 효과 이후 자연스러운 스크롤이 되지 않는 문제로 예외 처리 추가 [aucd29][2019. 2. 27.]
+                        if (scrollview.scrollY <= 0) {
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("MAGNETIC EFFECT SCROLL DOWN $y")
+                            }
+
+                            magneticEvent.value = false
+                            ani = ValueAnimator.ofInt(y, max)
+
+                            true
+                        } else {
+                            false
+                        }
+                    } else {
                         if (mLog.isDebugEnabled) {
-                            mLog.debug("MAGNET EFFECT SCROLL DOWN")
+                            mLog.debug("OTHER SCROLL")
                         }
 
-                        magneticEvent.value = false
-
-                        ani = ValueAnimator.ofInt(y, max)
-
-                        true
-                    } else {
                         false
                     }
 

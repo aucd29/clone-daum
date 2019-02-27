@@ -45,6 +45,8 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                         mBinding.mediaSearchButtonLayout.height.toFloat() * -1
 
                 startAnimation()
+
+                true
             }
         }
 
@@ -58,6 +60,8 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                 }
 
                 layoutHeight(newHeight)
+
+                true
             }
         }
 

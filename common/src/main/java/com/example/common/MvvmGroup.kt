@@ -339,6 +339,8 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
                     }
                 })
             }
+
+            true
         }
     }
 
@@ -349,6 +351,8 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
                 state      = BottomSheetBehavior.STATE_EXPANDED
                 peekHeight = 0
             }
+
+            true
         }
     }
 
