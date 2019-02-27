@@ -69,6 +69,24 @@ inline fun Activity.keepScreen(on: Boolean) {
     }
 }
 
+inline fun Activity.fullscreen(fullscreen: Boolean) {
+    runOnUiThread {
+        val lp = window.attributes
+        lp.let {
+            if (fullscreen) {
+                it.flags = it.flags or WindowManager.LayoutParams.FLAG_FULLSCREEN
+            } else {
+                it.flags = it.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN.inv()
+            }
+
+            window.attributes = it
+        }
+    }
+}
+
+inline fun Activity.isFullscreen() =
+    (window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN
+
 ////////////////////////////////////////////////////////////////////////////////////
 //
 // Dialog

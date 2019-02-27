@@ -5,7 +5,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.example.common.WebViewEvent" />
+        <import type="android.view.View"/>
+        <import type="com.example.common.WebViewEvent"/>
+
         <variable name="model" type="com.example.clone_daum.ui.browser.BrowserViewModel"/>
     </data>
 
@@ -141,6 +143,46 @@
                 app:layout_constraintBottom_toTopOf="@+id/brs_bottom_layout"
         />
 
+        <!--FULLSCREEN BUTTONS -->
+
+        <TextView
+                android:id="@+id/brs_home"
+                style="@style/brs_fullscreen_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/brs_fullscreen_btn_mgn"
+                android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
+                android:text="@string/fa_home"
+                android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
+                android:onClick="@{() -> model.commandEvent(model.CMD_HOME)}"
+        />
+
+        <TextView
+                android:id="@+id/brs_move_top"
+                style="@style/brs_fullscreen_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/brs_bottom_layout"
+                android:layout_marginEnd="@dimen/brs_fullscreen_btn_mgn"
+                android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
+                android:text="@string/fa_hand_point_up"
+                android:alpha="0"
+                android:onClick="@{() -> model.commandEvent(model.CMD_GOTO_TOP)}"
+                app:bindAlpha="@{model.brsGoTop}"
+        />
+
+        <TextView
+                android:id="@+id/brs_normal_screen"
+                style="@style/brs_fullscreen_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/brs_fullscreen_btn_mgn"
+                android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
+                android:text="@string/fa_external_link_alt"
+                android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
+                android:onClick="@{() -> model.commandEvent(model.CMD_NORMALSCREEN)}"
+        />
+
+        <!-- bottom buttons -->
         <LinearLayout
                 android:id="@+id/brs_bottom_layout"
                 android:layout_width="match_parent"
@@ -150,6 +192,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:orientation="horizontal"
                 app:bindTranslateY="@{model.brsAreaAni}"
+                android:visibility="@{model.isFullscreen ? View.GONE : View.VISIBLE}"
         >
 
             <ImageView

@@ -168,11 +168,11 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
     }
 
-    fun browserSubFragment(url: String) {
+    fun browserSubFragment(callback: (String) -> Unit) {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER SUBMENU FRAGMENT")
         }
 
-        manager.showDialog(BrowserSubmenuFragment(url), "brs-submenu")
+        manager.showDialog(BrowserSubmenuFragment(callback), "brs-submenu")
     }
 }

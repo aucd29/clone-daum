@@ -37,22 +37,27 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_SEARCH_FRAGMENT  = "search"
         const val CMD_SUBMENU_FRAGMENT = "submenu"
         const val CMD_SHARE_EVENT      = "share"
+        const val CMD_HOME             = "home"
+        const val CMD_GOTO_TOP         = "goto-top"
+        const val CMD_NORMALSCREEN     = "normalscreen"
     }
 
     override val snackbarEvent = SingleLiveEvent<String>()
     override val webviewEvent  = ObservableField<WebViewEvent>()
 
-    val urlString       = ObservableField<String>()
-    val brsCount        = ObservableField<String>()
-    val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
-    val reloadIconResId = ObservableInt(R.drawable.ic_clear_black_24dp)
-    val valProgress     = ObservableInt()
-    val visibleProgress = ObservableInt(View.VISIBLE)
-    val visibleSslIcon  = ObservableInt(View.GONE)
-    val enableForward   = ObservableBoolean(false)
+    val urlString           = ObservableField<String>()
+    val brsCount            = ObservableField<String>()
+    val sslIconResId        = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
+    val reloadIconResId     = ObservableInt(R.drawable.ic_clear_black_24dp)
+    val valProgress         = ObservableInt()
+    val visibleProgress     = ObservableInt(View.VISIBLE)
+    val visibleSslIcon      = ObservableInt(View.GONE)
+    val enableForward       = ObservableBoolean(false)
+    val isFullscreen        = ObservableBoolean(false)
 
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
+    val brsGoTop        = ObservableField<AnimParams>()
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {

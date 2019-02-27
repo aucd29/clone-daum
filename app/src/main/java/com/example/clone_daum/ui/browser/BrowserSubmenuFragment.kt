@@ -3,7 +3,6 @@ package com.example.clone_daum.ui.browser
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserSubmenuFragmentBinding
 import com.example.common.*
@@ -22,7 +21,7 @@ import dagger.android.ContributesAndroidInjector
  */
 
 @SuppressLint("ValidFragment")
-class BrowserSubmenuFragment (val mUrl: String)
+class BrowserSubmenuFragment (private val mCallback: (String) -> Unit)
     : BaseDaggerBottomSheetDialogFragment<BrowserSubmenuFragmentBinding, BrowserSubmenuViewModel>() {
     override fun initViewBinding() {
 
@@ -33,64 +32,11 @@ class BrowserSubmenuFragment (val mUrl: String)
     }
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        BrowserSubmenuViewModel.apply {
-            when (cmd) {
-                CMD_SUBMENU -> {
-                    when (data.toString()) {
-                        "즐겨찾기목록" -> {
-
-                        }
-                        "즐겨찾기추가" -> {
-
-                        }
-                        "방문기록" -> {
-
-                        }
-                        "URL 복사" -> {
-                            context?.toast(R.string.brs_copied_url)
-                            requireContext().clipboard(mUrl)
-
-                            dismiss()
-                        }
-                        "기타 브라우저" -> {
-                            confirm(R.string.brs_using_base_brs, R.string.common_notify,
-                                listener = { res, dlg ->
-                                    if (res) {
-                                        showBaseBrs()
-                                    }
-
-                                    dismiss()
-                                })
-                        }
-                        "화면 내 검색" -> {
-
-                        }
-                        "화면 캡쳐" -> {
-
-                        }
-                        "글자 크기" -> {
-
-                        }
-                        "홈 화면에 추가" -> {
-
-                        }
-                        "전체화면 보기" -> {
-
-                        }
-                        "앱설정" -> {
-
-                        }
-                    }
-                }
-            }
+        when (cmd) {
+            BrowserSubmenuViewModel.CMD_SUBMENU -> mCallback.invoke(data.toString())
         }
-    }
 
-    fun showBaseBrs() {
-        activity?.startActivity(Intent(Intent.ACTION_VIEW).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            setData(Uri.parse(mUrl))
-        })
+        dismiss()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

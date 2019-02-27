@@ -1,7 +1,12 @@
 package com.example.clone_daum.ui.browser
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
+import android.view.MotionEvent
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.common.Config
@@ -28,8 +33,25 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     @Inject lateinit var config: Config
 
     private var mUrl: String? = null
+    private var mScrollListener: () -> Unit = {
+        if (mBinding.brsWebview.scrollY > config.SCREEN.y) {
+            if (mBinding.brsMoveTop.alpha == 0f) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("SHOW BUTTON FOR MOVE TOP")
+                }
+                mViewModel.brsGoTop.set(AnimParams(1f, duration = 200))
+            }
+        } else {
+            if (mBinding.brsMoveTop.alpha == 1f) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("HIDE BUTTON FOR MOVE TOP")
+                }
+                mViewModel.brsGoTop.set(AnimParams(0f, duration = 200))
+            }
+        }
+    }
 
-
+    @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
         mUrl = arguments?.getString("url")
 
@@ -78,7 +100,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             ))
         }
 
-        brsWebview.loadUrl(mUrl)
+        brsWebview.apply {
+            loadUrl(mUrl)
+            viewTreeObserver.addOnScrollChangedListener(mScrollListener)
+        }
     }
 
     override fun initViewModelEvents() = mViewModel.run {
@@ -97,10 +122,50 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     override fun onCommandEvent(cmd: String, data: Any) {
         BrowserViewModel.apply {
             when (cmd) {
+                CMD_HOME,
                 CMD_BACK             -> onBackPressed()
                 CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment(mUrl!!)
+                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment { cmd ->
+                    when (cmd) {
+                        "즐겨찾기목록" -> {
+                            
+                        }
+                        "즐겨찾기추가" -> {
+
+                        }
+                        "방문기록" -> {
+
+                        }
+                        "URL 복사" -> mUrl?.let {
+                            context?.toast(R.string.brs_copied_url)
+                            requireContext().clipboard(it)
+                        }
+                        "기타 브라우저" -> {
+                            confirm(R.string.brs_using_base_brs, R.string.common_notify,
+                                listener = { res, dlg -> if (res) showDefaultBrowser()
+                            })
+                        }
+                        "화면 내 검색" -> {
+                            // https://code.i-harness.com/en/q/b5bb99
+                        }
+                        "화면 캡쳐" -> {
+
+                        }
+                        "글자 크기" -> {
+
+                        }
+                        "홈 화면에 추가" -> {
+
+                        }
+                        "전체화면 보기" -> internalFullscreen(true)
+                        "앱설정" -> {
+
+                        }
+                    }
+                }
                 CMD_SHARE_EVENT      -> shareLink(data.toString())
+                CMD_GOTO_TOP         -> mBinding.brsWebview.scrollTo(0, 0)
+                CMD_NORMALSCREEN     -> internalFullscreen(false)
             }
         }
     }
@@ -115,7 +180,8 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 if (mLog.isDebugEnabled) {
                     mLog.debug("BRS BACK")
                 }
-                mViewModel.webviewEvent(WebViewEvent.BACK)
+
+                brsWebview.goBack()
             } else {
                 endAnimation()
                 finish()
@@ -134,11 +200,16 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     override fun onResume() {
         mViewModel.webviewEvent(WebViewEvent.RESUME)
 
+        activity?.let { internalFullscreen(it.isFullscreen()) }
+
         super.onResume()
     }
 
     override fun onDestroyView() {
-        mBinding.brsWebview.free()
+        mBinding.brsWebview.apply {
+            free()
+            viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
+        }
 
         super.onDestroyView()
     }
@@ -161,6 +232,33 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             putExtra(Intent.EXTRA_SUBJECT, message)
             putExtra(Intent.EXTRA_TEXT, url)
         }, message))
+    }
+
+    private fun showDefaultBrowser() {
+        startActivity(Intent(Intent.ACTION_VIEW).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            setData(Uri.parse(mUrl))
+        })
+    }
+
+    private fun internalFullscreen(fullscreen: Boolean) {
+        activity?.apply {
+            fullscreen(fullscreen)
+            mViewModel.isFullscreen.set(fullscreen)
+        }
+
+        // https://www.techotopia.com/index.php/Managing_Constraints_using_ConstraintSet
+        mBinding.apply {
+            ConstraintSet().apply {
+                clone(brsContainer)
+                connect(brsMoveTop.id, ConstraintSet.BOTTOM, if (fullscreen) {
+                    brsNormalScreen.id
+                } else {
+                    brsBottomLayout.id
+                }, ConstraintSet.TOP, 20.dpToPx(requireContext()))
+                applyTo(brsContainer)
+            }
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
