@@ -25,6 +25,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     private lateinit var mPopularViewModel: PopularViewModel
 
+
     override fun bindViewModel() {
         super.bindViewModel()
 

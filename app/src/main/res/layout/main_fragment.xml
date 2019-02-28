@@ -15,7 +15,8 @@
                   type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.example.clone_daum.common.widget.BkConstraintLayout
+            android:id="@+id/root_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity">
@@ -106,7 +107,7 @@
                                 android:id="@+id/search_extend_menu"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_view_comfy_black_24dp"
+                                android:src="@{model.searchIconResId}"
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
@@ -175,12 +176,13 @@
                                 app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
-                                android:background="?selectableItemBackgroundBorderless"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="14dp"
                                 app:bindRotation="@{realtimeIssueModel.tabMenuRotation}"
                                 android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                         />
+
+                        <!--android:background="?selectableItemBackgroundBorderless"-->
 
                         <View
                                 android:id="@+id/search_underline"
@@ -315,5 +317,5 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
         />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.example.clone_daum.common.widget.BkConstraintLayout>
 </layout>

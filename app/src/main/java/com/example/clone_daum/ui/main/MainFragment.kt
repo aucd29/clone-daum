@@ -1,7 +1,9 @@
 package com.example.clone_daum.ui.main
 
+import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +27,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     , TabLayout.OnTabSelectedListener, OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
+
+        private const val MAGNETIC_DURATION  = 100L
     }
 
     init {
@@ -37,6 +41,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var disposable: CompositeDisposable
 
+//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
 //    private lateinit var mWeatherViewModel: WeatherViewModel
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel
@@ -45,16 +50,14 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         override fun onTabReselected(p0: TabLayout.Tab?) { }
         override fun onTabUnselected(p0: TabLayout.Tab?) { }
         override fun onTabSelected(tab: TabLayout.Tab?) {
-            tab?.let {
-                customRealtimeIssueTabText(it.position)
-            }
+            tab?.let { customRealtimeIssueTabText(it.position) }
         }
     }
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-//        initWeatherViewModel()
+//        initWeatherViewModel()//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
         initRealtimeIssueViewModel()
         initPopularViewModel()
 
@@ -71,6 +74,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             }))
     }
 
+//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
 //    private fun initWeatherViewModel() {
 //        mWeatherViewModel     = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
 //        mBinding.weatherModel = mWeatherViewModel
@@ -115,13 +119,66 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                     it.translationY = it.height * -1f
 
-                    if (it.translationY != 0f) {
-                        true
-                    } else {
-                        false
-                    }
+                    it.translationY != 0f
                 }
             }
+
+            rootContainer.dispatchTouchEvent = { mViewModel.run {
+                val y = appbarOffsetLive.value!!
+                val max = searchAreaHeight * -1
+                val mid = max / 2
+
+                when (it) {
+                    MotionEvent.ACTION_UP -> {
+                        var ani: ValueAnimator? = null
+                        val result = if (y < 0 && y >= mid) {
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("MAGNETIC EFFECT SCROLL UP $y")
+                            }
+
+                            magneticEvent.value = true
+
+                            ani = ValueAnimator.ofInt(y, 0)
+
+                            true
+                        } else if (y < mid && y >= max) {
+                            // 자석 효과 이후 자연스러운 스크롤이 되지 않는 문제로 예외 처리 추가 [aucd29][2019. 2. 27.]
+                            if (mViewModel.scrollviewPosY <= 0) {
+                                if (mLog.isDebugEnabled) {
+                                    mLog.debug("MAGNETIC EFFECT SCROLL DOWN $y")
+                                }
+
+                                magneticEvent.value = false
+                                ani = ValueAnimator.ofInt(y, max)
+
+                                true
+                            } else {
+                                false
+                            }
+                        } else {
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("OTHER SCROLL")
+                            }
+
+                            false
+                        }
+
+                        ani?.let {
+                            it.setDuration(MAGNETIC_DURATION)
+                            it.addUpdateListener {
+                                it.animatedValue?.let {
+                                    appbarOffsetLive.value = it as Int
+                                }
+                            }
+                            it.start()
+                        }
+
+                        result
+                    }
+                }
+
+                false
+            } }
         }
     }
 
@@ -136,7 +193,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                         mLog.info("REALTIME ISSUE AREA TOP MARGIN : ${it.topMargin}")
                     }
 
-                    it.height = 0
+                    it.height    = 0
                     layoutParams = it
 
                     return it.topMargin != 0
@@ -216,20 +273,24 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
             // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
             viewController.apply {
-                when (cmd) {
-                    CMD_SEARCH_FRAMGNET         -> searchFragment()
-                    CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
-                    CMD_REALTIME_ISSUE_FRAGMENT -> internalRealtimeFragment()
-                    CMD_BRS_OPEN                -> browserFragment(data.toString())
-                    CMD_MEDIA_SEARCH_FRAGMENT   -> {
-                        var delay = RealtimeIssueViewModel.ANIM_DURATION
-                        if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-                            internalRealtimeFragment()
-                        } else {
-                            delay = 0
-                        }
 
-                        mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, delay)
+                // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
+                if (mViewModel.appbarOffsetLive.value == 0) {
+                    when (cmd) {
+                        CMD_SEARCH_FRAMGNET         -> searchFragment()
+                        CMD_REALTIME_ISSUE_FRAGMENT -> internalRealtimeFragment()
+                        CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
+                        CMD_BRS_OPEN                -> browserFragment(data.toString())
+                        CMD_MEDIA_SEARCH_FRAGMENT   -> {
+                            var delay = RealtimeIssueViewModel.ANIM_DURATION
+                            if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
+                                internalRealtimeFragment()
+                            } else {
+                                delay = 0
+                            }
+
+                            mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, delay)
+                        }
                     }
                 }
             }
@@ -240,7 +301,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 CMD_LOADED_ISSUE -> mRealtimeIssueViewModel.apply {
                     tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
                 }
-                CMD_CLOSE_ISSUE -> internalRealtimeFragment()
+                CMD_CLOSE_ISSUE  -> internalRealtimeFragment()
             }
         }
     }

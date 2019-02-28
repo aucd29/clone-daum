@@ -238,7 +238,7 @@
                 android:id="@+id/media_search_extend_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_view_comfy_black_24dp"
+                android:src="@{model.searchIconResId}"
                 app:layout_constraintTop_toTopOf="@+id/media_search"
                 app:layout_constraintEnd_toEndOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"

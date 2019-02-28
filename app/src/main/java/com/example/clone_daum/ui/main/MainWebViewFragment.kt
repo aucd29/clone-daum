@@ -28,7 +28,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
         private const val TIMEOUT_RELOAD_ICO = 4L
-        private const val MAGNETIC_DURATION  = 100L
     }
 
     @Inject lateinit var config: Config
@@ -40,6 +39,10 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
     private var mTimerDisposable: CompositeDisposable = CompositeDisposable()
     private var mIsClosedSplash = false
+
+    private val mScrollListener = {
+        mMainViewModel.scrollviewPosY = mBinding.scrollview.scrollY
+    }
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -53,63 +56,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT WEBVIEW SETTING")
         }
-
-        // 스크롤시 APPBAR 에 스크롤이 걸려 있다면 자석 효과를 줘서 이동
-        scrollview.setOnTouchListener { v, ev -> mMainViewModel.run {
-            val y   = appbarOffsetLive.value!!
-            val max = searchAreaHeight * -1
-            val mid = max / 2
-
-            when (ev.action) {
-                MotionEvent.ACTION_UP -> {
-                    var ani: ValueAnimator? = null
-                    val result = if (y < 0 && y >= mid) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("MAGNETIC EFFECT SCROLL UP $y")
-                        }
-
-                        magneticEvent.value = true
-
-                        ani = ValueAnimator.ofInt(y, 0)
-
-                        true
-                    } else if (y < mid && y >= max) {
-                        // 자석 효과 이후 자연스러운 스크롤이 되지 않는 문제로 예외 처리 추가 [aucd29][2019. 2. 27.]
-                        if (scrollview.scrollY <= 0) {
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("MAGNETIC EFFECT SCROLL DOWN $y")
-                            }
-
-                            magneticEvent.value = false
-                            ani = ValueAnimator.ofInt(y, max)
-
-                            true
-                        } else {
-                            false
-                        }
-                    } else {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("OTHER SCROLL")
-                        }
-
-                        false
-                    }
-
-                    ani?.let {
-                        it.setDuration(MAGNETIC_DURATION)
-                        it.addUpdateListener {
-                            it.animatedValue?.let {
-                                appbarOffsetLive.value = it as Int
-                            }
-                        }
-                        it.start()
-                    }
-
-                    result
-                }
-                else -> false
-            }
-        } }
 
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
@@ -244,6 +190,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         super.onPause()
 
         mViewModel.webviewEvent(WebViewEvent.PAUSE)
+        mBinding.scrollview.viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
+
         mTimerDisposable.clear()
     }
 
@@ -253,6 +201,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         }
 
         mViewModel.webviewEvent(WebViewEvent.RESUME)
+        mBinding.scrollview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
 
         super.onResume()
     }

@@ -7,6 +7,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
+import com.example.clone_daum.common.Config
 import com.example.clone_daum.model.local.SearchHistory
 import com.example.clone_daum.model.remote.DaumSuggestService
 import com.example.clone_daum.model.ISearchRecyclerData
@@ -25,6 +26,7 @@ import javax.inject.Inject
  */
 
 class SearchViewModel @Inject constructor(app: Application
+    , val config: Config
 ) : RecyclerViewModel<ISearchRecyclerData>(app), ISnackbarAware, IDialogAware
     , IFinishFragmentAware, ICommandEventAware {
     companion object {
@@ -48,6 +50,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     var showSearchRecyclerLayout = prefs().getBoolean(K_RECENT_SEARCH, true)
     val searchKeyword            = ObservableField<String>()
+    val searchIconResId          = ObservableInt(config.SEARCH_ICON)
     val toggleRecentSearchText   = ObservableInt()
     val toggleEmptyAreaText      = ObservableInt()
     val editorAction             = ObservableField<(String?) -> Boolean>()
@@ -178,6 +181,8 @@ class SearchViewModel @Inject constructor(app: Application
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
                 it.subkeys.forEach { key ->
+                    // 좀더 빠르게 하려고 client 의 replace 가 아닌 서버의 highlighted 값을 참조 하는듯
+                    // 일단 귀차니즘으로 replace ... =_ = 훗...
                     val newkey = key.replace(it.q,
                         "<font color='#ff7b39'><b>${it.q}</b></font>")
                     suggestList.add(SuggestItem(newkey, key))

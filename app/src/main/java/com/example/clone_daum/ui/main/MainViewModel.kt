@@ -13,6 +13,9 @@ import com.example.common.arch.SingleLiveEvent
 import com.google.android.material.appbar.AppBarLayout
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.clone_daum.R
+import java.util.*
+
 
 class MainViewModel @Inject constructor(val app: Application
     , val config: Config
@@ -34,17 +37,20 @@ class MainViewModel @Inject constructor(val app: Application
     val tabAdapter              = ObservableField<MainTabAdapter>()
     val viewpager               = ObservableField<ViewPager>()
     var gotoNewsEvent           = ObservableInt(0)
+    val searchIconResId         = ObservableInt(config.SEARCH_ICON)
 
     val visibleBack             = ObservableInt(View.GONE)
 
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()
+
     var progressViewOffsetLive  = MutableLiveData<Int>()
     var currentTabPositionLive  = MutableLiveData<Int>()
 
-    var searchAreaHeight:Int = 0
+    val magneticEvent           = SingleLiveEvent<Boolean>()
 
-    val magneticEvent = SingleLiveEvent<Boolean>()
+    var searchAreaHeight:Int    = 0
+    var scrollviewPosY: Int     = 0 // 스크롤 정보를 main fragment 에 전달
 
 
     fun eventGotoNews() = gotoNewsEvent.run {

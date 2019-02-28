@@ -7,6 +7,7 @@ import android.graphics.Point
 import android.os.Build
 import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
+import com.example.clone_daum.R
 import com.example.clone_daum.common.camera.CameraInstance
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.BrowserSubMenu
@@ -41,6 +42,7 @@ class Config @Inject constructor(val context: Context) {
 
     var HAS_PERMISSION_GPS = false
     var DEFAULT_LOCATION   = "서울"
+    val SEARCH_ICON: Int
 
     init {
         //
@@ -81,6 +83,14 @@ class Config @Inject constructor(val context: Context) {
         //
         HAS_PERMISSION_GPS = RuntimePermission.checkPermissions(context
             , permissions = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION))
+
+        val rightNow = Calendar.getInstance()
+        SEARCH_ICON = when (rightNow.get(Calendar.HOUR_OF_DAY) % 4) {
+            0    -> R.drawable.ic_mic_none_black_24dp
+            1    -> R.drawable.ic_music_note_black_24dp
+            2    -> R.drawable.ic_spa_black_24dp
+            else -> R.drawable.ic_visibility_black_24dp
+        }
     }
 }
 
