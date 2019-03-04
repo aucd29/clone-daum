@@ -47,11 +47,7 @@ class MainViewModel @Inject constructor(val app: Application
     var progressViewOffsetLive  = MutableLiveData<Int>()
     var currentTabPositionLive  = MutableLiveData<Int>()
 
-    val magneticEvent           = SingleLiveEvent<Boolean>()
-
     var searchAreaHeight:Int    = 0
-    var scrollviewPosY: Int     = 0 // 스크롤 정보를 main fragment 에 전달
-
 
     fun eventGotoNews() = gotoNewsEvent.run {
         if (mLog.isDebugEnabled) {

@@ -5,6 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
+
         <variable name="model" type="com.example.clone_daum.ui.search.SearchViewModel"/>
         <variable name="popularmodel" type="com.example.clone_daum.ui.search.PopularViewModel"/>
     </data>
@@ -93,7 +95,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         android:gravity="center"
                         android:text="@{model.toggleEmptyAreaText}"
-                        android:visibility="@{model.visibleSearchEmpty}"
+                        android:visibility="@{model.visibleSearchRecycler == View.VISIBLE ? View.GONE : View.VISIBLE}"
                 />
 
                 <TextView
@@ -107,7 +109,7 @@
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="@dimen/search_popular_pad"
-                        android:visibility="@{popularmodel.visiblePopular}"
+                            android:visibility="@{popularmodel.visiblePopular}"
                         />
 
                 <androidx.recyclerview.widget.RecyclerView

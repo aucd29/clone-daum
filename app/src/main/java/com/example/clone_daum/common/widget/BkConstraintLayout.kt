@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 28. <p/>
+ *
+ * touch intercept 를 목적으로 한 커스텀
  */
 
 class BkConstraintLayout @JvmOverloads constructor(
@@ -17,8 +19,7 @@ class BkConstraintLayout @JvmOverloads constructor(
         private val mLog = LoggerFactory.getLogger(BkConstraintLayout::class.java)
     }
 
-    // https://stackoverflow.com/questions/13283827/onintercepttouchevent-only-gets-action-down/13540006
-    var dispatchTouchEvent : ((Int) -> Boolean)? = null
+    var dispatchTouchEvent : ((MotionEvent) -> Boolean)? = null
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (mLog.isTraceEnabled) {
@@ -26,7 +27,7 @@ class BkConstraintLayout @JvmOverloads constructor(
         }
 
         dispatchTouchEvent?.let {
-            if (it.invoke(ev.action)) {
+            if (it.invoke(ev)) {
                 return true
             }
         }

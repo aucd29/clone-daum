@@ -1,8 +1,6 @@
 package com.example.clone_daum.ui.main
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.view.MotionEvent
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
@@ -37,12 +35,14 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     private lateinit var mSplashViewModel: SplashViewModel
     private lateinit var mMainViewModel: MainViewModel
 
-    private var mTimerDisposable: CompositeDisposable = CompositeDisposable()
-    private var mIsClosedSplash = false
+    private var mTimerDisposable = CompositeDisposable()
+    private var mIsClosedSplash  = false
 
-    private val mScrollListener = {
-        mMainViewModel.scrollviewPosY = mBinding.scrollview.scrollY
-    }
+//    val scrollviewY: Int
+//        get() = mBinding.scrollview.scrollY
+//
+//    val url: String
+//        get() = mBinding.webview.url
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -102,7 +102,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                 }
             }
             , userAgent = { config.USER_AGENT }
-            , progress = {
+            , progress  = {
                 if (mLog.isTraceEnabled) {
                     mLog.trace("TAB WEBVIEW PROGRESS: $it")
                 }
@@ -190,8 +190,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         super.onPause()
 
         mViewModel.webviewEvent(WebViewEvent.PAUSE)
-        mBinding.scrollview.viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
-
         mTimerDisposable.clear()
     }
 
@@ -201,7 +199,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         }
 
         mViewModel.webviewEvent(WebViewEvent.RESUME)
-        mBinding.scrollview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
 
         super.onResume()
     }

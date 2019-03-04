@@ -31,11 +31,6 @@ class MainTabAdapter constructor(fm: FragmentManager
                     mLog.debug("TAB URL ($position)")
                 }
                 putInt(K_POSITION, position)
-
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("TAB URL ($position) : ${url(position)}")
-//                }
-//                putString(K_URL, url(position))
             }
         }
 

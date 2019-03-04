@@ -1,7 +1,9 @@
 package com.example.clone_daum.model.local
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.example.clone_daum.model.BrowserRecyclerType
 import com.example.clone_daum.model.IBrowserRecyclerData
 import com.example.clone_daum.model.ISearchRecyclerData
@@ -23,14 +25,36 @@ data class SearchHistory (
     override fun type() = SearchRecyclerType.T_HISTORY
 }
 
-//@Entity(tableName = "popularKeyword")
-//data class PopularKeyword (
+@Entity(tableName = "zzim")
+data class Zzim (
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0,
+    val title: String,
+    val screenshot: String = "",
+    val url: String,
+    val tags: String = "",
+    val locked: Boolean = false
+) : IRecyclerDiff {
+    override fun compare(item: IRecyclerDiff) = this._id == (item as Zzim)._id
+}
+//
+//@Entity(tableName = "zzimTag")
+//data class ZzimTag (
 //    @PrimaryKey(autoGenerate = true)
 //    val _id: Int = 0,
-//    val keyword: String
+//    val parent: Int,
+//    val tag: String
 //) : IRecyclerDiff {
-//    override fun compare(item: IRecyclerDiff)= this._id == (item as PopularKeyword)._id
+//    override fun compare(item: IRecyclerDiff) = this._id == (item as ZzimTag)._id
 //}
+
+//// https://stackoverflow.com/questions/45059942/return-type-for-android-room-joins
+//data class ZzimAndTag (
+//    @Embedded
+//    val zzim: Zzim,
+//    @Relation(parentColumn = "Zzim._id", entityColumn = "ZzimTag._id")
+//    val tags: List<ZzimTag>
+//)
 
 @Entity(tableName = "urlHistory")
 data class UrlHistory (

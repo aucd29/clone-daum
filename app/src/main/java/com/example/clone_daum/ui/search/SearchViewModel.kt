@@ -32,31 +32,30 @@ class SearchViewModel @Inject constructor(app: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
-        const val RECENT_SEARCH_LIMIT = 4L
-        const val K_RECENT_SEARCH     = "search-recent-search"
+        const val K_RECENT_SEARCH = "search-recent-search"
 
-        const val CMD_BRS_OPEN        = "brs-open"
-        const val CMD_BRS_SEARCH      = "brs-search"
+        const val CMD_BRS_OPEN    = "brs-open"
+        const val CMD_BRS_SEARCH  = "brs-search"
     }
 
     @Inject lateinit var daum: DaumSuggestService
     @Inject lateinit var searchDao: SearchHistoryDao
-    @Inject lateinit var disposable: CompositeDisposable
+
+    var dp = CompositeDisposable()
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
     override val snackbarEvent   = SingleLiveEvent<String>()
     override val finishEvent     = SingleLiveEvent<Void>()
 
-    var showSearchRecyclerLayout = prefs().getBoolean(K_RECENT_SEARCH, true)
     val searchKeyword            = ObservableField<String>()
     val searchIconResId          = ObservableInt(config.SEARCH_ICON)
-    val toggleRecentSearchText   = ObservableInt()
-    val toggleEmptyAreaText      = ObservableInt()
+    val toggleRecentSearchText   = ObservableInt(R.string.search_turn_off_recent_search)
+    val toggleEmptyAreaText      = ObservableInt(R.string.search_empty_recent_search)
     val editorAction             = ObservableField<(String?) -> Boolean>()
 
+    var prefSearchRecycler       = prefs().getBoolean(K_RECENT_SEARCH, true)
     val visibleSearchRecycler    = ObservableInt(View.VISIBLE)
-    val visibleSearchEmpty       = ObservableInt(View.GONE)
     val visibleBottomButtons     = ObservableInt(View.VISIBLE)
 
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
@@ -69,25 +68,20 @@ class SearchViewModel @Inject constructor(app: Application
         }
 
         initAdapter(arrayOf("search_recycler_history_item", "search_recycler_suggest_item"))
-
-        // FIXME async 하게 변경해야 됨 일단 귀차니즘으로 보류
-        val searchList = searchDao.search().limit(RECENT_SEARCH_LIMIT).blockingFirst()
-        items.set(searchList)
-        visibleSearchRecycler(searchList.size > 0)
+        reloadHistoryData()
     }
 
     fun reloadHistoryData() {
-        disposable.add(searchDao.search().limit(RECENT_SEARCH_LIMIT)
+        dp.add(searchDao.search()
             .subscribe {
                 items.set(it)
-
                 visibleSearchRecycler(it.size > 0)
             })
     }
 
     fun eventSearch(keyword: String?) {
         keyword?.let {
-            disposable.add(searchDao.insert(SearchHistory(
+            dp.add(searchDao.insert(SearchHistory(
                 keyword = it,
                 date    = System.currentTimeMillis()))
                 .subscribeOn(Schedulers.io())
@@ -98,46 +92,41 @@ class SearchViewModel @Inject constructor(app: Application
 
                     searchKeyword.set("")
                     reloadHistoryData()
-                }, { e -> snackbar(e.message) }
-            ))
+                }, ::snackbar))
 
             commandEvent(CMD_BRS_SEARCH, it)
         } ?: snackbarEvent(R.string.error_empty_keyword)
     }
 
     fun eventToggleRecentSearch() {
-        if (showSearchRecyclerLayout) {
+        if (prefSearchRecycler) {
             confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search
-                , listener = { res, _ ->
-                    if (res) toggleSearchRecyclerLayout()
-                })
+                , listener = { res, _ -> if (res) toggleSearchRecyclerLayout() })
         } else {
             toggleSearchRecyclerLayout()
         }
     }
 
     private fun toggleSearchRecyclerLayout() {
-        showSearchRecyclerLayout = !showSearchRecyclerLayout
+        prefSearchRecycler = !prefSearchRecycler
 
-        prefs().edit { putBoolean(K_RECENT_SEARCH, showSearchRecyclerLayout) }
+        prefs().edit { putBoolean(K_RECENT_SEARCH, prefSearchRecycler) }
 
         visibleSearchRecycler(items.get()!!.size > 0)
     }
 
     private fun visibleSearchRecycler(res: Boolean) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("EXIST LIST $res, SHOW LAYOUT $showSearchRecyclerLayout")
+            mLog.debug("EXIST LIST $res, SHOW LAYOUT $prefSearchRecycler")
         }
 
-        if (res && showSearchRecyclerLayout) {
-            visibleSearchRecycler.set(View.VISIBLE)
-            visibleSearchEmpty.set(View.GONE)
+        visibleSearchRecycler.set(if (res && prefSearchRecycler) {
+            View.VISIBLE
         } else {
-            visibleSearchRecycler.set(View.GONE)
-            visibleSearchEmpty.set(View.VISIBLE)
-        }
+            View.GONE
+        })
 
-        if (showSearchRecyclerLayout) {
+        if (prefSearchRecycler) {
             toggleRecentSearchText.set(R.string.search_turn_off_recent_search)
             toggleEmptyAreaText.set(R.string.search_empty_recent_search)
         } else {
@@ -147,7 +136,7 @@ class SearchViewModel @Inject constructor(app: Application
     }
 
     fun eventDeleteHistory(item: SearchHistory) {
-        disposable.add(searchDao.delete(item)
+        dp.add(searchDao.delete(item)
             .subscribeOn(Schedulers.io())
             .subscribe ({
                 if (mLog.isDebugEnabled) {
@@ -155,26 +144,24 @@ class SearchViewModel @Inject constructor(app: Application
                 }
 
                 reloadHistoryData()
-            }, { e -> snackbar(e.message) }))
+            }, ::snackbar))
     }
 
     fun eventDeleteAllHistory() {
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
-            , listener   = { res, _ ->
-                if (res) {
-                    // delete query 는 왜? Completable 이 안되는가?
-                    ioThread {
-                        searchDao.deleteAll()
-                        reloadHistoryData()
-                    }
+            , listener   = { res, _ -> if (res) {
+                // delete query 는 왜? Completable 이 안되는가?
+                ioThread {
+                    searchDao.deleteAll()
+                    reloadHistoryData()
                 }
-            })
+            }})
     }
 
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
 
     fun suggest(keyword: String) {
-        disposable.add(daum.suggest(keyword)
+        dp.add(daum.suggest(keyword)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
@@ -182,14 +169,14 @@ class SearchViewModel @Inject constructor(app: Application
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
                 it.subkeys.forEach { key ->
                     // 좀더 빠르게 하려고 client 의 replace 가 아닌 서버의 highlighted 값을 참조 하는듯
-                    // 일단 귀차니즘으로 replace ... =_ = 훗...
+                    // 일단 귀차니즘으로 replace =_ = 훗...
                     val newkey = key.replace(it.q,
                         "<font color='#ff7b39'><b>${it.q}</b></font>")
                     suggestList.add(SuggestItem(newkey, key))
                 }
 
                 items.set(suggestList.toList())
-            }, { e -> snackbar(e.message) }))
+            }, ::snackbar))
     }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -199,9 +186,7 @@ class SearchViewModel @Inject constructor(app: Application
 
         visibleBottomButtons.set(if (count > 0) {
             suggest(s.toString())
-
             visibleSearchRecycler.set(View.VISIBLE)
-            visibleSearchEmpty.set(View.GONE)
 
             View.GONE
         } else {
@@ -219,9 +204,13 @@ class SearchViewModel @Inject constructor(app: Application
     private fun snackbarEvent(@StringRes resid: Int) =
         snackbar(string(resid))
 
-    override fun snackbar(msg: String?) {
-        mLog.error("ERROR: $msg")
+    override fun snackbar(e: Throwable) {
+        if (mLog.isDebugEnabled) {
+            e.printStackTrace()
+        }
 
-        super.snackbar(msg)
+        mLog.error("ERROR: ${e.message}")
+
+        super.snackbar(e)
     }
 }

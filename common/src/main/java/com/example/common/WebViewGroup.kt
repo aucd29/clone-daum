@@ -19,12 +19,19 @@ import java.lang.Exception
 inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     settings.apply {
         setAppCacheEnabled(true)
+
+
         textZoom                         = 100
         cacheMode                        = WebSettings.LOAD_NO_CACHE
         javaScriptEnabled                = true
         domStorageEnabled                = true
         allowFileAccessFromFileURLs      = true
         allowUniversalAccessFromFileURLs = true
+
+        //https://stackoverflow.com/questions/21694306/how-to-set-text-size-in-webview-in-android
+//        blockNetworkImage                = true
+//        loadsImagesAutomatically         = true
+
         userAgent?.invoke().let { userAgentString = it }
     }
 

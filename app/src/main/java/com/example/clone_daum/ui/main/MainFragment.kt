@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.main
 
-import android.animation.ValueAnimator
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -27,8 +26,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     , TabLayout.OnTabSelectedListener, OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
-
-        private const val MAGNETIC_DURATION  = 100L
     }
 
     init {
@@ -46,7 +43,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel
 
-    val mRealtimeTabSelectedListener = object: TabLayout.OnTabSelectedListener {
+    private var mCurrentTabPos: Int = 0
+    private val mRealtimeTabSelectedListener = object: TabLayout.OnTabSelectedListener {
         override fun onTabReselected(p0: TabLayout.Tab?) { }
         override fun onTabUnselected(p0: TabLayout.Tab?) { }
         override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -124,56 +122,37 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             }
 
             rootContainer.dispatchTouchEvent = { mViewModel.run {
-                val y = appbarOffsetLive.value!!
+                val y   = appbarOffsetLive.value!!
                 val max = searchAreaHeight * -1
                 val mid = max / 2
 
-                when (it) {
+                when (it.action) {
                     MotionEvent.ACTION_UP -> {
-                        var ani: ValueAnimator? = null
                         val result = if (y < 0 && y >= mid) {
                             if (mLog.isDebugEnabled) {
-                                mLog.debug("MAGNETIC EFFECT SCROLL UP $y")
+                                mLog.debug("MAGNETIC EFFECT SCROLL UP : $y")
                             }
 
-                            magneticEvent.value = true
-
-                            ani = ValueAnimator.ofInt(y, 0)
+                            searchBar.setExpanded(true, true)
 
                             true
-                        } else if (y < mid && y >= max) {
-                            // 자석 효과 이후 자연스러운 스크롤이 되지 않는 문제로 예외 처리 추가 [aucd29][2019. 2. 27.]
-                            if (mViewModel.scrollviewPosY <= 0) {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("MAGNETIC EFFECT SCROLL DOWN $y")
-                                }
-
-                                magneticEvent.value = false
-                                ani = ValueAnimator.ofInt(y, max)
-
-                                true
-                            } else {
-                                false
-                            }
-                        } else {
+                        } else if (y < mid && y > max) {
                             if (mLog.isDebugEnabled) {
-                                mLog.debug("OTHER SCROLL")
+                                mLog.debug("MAGNETIC EFFECT SCROLL DOWN : $y")
                             }
 
+                            searchBar.setExpanded(false, true)
+
+                            true
+                        } else {
                             false
                         }
 
-                        ani?.let {
-                            it.setDuration(MAGNETIC_DURATION)
-                            it.addUpdateListener {
-                                it.animatedValue?.let {
-                                    appbarOffsetLive.value = it as Int
-                                }
-                            }
-                            it.start()
+                        if (mLog.isTraceEnabled) {
+                            mLog.trace("DISPATCH TOUCH EVENT RESULT : $result")
                         }
 
-                        result
+                        return@run result
                     }
                 }
 
@@ -212,7 +191,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             // -_ - 이러한 구조를 가져가는게
             // 딱히 득이 될건 없어 보이는데 흠; 전국적으로 헤더 만큼에 패킷 낭비가...
             appbarOffsetChangedLive.set { appbar, offset ->
-                val maxScroll = appbar.getTotalScrollRange()
+                val maxScroll    = appbar.getTotalScrollRange()
                 val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
 
                 if (mLog.isTraceEnabled) {
@@ -224,16 +203,10 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 // scroll 되어 offset 된 값을 webview 쪽으로 전달
                 appbarOffsetLive.value    = offset
             }
-
-            observe(magneticEvent) {
-                mBinding.searchBar.setExpanded(it)
-            }
         }
 
         mRealtimeIssueViewModel.apply {
-            observe(commandEvent) {
-                onCommandEvent(it.first, it.second)
-            }
+            observe(commandEvent) { onCommandEvent(it.first, it.second) }
 
             viewpager.set(mBinding.realtimeIssueViewpager)
             viewPagerLoaded.set { customRealtimeIssueTab() }
@@ -282,14 +255,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                         CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
                         CMD_BRS_OPEN                -> browserFragment(data.toString())
                         CMD_MEDIA_SEARCH_FRAGMENT   -> {
-                            var delay = RealtimeIssueViewModel.ANIM_DURATION
                             if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
                                 internalRealtimeFragment()
+                                mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, RealtimeIssueViewModel.ANIM_DURATION)
                             } else {
-                                delay = 0
+                                mediaSearchFragment()
                             }
-
-                            mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, delay)
                         }
                     }
                 }
@@ -395,6 +366,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             mLog.debug("TAB SELECTED ${tab.position}")
         }
 
+        mCurrentTabPos = tab.position
         mViewModel.currentTabPositionLive.value = tab.position
     }
 

@@ -7,10 +7,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.R
-import com.example.clone_daum.model.local.MyFavorite
-import com.example.clone_daum.model.local.MyFavoriteDao
-import com.example.clone_daum.model.local.UrlHistory
-import com.example.clone_daum.model.local.UrlHistoryDao
+import com.example.clone_daum.model.local.*
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
@@ -26,9 +23,9 @@ import javax.inject.Inject
  */
 
 class BrowserViewModel @Inject constructor(app: Application
-   , var urlDao: UrlHistoryDao
-   , val favDao: MyFavoriteDao
-   , val disposable: CompositeDisposable
+    , var urlDao: UrlHistoryDao
+    , val zzimDao: ZzimDao
+    , val disposable: CompositeDisposable
 ) : CommandEventViewModel(app), ISnackbarAware, IWebViewEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
@@ -95,9 +92,9 @@ class BrowserViewModel @Inject constructor(app: Application
         }
     }
 
-    fun eventFavorite(url: String) {
+    fun addZzim(url: String) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("FAVORITE EVENT $url")
+            mLog.debug("ADD ZZIM $url")
         }
 
         if (url != urlString.get()) {
@@ -105,7 +102,7 @@ class BrowserViewModel @Inject constructor(app: Application
             mLog.error("ERROR: ${urlString.get()}")
         }
 
-        disposable.add(favDao.hasUrl(url)
+        disposable.add(zzimDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (it > 0) {
@@ -113,41 +110,58 @@ class BrowserViewModel @Inject constructor(app: Application
                         mLog.info("EXIST URL : $url ($it)")
                     }
 
-                    observeSnackbarEvent(string(R.string.brs_exist_fav_url))
+                    snackbarEvent(string(R.string.brs_exist_fav_url))
                 } else {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("FAV URL : $url ($it)")
-                    }
-
-                    insertFavUrl(url)
+                    insertZzim(url)
                 }
-            }, { e ->
-                if (mLog.isDebugEnabled) {
-                    e.printStackTrace()
-                }
+            }, { it.message?.let(::snackbarEvent) }))
 
-                mLog.error("ERROR: ${e.message}")
-                observeSnackbarEvent(e.message)
-            })
-        )
+//        disposable.add(favDao.hasUrl(url)
+//            .subscribeOn(Schedulers.io())
+//            .subscribe({
+//                if (it > 0) {
+//                    if (mLog.isInfoEnabled) {
+//                        mLog.info("EXIST URL : $url ($it)")
+//                    }
+//
+//
+//                } else {
+//                    if (mLog.isDebugEnabled) {
+//                        mLog.debug("FAV URL : $url ($it)")
+//                    }
+//
+//                    insertFavUrl(url)
+//                }
+//            }, { e ->
+//                if (mLog.isDebugEnabled) {
+//                    e.printStackTrace()
+//                }
+//
+//                mLog.error("ERROR: ${e.message}")
+//                observeSnackbarEvent(e.message)
+//            })
+//        )
     }
 
-    private fun insertFavUrl(url: String) {
-        disposable.add(favDao.insert(MyFavorite(url = url, date = time()))
+    private fun insertZzim(url: String) {
+        disposable.add(zzimDao.insert(Zzim(url = url
+            , title = "title"))
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("FAV URL : $url")
+                    mLog.debug("ZZIM URL : $url")
                 }
 
-                observeSnackbarEvent(string(R.string.brs_fav_url_ok))
+                snackbarEvent(string(R.string.brs_fav_url_ok))
             }, {
                 if (mLog.isDebugEnabled) {
                     it.printStackTrace()
                 }
 
-                mLog.error("ERROR: ${it.message}")
-                observeSnackbarEvent(it.message)
+                it.message?.let {
+                    mLog.error("ERROR: ${it}")
+                    snackbarEvent(it)
+                }
             }))
     }
 
@@ -157,11 +171,9 @@ class BrowserViewModel @Inject constructor(app: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private fun snackbar(@StringRes resid: Int) =
-        snackbar(string(resid))
-
-    private inline fun observeSnackbarEvent(msg: String?) {
-        disposable.add(Single.just(msg).subscribeOn(AndroidSchedulers.mainThread())
+    private fun snackbarEvent(str: String) {
+        disposable.add(Single.just(str)
+            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe { msg, _ -> snackbar(msg) })
     }
 }

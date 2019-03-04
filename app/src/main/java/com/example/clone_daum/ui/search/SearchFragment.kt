@@ -71,6 +71,8 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     }
 
     override fun onDestroyView() {
+        mViewModel.dp.clear()
+
         hideKeyboard(mBinding.searchEdit)
         mPopularViewModel.dp.clear()
 

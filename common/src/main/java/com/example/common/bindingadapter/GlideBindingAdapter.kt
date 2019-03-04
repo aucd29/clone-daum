@@ -34,7 +34,17 @@ object GlideBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("android:src")
-    fun imageSource(view: ImageView, @DrawableRes resid: Int) {
+    fun imageSrc(view: ImageView, @DrawableRes resid: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND IMAGE : $resid")
+        }
+
+        view.setImageResource(resid)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindImageRes")
+    fun glideSource(view: ImageView, @DrawableRes resid: Int) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND IMAGE : $resid")
         }
@@ -44,7 +54,7 @@ object GlideBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindImage")
-    fun bindImage(view: ImageView, path: String) {
+    fun glideImage(view: ImageView, path: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND IMAGE : $path")
         }
