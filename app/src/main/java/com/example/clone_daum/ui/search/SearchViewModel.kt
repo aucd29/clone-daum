@@ -170,6 +170,7 @@ class SearchViewModel @Inject constructor(app: Application
                 it.subkeys.forEach { key ->
                     // 좀더 빠르게 하려고 client 의 replace 가 아닌 서버의 highlighted 값을 참조 하는듯
                     // 일단 귀차니즘으로 replace =_ = 훗...
+                    // 생각해보니 초성만 입력했을때 하이라이트 시키려면 문제가 되긴하는구나.. 
                     val newkey = key.replace(it.q,
                         "<font color='#ff7b39'><b>${it.q}</b></font>")
                     suggestList.add(SuggestItem(newkey, key))
