@@ -88,7 +88,7 @@
     <string name="brs_dlg_message_ssl_error">인증서 오류, 페이지를 열까옹?</string>
     <string name="brs_favorite">Favorite</string>
     <string name="brs_intent_app_for_sharing">공유에 사용할 앱</string>
-    <string name="brs_exist_fav_url">이미 입력된 url 임</string>
+    <string name="brs_exist_fav_url">이미 입력된 찜임</string>
     <string name="brs_fav_url_ok">저장되었삼</string>
     <string name="brs_copied_url">URL 이 클립보드에 복사됨</string>
     <string name="brs_using_base_brs">기본 브라우저로 열면 로그인 및 위치 정보는 유지 안됨</string>
