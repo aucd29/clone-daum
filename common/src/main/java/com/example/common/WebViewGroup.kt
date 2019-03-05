@@ -13,14 +13,13 @@ import java.lang.Exception
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
+ *
+ * https://github.com/aosp-mirror/platform_frameworks_base/tree/master/core/java/android/webkit
  */
 
 @SuppressLint("SetJavaScriptEnabled")
 inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     settings.apply {
-        setAppCacheEnabled(true)
-
-
         textZoom                         = 100
         cacheMode                        = WebSettings.LOAD_NO_CACHE
         javaScriptEnabled                = true
@@ -28,9 +27,26 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
         allowFileAccessFromFileURLs      = true
         allowUniversalAccessFromFileURLs = true
 
+        setAppCacheEnabled(true)
+        setAppCachePath(context.cacheDir.absolutePath)
+        setNeedInitialFocus(false)
+
+        allowContentAccess          = false
+        allowFileAccess             = true
+        cacheMode                   = WebSettings.LOAD_DEFAULT
+        layoutAlgorithm             = WebSettings.LayoutAlgorithm.NARROW_COLUMNS
+        loadsImagesAutomatically    = true
+        minimumFontSize             = 8
+        minimumLogicalFontSize      = 8
+        useWideViewPort             = true
+
         //https://stackoverflow.com/questions/21694306/how-to-set-text-size-in-webview-in-android
 //        blockNetworkImage                = true
 //        loadsImagesAutomatically         = true
+
+//        https://blog.csdn.net/cjopengler/article/details/17099181     // 동작 안함 [aucd29][2019. 3. 5.]
+//        Reflect.method(settings, "setPageCacheCapacity",
+//            Reflect.Params(listOf(Integer::class.java), listOf(5)))
 
         userAgent?.invoke().let { userAgentString = it }
     }
