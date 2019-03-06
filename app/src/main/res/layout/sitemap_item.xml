@@ -52,7 +52,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="model" type="com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel" />
-        <variable name="item" type="com.example.clone_daum.model.remote.Sitemap" />
+        <variable name="model" type="com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel"/>
+        <variable name="item" type="com.example.clone_daum.model.remote.Sitemap"/>
     </data>
 </layout>

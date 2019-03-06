@@ -17,6 +17,7 @@ class FavoriteFragment
     }
 
     override fun initViewModelEvents() {
+        mViewModel.init(mDisposable)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

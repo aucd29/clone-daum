@@ -12,7 +12,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/favorite_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/favorite_bar"
@@ -87,7 +88,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="@{model.count > 0 ? View.GONE : View.VISIBLE}"
         />
-
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/favorite_recycler"

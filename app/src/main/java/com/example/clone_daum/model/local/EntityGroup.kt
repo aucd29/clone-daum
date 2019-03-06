@@ -1,14 +1,10 @@
 package com.example.clone_daum.model.local
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.example.clone_daum.model.BrowserRecyclerType
-import com.example.clone_daum.model.IBrowserRecyclerData
-import com.example.clone_daum.model.ISearchRecyclerData
-import com.example.clone_daum.model.SearchRecyclerType
+import com.example.clone_daum.model.*
 import com.example.common.IRecyclerDiff
+import com.example.common.IRecyclerItem
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -62,19 +58,33 @@ data class UrlHistory (
     val _id: Int = 0,
     val url: String,
     val date: Long
-) : IBrowserRecyclerData {
+) : IRecyclerDiff, IRecyclerItem {
+    companion object {
+        const val T_HISTORY   = 0
+        const val T_SEPERATOR = 1
+    }
+
     override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
-    override fun type() = BrowserRecyclerType.T_HISTORY
+    override fun type() = T_HISTORY
 }
 
 @Entity(tableName = "myFavorite")
 data class MyFavorite (
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0,
+    val title: String,
     val url: String,
-    val date: Long
-) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff)= this._id == (item as MyFavorite)._id
+    val date: Long,
+    val folder: String = "",
+    val favType: Int = T_DEFAULT
+) : IRecyclerDiff, IRecyclerItem {
+    companion object {
+        const val T_DEFAULT = 0
+        const val T_FOLDER  = 1
+    }
+
+    override fun compare(item: IRecyclerDiff) = this._id == (item as MyFavorite)._id
+    override fun type() = favType
 }
 
 @Entity(tableName = "frequentlySite")

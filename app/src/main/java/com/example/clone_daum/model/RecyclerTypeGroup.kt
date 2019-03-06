@@ -8,13 +8,13 @@ object SearchRecyclerType {
     const val T_HISTORY = 0
     const val T_SUGGEST = 1
 }
-
-object BrowserRecyclerType {
-    const val T_HISTORY   = 0
-    const val T_SEPERATOR = 1
-}
-
-object WeatherRecyclerType {
-    const val T_DUST  = 0
-    const val T_OTHER = 1
-}
+//
+//object BrowserRecyclerType {
+//    const val T_HISTORY   = 0
+//    const val T_SEPERATOR = 1
+//}
+//
+//object WeatherRecyclerType {
+//    const val T_DUST  = 0
+//    const val T_OTHER = 1
+//}

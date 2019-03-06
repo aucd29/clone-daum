@@ -37,12 +37,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
     private var mTimerDisposable = CompositeDisposable()
     private var mIsClosedSplash  = false
+//    private var mUrl: String = ""
 
-//    val scrollviewY: Int
-//        get() = mBinding.scrollview.scrollY
-//
-//    val url: String
-//        get() = mBinding.webview.url
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -75,6 +71,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                             mLog.debug("JUST LOAD URL : $url")
                         }
 
+                        // uri 를 redirect 시키는 이유가 뭘까나?
                         webview.loadUrl(url)
                     }
                 }
@@ -103,19 +100,18 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             }
             , userAgent = { config.USER_AGENT }
             , progress  = {
+                val position = arguments?.getInt(MainTabAdapter.K_POSITION)
+
                 if (mLog.isTraceEnabled) {
-                    mLog.trace("TAB WEBVIEW PROGRESS: $it")
+                    mLog.trace("TAB($position) WEBVIEW PROGRESS : $it")
                 }
 
-                // 이 값이 구 버전에서는 제대로 안들어왔던 기억이...
-                if (it == 100) {
+                // 이 값이 구 버전에서는 제대로 안들어왔음 =_ =
+                if (it == 100 && position == MainViewModel.INDEX_NEWS) {
                     if (!mIsClosedSplash) {
                         mIsClosedSplash = true
 
-                        val position = arguments?.getInt(MainTabAdapter.K_POSITION)
-                        if (position == 0) {
-                            mSplashViewModel.closeEvent.call()
-                        }
+                        mSplashViewModel.closeEvent.call()
                     }
                 }
             }
@@ -139,6 +135,16 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     swipeRefresh.isRefreshing = false
                 })
         }
+
+//        arguments?.getInt(MainTabAdapter.K_POSITION)?.let {
+//            mUrl = preConfig.tabLabelList.get(it).url
+//
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("URL : $mUrl")
+//            }
+//        }
+//
+//        Unit
     }
 
     override fun initViewModelEvents() {
@@ -166,9 +172,15 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             }
 
             observe(currentTabPositionLive) {
-                // current pos 에 web 만 load url 을 하도록 수정
-                mBinding.apply {
-                    if (webview.url.isNullOrEmpty()) {
+//                // current pos 에 web 만 load url 을 하도록 수정
+//                mBinding.webview.apply {
+//                    if (url.isNullOrEmpty()) {
+//                        loadUrl(mUrl)
+//                    }
+//                }
+
+                mBinding.webview.apply {
+                    if (url.isNullOrEmpty()) {
                         val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
 
                         if (pos == it.toInt()) {
@@ -177,7 +189,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                                     mLog.debug("TAB CHANGED ($pos) : $it")
                                 }
 
-                                webview.loadUrl(it)
+                                loadUrl(it)
                             }
                         }
                     }
@@ -189,16 +201,13 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     override fun onPause() {
         super.onPause()
 
-        mViewModel.webviewEvent(WebViewEvent.PAUSE)
+        mBinding.webview.pause()
+
         mTimerDisposable.clear()
     }
 
     override fun onResume() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RESUME WEBVIEW URL : ${mBinding.webview.url}")
-        }
-
-        mViewModel.webviewEvent(WebViewEvent.RESUME)
+        mBinding.webview.resume()
 
         super.onResume()
     }

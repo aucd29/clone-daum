@@ -127,9 +127,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
                 CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment { cmd ->
                     when (cmd) {
-                        "즐겨찾기목록" -> {
-                            
-                        }
+                        "즐겨찾기목록" -> viewController.favoriteFragment()
                         "즐겨찾기추가" -> {
 
                         }
@@ -142,8 +140,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                         }
                         "기타 브라우저" -> {
                             confirm(R.string.brs_using_base_brs, R.string.common_notify,
-                                listener = { res, dlg -> if (res) showDefaultBrowser()
-                            })
+                                listener = { res, dlg -> if (res) showDefaultBrowser() })
                         }
                         "화면 내 검색" -> {
                             // https://code.i-harness.com/en/q/b5bb99
@@ -194,11 +191,13 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     override fun onPause() {
         super.onPause()
 
-        mViewModel.webviewEvent(WebViewEvent.PAUSE)
+        mBinding.brsWebview.pause()
+//        mViewModel.webviewEvent(WebViewEvent.PAUSE)
     }
 
     override fun onResume() {
-        mViewModel.webviewEvent(WebViewEvent.RESUME)
+        mBinding.brsWebview.resume()
+//        mViewModel.webviewEvent(WebViewEvent.RESUME)
 
         activity?.let { internalFullscreen(it.isFullscreen()) }
 

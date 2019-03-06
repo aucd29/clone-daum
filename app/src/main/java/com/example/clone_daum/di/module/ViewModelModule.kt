@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
+import com.example.clone_daum.ui.browser.favorite.FavoriteViewModel
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
@@ -163,4 +164,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BrowserSubmenuViewModel::class)
     abstract fun bindBrowserSubmenuViewModel(vm: BrowserSubmenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteViewModel::class)
+    abstract fun bindFavoriteViewModel(vm: FavoriteViewModel): ViewModel
+
 }

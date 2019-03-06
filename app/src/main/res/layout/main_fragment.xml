@@ -32,6 +32,7 @@
                     android:layout_height="match_parent"
                     app:bindPagerAdapter="@{model.tabAdapter}"
             />
+            <!--app:bindOffscreenPageLimit="@{model.offscreenPageLimit}"-->
 
             <!-- realtime issue 쪽 배경 용 -->
             <View
