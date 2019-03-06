@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
+import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
 import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
@@ -183,6 +184,15 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         manager.show(FragmentParams(CONTAINER, FavoriteFragment::class.java
+            , anim = FragmentAnim.RIGHT))
+    }
+
+    fun favoriteAddFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE ADD FRAGMGENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FavoriteAddFragment::class.java
             , anim = FragmentAnim.RIGHT))
     }
 }

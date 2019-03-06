@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
+import androidx.databinding.ObservableInt
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.common.ICommandEventAware
@@ -27,13 +28,19 @@ class FavoriteViewModel @Inject constructor(application: Application
 
     lateinit var dp: CompositeDisposable
 
-    val count: Int
-        get() = items.get()?.size ?: 0
+    val count = ObservableInt(0)
 
     fun init(dp: CompositeDisposable) {
         this.dp = dp
 
         initAdapter(arrayOf("favorite_item", "favorite_folder_item"))
-//        dp.add(favoriteDao.selectMain().subscribe { items.set(it) })
+        dp.add(favoriteDao.selectMain().subscribe {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FAVORITE COUNT : ${it.size}")
+            }
+
+            count.set(it.size)
+            items.set(it)
+        })
     }
 }

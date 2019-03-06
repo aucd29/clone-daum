@@ -95,7 +95,8 @@
 
     <!--favorite -->
 
-    <string name="favorite_title">FAVORITE</string>
+    <string name="favorite_title">즐겨찾기</string>
+    <string name="favorite_title_add">즐겨찾기 추가</string>
 
     <!-- error -->
     <string name="error_title">오류</string>

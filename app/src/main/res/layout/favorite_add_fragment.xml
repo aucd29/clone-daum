@@ -1,0 +1,88 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/favorite_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/favorite_bar"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:padding="@dimen/brs_urlbar_pad"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+        >
+
+            <ImageView
+                    android:id="@+id/favorite_back"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:padding="@dimen/brs_back_pad"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:onClick="@{() -> model.finishEvent()}"
+            />
+
+            <TextView
+                    android:id="@+id/favorite_title"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/favorite_back"
+                    app:layout_constraintTop_toTopOf="@+id/favorite_back"
+                    app:layout_constraintBottom_toBottomOf="@+id/favorite_back"
+                    tools:text="FAVORITE"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/favorite_title_add"
+                    android:textColor="@android:color/black"
+            />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+                android:id="@+id/tab_underline"
+                style="@style/line1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+        />
+
+        <!-- name -->
+
+        <TextView
+                android:id="@+id/favorite_label_name"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tab_underline"
+                android:padding="20dp"
+        />
+
+        <EditText
+                android:id="@+id/favorite_name"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/favorite_label_name"
+                app:layout_constraintTop_toBottomOf="@+id/tab_underline"
+                app:layout_constraintBottom_toBottomOf="@+id/favorite_label_name"
+        />
+
+        <ImageView
+                android:id="@+id/favorite_name_reset"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tab_underline"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_clear_black_24dp"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
