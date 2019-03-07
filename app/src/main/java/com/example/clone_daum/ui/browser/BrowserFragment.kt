@@ -119,6 +119,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         BrowserViewModel.apply {
             when (cmd) {
@@ -192,12 +198,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         super.onPause()
 
         mBinding.brsWebview.pause()
-//        mViewModel.webviewEvent(WebViewEvent.PAUSE)
     }
 
     override fun onResume() {
         mBinding.brsWebview.resume()
-//        mViewModel.webviewEvent(WebViewEvent.RESUME)
 
         activity?.let { internalFullscreen(it.isFullscreen()) }
 

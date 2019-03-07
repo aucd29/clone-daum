@@ -46,6 +46,9 @@ inline fun Context.isForegroundApp(pkgName: String) = systemService(ActivityMana
  */
 inline fun Context.isForegroundApp() = isForegroundApp(packageName)
 
+/**
+ * install 된 앱인지 파악
+ */
 inline fun Context.isInstalledPackage(packageName: String)= try {
     packageManager?.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
     true
@@ -53,6 +56,9 @@ inline fun Context.isInstalledPackage(packageName: String)= try {
     false
 }
 
+/**
+ * 앱이 설치되어 있으면 해당 앱을 구동 시키고 없으면 마켓 앱을 띄우도록 함
+ */
 inline fun Context.launchApp(packageName: String) {
     val intent = if (isInstalledPackage(packageName)) {
         packageManager.getLaunchIntentForPackage(packageName)
@@ -152,11 +158,16 @@ inline fun Context.clipboard(value: String) = systemService(ClipboardManager::cl
     primaryClip = ClipData.newPlainText("burke-data", value)
 }
 
-
+/**
+ * systemService 반환
+ */
 inline fun <T> Context.systemService(serviceClass: Class<T>): T? {
     return ContextCompat.getSystemService(this, serviceClass)
 }
 
+/**
+ * 유효 메모리 확인
+ */
 inline fun Context.availMem(percent: Int): Long {
     val mi = ActivityManager.MemoryInfo()
     systemService(ActivityManager::class.java)?.getMemoryInfo(mi)
@@ -164,10 +175,16 @@ inline fun Context.availMem(percent: Int): Long {
     return percent.toLong() * mi.availMem / 100L
 }
 
+/**
+ * toast 띄우기
+ */
 inline fun Context.toast(message: String, len: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, message, len).show()
 }
 
+/**
+ * toast 띄우기
+ */
 inline fun Context.toast(@StringRes resid: Int, len: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, resid, len).show()
 }

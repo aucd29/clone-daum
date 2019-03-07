@@ -67,10 +67,10 @@ abstract class ViewModelModule {
     @ViewModelKey(RealtimeIssueChildViewModel::class)
     abstract fun bindRealtimeIssueChildViewModel(vm: RealtimeIssueChildViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(WeatherViewModel::class)
-    abstract fun bindWeatherViewModel(vm: WeatherViewModel): ViewModel
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(WeatherViewModel::class)
+//    abstract fun bindWeatherViewModel(vm: WeatherViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -143,6 +143,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationLoginViewModel::class)
     abstract fun bindNavigationLoginViewModel(vm: NavigationLoginViewModel): ViewModel
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SEARCH
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     @Binds
     @IntoMap

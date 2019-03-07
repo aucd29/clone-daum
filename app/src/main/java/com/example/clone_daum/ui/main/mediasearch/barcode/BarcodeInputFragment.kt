@@ -17,6 +17,12 @@ class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, Barc
     override fun initViewModelEvents() {
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         BarcodeInputViewModel.apply {
             when (cmd) {

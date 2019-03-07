@@ -58,6 +58,12 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
         super.onPause()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         BarcodeViewModel.apply {
             when (cmd) {

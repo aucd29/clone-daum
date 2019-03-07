@@ -22,30 +22,62 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 10. 30. <p/>
+ *
+ * Activity 관련 된 extension 모음
  */
-
 
 /**
  * snackbar 호출
+ *
+ * @param view 대상이 되는 뷰
+ * @param msg 출력할 메시지
+ * @param length 메시지 출력 시간 (기본값 LENGTH_SHORT)
+ * @return Snackbar 객체
  */
 inline fun Activity.snackbar(view: View, msg: String, length: Int = Snackbar.LENGTH_SHORT) =
     Snackbar.make(view, msg, length)
 
 /**
  * snackbar 호출
+ * @param view 대상이 되는 뷰
+ * @param resid 출력할 메시지 리소스 아이디
+ * @param length 메시지 출력 시간 (기본값 LENGTH_SHORT)
+ * @return Snackbar 객체
  */
 inline fun Activity.snackbar(view: View, @StringRes resid: Int, length: Int = Snackbar.LENGTH_SHORT) =
     snackbar(view, getString(resid), length)
 
+/**
+ * 종료 하려면 다시 선택 하라는 메뉴 호출
+ *
+ * @param view snackbar 일 경우 대상이 되는 view
+ * @return BackPressedManager 객체
+ */
 inline fun AppCompatActivity.checkBackPressed(view: View?) = BackPressedManager(this, view)
 
+/**
+ * 리소스 내 dimen 을 얻기 위한 shortcut
+ *
+ * @param resid dim 값에 해당하는 리소스 아이디
+ * @return 아이디에 해당하는 값
+ */
 inline fun Activity.dimen(@DimenRes resid: Int) =
     resources.getDimension(resid)
 
+/**
+ * 다이얼로그를 띄우기 위한 옵저버 로 view model 에 선언되어 있는 single live event 의 값의 변화를 인지 하여 dialog 을 띄운다.
+ *
+ * @param event DialogParam 을 담는 LiveEvent
+ * @param disposable CompositeDisposable 객체 (기본 값은 null)
+ */
 inline fun FragmentActivity.observeDialog(event: SingleLiveEvent<DialogParam>, disposable: CompositeDisposable? = null) {
     event.observe(this, Observer { dialog(it, disposable) })
 }
 
+/**
+ * activity 의 클래스 명을 기반하여 inflate 할 layout 이름을 얻도록 한다. 이때 첫글자 뒤에 오는 대문자는 _ 을 붙이고 대문자는 소문자로 변환 된다.
+ * 예로 TestActivity 라면 test_activity 형태로 변환 된다.
+ */
 inline fun Activity.generateLayoutName(): String {
     val name = javaClass.simpleName
     var layoutName = name.get(0).toLowerCase().toString()
@@ -61,6 +93,11 @@ inline fun Activity.generateLayoutName(): String {
     return layoutName
 }
 
+/**
+ * 화면을 ON / OFF 시킨다.
+ *
+ * @param on true일 경우 화면을 켜고 아닐경우 끈다.
+ */
 inline fun Activity.keepScreen(on: Boolean) {
     if (on) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -69,6 +106,11 @@ inline fun Activity.keepScreen(on: Boolean) {
     }
 }
 
+/**
+ * 전체 화면으로 토글 한다.
+ *
+ * @param fullscreen true 일 경우 전체화면 아니면 일반화면
+ */
 inline fun Activity.fullscreen(fullscreen: Boolean) {
     runOnUiThread {
         val lp = window.attributes
@@ -84,6 +126,10 @@ inline fun Activity.fullscreen(fullscreen: Boolean) {
     }
 }
 
+/**
+ * 전체화면인지 아닌지 반환 한다.
+ * @return true 면 전체 화면 false 면 일반화면
+ */
 inline fun Activity.isFullscreen() =
     (window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN
 
@@ -93,18 +139,21 @@ inline fun Activity.isFullscreen() =
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * 다이얼로그를 띄우기 위한 속성을 관리하는 데이터 클래스
+ */
 data class DialogParam (
-    var message: String? = null,
-    var title: String? = null,
-    var positiveStr: String? = null,
-    var negativeStr: String? = null,
-    var listener: ((Boolean, DialogInterface) -> Unit)? = null,
-    var timer: Int = 0,
-    val context: Context? = null,
-    var messageId: Int? = null,
-    var titleId: Int? = null,
-    var positiveId: Int? = null,
-    var negativeId: Int? = null
+    var message: String? = null,        // 다이얼로그에 출력할 메시지
+    var title: String? = null,          // 다이얼로그 타이틀
+    var positiveStr: String? = null,    // positive 버튼에 출력할 문구
+    var negativeStr: String? = null,    // negative 버튼에 출력할 문구
+    var listener: ((Boolean, DialogInterface) -> Unit)? = null, // 사용자가 positive 또는 negative 를 선택할 결과를 전달 받는 리스너
+    var timer: Int = 0,                 // 다이얼로그를 시간에 따라 자동으로 종료 시킬 타이머 값
+    val context: Context? = null,       // application context
+    var messageId: Int? = null,         // 출력할 메시지에 해당하는 리소스 아이디
+    var titleId: Int? = null,           // 출력할 타이틀에 해당하는 리소스 아이디
+    var positiveId: Int? = null,        // 출력할 positive 버튼에 해당하는 리소스 아이디
+    var negativeId: Int? = null         // 출력할 negative 버튼에 해당하는 리소스 아이디
 ) {
     init {
         context?.apply {
@@ -117,6 +166,12 @@ data class DialogParam (
     }
 }
 
+/**
+ * 다이얼로그를 띄운다.
+ *
+ * @param params 다이얼로그를 열기 위한 속성 값
+ * @param disposable rx 의 interval 을 통해 다이얼로그르 자동 종료 시키는데 이때 필요한 CompositeDisposable 값
+ */
 inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
     val bd = AlertDialog.Builder(this)
     bd.setMessage(params.message)
@@ -146,6 +201,9 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * 앱 종료를 위해 다시 한번 backkey 를 선택하라는 문구를 동작 시키기 위한 클래스
+ */
 open class BackPressedManager(var mActivity: AppCompatActivity, var view: View? = null) {
     companion object {
         val delay = 2000

@@ -134,6 +134,8 @@ interface ISnackbarAware {
 interface ICommandEventAware {
     val commandEvent: SingleLiveEvent<Pair<String, Any>>
 
+    // @JvmOverloads 를 넣고 싶긴한데 =_ = 흠;
+
     // 기존에 Any? = null 형태일때 xml 에서 문제됨.
     fun commandEvent(cmd: String, data: Any) {
         commandEvent.value = cmd to data

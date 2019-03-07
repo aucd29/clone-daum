@@ -238,6 +238,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         MainViewModel.apply {
             if (mLog.isDebugEnabled) {

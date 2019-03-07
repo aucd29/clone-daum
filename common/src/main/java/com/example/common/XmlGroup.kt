@@ -19,7 +19,7 @@ abstract class BaseXPath {
         private val log = LoggerFactory.getLogger(BaseXPath::class.java)
     }
 
-    val xpath = XPathFactory.newInstance().newXPath()
+    val xpath   = XPathFactory.newInstance().newXPath()
     val builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
     lateinit var document: Document
 

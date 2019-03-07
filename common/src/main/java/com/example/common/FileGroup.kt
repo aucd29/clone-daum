@@ -107,7 +107,7 @@ private fun InputStream.copyFile(target: File, listener: FileListener? = null) {
             if (listener != null && listener.cancel) {
                 // stop file copy commandEvent
                 listener.finish(FileListener.CANCELED)
-                break;
+                break
             }
 
             bytes = read(buff)

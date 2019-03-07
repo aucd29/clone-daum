@@ -48,6 +48,12 @@ class RealtimeIssueChildFragment
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
             RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data.let {

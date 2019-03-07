@@ -16,6 +16,10 @@ class FavoriteAddViewModel @Inject constructor(app: Application
 ) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteAddViewModel::class.java)
+
+        const val CMD_NAME_RESET    = "name-reset"
+        const val CMD_ADDRESS_RESET = "address-reset"
+        const val CMD_FOLDER_DETAIL = "folder-detail"
     }
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
@@ -24,4 +28,13 @@ class FavoriteAddViewModel @Inject constructor(app: Application
     val name    = ObservableField<String>()
     val url     = ObservableField<String>()
     val favType = ObservableField<String>()
+
+    override fun commandEvent(cmd: String, data: Any) {
+        when (cmd) {
+            CMD_NAME_RESET      -> name.set("")
+            CMD_ADDRESS_RESET   -> url.set("")
+
+            else -> super.commandEvent(cmd, data)
+        }
+    }
 }

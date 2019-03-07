@@ -55,6 +55,12 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         mViewModel.finishEvent()
 

@@ -31,6 +31,12 @@ class BrowserSubmenuFragment (private val mCallback: (String) -> Unit)
 
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
             BrowserSubmenuViewModel.CMD_SUBMENU -> mCallback.invoke(data.toString())

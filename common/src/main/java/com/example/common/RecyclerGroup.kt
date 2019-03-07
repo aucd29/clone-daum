@@ -39,7 +39,14 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var mBinding: ViewDataBinding
 }
 
-class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerView.Adapter<RecyclerHolder>() {
+/**
+ * xml 에서 event 와 data 를 binding 하므로 viewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
+ * 한다.
+ *
+ *
+ */
+class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
+    : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)
 
@@ -90,6 +97,10 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
     constructor(layoutId: String) : this(arrayOf(layoutId)) {
     }
 
+    /**
+     * 전달 받은 layout ids 와 IRecyclerItem 을 통해 화면에 출력해야할 layout 를 찾고
+     * 해당 layout 의 RecyclerHolder 를 생성 한다.
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerHolder {
         val context = parent.context
         val layoutId = context.resources.getIdentifier(mLayouts.get(viewType), "layout", context.packageName)
@@ -114,6 +125,9 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
         return vh
     }
 
+    /**
+     * view holder 에 view model 과 item 을 설정 시킨다.
+     */
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
@@ -130,7 +144,14 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
         holder.mBinding.executePendingBindings()
     }
 
+    /**
+     * 화면에 출력해야할 아이템의 총 개수를 반환 한다.
+     */
     override fun getItemCount() = items.size
+
+    /**
+     * 특정 위치의 item 타입을 반환 한다.
+     */
     override fun getItemViewType(position: Int): Int {
         val item = items.get(position)
         when (item) {
@@ -140,10 +161,12 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
         return 0
     }
 
-    // 이론상으로는 맞는데 제대로 안도는 현상?
+    /**
+     * 아이템을 설정 한다. 이때 DiffUtil.calculateDiff 를 통해 데이터의 변동 지점을
+     * 알아서 찾아 변경 시켜 준다.
+     */
     fun setItems(recycler: RecyclerView, newItems: List<T>) {
         if (items.size == 0) {
-            //items.addAll(newItems)
             items = newItems
             notifyItemRangeChanged(0, items.size)
 
@@ -171,6 +194,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
         result.dispatchUpdatesTo(object: ListUpdateCallback {
             private var mFirstInsert = -1
 
+            // 데이터가 추가되었다면
             override fun onInserted(position: Int, count: Int) {
                 if (mFirstInsert == -1 || mFirstInsert > position) {
                     mFirstInsert = position
@@ -184,6 +208,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
                 notifyItemRangeInserted(position, count)
             }
 
+            // 데이터가 삭제 되었다면
             override fun onRemoved(position: Int, count: Int) {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("REMOVED (pos: $position) (cnt: $count)")
@@ -192,6 +217,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
                 notifyItemRangeRemoved(position, count)
             }
 
+            // 데이터 위치가 변화 되었다면
             override fun onMoved(fromPosition: Int, toPosition: Int) {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("MOVED (from: $fromPosition) (to: $toPosition)")
@@ -213,6 +239,9 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>): RecyclerVi
     }
 }
 
+/**
+ * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
+ */
 open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewModel(app) {
     val items   = ObservableField<List<T>>()
     val adapter = ObservableField<RecyclerAdapter<T>>()

@@ -126,6 +126,12 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND EVENT : $cmd")

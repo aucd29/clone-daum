@@ -66,6 +66,12 @@ class FlowerFragment: BaseDaggerFragment<FlowerFragmentBinding, FlowerViewModel>
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
             FlowerViewModel.CMD_BRS_OPEN -> {
