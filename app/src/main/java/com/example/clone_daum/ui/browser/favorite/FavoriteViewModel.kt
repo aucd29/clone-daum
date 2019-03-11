@@ -43,4 +43,17 @@ class FavoriteViewModel @Inject constructor(application: Application
             items.set(it)
         })
     }
+
+    fun initFolder(dp: CompositeDisposable) {
+        this.dp = dp
+
+        initAdapter("folder_item")
+        dp.add(favoriteDao.selectFolder().subscribe {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FOLDER COUNT : ${it.size}")
+            }
+
+            items.set(it)
+        })
+    }
 }

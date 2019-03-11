@@ -7,6 +7,7 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
 import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
+import com.example.clone_daum.ui.browser.favorite.FolderFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -162,11 +163,10 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         url?.let {
-            val bundle = Bundle()
-            bundle.putString("url", it)
-
             manager.show(FragmentParams(CONTAINER,
-                BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = bundle))
+                BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = Bundle().apply {
+                    putString("url", it)
+                }))
         }
     }
 
@@ -187,12 +187,24 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             , anim = FragmentAnim.RIGHT))
     }
 
-    fun favoriteAddFragment() {
+    fun favoriteAddFragment(title: String, url: String) {
         if (mLog.isInfoEnabled) {
             mLog.info("FAVORITE ADD FRAGMGENT")
         }
 
         manager.show(FragmentParams(CONTAINER, FavoriteAddFragment::class.java
+            , anim = FragmentAnim.RIGHT, bundle = Bundle().apply {
+                putString("title", title)
+                putString("url", url)
+            }))
+    }
+
+    fun folderFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FOLDER FRAGMGENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FolderFragment::class.java
             , anim = FragmentAnim.RIGHT))
     }
 }

@@ -40,7 +40,7 @@
                 android:text="@={model.searchKeyword}"
                 android:imeOptions="actionSearch"
                 app:bindEditorAction="@{model.editorAction}"
-                android:onTextChanged="@{model.onTextChanged}"
+                android:onTextChanged="@{model::onTextChanged}"
         />
 
         <ImageView

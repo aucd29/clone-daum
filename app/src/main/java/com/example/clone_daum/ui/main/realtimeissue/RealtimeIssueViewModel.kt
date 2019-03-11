@@ -58,7 +58,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val tabMenuRotation = ObservableField<AnimParams>()
     val tabAlpha        = ObservableField<AnimParams>()
 
-    val visibleDetail   = ObservableField<Int>(View.GONE)
+    val visibleDetail   = ObservableInt(View.GONE)
     val viewPagerLoaded = ObservableField<(() -> Unit)?>()
 
     fun load(html: String) {

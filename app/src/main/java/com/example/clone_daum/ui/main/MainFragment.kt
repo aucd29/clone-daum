@@ -217,8 +217,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         mBinding.realtimeIssueTab.apply {
             addOnTabSelectedListener(mRealtimeTabSelectedListener)
 
-            var i = 0
-
             tabs.forEach {
                 it?.let { tab ->
                     val text = tab.text

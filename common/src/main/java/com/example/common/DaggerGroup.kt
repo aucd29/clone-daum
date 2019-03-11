@@ -267,7 +267,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
         const val SCOPE_FRAGMENT = 1
     }
 
-    @Inject lateinit var mDisposable: CompositeDisposable
+    lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
     protected lateinit var mViewModel: M
 
@@ -275,7 +275,8 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
     protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mViewModel = viewModelProvider()
+        mDisposable = CompositeDisposable()
+        mViewModel  = viewModelProvider()
 
         if (layoutId() == 0) {
             return generateEmptyLayout(mLayoutName)
@@ -308,6 +309,12 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 
     override fun bindViewModel() {
         Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
+    }
+
+    override fun onDestroyView() {
+        mDisposable.clear()
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -354,7 +361,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         const val SCOPE_FRAGMENT = 1
     }
 
-    @Inject lateinit var mDisposable: CompositeDisposable
+    lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
     protected lateinit var mViewModel: M
 
@@ -362,7 +369,8 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mViewModel = viewModelProvider()
+        mDisposable = CompositeDisposable()
+        mViewModel  = viewModelProvider()
 
         if (layoutId() == 0) {
             return generateEmptyLayout(mLayoutName)
@@ -394,6 +402,12 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 
     override fun bindViewModel() {
         Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
+    }
+
+    override fun onDestroyView() {
+        mDisposable.clear()
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

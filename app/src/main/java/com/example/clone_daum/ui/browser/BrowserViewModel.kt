@@ -37,6 +37,7 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_HOME             = "home"
         const val CMD_GOTO_TOP         = "goto-top"
         const val CMD_NORMALSCREEN     = "normalscreen"
+        const val CMD_RELOAD           = "reload"
     }
 
     override val snackbarEvent = SingleLiveEvent<String>()
@@ -88,7 +89,7 @@ class BrowserViewModel @Inject constructor(app: Application
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            webviewEvent(WebViewEvent.RELOAD)
+            commandEvent(CMD_RELOAD)
         }
     }
 
@@ -115,32 +116,6 @@ class BrowserViewModel @Inject constructor(app: Application
                     insertZzim(url)
                 }
             }, { it.message?.let(::snackbarEvent) }))
-
-//        disposable.add(favDao.hasUrl(url)
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({
-//                if (it > 0) {
-//                    if (mLog.isInfoEnabled) {
-//                        mLog.info("EXIST URL : $url ($it)")
-//                    }
-//
-//
-//                } else {
-//                    if (mLog.isDebugEnabled) {
-//                        mLog.debug("FAV URL : $url ($it)")
-//                    }
-//
-//                    insertFavUrl(url)
-//                }
-//            }, { e ->
-//                if (mLog.isDebugEnabled) {
-//                    e.printStackTrace()
-//                }
-//
-//                mLog.error("ERROR: ${e.message}")
-//                observeSnackbarEvent(e.message)
-//            })
-//        )
     }
 
     private fun insertZzim(url: String) {

@@ -136,6 +136,13 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
+
+    <!--favorite-->
+    <style name="favorite_edit">
+        <item name="android:background">@null</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <!-- dumy view -->
 
     <style name="dumyView">

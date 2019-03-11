@@ -84,6 +84,9 @@ interface MyFavoriteDao {
     @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id DESC ")
     fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
 
+    @Query("SELECT * FROM myFavorite WHERE folder!='' ORDER BY _id DESC ")
+    fun selectFolder(): Flowable<List<MyFavorite>>
+
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
 

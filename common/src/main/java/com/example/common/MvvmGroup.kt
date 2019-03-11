@@ -37,6 +37,13 @@ private const val LAYOUT = "layout"
 inline fun AndroidViewModel.string(@StringRes resid: Int) =
     app.getString(resid)
 
+inline fun AndroidViewModel.requireContext() =
+    if (app == null) {
+        throw IllegalStateException("AndroidViewModel $this not attached to a context.")
+    } else {
+        app.applicationContext
+    }
+
 /**
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
  */

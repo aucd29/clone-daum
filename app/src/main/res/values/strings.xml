@@ -98,6 +98,13 @@
     <string name="favorite_title">즐겨찾기</string>
     <string name="favorite_title_add">즐겨찾기 추가</string>
 
+    <string name="folder_title">폴더 선택</string>
+    <string name="folder_favorite">즐겨찾기</string>
+
+    <string name="folder_name">이름</string>
+    <string name="folder_addr">주소</string>
+    <string name="folder_folder">폴더</string>
+
     <!-- error -->
     <string name="error_title">오류</string>
     <string name="error_empty_keyword">검색어가 없습니다.</string>

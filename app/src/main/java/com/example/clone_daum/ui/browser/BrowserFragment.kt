@@ -15,6 +15,7 @@ import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
+import kotlinx.android.synthetic.main.main_webview_fragment.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -135,7 +136,11 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                     when (cmd) {
                         "즐겨찾기목록" -> viewController.favoriteFragment()
                         "즐겨찾기추가" -> {
+                            // https://stackoverflow.com/questions/8193239/how-to-get-loaded-web-page-title-in-android-webview
+                            val title = mBinding.brsWebview.title
+                            val url   = mBinding.brsWebview.url
 
+                            viewController.favoriteAddFragment(title, url)
                         }
                         "방문기록" -> {
 
@@ -169,6 +174,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 CMD_SHARE_EVENT      -> shareLink(data.toString())
                 CMD_GOTO_TOP         -> mBinding.brsWebview.scrollTo(0, 0)
                 CMD_NORMALSCREEN     -> internalFullscreen(false)
+                CMD_RELOAD           -> mBinding.brsWebview.reload()
             }
         }
     }

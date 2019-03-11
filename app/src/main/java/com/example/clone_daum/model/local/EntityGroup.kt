@@ -54,10 +54,10 @@ data class Zzim (
 
 @Entity(tableName = "urlHistory")
 data class UrlHistory (
-    @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
     val url: String,
-    val date: Long
+    val date: Long,
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0
 ) : IRecyclerDiff, IRecyclerItem {
     companion object {
         const val T_HISTORY   = 0
@@ -70,13 +70,13 @@ data class UrlHistory (
 
 @Entity(tableName = "myFavorite")
 data class MyFavorite (
-    @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
-    val title: String,
+    val name: String,
     val url: String,
-    val date: Long,
     val folder: String = "",
-    val favType: Int = T_DEFAULT
+    val favType: Int = T_DEFAULT,
+    val date: Long = System.currentTimeMillis(),
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0
 ) : IRecyclerDiff, IRecyclerItem {
     companion object {
         const val T_DEFAULT = 0
@@ -89,11 +89,11 @@ data class MyFavorite (
 
 @Entity(tableName = "frequentlySite")
 data class FrequentlySite(
-    @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
     val title: String,
     val url: String,
-    val count: Long
+    val count: Long,
+    @PrimaryKey(autoGenerate = true)
+    val _id: Int = 0
 ) : IRecyclerDiff {
     override fun compare(item: IRecyclerDiff)=
         this.url == (item as FrequentlySite).url

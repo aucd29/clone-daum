@@ -36,5 +36,15 @@
                 tools:text="NAME"
         />
 
+        <TextView
+                android:id="@+id/check"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textAppearance="@style/solid"
+                android:padding="10dp"
+                android:text="@string/fa_check"
+        />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
