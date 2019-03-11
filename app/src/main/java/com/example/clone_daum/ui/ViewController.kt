@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
+import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
+import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -174,5 +176,23 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         manager.showDialog(BrowserSubmenuFragment(callback), "brs-submenu")
+    }
+
+    fun favoriteFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE FRAGMGENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FavoriteFragment::class.java
+            , anim = FragmentAnim.RIGHT))
+    }
+
+    fun favoriteAddFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE ADD FRAGMGENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FavoriteAddFragment::class.java
+            , anim = FragmentAnim.RIGHT))
     }
 }

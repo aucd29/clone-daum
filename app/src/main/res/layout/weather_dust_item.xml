@@ -3,6 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- 디자인 변경으로 사용되지 않음 aucd29 -->
     <data>
         <variable name="model" type="com.example.clone_daum.ui.main.weather.WeatherViewModel" />
         <variable name="item" type="com.example.clone_daum.model.remote.WeatherDetail" />

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="item" type="com.example.clone_daum.model.local.MyFavorite"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+    >
+        <!--android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU, item.name)}"-->
+        <TextView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textAppearance="@style/solid"
+                android:text="@string/fa_folder"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="10dp"
+        />
+
+        <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/icon"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="10dp"
+                android:text="@{item.title}"
+                tools:text="NAME"
+        />
+
+        <TextView
+                android:id="@+id/detail"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text=">"
+                android:layout_marginEnd="10dp"
+                android:padding="10dp"
+                tools:text=">"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

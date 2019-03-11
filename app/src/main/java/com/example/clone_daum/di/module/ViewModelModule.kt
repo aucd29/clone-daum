@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
+import com.example.clone_daum.ui.browser.favorite.FavoriteAddViewModel
+import com.example.clone_daum.ui.browser.favorite.FavoriteViewModel
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
@@ -29,11 +31,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 6. <p/>
  */
-
 @Module
 abstract class ViewModelModule {
     ////////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +154,12 @@ abstract class ViewModelModule {
     @ViewModelKey(PopularViewModel::class)
     abstract fun bindPopularViewModel(vm: PopularViewModel): ViewModel
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BROWSER
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     @Binds
     @IntoMap
     @ViewModelKey(BrowserViewModel::class)
@@ -163,4 +169,14 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BrowserSubmenuViewModel::class)
     abstract fun bindBrowserSubmenuViewModel(vm: BrowserSubmenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteViewModel::class)
+    abstract fun bindFavoriteViewModel(vm: FavoriteViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteAddViewModel::class)
+    abstract fun bindFavoriteAddViewModel(vm: FavoriteAddViewModel): ViewModel
 }

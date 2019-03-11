@@ -47,7 +47,7 @@ class PopularViewModel @Inject constructor(app: Application)
     fun load(html: String) {
         if (mPopularList == null) {
             if (mLog.isDebugEnabled) {
-                mLog.debug("HTML PARSE (POPUPLAR LIST)")
+                mLog.debug("HTML PARSE (POPULAR LIST)")
             }
 
             dp.add(Observable.just(html)

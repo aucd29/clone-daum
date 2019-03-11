@@ -28,13 +28,15 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_SEARCH_FRAMGNET         = "search"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
-        const val CMD_BRS_OPEN                = "brs-open"
         const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
+
+        const val CMD_BRS_OPEN                = "brs-open"
     }
 
     override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
 
     val tabAdapter              = ObservableField<MainTabAdapter>()
+//    val offscreenPageLimit      = ObservableInt(2)
     val viewpager               = ObservableField<ViewPager>()
     var gotoNewsEvent           = ObservableInt(0)
     val searchIconResId         = ObservableInt(config.SEARCH_ICON)
@@ -47,11 +49,7 @@ class MainViewModel @Inject constructor(val app: Application
     var progressViewOffsetLive  = MutableLiveData<Int>()
     var currentTabPositionLive  = MutableLiveData<Int>()
 
-    val magneticEvent           = SingleLiveEvent<Boolean>()
-
     var searchAreaHeight:Int    = 0
-    var scrollviewPosY: Int     = 0 // 스크롤 정보를 main fragment 에 전달
-
 
     fun eventGotoNews() = gotoNewsEvent.run {
         if (mLog.isDebugEnabled) {

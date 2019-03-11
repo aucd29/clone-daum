@@ -29,6 +29,11 @@ class DbModule {
     fun provideSearchHistoryDao(db: LocalDb)=
         db.searchHistoryDao()
 
+    @Singleton
+    @Provides
+    fun provideZzimDao(db: LocalDb)=
+        db.zzimDao()
+
 //    @Singleton
 //    @Provides
 //    fun providePopularKeywordDao(db: LocalDb) =

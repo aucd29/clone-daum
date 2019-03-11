@@ -155,7 +155,7 @@ open class BackPressedManager(var mActivity: AppCompatActivity, var view: View? 
     protected var mSnackbar: Snackbar? = null
     protected var mPressedTime: Long = 0
 
-    inline fun time() = mPressedTime + delay
+    fun time() = mPressedTime + delay
 
     fun onBackPressed(): Boolean {
         if (mActivity.supportFragmentManager.backStackEntryCount > 0) {

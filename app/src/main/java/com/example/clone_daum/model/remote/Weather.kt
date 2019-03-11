@@ -1,7 +1,7 @@
 package com.example.clone_daum.model.remote
 
-import com.example.clone_daum.model.IWeatherRecyclerData
 import com.example.common.IRecyclerDiff
+import com.example.common.IRecyclerItem
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 15. <p/>
@@ -17,15 +17,15 @@ data class Weather(
 )
 
 data class WeatherDetail(
-    val type: Int,
+    val weatherType: Int,
     val icon: String,
     val description: String,
     val value : String
-) : IWeatherRecyclerData {
+) : IRecyclerDiff, IRecyclerItem {
     override fun compare(item: IRecyclerDiff): Boolean {
         val newItem = item as WeatherDetail
-        return type == newItem.type && icon == newItem.icon && value == newItem.value
+        return weatherType == newItem.weatherType && icon == newItem.icon && value == newItem.value
     }
 
-    override fun type() = type
+    override fun type() = weatherType
 }

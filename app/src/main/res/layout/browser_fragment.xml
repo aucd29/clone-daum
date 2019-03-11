@@ -221,8 +221,9 @@
                     android:id="@+id/brs_bottom_favorite"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_favorite_border_black_24dp"
-                    android:onClick="@{() -> model.eventFavorite(model.urlString)}"
             />
+
+            <!--android:onClick="@{() -> model.addZzim(model.urlString)}"-->
 
             <ImageView
                     android:id="@+id/brs_bottom_search"

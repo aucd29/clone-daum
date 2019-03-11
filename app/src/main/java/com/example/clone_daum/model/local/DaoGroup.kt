@@ -7,11 +7,13 @@ import io.reactivex.Maybe
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
+ *
+ * https://medium.com/androiddevelopers/7-pro-tips-for-room-fbadea4bfbd1
  */
 
 @Dao
 interface SearchHistoryDao {
-    @Query("SELECT * FROM searchHistory ORDER BY _id DESC")
+    @Query("SELECT * FROM searchHistory ORDER BY _id DESC LIMIT 10")
     fun search(): Flowable<List<SearchHistory>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -26,27 +28,31 @@ interface SearchHistoryDao {
     @Query("DELETE FROM searchHistory")
     fun deleteAll()
 }
-//
-//@Dao
-//interface PopularKeywordDao {
-//    @Query("SELECT * FROM popularKeyword")
-//    fun list(): Flowable<List<PopularKeyword>>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insert(keyword: PopularKeyword): Completable
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertAll(keyword: List<PopularKeyword>): Completable
-//
-//    @Update
-//    fun update(keyword: PopularKeyword): Completable
-//
-//    @Delete
-//    fun delete(keyword: PopularKeyword): Completable
-//
-//    @Query("DELETE FROM popularKeyword")
-//    fun deleteAll()
-//}
+
+@Dao
+interface ZzimDao {
+    @Query("SELECT * FROM zzim")
+    fun list(): Flowable<List<Zzim>>
+
+    @Query("SELECT COUNT(*) FROM zzim WHERE url=:url")
+    fun hasUrl(url: String): Maybe<Int>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(keyword: Zzim): Completable
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(keyword: List<Zzim>): Completable
+
+    @Update
+    fun update(keyword: Zzim): Completable
+
+    @Delete
+    fun delete(keyword: Zzim): Completable
+
+    @Query("DELETE FROM zzim")
+    fun deleteAll()
+}
+
 
 @Dao
 interface UrlHistoryDao {
@@ -69,8 +75,14 @@ interface UrlHistoryDao {
 
 @Dao
 interface MyFavoriteDao {
-    @Query("SELECT * FROM myFavorite ORDER BY _id DESC")
-    fun select(): Flowable<List<MyFavorite>>
+//    @Query("SELECT * FROM myFavorite ORDER BY _id DESC")
+//    fun select(): Flowable<List<MyFavorite>>
+
+    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY favType DESC, _id DESC")
+    fun selectMain(): Flowable<List<MyFavorite>>
+
+    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id DESC ")
+    fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>

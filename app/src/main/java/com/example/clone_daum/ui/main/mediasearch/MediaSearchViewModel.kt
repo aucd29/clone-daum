@@ -1,15 +1,10 @@
 package com.example.clone_daum.ui.main.mediasearch
 
 import android.app.Application
-import android.text.Spannable
-import android.text.Spanned
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
-import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
 import javax.inject.Inject
 

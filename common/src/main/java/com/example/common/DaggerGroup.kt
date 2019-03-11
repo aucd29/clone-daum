@@ -74,7 +74,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
 
     protected open fun snackbarAware() = mViewModel.run {
         if (this is ISnackbarAware) {
-            observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT)?.show() }
+            observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT).show() }
         }
     }
 
@@ -122,15 +122,17 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         const val SCOPE_FRAGMENT = 1
     }
 
-    @Inject lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
+
     protected lateinit var mViewModel: M
+    protected lateinit var mDisposable: CompositeDisposable
 
     protected var mLayoutName     = generateLayoutName()
     protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mViewModel = viewModelProvider()
+        mDisposable = CompositeDisposable()
+        mViewModel  = viewModelProvider()
 
         if (layoutId() == 0) {
             return generateEmptyLayout(mLayoutName)
@@ -149,6 +151,12 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 
         initViewBinding()
         initViewModelEvents()
+    }
+
+    override fun onDestroyView() {
+        mDisposable.clear()
+
+        super.onDestroyView()
     }
 
     override fun layoutId() =

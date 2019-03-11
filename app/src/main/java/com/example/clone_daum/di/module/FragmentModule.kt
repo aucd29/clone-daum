@@ -2,6 +2,7 @@ package com.example.clone_daum.di.module
 
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
+import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
@@ -54,6 +55,7 @@ import dagger.Module
     // BROWSER
     , BrowserFragment.Module::class
     , BrowserSubmenuFragment.Module::class
+    , FavoriteFragment.Module::class
 ])
 class FragmentModule {
 

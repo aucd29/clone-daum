@@ -125,6 +125,8 @@ interface ISnackbarAware {
     fun snackbar(msg: String?) {
         msg?.let { snackbarEvent.value = it }
     }
+
+    fun snackbar(e: Throwable) = snackbar(e.message)
 }
 
 // xml 에서는 다음과 같이 사용할 수 있다.
