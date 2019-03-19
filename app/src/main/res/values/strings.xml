@@ -104,6 +104,7 @@
     <string name="folder_name">이름</string>
     <string name="folder_addr">주소</string>
     <string name="folder_folder">폴더</string>
+    <string name="folder_pls_insert_name">폴더명을 입력해 주세요</string>
 
     <!-- error -->
     <string name="error_title">오류</string>

@@ -5,6 +5,7 @@ import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
 import com.example.common.showKeyboard
 import dagger.android.ContributesAndroidInjector
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -12,6 +13,9 @@ import javax.inject.Inject
  */
 class FavoriteAddFragment
     : BaseDaggerFragment<FavoriteAddFragmentBinding, FavoriteAddViewModel>() {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(FavoriteAddFragment::class.java)
+    }
 
     @Inject lateinit var viewController: ViewController
 
@@ -23,6 +27,7 @@ class FavoriteAddFragment
 
     override fun initViewModelEvents() {
         arguments?.let { mViewModel.run {
+                dp = mDisposable
             // ui 에서 name 으로 되어 있어 title -> name 으로 변경
             name.set(it.getString("title"))
             url.set(it.getString("url"))
@@ -35,9 +40,14 @@ class FavoriteAddFragment
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun onCommandEvent(cmd: String, data: Any) {
+    override fun onCommandEvent(cmd: String, data: Any) = FavoriteAddViewModel.run {
         when (cmd) {
-            FavoriteAddViewModel.CMD_FOLDER_DETAIL -> viewController.folderFragment()
+            CMD_FOLDER_DETAIL -> viewController.folderFragment()
+            CMD_FOLDER_ADD    -> {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("ADD FOLDER : $data")
+                }
+            }
         }
     }
 

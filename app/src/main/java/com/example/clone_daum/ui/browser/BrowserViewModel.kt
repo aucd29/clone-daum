@@ -105,50 +105,45 @@ class BrowserViewModel @Inject constructor(app: Application
 
         disposable.add(zzimDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (it > 0) {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXIST URL : $url ($it)")
                     }
 
-                    snackbarEvent(string(R.string.brs_exist_fav_url))
+                    snackbar(string(R.string.brs_exist_fav_url))
                 } else {
                     insertZzim(url)
                 }
-            }, { it.message?.let(::snackbarEvent) }))
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+                snackbar(it.message)
+            }))
     }
 
     private fun insertZzim(url: String) {
         disposable.add(zzimDao.insert(Zzim(url = url
             , title = "title"))
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("ZZIM URL : $url")
                 }
 
-                snackbarEvent(string(R.string.brs_fav_url_ok))
+                snackbar(string(R.string.brs_fav_url_ok))
             }, {
                 if (mLog.isDebugEnabled) {
                     it.printStackTrace()
                 }
 
-                it.message?.let {
-                    mLog.error("ERROR: ${it}")
-                    snackbarEvent(it)
-                }
+                mLog.error("ERROR: ${it.message}")
+                snackbar(it.message)
             }))
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ISnackbarAware
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    private fun snackbarEvent(str: String) {
-        disposable.add(Single.just(str)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe { msg, _ -> snackbar(msg) })
     }
 }
