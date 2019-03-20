@@ -93,10 +93,10 @@ interface UrlHistoryDao {
 
 @Dao
 interface MyFavoriteDao {
-    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY favType DESC, _id DESC")
+    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY favType ASC, _id ASC")
     fun selectMain(): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id DESC")
+    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id ASC")
     fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
 
     @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY _id DESC")

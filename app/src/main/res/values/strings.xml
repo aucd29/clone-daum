@@ -97,6 +97,8 @@
 
     <string name="favorite_title">즐겨찾기</string>
     <string name="favorite_title_add">즐겨찾기 추가</string>
+    <string name="favorite_all">전체보기</string>
+    <string name="favorite_folder">폴더보기</string>
 
     <string name="folder_title">폴더 선택</string>
     <string name="folder_favorite">즐겨찾기</string>

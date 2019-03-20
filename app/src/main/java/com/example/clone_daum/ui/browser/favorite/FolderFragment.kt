@@ -7,7 +7,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FolderFragmentBinding
 import com.example.common.BaseDaggerFragment
 import com.example.common.DialogParam
-import dagger.Module
+import com.example.common.finish
 import dagger.android.ContributesAndroidInjector
 import kotlinx.android.synthetic.main.folder_dialog.view.*
 
@@ -15,7 +15,9 @@ import kotlinx.android.synthetic.main.folder_dialog.view.*
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 8. <p/>
  */
 
-class FolderFragment : BaseDaggerFragment<FolderFragmentBinding, FavoriteViewModel>() {
+class FolderFragment
+    : BaseDaggerFragment<FolderFragmentBinding, FavoriteViewModel>() {
+
     override fun initViewBinding() {
 
     }
@@ -37,7 +39,7 @@ class FolderFragment : BaseDaggerFragment<FolderFragmentBinding, FavoriteViewMod
                     mViewModel.dialog(params)
 
                     view.apply {
-                        ok.isEnabled = !view.folder_name.text.isNullOrEmpty()
+                        ok.isEnabled = !folder_name.text.isNullOrEmpty()
 
                         folder_name.addTextChangedListener(object: TextWatcher {
                             override fun afterTextChanged(s: Editable?) { }
@@ -54,6 +56,16 @@ class FolderFragment : BaseDaggerFragment<FolderFragmentBinding, FavoriteViewMod
 
                         cancel.setOnClickListener { params.dialog?.dismiss() }
                     }
+                }
+
+                CMD_CHECKED_FOLDER -> {
+                    val frgmt = parentFragment
+                    if (frgmt is FavoriteAddFragment) {
+                        val pair = mViewModel.currentFolder()
+                        frgmt.changeFolderName(pair.first, pair.second)
+                    }
+
+                    finish()
                 }
             }
         }

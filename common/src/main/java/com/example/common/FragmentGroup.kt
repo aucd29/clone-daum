@@ -156,13 +156,15 @@ object FragmentCommit {
 }
 
 inline fun FragmentManager.show(params: FragmentParams) {
+    val frgmt: Fragment
+
     val existFrgmt = findFragmentByTag(params.fragment.name)
     if (existFrgmt != null && existFrgmt.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
         return
     }
 
-    val frgmt = params.fragment.newInstance() as Fragment
+    frgmt = params.fragment.newInstance() as Fragment
     val transaction = beginTransaction()
 
     params.apply {

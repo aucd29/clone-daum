@@ -149,7 +149,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun eventDeleteAllHistory() {
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
-            , listener   = { res, _ -> if (res) {
+            , listener = { res, _ -> if (res) {
                 // delete query 는 왜? Completable 이 안되는가?
                 ioThread {
                     searchDao.deleteAll()

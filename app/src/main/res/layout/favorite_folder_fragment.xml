@@ -6,7 +6,7 @@
     <data>
         <import type="android.view.View"/>
 
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteFolderViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,59 +76,13 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/favorite_view_option_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+        <View
+                android:id="@+id/favorite_dumy"
+                android:layout_width="match_parent" android:layout_height="1dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/favorite_bar"
-                android:background="#ececec"
-        >
-            <View
-                    android:layout_width="match_parent" android:layout_height="1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:background="#797979"
-                  />
-
-            <View
-                    android:layout_width="match_parent" android:layout_height="1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:background="#F1F1F1"
-            />
-
-            <RadioGroup
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    android:background="@null"
-            >
-
-                <RadioButton
-                        android:id="@+id/favorite_show_all"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/favorite_all"
-                        android:checked="true"
-                        android:textColor="@drawable/selector_navi_tab_bgcolor"
-                        android:button="@drawable/selector_favorite_checker"
-                />
-
-                <RadioButton
-                        android:id="@+id/favorite_show_folder"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/favorite_folder"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="5dp"
-                        android:textColor="@drawable/selector_navi_tab_bgcolor"
-                        android:button="@drawable/selector_favorite_checker"
-                />
-                <!--android:button="@drawable/selector_favorite_checker"-->
-            </RadioGroup>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:background="#797979"
+        />
 
         <TextView
                 android:id="@+id/favorite_empty"
@@ -149,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favorite_view_option_layout"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_dumy"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

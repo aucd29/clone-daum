@@ -3,6 +3,7 @@ package com.example.clone_daum.di.module
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
+import com.example.clone_daum.ui.browser.favorite.FavoriteFolderFragment
 import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
 import com.example.clone_daum.ui.browser.favorite.FolderFragment
 import com.example.clone_daum.ui.main.MainFragment
@@ -58,6 +59,7 @@ import dagger.Module
     , BrowserFragment.Module::class
     , BrowserSubmenuFragment.Module::class
     , FavoriteFragment.Module::class
+    , FavoriteFolderFragment.Module::class
     , FavoriteAddFragment.Module::class
     , FolderFragment.Module::class
 ])

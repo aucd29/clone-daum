@@ -27,11 +27,20 @@ class FavoriteAddFragment
 
     override fun initViewModelEvents() {
         arguments?.let { mViewModel.run {
-                dp = mDisposable
+            dp = mDisposable
+
             // ui 에서 name 으로 되어 있어 title -> name 으로 변경
             name.set(it.getString("title"))
             url.set(it.getString("url"))
         } }
+    }
+
+    fun changeFolderName(pos: Int, name: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CHANGE FOLDER $name ($pos)")
+        }
+
+        mViewModel.folder.set(name)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +51,7 @@ class FavoriteAddFragment
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteAddViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> viewController.folderFragment()
+            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager)
             CMD_FOLDER_ADD    -> {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("ADD FOLDER : $data")

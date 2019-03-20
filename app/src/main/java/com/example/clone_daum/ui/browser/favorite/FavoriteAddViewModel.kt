@@ -71,7 +71,7 @@ class FavoriteAddViewModel @Inject constructor(app: Application
 
                             snackbar(string(R.string.brs_exist_fav_url))
                         } else {
-                            insertFavorite(name, url, folder)
+                            insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
                         }
                     }, {
                         if (mLog.isDebugEnabled) {
