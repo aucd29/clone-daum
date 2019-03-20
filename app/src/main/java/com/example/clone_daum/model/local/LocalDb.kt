@@ -9,10 +9,7 @@ import androidx.room.*
  * https://medium.com/androiddevelopers/room-rxjava-acb0cd4f3757
  */
 
-@Database(entities = [
-//    , PopularKeyword::class
-
-    SearchHistory::class
+@Database(entities = [ SearchHistory::class
     , UrlHistory::class
     , MyFavorite::class
     , FrequentlySite::class

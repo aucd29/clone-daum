@@ -14,17 +14,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"
     >
-        <!--android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU, item.name)}"-->
+
         <TextView
                 android:id="@+id/icon"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="D"
+                android:layout_width="30dp" android:layout_height="30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="D"
-                android:padding="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical|center_horizontal"
+                app:bindFrequentlySiteUrl="@{item.url}"
+                app:bindFrequentlySiteTitle="@{``}"
         />
+        <!--app:bindFrequentlySiteUrl="@{item.url}"-->
+        <!--android:text="@{model.firstUrl(item.url)}"-->
 
         <TextView
                 android:id="@+id/text"
@@ -34,6 +44,14 @@
                 android:text="@{item.name}"
                 android:padding="10dp"
                 tools:text="NAME"
+        />
+
+        <View
+                style="@style/line1dp"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@+id/text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

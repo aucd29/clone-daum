@@ -5,34 +5,45 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
         <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.local.MyFavorite"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
+            android:id="@+id/folder_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackgroundBorderless"
+            android:onClick="@{() -> model.commandEvent(model.CMD_CHECKED_FOLDER, item.pos)}"
     >
-        <!--android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU, item.name)}"-->
+
         <TextView
                 android:id="@+id/icon"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="D"
+                android:layout_width="25dp" android:layout_height="25dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="D"
-                android:padding="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@{item.pos == 0 ? @drawable/ic_star_border_black_24dp : @drawable/ic_work_black_24dp}"
+                android:text="@{item.pos != 0 ? model.firstWord(item.name) : ``}"
+                android:textColor="@android:color/white"
+                android:textSize="8sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
         />
 
         <TextView
                 android:id="@+id/text"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_width="wrap_content" android:layout_height="0dp"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:gravity="center_vertical"
                 android:text="@{item.name}"
-                android:padding="10dp"
+                android:layout_marginStart="15dp"
                 tools:text="NAME"
         />
 
@@ -44,6 +55,16 @@
                 android:textAppearance="@style/solid"
                 android:padding="10dp"
                 android:text="@string/fa_check"
+                android:textColor="@color/colorAccent"
+                android:visibility="@{model.selectedPosition == item.pos ? View.VISIBLE : View.GONE}"
+        />
+
+        <View
+                style="@style/line1dp"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@+id/text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

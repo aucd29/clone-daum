@@ -2,6 +2,7 @@
 package com.example.common
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.view.View
@@ -153,7 +154,9 @@ data class DialogParam (
     var messageId: Int? = null,         // 출력할 메시지에 해당하는 리소스 아이디
     var titleId: Int? = null,           // 출력할 타이틀에 해당하는 리소스 아이디
     var positiveId: Int? = null,        // 출력할 positive 버튼에 해당하는 리소스 아이디
-    var negativeId: Int? = null         // 출력할 negative 버튼에 해당하는 리소스 아이디
+    var negativeId: Int? = null,        // 출력할 negative 버튼에 해당하는 리소스 아이디
+    var view: View? = null,
+    var dialog: Dialog? = null
 ) {
     init {
         context?.apply {
@@ -174,23 +177,28 @@ data class DialogParam (
  */
 inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
     val bd = AlertDialog.Builder(this)
-    bd.setMessage(params.message)
 
-    params.apply {
-        title?.let { bd.setTitle(it) }
-        positiveStr?.let { bd.setPositiveButton(it) { dlg, _ ->
-            dlg.dismiss()
-            listener?.invoke(true, dlg)
-        }}
-        negativeStr?.let { bd.setNegativeButton(it) { dlg, _ ->
-            dlg.dismiss()
-            listener?.invoke(false, dlg)
-        }}
+    if (params.view != null) {
+        bd.setView(params.view)
+        params.dialog = bd.show()
+    } else {
+        bd.setMessage(params.message)
+        params.apply {
+            title?.let { bd.setTitle(it) }
+            positiveStr?.let { bd.setPositiveButton(it) { dlg, _ ->
+                dlg.dismiss()
+                listener?.invoke(true, dlg)
+            }}
+            negativeStr?.let { bd.setNegativeButton(it) { dlg, _ ->
+                dlg.dismiss()
+                listener?.invoke(false, dlg)
+            }}
 
-        val dlg = bd.show()
-        if (timer > 0) {
-            disposable?.add(Observable.interval(1, TimeUnit.SECONDS)
-                .take(1).subscribe { dlg.dismiss() })
+            val dlg = bd.show()
+            if (timer > 0) {
+                disposable?.add(Observable.interval(1, TimeUnit.SECONDS)
+                    .take(1).subscribe { dlg.dismiss() })
+            }
         }
     }
 }

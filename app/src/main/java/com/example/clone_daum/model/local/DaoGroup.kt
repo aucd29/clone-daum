@@ -9,6 +9,24 @@ import io.reactivex.Maybe
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  *
  * https://medium.com/androiddevelopers/7-pro-tips-for-room-fbadea4bfbd1
+ * https://codinginfinite.com/android-room-persistent-rxjava/
+ *
+ * insert 시 call 하려면
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    순서대로 요청해야 함
+
+   예)
+   mFavoriteDao.insert(MyFavorite(name, url, folder))
+     .subscribeOn(Schedulers.io())
+     .observeOn(AndroidSchedulers.mainThread())
+     .subscribe(::finishEvent) {
+         if (mLog.isDebugEnabled) {
+            it.printStackTrace()
+         }
+         mLog.error("ERROR: ${it.message}")
+         snackbar(it)
+   })
  */
 
 @Dao
@@ -75,17 +93,14 @@ interface UrlHistoryDao {
 
 @Dao
 interface MyFavoriteDao {
-//    @Query("SELECT * FROM myFavorite ORDER BY _id DESC")
-//    fun select(): Flowable<List<MyFavorite>>
-
-    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY favType DESC, _id DESC")
+    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY favType ASC, _id ASC")
     fun selectMain(): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id DESC ")
+    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id ASC")
     fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder!='' ORDER BY _id DESC ")
-    fun selectFolder(): Flowable<List<MyFavorite>>
+    @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY _id DESC")
+    fun selectFolder(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>

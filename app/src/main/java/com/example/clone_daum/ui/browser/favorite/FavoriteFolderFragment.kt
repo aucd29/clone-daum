@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.browser.favorite
 
+import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
 import com.example.clone_daum.databinding.FavoriteFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
@@ -8,16 +9,18 @@ import com.example.common.find
 import com.example.common.finish
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
- *
- * 찜이랑 성격이 같은거 같은데, 폴더 구분이 다르긴 하지만 중복되는 내용은 없어도 될듯한
  */
 
-class FavoriteFragment
-    : BaseDaggerFragment<FavoriteFragmentBinding, FavoriteViewModel>() {
+class FavoriteFolderFragment
+    : BaseDaggerFragment<FavoriteFolderFragmentBinding, FavoriteFolderViewModel>() {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
+    }
 
     @Inject lateinit var viewController: ViewController
 
@@ -26,11 +29,19 @@ class FavoriteFragment
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init(mDisposable)
+        val folder = arguments?.getString("folder")
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("FOLDER NAME : $folder")
+        }
+
+        folder?.let {
+            mViewModel.initByFolder(it, mDisposable)
+        }
     }
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        FavoriteViewModel.apply {
+        FavoriteFolderViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN -> {
                     finish()
@@ -40,8 +51,6 @@ class FavoriteFragment
                         frgmt.loadUrl(data.toString())
                     }
                 }
-
-                CMD_CHOOSE_FOLDER -> viewController.favoriteFolderFragment(data.toString())
             }
         }
     }
@@ -55,6 +64,6 @@ class FavoriteFragment
     @dagger.Module
     abstract class Module {
         @ContributesAndroidInjector
-        abstract fun contributeInjector(): FavoriteFragment
+        abstract fun contributeInjector(): FavoriteFolderFragment
     }
 }
