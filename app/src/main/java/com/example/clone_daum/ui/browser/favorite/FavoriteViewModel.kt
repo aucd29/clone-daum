@@ -1,7 +1,10 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
-import androidx.databinding.ObservableInt
+import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.common.*
@@ -12,6 +15,7 @@ import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
+import kotlinx.android.synthetic.main.folder_dialog.view.*
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
@@ -24,10 +28,10 @@ class FavoriteViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
 
-        const val CMD_CHECKED_FOLDER = "checked-folder"
-        const val CMD_ADDED_FOLDER   = "added-folder"
-        const val CMD_BRS_OPEN       = "brs-open"
-        const val CMD_CHOOSE_FOLDER  = "choose-folder"
+        const val CMD_CHECKED_FOLDER     = "checked-folder"
+        const val CMD_BRS_OPEN           = "brs-open"
+        const val CMD_CHOOSE_FOLDER      = "choose-folder"
+        const val CMD_SHOW_FOLDER_DIALOG = "show-folder-fragment"
     }
 
     override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
@@ -38,11 +42,17 @@ class FavoriteViewModel @Inject constructor(application: Application
     lateinit var dp: CompositeDisposable
     var selectedPosition: Int = 0
 
-    fun init(dp: CompositeDisposable) {
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FAVORITE FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    fun initShowAll(dp: CompositeDisposable) {
         this.dp = dp
 
-        initAdapter(arrayOf("favorite_folder_item", "favorite_item"))
-        dp.add(favoriteDao.selectMain().subscribe {
+        initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
+        dp.add(favoriteDao.selectShowAll().subscribe {
             if (mLog.isDebugEnabled) {
                 mLog.debug("FAVORITE COUNT : ${it.size}")
             }
@@ -51,11 +61,42 @@ class FavoriteViewModel @Inject constructor(application: Application
         })
     }
 
-    fun addFolder(folderName: String) {
+    fun initShowFolder(dp: CompositeDisposable) {
+        this.dp = dp
+
+        initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
+        dp.add(favoriteDao.selectShowFolder().subscribe {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FAVORITE COUNT : ${it.size}")
+            }
+
+            items.set(it)
+        })
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FAVORITE FRAGMENT, FOLDER FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    fun insertFolder(folderName: String, fromFolderFragment: Boolean) {
         dp.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
-            .subscribe(::reloadFolderItems, ::snackbar))
+            .subscribe({
+                if (fromFolderFragment) {
+                    reloadFolderItems()
+                } else {
+                    initShowAll(dp)
+                }
+            }, ::snackbar))
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FOLDER FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     fun initFolder(dp: CompositeDisposable) {
         this.dp = dp
@@ -69,7 +110,7 @@ class FavoriteViewModel @Inject constructor(application: Application
             mLog.debug("RELOAD FOLDER LIST")
         }
 
-        dp.add(favoriteDao.selectFolder()
+        dp.add(favoriteDao.selectShowFolder()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -95,12 +136,6 @@ class FavoriteViewModel @Inject constructor(application: Application
         return firstWord
     }
 
-    fun firstUrl(url: String): String {
-        return url.replace("^(http|https)://".toRegex(), "")
-            .substring(0, 1)
-            .toUpperCase()
-    }
-
     fun currentFolder() = selectedPosition to items.get()!!.get(selectedPosition).name
 
     override fun commandEvent(cmd: String, data: Any) {
@@ -118,5 +153,39 @@ class FavoriteViewModel @Inject constructor(application: Application
         }
 
         super.commandEvent(cmd, data)
+    }
+}
+
+//
+//
+//
+
+object FavoriteAddFolder {
+    fun showDialog(context: Context, viewModel: FavoriteViewModel, fromFolderFragment: Boolean) {
+        // FIXME 추후 수정해야할 부분
+
+        val view = LayoutInflater.from(context).inflate(R.layout.folder_dialog, null)
+        val params = DialogParam(view = view)
+
+        viewModel.dialog(params)
+
+        view.apply {
+            ok.isEnabled = !folder_name.text.isNullOrEmpty()
+
+            folder_name.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) { }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    ok.isEnabled = !folder_name.text.isNullOrEmpty()
+                }
+            })
+
+            ok.setOnClickListener {
+                params.dialog?.dismiss()
+                viewModel.insertFolder(folder_name.text.toString(), fromFolderFragment)
+            }
+
+            cancel.setOnClickListener { params.dialog?.dismiss() }
+        }
     }
 }

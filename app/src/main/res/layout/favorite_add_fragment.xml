@@ -245,7 +245,7 @@
                 android:padding="20dp"
                 android:gravity="center"
                 android:enabled="@{model.enabledOk}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_SAVE)}"
+                android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_ADD)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

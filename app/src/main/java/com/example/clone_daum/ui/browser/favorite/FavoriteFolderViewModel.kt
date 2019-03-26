@@ -1,7 +1,6 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
-import androidx.databinding.ObservableInt
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.common.*
@@ -26,15 +25,16 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
         const val CMD_BRS_OPEN = "brs-open"
     }
 
-    override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent   = SingleLiveEvent<Void>()
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
+    override val finishEvent  = SingleLiveEvent<Void>()
 
     lateinit var dp: CompositeDisposable
 
     fun initByFolder(folderName: String, dp: CompositeDisposable) {
         this.dp = dp
 
-        initAdapter(arrayOf("favorite_folder_item", "favorite_item"))
+        // folder 형태의 index 값이 0
+        initAdapter(arrayOf("favorite_item_from_folder", "favorite_item_from_folder"))
         dp.add(favoriteDao.selectByFolderName(folderName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

@@ -50,18 +50,20 @@
             />
 
             <TextView
+                    android:id="@+id/favorite_folder_delete"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/favorite_write"
+                    app:layout_constraintEnd_toStartOf="@+id/favorite_folder_edit"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginEnd="@dimen/brs_reload_mgn_e"
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_external_link_alt"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SHOW_FOLDER_DIALOG)}"
             />
 
             <TextView
-                    android:id="@+id/favorite_write"
+                    android:id="@+id/favorite_folder_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -99,6 +101,7 @@
             />
 
             <RadioGroup
+                    android:id="@+id/favorite_radio"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"

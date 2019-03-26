@@ -30,9 +30,10 @@ class FavoriteAddViewModel @Inject constructor(app: Application
 
         const val CMD_NAME_RESET    = "name-reset"
         const val CMD_ADDRESS_RESET = "address-reset"
+
         const val CMD_FOLDER_DETAIL = "folder-detail"
         const val CMD_FOLDER_ADD    = "folder-add"
-        const val CMD_SAVE          = "save"
+        const val CMD_FAVORITE_ADD  = "favorite-add"
     }
 
     override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
@@ -51,7 +52,7 @@ class FavoriteAddViewModel @Inject constructor(app: Application
         when (cmd) {
             CMD_NAME_RESET    -> name.set("")
             CMD_ADDRESS_RESET -> url.set("")
-            CMD_SAVE          -> {
+            CMD_FAVORITE_ADD  -> {
                 val name   = name.get()!!
                 val url    = url.get()!!
                 val folder = folder.get()!!

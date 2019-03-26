@@ -58,7 +58,7 @@
                     android:text="@string/fa_folder"
                     android:textColor="@android:color/black"
                     android:padding="@dimen/brs_back_pad"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_ADDED_FOLDER)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SHOW_FOLDER_DIALOG)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

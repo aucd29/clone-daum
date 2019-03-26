@@ -3,7 +3,6 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.databinding.FavoriteAddFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
-import com.example.common.showKeyboard
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -21,7 +20,7 @@ class FavoriteAddFragment
 
     override fun initViewBinding() {
         mBinding.apply {
-//            favoriteName.let { it.postDelayed({ requireActivity().showKeyboard(it) }, 200) }
+
         }
     }
 
@@ -54,7 +53,7 @@ class FavoriteAddFragment
             CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager)
             CMD_FOLDER_ADD    -> {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("ADD FOLDER : $data")
+                    mLog.debug("FOLDER ADD : $data")
                 }
             }
         }

@@ -1,12 +1,9 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
-import com.example.clone_daum.databinding.FavoriteFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
-import com.example.common.BaseDaggerFragment
-import com.example.common.find
-import com.example.common.finish
+import com.example.common.*
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -45,6 +42,7 @@ class FavoriteFolderFragment
             when (cmd) {
                 CMD_BRS_OPEN -> {
                     finish()
+                    finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
 
                     val frgmt = fragmentManager?.find(BrowserFragment::class.java)
                     if (frgmt is BrowserFragment) {

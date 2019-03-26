@@ -94,13 +94,16 @@ interface UrlHistoryDao {
 @Dao
 interface MyFavoriteDao {
     @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY favType ASC, _id ASC")
-    fun selectMain(): Flowable<List<MyFavorite>>
+    fun selectShowAll(): Flowable<List<MyFavorite>>
+
+    @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY favType ASC, _id ASC")
+    fun selectShowFolder(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
 
     @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY _id ASC")
     fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY _id DESC")
-    fun selectFolder(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
+//    @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY _id DESC")
+//    fun selectFolder(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
@@ -113,6 +116,9 @@ interface MyFavoriteDao {
 
     @Delete
     fun delete(keyword: MyFavorite): Completable
+
+    @Delete
+    fun delete(keyword: List<MyFavorite>): Completable
 
     @Query("DELETE FROM myFavorite")
     fun deleteAll()

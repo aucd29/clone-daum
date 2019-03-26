@@ -2,8 +2,12 @@
 package com.example.common
 
 import android.animation.Animator
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import org.slf4j.LoggerFactory
 
 /**
@@ -21,6 +25,15 @@ typealias AniListener = (Boolean, Animator?) -> Unit
  */
 inline fun View.aniHeight(height: Int, noinline aniListener: AniListener? = null, duration:Long = 600) {
     Resize.height(this, height, aniListener, duration)
+}
+
+inline fun View.fadeColor(fcolor: Int, scolor: Int, noinline aniListener: AniListener? = null, duration: Long = 600) {
+    FadeColor.start(this, fcolor, scolor, aniListener)
+}
+
+inline fun View.fadeColorResource(@ColorRes fcolor: Int, @ColorRes scolor: Int,
+                                  noinline aniListener: AniListener? = null, duration: Long = 600) {
+    FadeColor.start(this, fcolor, scolor, aniListener)
 }
 
 object Resize {
@@ -56,6 +69,24 @@ object Resize {
     }
 }
 
+object FadeColor {
+    fun start(view: View, fcolor: Int, scolor: Int, f: AniListener? = null, duration: Long = 500) {
+        ObjectAnimator.ofObject(view, "backgroundColor", ArgbEvaluator(), fcolor, scolor).apply {
+            this.duration = duration
+            aniEndListener {
+                f?.invoke(true, it)
+            }
+
+            this.duration = duration
+        }.start()
+    }
+
+    fun startResource(view: View, @ColorRes fcolor: Int, @ColorRes scolor: Int,
+                      f: AniListener? = null, duration: Long = 500) {
+        start(view, ContextCompat.getColor(view.context, fcolor), ContextCompat.getColor(view.context, scolor), f, duration)
+    }
+}
+
 /**
  * Animator.AnimatorListener 중 onAnimationEnd 만 전달 받기 위한 리스너
  */
@@ -73,9 +104,9 @@ inline fun Animator.aniEndListener(crossinline f: (Animator?) -> Unit) {
  */
 inline fun Animator.aniListener(crossinline start: (Animator?) -> Unit, crossinline end: (Animator?) -> Unit) {
     addListener(object : Animator.AnimatorListener {
-        override fun onAnimationStart(p0: Animator?) = start(p0)
+        override fun onAnimationStart(animation: Animator?) = start(animation)
+        override fun onAnimationEnd(animation: Animator?) = end(animation)
         override fun onAnimationCancel(p0: Animator?) {}
         override fun onAnimationRepeat(p0: Animator?) {}
-        override fun onAnimationEnd(animation: Animator?) = end(animation)
     })
 }

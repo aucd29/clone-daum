@@ -89,6 +89,9 @@ data class MyFavorite (
     @Ignore
     var pos: Int   = 0
 
+    @Ignore
+    var check: Boolean = false
+
     companion object {
         const val T_FOLDER  = 0
         const val T_DEFAULT = 1
