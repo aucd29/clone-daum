@@ -61,6 +61,7 @@
                     android:onClick="@{() -> model.commandEvent(model.CMD_SELECT_ALL)}"
             />
 
+            <!-- disable 항목 추가해야 함 -->
             <TextView
                     android:id="@+id/favorite_folder_delete"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"

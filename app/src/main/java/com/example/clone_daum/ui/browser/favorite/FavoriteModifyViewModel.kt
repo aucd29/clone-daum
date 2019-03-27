@@ -43,7 +43,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT ITEMS")
         }
-        
+
         // flowable 로 하면 디비 갱신 다시 쿼리를 전달 받아서 해주긴 하는데
         // touch helper 구조상 처음에만 쿼리를 전달 받도록 함
         dp.add(favoriteDao.selectShowAll()
