@@ -1,7 +1,5 @@
 package com.example.clone_daum.ui.browser.favorite
 
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteModifyFragmentBinding
 import com.example.common.BaseDaggerFragment

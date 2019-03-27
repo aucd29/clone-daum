@@ -301,8 +301,8 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
         var mLongPressDrag = false
         var mSwipeDrag     = false
 
-        private var dragFrom = -1
-        private var dragTo   = -1
+//        private var dragFrom = -1
+//        private var dragTo   = -1
 
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
             val dragFlags  = ItemTouchHelper.UP or ItemTouchHelper.DOWN
@@ -321,14 +321,14 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
                 mLog.trace("MOVE RECYCLER ITEM : $fromPos -> $toPos")
             }
 
-            if (dragFrom == -1) {
-                dragFrom = fromPos
-            }
-            dragTo = toPos
+//            if (dragFrom == -1) {
+//                dragFrom = fromPos
+//            }
+//            dragTo = toPos
 
             Collections.swap(items.get(), fromPos, toPos)
+            mItemMovedListener?.invoke(fromPos, toPos)
             adapter.get()?.notifyItemMoved(fromPos, toPos)
-
 
             return true
         }
@@ -341,20 +341,20 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
         override fun isItemViewSwipeEnabled() = mSwipeDrag
 
         // https://stackoverflow.com/questions/35920584/android-how-to-catch-drop-action-of-itemtouchhelper-which-is-used-with-recycle
-        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-            super.clearView(recyclerView, viewHolder)
-
-            if (dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ITEM MOVED FROM $dragFrom TO $dragTo")
-                }
-
-                mItemMovedListener?.invoke(dragFrom, dragTo)
-            }
-
-            dragFrom = -1
-            dragTo   = -1
-        }
+//        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+//            super.clearView(recyclerView, viewHolder)
+//
+//            if (dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("ITEM MOVED FROM $dragFrom TO $dragTo")
+//                }
+//
+//                mItemMovedListener?.invoke(dragFrom, dragTo)
+//            }
+//
+//            dragFrom = -1
+//            dragTo   = -1
+//        }
     }
 }
 

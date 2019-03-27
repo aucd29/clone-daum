@@ -15,6 +15,7 @@ import com.example.clone_daum.model.local.SearchHistoryDao
 import com.example.clone_daum.model.remote.SuggestItem
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
+import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -73,6 +74,8 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun reloadHistoryData() {
         dp.add(searchDao.search()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 items.set(it)
                 visibleSearchRecycler(it.size > 0)
@@ -85,13 +88,13 @@ class SearchViewModel @Inject constructor(app: Application
                 keyword = it,
                 date    = System.currentTimeMillis()))
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (mLog.isDebugEnabled) {
                         mLog.debug("INSERTED DATA $it")
                     }
 
                     searchKeyword.set("")
-                    reloadHistoryData()
                 }, ::snackbar))
 
             commandEvent(CMD_BRS_SEARCH, it)
@@ -101,7 +104,9 @@ class SearchViewModel @Inject constructor(app: Application
     fun eventToggleRecentSearch() {
         if (prefSearchRecycler) {
             confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search
-                , listener = { res, _ -> if (res) toggleSearchRecyclerLayout() })
+                , listener = { res, _ ->
+                    if (res) toggleSearchRecyclerLayout()
+                })
         } else {
             toggleSearchRecyclerLayout()
         }
@@ -142,19 +147,19 @@ class SearchViewModel @Inject constructor(app: Application
                 if (mLog.isDebugEnabled) {
                     mLog.debug("DELETED : $item")
                 }
-
-                reloadHistoryData()
             }, ::snackbar))
     }
 
     fun eventDeleteAllHistory() {
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
             , listener = { res, _ -> if (res) {
-                // delete query 는 왜? Completable 이 안되는가?
-                ioThread {
-                    searchDao.deleteAll()
-                    reloadHistoryData()
-                }
+                dp.add(Completable.fromAction { searchDao.deleteAll() }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("DELETE ALL")
+                        }
+                    })
             }})
     }
 

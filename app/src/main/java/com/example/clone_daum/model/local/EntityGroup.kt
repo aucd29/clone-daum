@@ -1,5 +1,6 @@
 package com.example.clone_daum.model.local
 
+import androidx.databinding.ObservableBoolean
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -80,8 +81,8 @@ data class MyFavorite (
     val folder: String = "",
     /** 타입 (링크: 0, 폴더: 1) */
     val favType: Int = T_DEFAULT,
-    /** 날짜 (timestamp) */
-    val date: Long = System.currentTimeMillis(),
+    /** 날짜 인데 이를 기준으로 order 처리 한다. */
+    var date: Long = System.currentTimeMillis(),
     /** id 값 */
     @PrimaryKey(autoGenerate = true)
     val _id: Int       = 0
@@ -90,7 +91,7 @@ data class MyFavorite (
     var pos: Int   = 0
 
     @Ignore
-    var check: Boolean = false
+    var check = ObservableBoolean(false)
 
     companion object {
         const val T_FOLDER  = 0
@@ -103,7 +104,19 @@ data class MyFavorite (
     override fun position() = pos
 
     override fun compare(item: IRecyclerDiff) = this._id == (item as MyFavorite)._id
+
+//    override fun compare(item: IRecyclerDiff): Boolean {
+//        val newItem = item as MyFavorite
+//        return _id == newItem._id
+//    }
+
     override fun type() = favType
+
+    fun swapDate(fav: MyFavorite) {
+        val tmp = date
+        date = fav.date
+        fav.date = tmp
+    }
 }
 
 @Entity(tableName = "frequentlySite")

@@ -50,26 +50,38 @@ class FavoriteViewModel @Inject constructor(application: Application
         this.dp = dp
 
         initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
-        dp.add(favoriteDao.selectShowAll().subscribe {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FAVORITE COUNT : ${it.size}")
-            }
+        dp.add(favoriteDao.selectShowAllFlowable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { it ->
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("FAVORITE COUNT : ${it.size}")
+                    it.forEach {
+                        mLog.debug("DATE : ${it._id} : ${it.date}")
+                    }
+                }
 
-            items.set(it)
-        })
+                items.set(it)
+            })
     }
 
     fun initShowFolder(dp: CompositeDisposable) {
         this.dp = dp
 
         initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
-        dp.add(favoriteDao.selectShowFolder().subscribe {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FAVORITE COUNT : ${it.size}")
-            }
+        dp.add(favoriteDao.selectShowFolder()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("FAVORITE COUNT : ${it.size}")
+                    it.forEach {
+                        mLog.debug("DATE : ${it._id} : ${it.date}")
+                    }
+                }
 
-            items.set(it)
-        })
+                items.set(it)
+            })
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
