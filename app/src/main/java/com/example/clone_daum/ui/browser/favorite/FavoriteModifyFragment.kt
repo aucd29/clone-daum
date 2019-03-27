@@ -1,10 +1,14 @@
 package com.example.clone_daum.ui.browser.favorite
 
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteModifyFragmentBinding
 import com.example.common.BaseDaggerFragment
 import com.example.common.fadeColorResource
 import com.example.common.popupMenu
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 25. <p/>
@@ -18,6 +22,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     }
 
     override fun initViewModelEvents() {
+        mViewModel.initShowAll(mDisposable)
     }
 
     override fun onCommandEvent(cmd: String, data: Any) {
@@ -28,5 +33,17 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
                 }
             }
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MODULE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @dagger.Module
+    abstract class Module {
+        @ContributesAndroidInjector
+        abstract fun contributeInjector(): FavoriteModifyFragment
     }
 }

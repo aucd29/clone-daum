@@ -8,6 +8,7 @@ import com.example.common.BaseDaggerFragment
 import com.example.common.find
 import com.example.common.finish
 import dagger.android.ContributesAndroidInjector
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -18,6 +19,10 @@ import javax.inject.Inject
 
 class FavoriteFragment
     : BaseDaggerFragment<FavoriteFragmentBinding, FavoriteViewModel>() {
+
+    companion object {
+        private val mLog = LoggerFactory.getLogger(FavoriteFragment::class.java)
+    }
 
     @Inject lateinit var viewController: ViewController
 
@@ -35,6 +40,10 @@ class FavoriteFragment
     }
 
     override fun onCommandEvent(cmd: String, data: Any) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND : $cmd")
+        }
+
         FavoriteViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN -> {
@@ -45,8 +54,9 @@ class FavoriteFragment
                         frgmt.loadUrl(data.toString())
                     }
                 }
-                CMD_CHOOSE_FOLDER      -> viewController.favoriteFolderFragment(data.toString())
-                CMD_SHOW_FOLDER_DIALOG -> FavoriteAddFolder.showDialog(context!!, mViewModel, false)
+                CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data.toString())
+                CMD_FOLDER_DIALOG_SHOW -> FolderDialog.show(requireContext(), mViewModel, false)
+                CMD_FAVORITE_MODIFY    -> viewController.favoriteModifyFragment()
             }
         }
     }

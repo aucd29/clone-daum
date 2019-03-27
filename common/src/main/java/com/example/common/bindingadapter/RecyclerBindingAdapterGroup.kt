@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.IRecyclerDiff
 import com.example.common.RecyclerAdapter
@@ -44,6 +45,18 @@ object RecyclerBindingAdapter {
 
         items?.let {
             myadapter?.setItems(recycler, it)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter(*["bindItemTouchHelper"])
+    fun bindDragCallback(recycler: RecyclerView, helper: ItemTouchHelper?) {
+        helper?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("BIND ITEM TOUCH HELPER (${recycler.id})")
+            }
+
+            it.attachToRecyclerView(recycler)
         }
     }
 

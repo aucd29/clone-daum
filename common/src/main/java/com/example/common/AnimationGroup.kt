@@ -28,12 +28,12 @@ inline fun View.aniHeight(height: Int, noinline aniListener: AniListener? = null
 }
 
 inline fun View.fadeColor(fcolor: Int, scolor: Int, noinline aniListener: AniListener? = null, duration: Long = 600) {
-    FadeColor.start(this, fcolor, scolor, aniListener)
+    FadeColor.start(this, fcolor, scolor, aniListener, duration)
 }
 
 inline fun View.fadeColorResource(@ColorRes fcolor: Int, @ColorRes scolor: Int,
                                   noinline aniListener: AniListener? = null, duration: Long = 600) {
-    FadeColor.start(this, fcolor, scolor, aniListener)
+    FadeColor.start(this, fcolor, scolor, aniListener, duration)
 }
 
 object Resize {

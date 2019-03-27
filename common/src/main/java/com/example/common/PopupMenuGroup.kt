@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
  */
 
 inline fun Activity.popupMenu(@MenuRes resid: Int, anchor: View, noinline listener: ((MenuItem) -> Boolean)? = null): PopupMenu {
-    val popup = PopupMenu(applicationContext, anchor).apply {
+    val popup = PopupMenu(this, anchor).apply {
         menuInflater.inflate(resid, this.menu)
 
         listener?.let { lsr -> setOnMenuItemClickListener { lsr.invoke(it) } }

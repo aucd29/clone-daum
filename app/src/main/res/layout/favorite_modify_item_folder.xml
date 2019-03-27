@@ -5,58 +5,66 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View" />
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteModifyViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.local.MyFavorite"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/folder_item_container"
+            android:id="@+id/favorite_modify_item_folder_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.commandEvent(model.CMD_FOLDER_CHECKED, item.pos)}"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
     >
+
+        <CheckBox
+                android:id="@+id/check"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="7dp"
+                android:checked="@{item.check}"
+        />
 
         <TextView
                 android:id="@+id/icon"
                 android:layout_width="25dp" android:layout_height="25dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/ic_work_black_24dp"
+                app:layout_constraintStart_toEndOf="@+id/check"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@{model.firstWord(item.name)}"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:background="@{item.pos == 0 ? @drawable/ic_star_border_black_24dp : @drawable/ic_work_black_24dp}"
-                android:text="@{item.pos != 0 ? model.firstWord(item.name) : ``}"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:textColor="@android:color/white"
                 android:textSize="8sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
         />
 
         <TextView
                 android:id="@+id/text"
-                android:layout_width="wrap_content" android:layout_height="0dp"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:gravity="center_vertical"
+                android:padding="10dp"
                 android:text="@{item.name}"
-                android:layout_marginStart="15dp"
                 tools:text="NAME"
         />
 
         <TextView
-                android:id="@+id/check"
+                android:id="@+id/drag_area"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textColor="@android:color/black"
                 android:textAppearance="@style/solid"
-                android:padding="10dp"
-                android:text="@string/fa_check"
-                android:textColor="@color/colorAccent"
-                android:visibility="@{model.selectedPosition == item.pos ? View.VISIBLE : View.GONE}"
+                android:layout_marginEnd="10dp"
+                android:text="@string/fa_bars"
+                android:textSize="15sp"
         />
 
         <View

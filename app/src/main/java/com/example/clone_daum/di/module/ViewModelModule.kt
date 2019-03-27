@@ -6,6 +6,7 @@ import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.FavoriteAddViewModel
 import com.example.clone_daum.ui.browser.favorite.FavoriteFolderViewModel
+import com.example.clone_daum.ui.browser.favorite.FavoriteModifyViewModel
 import com.example.clone_daum.ui.browser.favorite.FavoriteViewModel
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.MainWebViewViewModel
@@ -177,10 +178,21 @@ abstract class ViewModelModule {
     @ViewModelKey(BrowserSubmenuViewModel::class)
     abstract fun bindBrowserSubmenuViewModel(vm: BrowserSubmenuViewModel): ViewModel
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FAVORITE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     @Binds
     @IntoMap
     @ViewModelKey(FavoriteViewModel::class)
     abstract fun bindFavoriteViewModel(vm: FavoriteViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteModifyViewModel::class)
+    abstract fun bindFavoriteModifyViewModel(vm: FavoriteModifyViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -2,10 +2,7 @@ package com.example.clone_daum.di.module
 
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteFolderFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
-import com.example.clone_daum.ui.browser.favorite.FolderFragment
+import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
@@ -58,7 +55,10 @@ import dagger.Module
     // BROWSER
     , BrowserFragment.Module::class
     , BrowserSubmenuFragment.Module::class
+
+    // FAVORITE
     , FavoriteFragment.Module::class
+    , FavoriteModifyFragment.Module::class
     , FavoriteFolderFragment.Module::class
     , FavoriteAddFragment.Module::class
     , FolderFragment.Module::class

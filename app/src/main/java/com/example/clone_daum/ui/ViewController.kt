@@ -6,10 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteFolderFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
-import com.example.clone_daum.ui.browser.favorite.FolderFragment
+import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -188,6 +185,14 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
 
         manager.show(FragmentParams(CONTAINER, FavoriteFragment::class.java
             , anim   = FragmentAnim.RIGHT))
+    }
+
+    fun favoriteModifyFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE MODIFY FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FavoriteModifyFragment::class.java))
     }
 
     fun favoriteFolderFragment(folder: String) {
