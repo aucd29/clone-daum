@@ -39,12 +39,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
     lateinit var dp: CompositeDisposable
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun initShowAll(dp: CompositeDisposable) {
-        this.dp = dp
-
-        initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
-
+    private fun initItems() {
         // flowable 로 하면 디비 갱신 다시 쿼리를 전달 받아서 해주긴 하는데
         // touch helper 구조상 처음에만 쿼리를 전달 받도록 함
         dp.add(favoriteDao.selectShowAll()
@@ -57,7 +52,13 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
                 items.set(it)
             }, ::snackbar))
+    }
 
+    fun initShowAll(dp: CompositeDisposable) {
+        this.dp = dp
+
+        initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
+        initItems()
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
                 if (mLog.isDebugEnabled) {
@@ -155,6 +156,10 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                             })
                     }
                 }
+
+                // modify fragment 에서는 single 로 call 하고 있으므로
+                // 화면을 갱신 시켜줘야 한다.
+                initItems()
             }
             else -> super.commandEvent(cmd, data)
         }
