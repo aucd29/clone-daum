@@ -270,6 +270,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
     }
 
+    fun loadUrl(url: String) {
+        mBinding.brsWebview.loadUrl(url)
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // Module

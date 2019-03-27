@@ -1,13 +1,12 @@
 package com.example.clone_daum.ui
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteAddFragment
-import com.example.clone_daum.ui.browser.favorite.FavoriteFragment
-import com.example.clone_daum.ui.browser.favorite.FolderFragment
+import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -33,8 +32,9 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
 
-        const val CONTAINER         = R.id.container
-        const val NAV_TAB_CONTAINER = R.id.navi_tab_container
+        const val CONTAINER          = R.id.container
+        const val NAV_TAB_CONTAINER  = R.id.navi_tab_container
+        const val FAVORITE_CONTAINER = R.id.favorite_container
     }
 
     fun mainFragment() {
@@ -180,16 +180,36 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
 
     fun favoriteFragment() {
         if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE FRAGMGENT")
+            mLog.info("FAVORITE FRAGMENT")
         }
 
         manager.show(FragmentParams(CONTAINER, FavoriteFragment::class.java
-            , anim = FragmentAnim.RIGHT))
+            , anim   = FragmentAnim.RIGHT))
+    }
+
+    fun favoriteModifyFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE MODIFY FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FavoriteModifyFragment::class.java))
+    }
+
+    fun favoriteFolderFragment(folder: String) {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE FOLDER FRAGMENT ($folder)")
+        }
+
+        manager.show(FragmentParams(CONTAINER, FavoriteFolderFragment::class.java
+            , anim   = FragmentAnim.RIGHT
+            , bundle = Bundle().apply {
+                putString("folder", folder)
+            }))
     }
 
     fun favoriteAddFragment(title: String, url: String) {
         if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE ADD FRAGMGENT")
+            mLog.info("FAVORITE ADD FRAGMENT")
         }
 
         manager.show(FragmentParams(CONTAINER, FavoriteAddFragment::class.java
@@ -199,12 +219,12 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             }))
     }
 
-    fun folderFragment() {
+    fun folderFragment(child: FragmentManager) {
         if (mLog.isInfoEnabled) {
-            mLog.info("FOLDER FRAGMGENT")
+            mLog.info("FOLDER FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, FolderFragment::class.java
+        child.show(FragmentParams(FAVORITE_CONTAINER, FolderFragment::class.java
             , anim = FragmentAnim.RIGHT))
     }
 }

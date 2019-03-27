@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/mnu_move_folder"
+            android:title="@string/favorite_move_folder" />
+
+    <item
+            android:id="@+id/mnu_modify_favorite"
+            android:title="@string/favorite_modify_favorite" />
+
+    <item
+            android:id="@+id/mnu_add_home_launcher"
+            android:title="@string/favorite_add_home_launcher" />
+</menu>

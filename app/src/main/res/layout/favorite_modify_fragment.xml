@@ -6,17 +6,17 @@
     <data>
         <import type="android.view.View"/>
 
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteModifyViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/favorite_container"
+            android:id="@+id/favorite_modify_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFFFFF">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/favorite_bar"
+                android:id="@+id/favorite_modify_bar"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -24,45 +24,59 @@
         >
 
             <ImageView
-                    android:id="@+id/favorite_back"
+                    android:id="@+id/favorite_modify_back"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
                     android:padding="15dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finishEvent()}"
             />
 
             <TextView
-                    android:id="@+id/favorite_title"
+                    android:id="@+id/favorite_modify_title"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@+id/favorite_back"
+                    app:layout_constraintStart_toEndOf="@+id/favorite_modify_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="FAVORITE"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/favorite_title"
-                    android:textColor="@android:color/black"
+                    android:text="@string/favorite_modify"
+                    android:textColor="@android:color/white"
             />
 
             <TextView
-                    android:id="@+id/favorite_folder_delete"
+                    android:id="@+id/favorite_folder_select_all"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/favorite_folder_edit"
+                    app:layout_constraintEnd_toStartOf="@+id/favorite_folder_delete"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="15dp"
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
-                    android:text="@string/fa_external_link_alt"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FOLDER_DIALOG_SHOW)}"
+                    android:text="@string/fa_check_circle"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SELECT_ALL)}"
+            />
+
+            <!-- disable 항목 추가해야 함 -->
+            <TextView
+                    android:id="@+id/favorite_folder_delete"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/favorite_folder_menu"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:padding="15dp"
+                    android:textAppearance="@style/solid"
+                    android:textColor="@android:color/black"
+                    android:text="@string/fa_trash_alt"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_CHOOSE_DELETE)}"
             />
 
             <TextView
-                    android:id="@+id/favorite_folder_edit"
+                    android:id="@+id/favorite_folder_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -72,64 +86,9 @@
                     android:padding="15dp"
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
-                    android:text="@string/fa_pen"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_MODIFY)}"
+                    android:text="@string/fa_ellipsis_v"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_POPUP_MENU)}"
             />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/favorite_view_option_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favorite_bar"
-                android:background="#ececec"
-        >
-            <View
-                    android:layout_width="match_parent" android:layout_height="1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:background="#797979"
-                  />
-
-            <View
-                    android:layout_width="match_parent" android:layout_height="1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:background="#F1F1F1"
-            />
-
-            <RadioGroup
-                    android:id="@+id/favorite_radio"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    android:background="@null"
-            >
-
-                <RadioButton
-                        android:id="@+id/favorite_show_all"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/favorite_all"
-                        android:checked="true"
-                        android:textColor="@drawable/selector_navi_tab_bgcolor"
-                        android:button="@drawable/selector_favorite_checker"
-                />
-
-                <RadioButton
-                        android:id="@+id/favorite_show_folder"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="@string/favorite_folder"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="5dp"
-                        android:textColor="@drawable/selector_navi_tab_bgcolor"
-                        android:button="@drawable/selector_favorite_checker"
-                />
-                <!--android:button="@drawable/selector_favorite_checker"-->
-            </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -141,23 +100,24 @@
                 android:text="@string/fa_external_link_alt"
                 tools:text="1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favorite_bar"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_modify_bar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="@{model.items.size > 0 ? View.GONE : View.VISIBLE}"
         />
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/favorite_recycler"
+                android:id="@+id/favorite_modify_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/favorite_view_option_layout"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_modify_bar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:bindItems="@{model.items}"
                 app:bindAdapter="@{model.adapter}"
+                app:bindItemTouchHelper="@{model.itemTouchHelper}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

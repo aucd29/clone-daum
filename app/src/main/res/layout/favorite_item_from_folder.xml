@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteFolderViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.local.MyFavorite"/>
     </data>
 
@@ -14,37 +14,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
+            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"
     >
-        <!--android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU, item.name)}"-->
+
         <TextView
                 android:id="@+id/icon"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:textAppearance="@style/solid"
-                android:text="@string/fa_folder"
+                android:layout_width="30dp" android:layout_height="30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:padding="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical|center_horizontal"
+                app:bindFrequentlySiteUrl="@{item.url}"
+                app:bindFrequentlySiteTitle="@{``}"
         />
+        <!--app:bindFrequentlySiteUrl="@{item.url}"-->
+        <!--android:text="@{model.firstUrl(item.url)}"-->
 
         <TextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="parent"
-                android:padding="10dp"
                 android:text="@{item.name}"
+                android:padding="10dp"
                 tools:text="NAME"
         />
 
-        <TextView
-                android:id="@+id/detail"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+        <View
+                style="@style/line1dp"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@+id/text"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text=">"
-                android:layout_marginEnd="10dp"
-                android:padding="10dp"
-                tools:text=">"
+                app:layout_constraintBottom_toBottomOf="parent"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

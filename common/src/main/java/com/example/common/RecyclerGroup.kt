@@ -3,6 +3,7 @@ package com.example.common
 import android.app.Application
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ObservableField
@@ -10,9 +11,11 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import org.slf4j.LoggerFactory
+import java.util.*
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
@@ -42,8 +45,6 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 /**
  * xml 에서 event 와 data 를 binding 하므로 viewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
- *
- *
  */
 class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
     : RecyclerView.Adapter<RecyclerHolder>() {
@@ -93,6 +94,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
 
     var items: List<T> = arrayListOf()
     lateinit var viewModel: ViewModel
+    var viewHolderCallback: ((RecyclerHolder, Int) -> Unit)? = null
 
     constructor(layoutId: String) : this(arrayOf(layoutId)) {
     }
@@ -142,6 +144,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
         }
 
         holder.mBinding.executePendingBindings()
+        viewHolderCallback?.invoke(holder, position)
     }
 
     /**
@@ -243,8 +246,14 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
 open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewModel(app) {
-    val items   = ObservableField<List<T>>()
-    val adapter = ObservableField<RecyclerAdapter<T>>()
+    companion object {
+        private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
+    }
+
+//    val dragCallback    = ObservableField<DragCallback>()
+    val items           = ObservableField<List<T>>()
+    val adapter         = ObservableField<RecyclerAdapter<T>>()
+    val itemTouchHelper = ObservableField<ItemTouchHelper>()
 
     fun initAdapter(id: String) {
         val adapter = RecyclerAdapter<T>(id)
@@ -259,4 +268,93 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
 
         this.adapter.set(adapter)
     }
+
+    // https://developer88.tistory.com/102
+    // https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf
+
+    // recycler 에서 item 를 long touch 하거나 특정 view 를 drag 했을때 화면 전환을 위한
+
+    fun initItemTouchHelper(callback: ItemMovedCallback, bindingCallback: ((ViewDataBinding) -> View?)? = null) {
+        itemTouchHelper.set(ItemTouchHelper(callback))
+
+        bindingCallback?.let {
+            adapter.get()?.viewHolderCallback = { holder, pos ->
+                it.invoke(holder.mBinding)?.setOnTouchListener { v, ev ->
+                    if (ev.action == MotionEvent.ACTION_DOWN) {
+                        itemTouchHelper.get()?.startDrag(holder)
+                    }
+
+                    false
+                }
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // DragCallback
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    inner class ItemMovedCallback(val mItemMovedListener:((fromPos: Int, toPos: Int) -> Unit)? = null)
+        : ItemTouchHelper.Callback() {
+        var mLongPressDrag = false
+        var mSwipeDrag     = false
+
+//        private var dragFrom = -1
+//        private var dragTo   = -1
+
+        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+            val dragFlags  = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            val swipeFlags = ItemTouchHelper.START or ItemTouchHelper.END
+
+            return makeMovementFlags(dragFlags, swipeFlags)
+        }
+
+        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder): Boolean {
+
+            val fromPos = viewHolder.adapterPosition
+            val toPos = target.adapterPosition
+
+            if (mLog.isTraceEnabled) {
+                mLog.trace("MOVE RECYCLER ITEM : $fromPos -> $toPos")
+            }
+
+//            if (dragFrom == -1) {
+//                dragFrom = fromPos
+//            }
+//            dragTo = toPos
+
+            Collections.swap(items.get(), fromPos, toPos)
+            mItemMovedListener?.invoke(fromPos, toPos)
+            adapter.get()?.notifyItemMoved(fromPos, toPos)
+
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            // swipe 로 삭제 할때
+        }
+
+        override fun isLongPressDragEnabled() = mLongPressDrag
+        override fun isItemViewSwipeEnabled() = mSwipeDrag
+
+        // https://stackoverflow.com/questions/35920584/android-how-to-catch-drop-action-of-itemtouchhelper-which-is-used-with-recycle
+//        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+//            super.clearView(recyclerView, viewHolder)
+//
+//            if (dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("ITEM MOVED FROM $dragFrom TO $dragTo")
+//                }
+//
+//                mItemMovedListener?.invoke(dragFrom, dragTo)
+//            }
+//
+//            dragFrom = -1
+//            dragTo   = -1
+//        }
+    }
 }
+

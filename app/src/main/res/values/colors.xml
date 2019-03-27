@@ -9,6 +9,7 @@
     <color name="button_over">#7fbcbcbc</color>
     <color name="light_gray">#f1f1f1</color>
     <color name="light_blue">#5498ff</color>
+    <color name="alpha_orange">#5CFF9800</color>
 
     <!-- zxing -->
     <color name="zxing_viewfinder_laser">@android:color/transparent</color>

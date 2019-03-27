@@ -1,10 +1,13 @@
 package com.example.clone_daum.model.local
 
+import androidx.databinding.ObservableBoolean
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.example.clone_daum.model.*
 import com.example.common.IRecyclerDiff
 import com.example.common.IRecyclerItem
+import com.example.common.IRecyclerPosition
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -70,21 +73,50 @@ data class UrlHistory (
 
 @Entity(tableName = "myFavorite")
 data class MyFavorite (
+    /** 링크 명 or 폴더 명 */
     val name: String,
-    val url: String,
+    /** 링크 (url) */
+    val url: String = "",
+    /** 링크일 때 사용 될 폴더 */
     val folder: String = "",
+    /** 타입 (링크: 0, 폴더: 1) */
     val favType: Int = T_DEFAULT,
-    val date: Long = System.currentTimeMillis(),
+    /** 날짜 인데 이를 기준으로 order 처리 한다. */
+    var date: Long = System.currentTimeMillis(),
+    /** id 값 */
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0
-) : IRecyclerDiff, IRecyclerItem {
+    val _id: Int       = 0
+) : IRecyclerDiff, IRecyclerItem, IRecyclerPosition {
+    @Ignore
+    var pos: Int   = 0
+
+    @Ignore
+    var check = ObservableBoolean(false)
+
     companion object {
-        const val T_DEFAULT = 0
-        const val T_FOLDER  = 1
+        const val T_FOLDER  = 0
+        const val T_DEFAULT = 1
     }
 
+    override fun position(pos: Int) {
+        this.pos = pos
+    }
+    override fun position() = pos
+
     override fun compare(item: IRecyclerDiff) = this._id == (item as MyFavorite)._id
+
+//    override fun compare(item: IRecyclerDiff): Boolean {
+//        val newItem = item as MyFavorite
+//        return _id == newItem._id
+//    }
+
     override fun type() = favType
+
+    fun swapDate(fav: MyFavorite) {
+        val tmp = date
+        date = fav.date
+        fav.date = tmp
+    }
 }
 
 @Entity(tableName = "frequentlySite")

@@ -58,6 +58,7 @@
                     android:text="@string/fa_folder"
                     android:textColor="@android:color/black"
                     android:padding="@dimen/brs_back_pad"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_FOLDER_DIALOG_SHOW)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,6 +79,9 @@
                 app:layout_constraintTop_toBottomOf="@+id/folder_bar_underline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:bindItems="@{model.items}"
+                app:bindAdapter="@{model.adapter}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
