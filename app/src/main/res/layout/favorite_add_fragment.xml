@@ -220,7 +220,12 @@
             />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+        <View
+                style="@style/line1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/favorite_cancel"
+        />
+        
         <TextView
                 android:id="@+id/favorite_cancel"
                 android:layout_width="0dp" android:layout_height="wrap_content"
@@ -247,6 +252,14 @@
                 android:enabled="@{model.enabledOk}"
                 android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_ADD)}"
         />
+
+        <View
+                android:layout_width="1dp" android:layout_height="0dp"
+                android:background="#efefef"
+                app:layout_constraintStart_toEndOf="@+id/favorite_cancel"
+                app:layout_constraintTop_toTopOf="@+id/favorite_cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+              />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

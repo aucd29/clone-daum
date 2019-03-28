@@ -79,17 +79,15 @@ class FolderFragment
 ////////////////////////////////////////////////////////////////////////////////////
 
 object FolderDialog {
-    private val mLog = LoggerFactory.getLogger(FolderDialog::class.java)
-
     fun show(context: Context, viewModel: FavoriteViewModel, fromFolderFragment: Boolean) {
         // FIXME 추후 수정해야할 부분
+        // 일단은 kotlin extension 을 테스트 하기 위한 코드
 
         val view = LayoutInflater.from(context).inflate(R.layout.folder_dialog, null)
         val params = DialogParam(view = view)
         val disposable = CompositeDisposable()
 
         viewModel.dialog(params)
-
 
         view.apply {
             ok.isEnabled = !folder_name.text.isNullOrEmpty()

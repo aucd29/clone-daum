@@ -32,7 +32,6 @@ class FavoriteAddViewModel @Inject constructor(app: Application
         const val CMD_ADDRESS_RESET = "address-reset"
 
         const val CMD_FOLDER_DETAIL = "folder-detail"
-        const val CMD_FOLDER_ADD    = "folder-add"
         const val CMD_FAVORITE_ADD  = "favorite-add"
     }
 
@@ -117,8 +116,6 @@ class FavoriteAddViewModel @Inject constructor(app: Application
                 if (mLog.isDebugEnabled) {
                     mLog.debug("ADDED FAVORITE URL : $url")
                 }
-
-                snackbar(string(R.string.brs_fav_url_ok))
 
                 finishEvent()
             }, {

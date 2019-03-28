@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.databinding.FavoriteAddFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
+import com.example.common.hideKeyboard
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -33,13 +34,18 @@ class FavoriteAddFragment
         } }
     }
 
+    override fun onDestroyView() {
+        mBinding.root.hideKeyboard()
+
+        super.onDestroyView()
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // PUBLIC METHODS
+    // FOLDER FRAGMENT
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    // FolderFragment 에서 호출 됨
     fun changeFolderName(pos: Int, name: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("CHANGE FOLDER $name ($pos)")
