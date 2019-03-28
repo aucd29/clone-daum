@@ -22,7 +22,11 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-        />
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:inputType="text">
+            <requestFocus />
+        </EditText>
 
         <Button
                 android:id="@+id/cancel"

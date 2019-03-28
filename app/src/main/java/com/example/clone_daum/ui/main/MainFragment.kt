@@ -16,7 +16,6 @@ import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.example.common.di.module.injectOfActivity
 import com.google.android.material.tabs.TabLayout
-import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
@@ -36,7 +35,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var disposable: CompositeDisposable
 
 //    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
 //    private lateinit var mWeatherViewModel: WeatherViewModel
@@ -59,7 +57,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         initRealtimeIssueViewModel()
         initPopularViewModel()
 
-        disposable.add(preConfig.daumMain()
+        mDisposable.add(preConfig.daumMain()
             .subscribe({ html ->
                 mRealtimeIssueViewModel.load(html)
                 mPopularViewModel.load(html)
@@ -336,7 +334,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     override fun onDestroy() {
-        mRealtimeIssueViewModel.dp.dispose()
+        mRealtimeIssueViewModel.disposableInterval.dispose()
+
         mBinding.apply {
             tab.removeOnTabSelectedListener(this@MainFragment)
             viewpager.adapter = null
@@ -362,9 +361,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) {
+    override fun onTabUnselected(tab: TabLayout.Tab) { }
 
-    }
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (mLog.isDebugEnabled) {
             mLog.debug("TAB SELECTED ${tab.position}")

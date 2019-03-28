@@ -158,6 +158,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:bindItems="@{model.items}"
                 app:bindAdapter="@{model.adapter}"
+                app:bindItemAnimator="@{model.itemAnimator}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

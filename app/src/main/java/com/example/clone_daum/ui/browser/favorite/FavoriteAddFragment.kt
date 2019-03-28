@@ -26,7 +26,7 @@ class FavoriteAddFragment
 
     override fun initViewModelEvents() {
         arguments?.let { mViewModel.run {
-            dp = mDisposable
+            init(mDisposable)
 
             // ui 에서 name 으로 되어 있어 title -> name 으로 변경
             name.set(it.getString("title"))

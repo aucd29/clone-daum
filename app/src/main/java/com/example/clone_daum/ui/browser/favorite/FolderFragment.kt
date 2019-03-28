@@ -9,6 +9,7 @@ import com.example.clone_daum.databinding.FolderFragmentBinding
 import com.example.common.BaseDaggerFragment
 import com.example.common.DialogParam
 import com.example.common.finish
+import com.example.common.showKeyboard
 import dagger.android.ContributesAndroidInjector
 import kotlinx.android.synthetic.main.folder_dialog.view.*
 
@@ -82,6 +83,7 @@ object FolderDialog {
                     ok.isEnabled = !folder_name.text.isNullOrEmpty()
                 }
             })
+            folder_name.showKeyboard()
 
             ok.setOnClickListener {
                 params.dialog?.dismiss()

@@ -85,7 +85,8 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
      */
     override fun onDestroy() {
-        mDisposable.clear()
+        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
+        mDisposable.dispose()
 
         super.onDestroy()
     }
@@ -190,7 +191,8 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     }
 
     override fun onDestroyView() {
-        mDisposable.clear()
+        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
+        mDisposable.dispose()
 
         super.onDestroyView()
     }
@@ -312,7 +314,8 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
     }
 
     override fun onDestroyView() {
-        mDisposable.clear()
+        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
+        mDisposable.dispose()
 
         super.onDestroyView()
     }
@@ -405,7 +408,8 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     }
 
     override fun onDestroyView() {
-        mDisposable.clear()
+        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
+        mDisposable.dispose()
 
         super.onDestroyView()
     }

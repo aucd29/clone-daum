@@ -92,14 +92,14 @@ inline fun Context.displayDensity() = resources.displayMetrics.density
 /**
  * open keyboard
  */
-inline fun Context.showKeyboard(view: View?) {
+inline fun Context.showKeyboard(view: View?, flags: Int = InputMethodManager.SHOW_IMPLICIT) {
     view?.let {
         it.postDelayed({
             it.requestFocus()
             systemService(InputMethodManager::class.java)?.apply {
-                showSoftInput(it, InputMethodManager.SHOW_FORCED)
+                showSoftInput(it, flags) // InputMethodManager.SHOW_FORCED
             }
-        }, 400)
+        }, 200)
     }
 }
 

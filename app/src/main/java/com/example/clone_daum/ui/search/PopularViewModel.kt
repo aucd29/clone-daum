@@ -33,12 +33,14 @@ class PopularViewModel @Inject constructor(app: Application)
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     private var mPopularList: PopularSearchedWord? = null
+    private lateinit var mDisposable: CompositeDisposable
 
-    val dp                = CompositeDisposable()
     val visiblePopular    = ObservableInt(View.GONE)
     val chipLayoutManager = ObservableField<ChipsLayoutManager>()
 
-    fun init() {
+    fun init(disposable: CompositeDisposable) {
+        mDisposable = disposable
+
         // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
         initAdapter("search_recycler_popular_item")
         selectPopularList()
@@ -50,7 +52,7 @@ class PopularViewModel @Inject constructor(app: Application)
                 mLog.debug("HTML PARSE (POPULAR LIST)")
             }
 
-            dp.add(Observable.just(html)
+            mDisposable.add(Observable.just(html)
                 .observeOn(Schedulers.io())
                 .map(::parsePopular)
                 .subscribeOn(AndroidSchedulers.mainThread())

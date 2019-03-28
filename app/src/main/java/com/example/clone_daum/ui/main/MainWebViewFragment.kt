@@ -37,7 +37,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
     private var mTimerDisposable = CompositeDisposable()
     private var mIsClosedSplash  = false
-//    private var mUrl: String = ""
 
 
     override fun bindViewModel() {

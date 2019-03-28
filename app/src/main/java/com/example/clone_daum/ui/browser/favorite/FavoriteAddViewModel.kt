@@ -41,12 +41,16 @@ class FavoriteAddViewModel @Inject constructor(app: Application
     override val dialogEvent   = SingleLiveEvent<DialogParam>()
     override val snackbarEvent = SingleLiveEvent<String>()
 
-    lateinit var dp: CompositeDisposable
+    private lateinit var mDisposable: CompositeDisposable
 
     val name      = ObservableField<String>()
     val url       = ObservableField<String>()
     val folder    = ObservableField<String>(string(R.string.folder_favorite))
     val enabledOk = ObservableBoolean(true)
+
+    fun init(disposable: CompositeDisposable) {
+        mDisposable = disposable
+    }
 
     override fun commandEvent(cmd: String, data: Any) {
         when (cmd) {
@@ -61,7 +65,7 @@ class FavoriteAddViewModel @Inject constructor(app: Application
                     mLog.debug("ADD FAVORITE\n$name\n$url\n$folder")
                 }
 
-                dp.add(mFavoriteDao.hasUrl(url)
+                mDisposable.add(mFavoriteDao.hasUrl(url)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe ({
@@ -89,7 +93,7 @@ class FavoriteAddViewModel @Inject constructor(app: Application
     }
 
     private fun insertFavorite(name: String, url: String, folder: String) {
-        dp.add(mFavoriteDao.insert(MyFavorite(name, url, folder))
+        mDisposable.add(mFavoriteDao.insert(MyFavorite(name, url, folder))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

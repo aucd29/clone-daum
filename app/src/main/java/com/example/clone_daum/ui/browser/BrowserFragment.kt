@@ -112,6 +112,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             return@run
         }
 
+        init(mDisposable)
         applyUrl(mUrl!!)
 
         // 임시 코드 추후 db 에서 얻어오도록 해야함

@@ -1,6 +1,8 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
+import androidx.databinding.ObservableField
+import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.common.*
@@ -37,8 +39,10 @@ class FavoriteViewModel @Inject constructor(application: Application
     override val dialogEvent   = SingleLiveEvent<DialogParam>()
     override val snackbarEvent = SingleLiveEvent<String>()
 
-    lateinit var dp: CompositeDisposable
+    private lateinit var mDisposable: CompositeDisposable
+
     var selectedPosition: Int = 0
+    val itemAnimator          = ObservableField<RecyclerView.ItemAnimator?>()
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -47,7 +51,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun initShowAll(dp: CompositeDisposable) {
-        this.dp = dp
+        this.mDisposable = dp
 
         initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
         dp.add(favoriteDao.selectShowAllFlowable()
@@ -66,7 +70,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     }
 
     fun initShowFolder(dp: CompositeDisposable) {
-        this.dp = dp
+        this.mDisposable = dp
 
         initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
         dp.add(favoriteDao.selectShowFolder()
@@ -91,13 +95,13 @@ class FavoriteViewModel @Inject constructor(application: Application
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun insertFolder(folderName: String, fromFolderFragment: Boolean) {
-        dp.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
+        mDisposable.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (fromFolderFragment) {
                     reloadFolderItems()
                 } else {
-                    initShowAll(dp)
+                    initShowAll(mDisposable)
                 }
             }, ::snackbar))
     }
@@ -109,7 +113,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun initFolder(dp: CompositeDisposable) {
-        this.dp = dp
+        this.mDisposable = dp
 
         initAdapter("folder_item")
         reloadFolderItems()
@@ -120,7 +124,7 @@ class FavoriteViewModel @Inject constructor(application: Application
             mLog.debug("RELOAD FOLDER LIST")
         }
 
-        dp.add(favoriteDao.selectShowFolder()
+        mDisposable.add(favoriteDao.selectShowFolder()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

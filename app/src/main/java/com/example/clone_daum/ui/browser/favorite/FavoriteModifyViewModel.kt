@@ -1,8 +1,9 @@
 package com.example.clone_daum.ui.browser.favorite
 
-import android.annotation.SuppressLint
 import android.app.Application
 import androidx.core.content.ContextCompat
+import androidx.databinding.ObservableField
+import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.databinding.FavoriteModifyItemBinding
 import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
 import com.example.clone_daum.model.local.MyFavorite
@@ -108,6 +109,23 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         ContextCompat.getColor(app, R.color.alpha_orange)
     } else {
         ContextCompat.getColor(app, android.R.color.white)
+    }
+
+    fun hasCheckedItems(): Boolean {
+        val list = items.get()
+        if (list == null) {
+            return false
+        }
+
+        var checked = true
+        for (it in list) {
+           if (!it.check.get()) {
+               checked = false
+               break
+           }
+        }
+
+        return checked
     }
 
     override fun commandEvent(cmd: String, data: Any) {

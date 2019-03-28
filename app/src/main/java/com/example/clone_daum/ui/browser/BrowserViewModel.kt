@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -11,7 +10,6 @@ import com.example.clone_daum.model.local.*
 import com.example.common.*
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,7 +23,6 @@ import javax.inject.Inject
 class BrowserViewModel @Inject constructor(app: Application
     , var urlDao: UrlHistoryDao
     , val zzimDao: ZzimDao
-    , val disposable: CompositeDisposable
 ) : CommandEventViewModel(app), ISnackbarAware, IWebViewEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
@@ -43,6 +40,8 @@ class BrowserViewModel @Inject constructor(app: Application
     override val snackbarEvent = SingleLiveEvent<String>()
     override val webviewEvent  = ObservableField<WebViewEvent>()
 
+    private lateinit var mDisposable: CompositeDisposable
+
     val urlString           = ObservableField<String>()
     val brsCount            = ObservableField<String>()
     val sslIconResId        = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
@@ -56,6 +55,10 @@ class BrowserViewModel @Inject constructor(app: Application
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
     val brsGoTop        = ObservableField<AnimParams>()
+
+    fun init(disposable: CompositeDisposable) {
+        mDisposable = disposable
+    }
 
     fun applyUrl(url: String) {
         if (mLog.isDebugEnabled) {
@@ -103,7 +106,7 @@ class BrowserViewModel @Inject constructor(app: Application
             mLog.error("ERROR: ${urlString.get()}")
         }
 
-        disposable.add(zzimDao.hasUrl(url)
+        mDisposable.add(zzimDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -127,7 +130,7 @@ class BrowserViewModel @Inject constructor(app: Application
     }
 
     private fun insertZzim(url: String) {
-        disposable.add(zzimDao.insert(Zzim(url = url
+        mDisposable.add(zzimDao.insert(Zzim(url = url
             , title = "title"))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

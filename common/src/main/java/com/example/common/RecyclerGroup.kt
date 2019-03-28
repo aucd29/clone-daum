@@ -19,6 +19,18 @@ import java.util.*
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
+ *
+ * ====
+ * recycler 에 animation 을 사용하지 않을려면
+ *
+ * val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
+ *
+ * 를 viewmodel 에 선언하고 xml 에
+ *
+ * app:bindItemAnimator="@{model.itemAnimator}"
+ *
+ * 를 선언한다. 이때 itemAnimator 에 별도의 RecyclerView.ItemAnimator 를 지정하지 않으면 된다.
+ * ====
  */
 
 /** item 비교 인터페이스 */
@@ -95,9 +107,9 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
     var items: List<T> = arrayListOf()
     lateinit var viewModel: ViewModel
     var viewHolderCallback: ((RecyclerHolder, Int) -> Unit)? = null
+    var isScrollToPosition = true
 
-    constructor(layoutId: String) : this(arrayOf(layoutId)) {
-    }
+    constructor(layoutId: String) : this(arrayOf(layoutId)) { }
 
     /**
      * 전달 받은 layout ids 와 IRecyclerItem 을 통해 화면에 출력해야할 layout 를 찾고
@@ -133,15 +145,13 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
-        items.let {
-            it.get(position).let { item ->
-                when (item) {
-                    is IRecyclerPosition -> item.position(position)
-                }
-
-                invokeMethod(holder.mBinding, METHOD_NAME_ITEM, item.javaClass, item, true)
+        items.let { it.get(position).let { item ->
+            when (item) {
+                is IRecyclerPosition -> item.position(position)
             }
-        }
+
+            invokeMethod(holder.mBinding, METHOD_NAME_ITEM, item.javaClass, item, true)
+        } }
 
         holder.mBinding.executePendingBindings()
         viewHolderCallback?.invoke(holder, position)
@@ -167,6 +177,12 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
     /**
      * 아이템을 설정 한다. 이때 DiffUtil.calculateDiff 를 통해 데이터의 변동 지점을
      * 알아서 찾아 변경 시켜 준다.
+     *
+     * FIXME [aucd29][2019. 3. 28.]
+     * 다수개의 데이터가 존재 시 새로 add 하면 리스트를 하단으로 이동 시키고 view 를 add 하는데
+     * 먼가 깜박이는 현상이 보여서 일단 수정이 필요해 보임
+     * 편하려고 DiffUtil 을 쓰긴 하는데 플리킹이 있으면 =_ = 안되니..
+     *
      */
     fun setItems(recycler: RecyclerView, newItems: List<T>) {
         if (items.size == 0) {
@@ -201,7 +217,10 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
             override fun onInserted(position: Int, count: Int) {
                 if (mFirstInsert == -1 || mFirstInsert > position) {
                     mFirstInsert = position
-                    recycler.smoothScrollToPosition(mFirstInsert)
+
+                    if (isScrollToPosition) {
+                        recycler.smoothScrollToPosition(mFirstInsert)
+                    }
                 }
 
                 if (mLog.isDebugEnabled) {
@@ -250,7 +269,6 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
     }
 
-//    val dragCallback    = ObservableField<DragCallback>()
     val items           = ObservableField<List<T>>()
     val adapter         = ObservableField<RecyclerAdapter<T>>()
     val itemTouchHelper = ObservableField<ItemTouchHelper>()
@@ -271,7 +289,6 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
 
     // https://developer88.tistory.com/102
     // https://medium.com/@ipaulpro/drag-and-swipe-with-recyclerview-b9456d2b1aaf
-
     // recycler 에서 item 를 long touch 하거나 특정 view 를 drag 했을때 화면 전환을 위한
 
     fun initItemTouchHelper(callback: ItemMovedCallback, bindingCallback: ((ViewDataBinding) -> View?)? = null) {
@@ -341,6 +358,9 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
         override fun isItemViewSwipeEnabled() = mSwipeDrag
 
         // https://stackoverflow.com/questions/35920584/android-how-to-catch-drop-action-of-itemtouchhelper-which-is-used-with-recycle
+        // 최종적으로 drop 되었을때 디비를 바꿔볼까 싶었는데 이게 0 -> 4 값이 서로 변경되는 형태가 아니므로
+        // 불가함을 =_ = 깨닳고 이동 할때마다 변경됨을 mItemMovedListener 를 통해 전달하도록 변경
+
 //        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
 //            super.clearView(recyclerView, viewHolder)
 //

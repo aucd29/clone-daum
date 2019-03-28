@@ -25,7 +25,6 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     private lateinit var mPopularViewModel: PopularViewModel
 
-
     override fun bindViewModel() {
         super.bindViewModel()
 
@@ -46,9 +45,9 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init()
+        mViewModel.init(mDisposable)
         mPopularViewModel.apply {
-            init()
+            init(mDisposable)
             chipLayoutManager.set(layoutManager)
 
             observe(commandEvent) { onCommandEvent(it.first, it.second) }
@@ -77,10 +76,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     }
 
     override fun onDestroyView() {
-        mViewModel.dp.clear()
-
         hideKeyboard(mBinding.searchEdit)
-        mPopularViewModel.dp.clear()
 
         super.onDestroyView()
     }

@@ -36,7 +36,6 @@ class MainViewModel @Inject constructor(val app: Application
     override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
 
     val tabAdapter              = ObservableField<MainTabAdapter>()
-//    val offscreenPageLimit      = ObservableInt(2)
     val viewpager               = ObservableField<ViewPager>()
     var gotoNewsEvent           = ObservableInt(0)
     val searchIconResId         = ObservableInt(config.SEARCH_ICON)
