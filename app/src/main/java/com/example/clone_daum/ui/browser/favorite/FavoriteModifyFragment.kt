@@ -20,17 +20,24 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     }
 
     override fun initViewModelEvents() {
-        mViewModel.initShowAll(mDisposable)
+        val folder = arguments?.getString("folder")
+        mViewModel.init(folder, mDisposable)
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            FavoriteModifyViewModel.CMD_POPUP_MENU -> {
-                popupMenu(R.menu.favorite, mBinding.favoriteFolderMenu) {
-                    true
-                }
-            }
+            FavoriteModifyViewModel.CMD_POPUP_MENU -> showPopupMenu()
         }
+    }
+
+    private fun showPopupMenu() {
+        popupMenu(R.menu.favorite, mBinding.favoriteFolderMenu) { true }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

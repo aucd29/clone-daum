@@ -39,6 +39,12 @@ class FavoriteFragment
         mViewModel.initShowAll(mDisposable)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND : $cmd")
@@ -46,18 +52,20 @@ class FavoriteFragment
 
         FavoriteViewModel.apply {
             when (cmd) {
-                CMD_BRS_OPEN -> {
-                    finish()
-
-                    val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-                    if (frgmt is BrowserFragment) {
-                        frgmt.loadUrl(data.toString())
-                    }
-                }
+                CMD_BRS_OPEN           -> showBrowser(data.toString())
                 CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data.toString())
-                CMD_FOLDER_DIALOG_SHOW -> FolderDialog.show(requireContext(), mViewModel, false)
+                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(requireContext(), mViewModel, false)
                 CMD_FAVORITE_MODIFY    -> viewController.favoriteModifyFragment()
             }
+        }
+    }
+
+    private fun showBrowser(url: String) {
+        finish()
+
+        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
+        if (frgmt is BrowserFragment) {
+            frgmt.loadUrl(url)
         }
     }
 

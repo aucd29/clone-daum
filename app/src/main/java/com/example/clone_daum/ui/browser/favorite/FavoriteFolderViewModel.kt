@@ -21,7 +21,8 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
 
-        const val CMD_BRS_OPEN = "brs-open"
+        const val CMD_BRS_OPEN        = "brs-open"
+        const val CMD_FAVORITE_MODIFY = "favorite-modify"
     }
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()

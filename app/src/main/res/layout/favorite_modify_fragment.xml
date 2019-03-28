@@ -72,7 +72,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_trash_alt"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_CHOOSE_DELETE)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SELECTED_DELETE)}"
             />
 
             <TextView
@@ -103,7 +103,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/favorite_modify_bar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:visibility="@{model.items.size > 0 ? View.GONE : View.VISIBLE}"
+                android:visibility="@{model.visibleEmpty}"
         />
 
         <androidx.recyclerview.widget.RecyclerView

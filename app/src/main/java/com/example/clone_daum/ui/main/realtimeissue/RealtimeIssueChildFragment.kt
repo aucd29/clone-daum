@@ -56,12 +56,14 @@ class RealtimeIssueChildFragment
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data.let {
-                mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
-
-                viewController.browserFragment(it.toString())
-            }
+            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> showBrowser(data.toString())
         }
+    }
+
+    private fun showBrowser(url: String) {
+        mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
+
+        viewController.browserFragment(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

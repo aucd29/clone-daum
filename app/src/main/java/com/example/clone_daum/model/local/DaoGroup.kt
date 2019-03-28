@@ -114,6 +114,9 @@ interface MyFavoriteDao {
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
 
+    @Query("SELECT COUNT(*) FROM myFavorite WHERE name=:folder")
+    fun hasFolder(folder: String): Maybe<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data: MyFavorite): Completable
 

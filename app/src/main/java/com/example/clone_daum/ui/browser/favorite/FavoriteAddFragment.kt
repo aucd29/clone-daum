@@ -18,10 +18,9 @@ class FavoriteAddFragment
 
     @Inject lateinit var viewController: ViewController
 
-    override fun initViewBinding() {
-        mBinding.apply {
+    private var mFolderPosition = 0
 
-        }
+    override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
@@ -34,12 +33,20 @@ class FavoriteAddFragment
         } }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PUBLIC METHODS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    // FolderFragment 에서 호출 됨
     fun changeFolderName(pos: Int, name: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("CHANGE FOLDER $name ($pos)")
         }
 
         mViewModel.folder.set(name)
+        mFolderPosition = pos
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -50,12 +57,7 @@ class FavoriteAddFragment
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteAddViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager)
-            CMD_FOLDER_ADD    -> {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FOLDER ADD : $data")
-                }
-            }
+            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mFolderPosition)
         }
     }
 

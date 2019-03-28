@@ -41,6 +41,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     @Inject lateinit var daum: DaumSuggestService
     @Inject lateinit var searchDao: SearchHistoryDao
+
     private lateinit var mDisposable: CompositeDisposable
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
@@ -104,8 +105,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun eventToggleRecentSearch() {
         if (prefSearchRecycler) {
-            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search
-                , listener = { res, _ ->
+            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search, listener = { res, _ ->
                     if (res) toggleSearchRecyclerLayout()
                 })
         } else {
@@ -204,7 +204,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    //
+    // ISnackbarAware
     //
     ////////////////////////////////////////////////////////////////////////////////////
 

@@ -14,7 +14,7 @@
             android:id="@+id/folder_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.commandEvent(model.CMD_FOLDER_CHECKED, item.pos)}"
+            android:onClick="@{() -> model.commandEvent(model.CMD_CHANGE_FOLDER, item.pos)}"
     >
 
         <TextView

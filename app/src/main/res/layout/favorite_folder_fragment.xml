@@ -72,6 +72,7 @@
                     android:textColor="@android:color/black"
                     android:enabled="false"
                     android:text="@string/fa_pen"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_MODIFY)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

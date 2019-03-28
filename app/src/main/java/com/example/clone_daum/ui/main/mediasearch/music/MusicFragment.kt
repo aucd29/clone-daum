@@ -27,10 +27,10 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
         private val V_SCALE_DURATION = 500L
     }
 
+    @Inject lateinit var viewController: ViewController
+
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
-
-    @Inject lateinit var viewController: ViewController
 
     override fun initViewBinding() {
         keepScreen(true)
@@ -73,26 +73,6 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
         super.onDestroyView()
     }
 
-    override fun onBackPressed(): Boolean {
-        finish()
-
-        return true
-    }
-
-    private fun initClient() {
-
-    }
-
-    private fun resetClient() {
-
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // UI
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
     private fun startAnimation()  = mViewModel.run {
         bgScale.set(AnimParams(V_SCALE, objAniCallback = {
             it.apply {
@@ -113,6 +93,26 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
     private fun endAnimation() {
         mAnimList.forEach { it.cancel() }
         mAnimList.clear()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        finish()
+
+        return true
+    }
+
+    private fun initClient() {
+
+    }
+
+    private fun resetClient() {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

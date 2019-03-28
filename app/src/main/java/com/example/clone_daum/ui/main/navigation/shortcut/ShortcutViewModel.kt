@@ -18,6 +18,7 @@ class ShortcutViewModel @Inject constructor(application: Application)
     : AndroidViewModel(application), IDialogAware {
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
+
     val brsSitemapEvent      = SingleLiveEvent<String>()
 
     fun eventSitemap() {
