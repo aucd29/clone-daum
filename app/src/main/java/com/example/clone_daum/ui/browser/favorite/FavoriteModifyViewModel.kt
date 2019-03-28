@@ -2,6 +2,8 @@ package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
 import android.view.View
+import android.widget.CheckBox
+import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.databinding.FavoriteModifyItemBinding
@@ -40,6 +42,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
     private lateinit var mDisposable: CompositeDisposable
     private var mFolderName: String? = null
+    private val deleteList = arrayListOf<MyFavorite>()
 
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
 
@@ -116,6 +119,26 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         ContextCompat.getColor(app, android.R.color.white)
     }
 
+    // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
+//    fun onCheckedChanged(view: CompoundButton, isChecked: Boolean) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("CHECKED CHANGED : ${view.id} = $isChecked")
+//        }
+//    }
+
+    // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
+    fun deleteList(state: Boolean, item: MyFavorite) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DELETE ITEM state : $state, id: ${item._id}")
+        }
+
+        if (state) {
+            deleteList.add(item)
+        } else {
+            deleteList.remove(item)
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ICommandEvent
@@ -163,29 +186,47 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             mLog.debug("DELETE CHOOSE ITEMS")
         }
 
-        items.get()?.forEach {
-            if (it.check.get()) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETE ITEM : ${it._id}")
-                }
+        deleteList.forEach {
+            mDisposable.add(favoriteDao.delete(it)
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("DELETE ID ${it._id}")
+                    }
+                })
 
-                mDisposable.add(favoriteDao.delete(it)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("DELETE ID ${it._id}")
-                        }
-                    })
-
-                mDisposable.add(Completable.fromAction { favoriteDao.delete(it.name) }
-                    .subscribeOn(Schedulers.io())
-                    .subscribe {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("DELETE FOLDER : ${it.name}")
-                        }
-                    })
-            }
+            mDisposable.add(Completable.fromAction { favoriteDao.delete(it.name) }
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("DELETE FOLDER : ${it.name}")
+                    }
+                })
         }
+
+//        items.get()?.forEach {
+//            if (it.check.get()) {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("DELETE ITEM : ${it._id}")
+//                }
+//
+//                mDisposable.add(favoriteDao.delete(it)
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe {
+//                        if (mLog.isDebugEnabled) {
+//                            mLog.debug("DELETE ID ${it._id}")
+//                        }
+//                    })
+//
+//                mDisposable.add(Completable.fromAction { favoriteDao.delete(it.name) }
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe {
+//                        if (mLog.isDebugEnabled) {
+//                            mLog.debug("DELETE FOLDER : ${it.name}")
+//                        }
+//                    })
+//            }
+//        }
 
         // modify fragment 에서는 single 로 call 하고 있으므로
         // 화면을 갱신 시켜줘야 한다.

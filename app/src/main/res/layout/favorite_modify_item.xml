@@ -23,6 +23,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="7dp"
                 android:checked="@={item.check}"
+                android:onCheckedChanged="@{(btn, state) -> model.deleteList(state, item)}"
         />
 
         <TextView
