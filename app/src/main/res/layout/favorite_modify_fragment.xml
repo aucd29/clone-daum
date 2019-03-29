@@ -70,9 +70,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="15dp"
                     android:textAppearance="@style/solid"
-                    android:textColor="@android:color/black"
+                    android:textColor="@drawable/selector_fav_del_color"
                     android:text="@string/fa_trash_alt"
                     android:onClick="@{() -> model.commandEvent(model.CMD_SELECTED_DELETE)}"
+                    android:enabled="@{model.enableDelete}"
             />
 
             <TextView

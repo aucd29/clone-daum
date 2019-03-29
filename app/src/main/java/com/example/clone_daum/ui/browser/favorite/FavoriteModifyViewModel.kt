@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.databinding.FavoriteModifyItemBinding
 import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
@@ -45,6 +46,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     private val deleteList = arrayListOf<MyFavorite>()
 
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
+    val enableDelete = ObservableBoolean(false)
 
     private fun initItems(folder: String?) {
         if (mLog.isDebugEnabled) {
@@ -129,7 +131,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
     fun deleteList(state: Boolean, item: MyFavorite) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("DELETE ITEM state : $state, id: ${item._id}")
+            mLog.debug("DELETE ITEM state : $state, id: ${item._id} ($item)")
         }
 
         if (state) {
@@ -137,6 +139,8 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         } else {
             deleteList.remove(item)
         }
+
+        enableDelete.set(deleteList.size > 0)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -179,9 +183,12 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                 it.forEach { it.check.set(!it.check.get()) }
             }
         }
+        items.notifyChange()
     }
 
     private fun deleteSelectedItem() {
+        enableDelete.set(false)
+
         if (mLog.isDebugEnabled) {
             mLog.debug("DELETE SELECTED ITEMS (${deleteList.size})")
         }
