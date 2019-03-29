@@ -29,14 +29,15 @@ class FavoriteFragment
     override fun initViewBinding() {
         mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.favorite_show_all    -> mViewModel.initShowAll(mDisposable)
-                R.id.favorite_show_folder -> mViewModel.initShowFolder(mDisposable)
+                R.id.favorite_show_all    -> mViewModel.initItems()
+                R.id.favorite_show_folder -> mViewModel.initItemByFolder()
             }
         }
     }
 
     override fun initViewModelEvents() {
-        mViewModel.initShowAll(mDisposable)
+        mViewModel.init(mDisposable)
+        mViewModel.initItems()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

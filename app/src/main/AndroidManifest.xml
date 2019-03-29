@@ -24,6 +24,7 @@
             android:theme="@style/SplashTheme"
             android:name=".MainApp"
             android:largeHeap="true"
+            android:hardwareAccelerated="true"
             tools:ignore="GoogleAppIndexingWarning">
 
         <activity

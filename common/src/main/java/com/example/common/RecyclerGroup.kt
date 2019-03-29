@@ -120,8 +120,8 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
         val layoutId = context.resources.getIdentifier(mLayouts.get(viewType), "layout", context.packageName)
         val view = LayoutInflater.from(context).inflate(layoutId, parent, false)
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("LAYOUT ID : ${mLayouts.get(viewType)} (${layoutId})")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("LAYOUT ID : ${mLayouts.get(viewType)} (${layoutId})")
         }
 
         val classPath = bindingClassName(context, mLayouts.get(viewType))

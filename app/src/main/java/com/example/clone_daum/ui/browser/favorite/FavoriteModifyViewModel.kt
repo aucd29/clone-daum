@@ -116,7 +116,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     fun rowColor(state: Boolean) = if (state) {
         ContextCompat.getColor(app, R.color.alpha_orange)
     } else {
-        ContextCompat.getColor(app, android.R.color.white)
+        ContextCompat.getColor(app, R.color.alpha_white)
     }
 
     // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
@@ -183,53 +183,38 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
     private fun deleteSelectedItem() {
         if (mLog.isDebugEnabled) {
-            mLog.debug("DELETE CHOOSE ITEMS")
+            mLog.debug("DELETE SELECTED ITEMS (${deleteList.size})")
         }
 
+        // 폴더의 경우 폴더명을 찾아서 해당 폴더를 가진 fav 를 모두 삭제 한다.
+        val folderNameList = arrayListOf<String>()
         deleteList.forEach {
-            mDisposable.add(favoriteDao.delete(it)
-                .subscribeOn(Schedulers.io())
-                .subscribe {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("DELETE ID ${it._id}")
-                    }
-                })
+            if (it.type() == MyFavorite.T_FOLDER) {
+                folderNameList.add(it.name)
+            }
+        }
 
-            mDisposable.add(Completable.fromAction { favoriteDao.delete(it.name) }
+        if (folderNameList.size > 0) {
+            mDisposable.add(Completable.fromAction { favoriteDao.deleteByFolderNames(folderNameList) }
                 .subscribeOn(Schedulers.io())
                 .subscribe {
                     if (mLog.isDebugEnabled) {
-                        mLog.debug("DELETE FOLDER : ${it.name}")
+                        mLog.debug("DELETE FAVORITE FOLDER LIST : $folderNameList")
                     }
                 })
         }
 
-//        items.get()?.forEach {
-//            if (it.check.get()) {
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("DELETE ITEM : ${it._id}")
-//                }
-//
-//                mDisposable.add(favoriteDao.delete(it)
-//                    .subscribeOn(Schedulers.io())
-//                    .subscribe {
-//                        if (mLog.isDebugEnabled) {
-//                            mLog.debug("DELETE ID ${it._id}")
-//                        }
-//                    })
-//
-//                mDisposable.add(Completable.fromAction { favoriteDao.delete(it.name) }
-//                    .subscribeOn(Schedulers.io())
-//                    .subscribe {
-//                        if (mLog.isDebugEnabled) {
-//                            mLog.debug("DELETE FOLDER : ${it.name}")
-//                        }
-//                    })
-//            }
-//        }
+        mDisposable.add(favoriteDao.delete(deleteList)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("DELETED FAVORITE ITEMS")
+                }
 
-        // modify fragment 에서는 single 로 call 하고 있으므로
-        // 화면을 갱신 시켜줘야 한다.
-        initItems(mFolderName)
+                // modify fragment 에서는 single 로 call 하고 있으므로
+                // 화면을 갱신 시켜줘야 한다.
+                initItems(mFolderName)
+            })
     }
 }

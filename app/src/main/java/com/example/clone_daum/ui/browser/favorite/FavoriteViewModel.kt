@@ -26,16 +26,16 @@ class FavoriteViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
 
+        // FavoriteFragment
         const val CMD_BRS_OPEN           = "brs-open"
-
         const val CMD_FOLDER_CHOOSE      = "folder-choose"
         const val CMD_FAVORITE_MODIFY    = "favorite-modify"
 
-        // FavoriteFragment + FolderFragment
-        const val CMD_SHOW_FOLDER_DIALOG = "show-folder-dialog"
-
         // FolderFragment
         const val CMD_CHANGE_FOLDER      = "change-folder"
+
+        // FavoriteFragment + FolderFragment
+        const val CMD_SHOW_FOLDER_DIALOG = "show-folder-dialog"
     }
 
     override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
@@ -45,7 +45,7 @@ class FavoriteViewModel @Inject constructor(application: Application
 
     private lateinit var mDisposable: CompositeDisposable
 
-    val itemAnimator          = ObservableField<RecyclerView.ItemAnimator?>()
+    val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
 
     // FolderFragment
     var selectedPosition: Int = 0
@@ -57,42 +57,48 @@ class FavoriteViewModel @Inject constructor(application: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun initShowAll(dp: CompositeDisposable) {
+    fun init(dp: CompositeDisposable) {
         this.mDisposable = dp
 
         initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
-        dp.add(favoriteDao.selectShowAllFlowable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { it ->
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE COUNT : ${it.size}")
-                    it.forEach {
-                        mLog.debug("DATE : ${it._id} : ${it.date}")
-                    }
-                }
-
-                items.set(it)
-            })
     }
 
-    fun initShowFolder(dp: CompositeDisposable) {
-        this.mDisposable = dp
-
-        initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
-        dp.add(favoriteDao.selectShowFolder()
+    fun initItems() {
+        mDisposable.add(favoriteDao.selectShowAllFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FAVORITE COUNT : ${it.size}")
-                    it.forEach {
-                        mLog.debug("DATE : ${it._id} : ${it.date}")
-                    }
                 }
 
                 items.set(it)
-            })
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+            }))
+    }
+
+    fun initItemByFolder() {
+        mDisposable.add(favoriteDao.selectShowFolderFlowable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("FAVORITE BY FOLDER NAME COUNT : ${it.size}")
+                }
+
+                items.set(it)
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+            }))
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +114,7 @@ class FavoriteViewModel @Inject constructor(application: Application
                 if (fromFolderFragment) {
                     reloadFolderItems()
                 } else {
-                    initShowAll(mDisposable)
+                    initItems()
                 }
             }, ::snackbar))
     }
@@ -119,7 +125,9 @@ class FavoriteViewModel @Inject constructor(application: Application
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("HAS FAVORITE FOLDER : $name ($it)")
+                    if (it > 0) {
+                        mLog.debug("HAS FAVORITE FOLDER : $name ($it)")
+                    }
                 }
 
                 callback(it > 0)
@@ -153,7 +161,7 @@ class FavoriteViewModel @Inject constructor(application: Application
             mLog.debug("RELOAD FOLDER LIST")
         }
 
-        mDisposable.add(favoriteDao.selectShowFolder()
+        mDisposable.add(favoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
