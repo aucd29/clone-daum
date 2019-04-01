@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteModifyFragmentBinding
 import com.example.common.BaseDaggerFragment
+import com.example.common.enableAll
 import com.example.common.fadeColorResource
 import com.example.common.popupMenu
 import dagger.Module
@@ -37,7 +38,14 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     }
 
     private fun showPopupMenu() {
-        popupMenu(R.menu.favorite, mBinding.favoriteFolderMenu) { true }
+        val popup = popupMenu(R.menu.favorite, mBinding.favoriteFolderMenu) {
+            when (it.itemId) {
+
+            }
+
+            true
+        }
+        popup.enableAll(mViewModel.enableDelete.get())
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

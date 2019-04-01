@@ -82,7 +82,7 @@ class WeatherViewModel @Inject constructor(application: Application
         visibleProgressFromMain.set(View.GONE)
 
         // 날씨 가져오는 OPEN API 들이 죄다 유료라서 이건 일단 생략
-        weather.set(Weather(R.drawable.ic_android_black_100dp
+        weather.set(Weather(R.drawable.ic_android_black
             , "눈"
             , "1℃"
             , "어제보다 낮음, 체감온도 낮음"
