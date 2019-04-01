@@ -33,7 +33,7 @@
                     android:padding="15dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finishEvent()}"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <TextView
                     android:id="@+id/favorite_modify_title"

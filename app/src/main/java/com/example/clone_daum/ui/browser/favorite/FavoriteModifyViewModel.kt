@@ -2,8 +2,6 @@ package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
 import android.view.View
-import android.widget.CheckBox
-import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
