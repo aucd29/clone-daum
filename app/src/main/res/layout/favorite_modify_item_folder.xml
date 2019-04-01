@@ -24,33 +24,33 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="7dp"
                 android:checked="@={item.check}"
+                android:onCheckedChanged="@{(v, state) -> model.deleteList(state, item)}"
         />
 
         <TextView
                 android:id="@+id/icon"
                 android:layout_width="25dp" android:layout_height="25dp"
-                android:background="@drawable/ic_work_black_24dp"
                 app:layout_constraintStart_toEndOf="@+id/check"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="@{model.firstWord(item.name)}"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:textColor="@android:color/white"
+                android:layout_marginStart="7dp"
                 android:textSize="8sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
+                android:text="@{model.firstWord(item.name)}"
+                android:background="@drawable/ic_work_black_24dp"
         />
 
         <TextView
                 android:id="@+id/text"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_width="0dp" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/drag_area"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="10dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
                 android:text="@{item.name}"
                 tools:text="NAME"
         />
@@ -58,20 +58,20 @@
         <TextView
                 android:id="@+id/drag_area"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@android:color/black"
                 android:textAppearance="@style/solid"
+                android:padding="15dp"
                 android:text="@string/fa_bars"
                 android:textSize="15sp"
-                android:padding="15dp"
         />
 
         <View
                 style="@style/line1dp"
                 android:layout_width="0dp"
-                app:layout_constraintStart_toStartOf="@+id/text"
+                app:layout_constraintStart_toStartOf="@+id/icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
         />

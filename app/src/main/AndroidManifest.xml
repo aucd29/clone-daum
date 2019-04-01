@@ -2,11 +2,13 @@
 <manifest
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        package="com.example.clone_daum">
+        package="com.example.clone_daum"
+        >
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <!-- KAKAO SPEECH -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -24,7 +26,9 @@
             android:theme="@style/SplashTheme"
             android:name=".MainApp"
             android:largeHeap="true"
-            tools:ignore="GoogleAppIndexingWarning">
+            android:hardwareAccelerated="true"
+            tools:ignore="GoogleAppIndexingWarning"
+    >
 
         <activity
                 android:screenOrientation="portrait"

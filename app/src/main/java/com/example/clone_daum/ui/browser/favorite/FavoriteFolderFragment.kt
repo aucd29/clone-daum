@@ -22,34 +22,50 @@ class FavoriteFolderFragment
     @Inject lateinit var viewController: ViewController
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() {
-        val folder = arguments?.getString("folder")
+        arguments?.getString("folder")?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FOLDER NAME : $it")
+            }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FOLDER NAME : $folder")
-        }
-
-        folder?.let {
             mViewModel.initByFolder(it, mDisposable)
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         FavoriteFolderViewModel.apply {
             when (cmd) {
-                CMD_BRS_OPEN -> {
-                    finish()
-                    finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
-
-                    val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-                    if (frgmt is BrowserFragment) {
-                        frgmt.loadUrl(data.toString())
-                    }
-                }
+                CMD_BRS_OPEN        -> showBrowser(data.toString())
+                CMD_FAVORITE_MODIFY -> modifyFavorite()
             }
+        }
+    }
+
+    private fun showBrowser(url: String) {
+        finish()
+        finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
+
+        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
+        if (frgmt is BrowserFragment) {
+            frgmt.loadUrl(url)
+        }
+    }
+
+    private fun modifyFavorite() {
+        arguments?.getString("folder")?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FOLDER NAME : $it")
+            }
+
+            viewController.favoriteModifyFragment()
         }
     }
 

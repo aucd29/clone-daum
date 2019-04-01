@@ -33,24 +33,26 @@ class PopularViewModel @Inject constructor(app: Application)
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     private var mPopularList: PopularSearchedWord? = null
+    private lateinit var mDisposable: CompositeDisposable
 
-    val dp                = CompositeDisposable()
     val visiblePopular    = ObservableInt(View.GONE)
     val chipLayoutManager = ObservableField<ChipsLayoutManager>()
 
-    fun init() {
-        // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
-        initAdapter("search_recycler_popular_item")
-        selectPopularList()
-    }
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MAIN FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
-    fun load(html: String) {
+    fun load(html: String, disposable: CompositeDisposable) {
+        mDisposable = disposable    // main fragment 의 composite disposable
+
         if (mPopularList == null) {
             if (mLog.isDebugEnabled) {
                 mLog.debug("HTML PARSE (POPULAR LIST)")
             }
 
-            dp.add(Observable.just(html)
+            mDisposable.add(Observable.just(html)
                 .observeOn(Schedulers.io())
                 .map(::parsePopular)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -60,8 +62,19 @@ class PopularViewModel @Inject constructor(app: Application)
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SEARCH FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    fun init() {
+        // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
+        initAdapter("search_recycler_popular_item")
+        selectPopularList()
+    }
+
     private fun selectPopularList() {
-        // FIXME live data 로 해서 observe 해야 되나 싶은 ??
         mPopularList?.let {
             val pos = System.currentTimeMillis() % it.items.size
             val chooseItem = it.items.get(pos.toInt()).item
@@ -79,21 +92,6 @@ class PopularViewModel @Inject constructor(app: Application)
             visiblePopular.set(View.VISIBLE)
         }
     }
-
-//<ul class="list_popular #search #search_hit #keyword">
-//<li class="@0">
-//<a href="https://m.search.daum.net/search?w=tot&amp;q=%EC%86%90%EC%84%9D%ED%9D%AC+%EB%AC%B8%EC%9E%90%EA%B3%B5%EA%B0%9C&amp;DA=NPI&amp;rtmaxcoll=NNS" class="link_suggest">손석희 문자공개</a>
-//</li>
-//<li class="@1">
-//<a href="https://m.search.daum.net/search?w=tot&amp;q=%EB%B0%95%EC%A2%85%EC%B2%A0+%ED%8F%AD%ED%96%89+56%EC%96%B5&amp;DA=NPI&amp;rtmaxcoll=NNS" class="link_suggest">박종철 폭행 56억</a>
-//</li>
-//<li class="@2">
-//<a href="https://m.search.daum.net/search?w=tot&amp;q=%EC%84%B8%EC%9D%B4%EC%85%B8%ED%95%AD%EA%B3%B5%EA%B6%8C&amp;DA=NPT" class="link_suggest">세이셸항공권</a>
-//</li>
-//<li class="@3"><a href="https://m.search.daum.net/search?w=tot&amp;q=%EC%B5%9C%EC%88%98%EC%A2%85+%EB%94%B8%EA%B3%B5%EA%B0%9C&amp;DA=NPI&amp;rtmaxcoll=NNS" class="link_suggest">최수종 딸공개</a>
-//</li>
-//<li class="@4"><a href="https://m.search.daum.net/search?w=tot&amp;q=%EC%BD%94%ED%81%90%ED%85%90&amp;DA=NPT" class="link_suggest">코큐텐 추천</a></li>
-//</ul>
 
     private fun parsePopular(html: String): PopularSearchedWord? {
         var data: PopularSearchedWord? = null

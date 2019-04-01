@@ -45,7 +45,9 @@ class SplashViewModel @Inject constructor(val config: Config
             .take(1)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                mLog.error("ERROR: SPLASH TIMEOUT")
+                if (mLog.isInfoEnabled) {
+                    mLog.info("SPLASH TIMEOUT")
+                }
 
                 closeEvent.call()
             })

@@ -10,7 +10,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
@@ -22,20 +21,21 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
 
-        const val CMD_BRS_OPEN = "brs-open"
+        const val CMD_BRS_OPEN        = "brs-open"
+        const val CMD_FAVORITE_MODIFY = "favorite-modify"
     }
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
     override val finishEvent  = SingleLiveEvent<Void>()
 
-    lateinit var dp: CompositeDisposable
+    private lateinit var mDisposable: CompositeDisposable
 
     fun initByFolder(folderName: String, dp: CompositeDisposable) {
-        this.dp = dp
+        mDisposable = dp
 
         // folder 형태의 index 값이 0
         initAdapter(arrayOf("favorite_item_from_folder", "favorite_item_from_folder"))
-        dp.add(favoriteDao.selectByFolderName(folderName)
+        mDisposable.add(favoriteDao.selectByFolderName(folderName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

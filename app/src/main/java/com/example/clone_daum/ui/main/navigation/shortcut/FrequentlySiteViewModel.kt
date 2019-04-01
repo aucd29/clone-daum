@@ -27,13 +27,16 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
         const val DEFAULT_TITLE = "사이트이동"
     }
 
+    private lateinit var mDisposable: CompositeDisposable
+
     val gridCount    = ObservableInt(5)
     val brsOpenEvent = SingleLiveEvent<String>()
 
-    init {
+    fun init(disposable: CompositeDisposable) {
+        mDisposable = disposable
         initAdapter("frequently_item")
 
-        disposable.add(frequentlySiteDao.select().subscribe {
+        mDisposable.add(frequentlySiteDao.select().subscribe {
             // 마지막 아이템에 기본 값을 추가 함
             (it as ArrayList<FrequentlySite>).add(FrequentlySite(
                 title = DEFAULT_TITLE, url = "http://m.daum.net", count = 1))

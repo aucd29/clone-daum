@@ -43,7 +43,7 @@ class RealtimeIssueChildFragment
 
             // main 에서 load 한 데이터를 읽어다가 출력
             mRealtimeIssueViewModel.issueList(it)?.let {
-                mViewModel.initAdapter(it)
+                mViewModel.initRealtimeIssueAdapter(it)
             }
         }
     }
@@ -56,12 +56,14 @@ class RealtimeIssueChildFragment
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data.let {
-                mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
-
-                viewController.browserFragment(it.toString())
-            }
+            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> showBrowser(data.toString())
         }
+    }
+
+    private fun showBrowser(url: String) {
+        mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
+
+        viewController.browserFragment(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

@@ -92,14 +92,14 @@ inline fun Context.displayDensity() = resources.displayMetrics.density
 /**
  * open keyboard
  */
-inline fun Context.showKeyboard(view: View?) {
+inline fun Context.showKeyboard(view: View?, flags: Int = InputMethodManager.SHOW_IMPLICIT) {
     view?.let {
         it.postDelayed({
             it.requestFocus()
             systemService(InputMethodManager::class.java)?.apply {
-                showSoftInput(it, InputMethodManager.SHOW_FORCED)
+                showSoftInput(it, flags) // InputMethodManager.SHOW_FORCED
             }
-        }, 400)
+        }, 200)
     }
 }
 
@@ -187,4 +187,8 @@ inline fun Context.toast(message: String, len: Int = Toast.LENGTH_SHORT) {
  */
 inline fun Context.toast(@StringRes resid: Int, len: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, resid, len).show()
+}
+
+inline fun Context.addShortcut() {
+
 }

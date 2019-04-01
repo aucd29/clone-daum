@@ -23,17 +23,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="7dp"
                 android:checked="@={item.check}"
+                android:onCheckedChanged="@{(v, state) -> model.deleteList(state, item)}"
         />
 
         <TextView
                 android:id="@+id/icon"
-                android:layout_width="30dp" android:layout_height="30dp"
+                android:layout_width="25dp" android:layout_height="25dp"
                 app:layout_constraintStart_toEndOf="@+id/check"
-                android:layout_marginStart="7dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@android:color/white"
-                android:textSize="9sp"
+                android:layout_marginStart="7dp"
+                android:textSize="8sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
                 app:bindFrequentlySiteUrl="@{item.url}"
@@ -42,11 +43,13 @@
 
         <TextView
                 android:id="@+id/text"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_width="0dp" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/drag_area"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="7dp"
+                android:layout_marginEnd="7dp"
                 android:text="@{item.name}"
                 tools:text="NAME"
         />
@@ -54,8 +57,8 @@
         <TextView
                 android:id="@+id/drag_area"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@android:color/black"
                 android:textAppearance="@style/solid"
@@ -67,7 +70,7 @@
         <View
                 style="@style/line1dp"
                 android:layout_width="0dp"
-                app:layout_constraintStart_toStartOf="@+id/text"
+                app:layout_constraintStart_toStartOf="@+id/icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
         />

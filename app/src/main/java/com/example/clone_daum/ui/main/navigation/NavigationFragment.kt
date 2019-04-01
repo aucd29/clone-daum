@@ -65,18 +65,24 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
         }
     }
 
-    override fun onBackPressed() = mBinding.run {
-        naviContainer.closeDrawer(GravityCompat.END)
-
-        true
-    }
-
     override fun onDestroyView() {
         mBinding.apply {
             naviContainer.removeDrawerListener(this@NavigationFragment)
         }
 
         super.onDestroyView()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+    
+    override fun onBackPressed() = mBinding.run {
+        naviContainer.closeDrawer(GravityCompat.END)
+
+        true
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

@@ -187,12 +187,15 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             , anim   = FragmentAnim.RIGHT))
     }
 
-    fun favoriteModifyFragment() {
+    fun favoriteModifyFragment(folder: String? = null) {
         if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE MODIFY FRAGMENT")
+            mLog.info("FAVORITE MODIFY FRAGMENT ($folder)")
         }
 
-        manager.show(FragmentParams(CONTAINER, FavoriteModifyFragment::class.java))
+        manager.show(FragmentParams(CONTAINER, FavoriteModifyFragment::class.java
+            , bundle = Bundle().apply {
+                putString("folder", folder)
+            }))
     }
 
     fun favoriteFolderFragment(folder: String) {
@@ -219,12 +222,15 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             }))
     }
 
-    fun folderFragment(child: FragmentManager) {
+    fun folderFragment(child: FragmentManager, position: Int) {
         if (mLog.isInfoEnabled) {
             mLog.info("FOLDER FRAGMENT")
         }
 
         child.show(FragmentParams(FAVORITE_CONTAINER, FolderFragment::class.java
-            , anim = FragmentAnim.RIGHT))
+            , anim = FragmentAnim.RIGHT
+            , bundle = Bundle().apply {
+                putInt("position", position)
+            }))
     }
 }

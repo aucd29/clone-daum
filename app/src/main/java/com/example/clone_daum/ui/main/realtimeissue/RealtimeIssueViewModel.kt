@@ -45,9 +45,8 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     private var mRealtimeCount = 0
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
+    val disposableInterval = CompositeDisposable()
 
-
-    val dp              = CompositeDisposable()
     val tabAdapter      = ObservableField<RealtimeIssueTabAdapter>()
     val viewpager       = ObservableField<ViewPager>()
     val currentIssue    = ObservableField<RealtimeIssue>()
@@ -62,7 +61,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val viewPagerLoaded = ObservableField<(() -> Unit)?>()
 
     fun load(html: String) {
-        dp.add(Observable.just(html)
+        disposableInterval.add(Observable.just(html)
             .observeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
@@ -138,7 +137,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
             currentIssue.set(issue)
 
-            dp.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
+            disposableInterval.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
                 val index = mRealtimeCount % list.size
                 val issue = list.get(index)
 
@@ -157,7 +156,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             mLog.debug("STOP REALTIME ISSUE")
         }
 
-        dp.clear()
+        disposableInterval.clear()
     }
 
     fun titleConvert(issue: RealtimeIssue?): String {

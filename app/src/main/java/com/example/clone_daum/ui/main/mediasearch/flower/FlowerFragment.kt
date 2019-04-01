@@ -24,27 +24,25 @@ class FlowerFragment: BaseDaggerFragment<FlowerFragmentBinding, FlowerViewModel>
     private var mFirstLoad = true
 
     override fun initViewBinding() {
-        mBinding.tensorflow.mResultCallback = {
-            it?.let {
-                if (mLog.isDebugEnabled) {
-                    if (it.size > 0) {
-                        mLog.debug("TENSORFLOW : ${it.size}")
-
-                        it.forEach {
-                            mLog.debug(it.toString())
-                        }
-
-                        mLog.debug("====")
-                    }
-                }
-
+        mBinding.tensorflow.mResultCallback = { it?.let {
+            if (mLog.isDebugEnabled) {
                 if (it.size > 0) {
-                    it.get(0).title?.let {
-                        mViewModel.message.set(it)
+                    mLog.debug("TENSORFLOW : ${it.size}")
+
+                    it.forEach {
+                        mLog.debug(it.toString())
                     }
+
+                    mLog.debug("====")
                 }
             }
-        }
+
+            if (it.size > 0) {
+                it.get(0).title?.let {
+                    mViewModel.message.set(it)
+                }
+            }
+        } }
     }
 
     override fun initViewModelEvents() {

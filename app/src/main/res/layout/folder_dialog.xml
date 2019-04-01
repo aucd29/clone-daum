@@ -22,13 +22,27 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:inputType="text">
+            <requestFocus />
+        </EditText>
+
+        <TextView
+                android:id="@+id/has_folder_name"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/folder_name"
+                app:layout_constraintTop_toBottomOf="@+id/folder_name"
+                android:visibility="invisible"
+                android:text="@string/folder_exist_folder_name"
+                android:textColor="@color/colorAccent"
         />
 
         <Button
                 android:id="@+id/cancel"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/folder_name"
+                app:layout_constraintTop_toBottomOf="@+id/has_folder_name"
                 app:layout_constraintEnd_toStartOf="@+id/ok"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginTop="10dp"
@@ -41,7 +55,7 @@
                 android:id="@+id/ok"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/folder_name"
+                app:layout_constraintTop_toBottomOf="@+id/has_folder_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginEnd="20dp"

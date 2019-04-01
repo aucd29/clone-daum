@@ -58,7 +58,7 @@
                     android:text="@string/fa_folder"
                     android:textColor="@android:color/black"
                     android:padding="@dimen/brs_back_pad"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FOLDER_DIALOG_SHOW)}"
+                    android:onClick="@{() -> model.commandEvent(model.CMD_SHOW_FOLDER_DIALOG)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -82,6 +82,7 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:bindItems="@{model.items}"
                 app:bindAdapter="@{model.adapter}"
+                app:bindSmoothToPosition="@{model.smoothToPosition}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

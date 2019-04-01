@@ -24,7 +24,7 @@ class RealtimeIssueChildViewModel @Inject constructor(app: Application
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
-    fun initAdapter(list: List<RealtimeIssue>) {
+    fun initRealtimeIssueAdapter(list: List<RealtimeIssue>) {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT REALTIME RECYCLER ADAPTER")
         }
@@ -38,7 +38,7 @@ class RealtimeIssueChildViewModel @Inject constructor(app: Application
             when (type) {
                 "+"  -> "<font color='red'>↑</font> $value"
                 "-"  -> "<font color='blue'>↓</font> $value"
-                else -> "<font color='red'>NEW</font> $value"
+                else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
     }

@@ -16,7 +16,6 @@ import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.example.common.di.module.injectOfActivity
 import com.google.android.material.tabs.TabLayout
-import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
@@ -36,11 +35,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var disposable: CompositeDisposable
 
 //    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
 //    private lateinit var mWeatherViewModel: WeatherViewModel
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
+
+    // SearchFragment 와 공유
     private lateinit var mPopularViewModel: PopularViewModel
 
     private var mCurrentTabPos: Int = 0
@@ -55,14 +55,13 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     override fun bindViewModel() {
         super.bindViewModel()
 
-//        initWeatherViewModel()//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
         initRealtimeIssueViewModel()
         initPopularViewModel()
 
-        disposable.add(preConfig.daumMain()
+        mDisposable.add(preConfig.daumMain()
             .subscribe({ html ->
                 mRealtimeIssueViewModel.load(html)
-                mPopularViewModel.load(html)
+                mPopularViewModel.load(html, mDisposable)
             }, { e ->
                 if (mLog.isDebugEnabled) {
                     e.printStackTrace()
@@ -71,12 +70,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 mLog.error("ERROR: ${e.message}")
             }))
     }
-
-//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
-//    private fun initWeatherViewModel() {
-//        mWeatherViewModel     = mViewModelFactory.injectOfActivity(this, WeatherViewModel::class.java)
-//        mBinding.weatherModel = mWeatherViewModel
-//    }
 
     private fun initRealtimeIssueViewModel() {
         mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
@@ -236,6 +229,30 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
+    override fun onPause() {
+        mRealtimeIssueViewModel.stopRealtimeIssue()
+
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        mRealtimeIssueViewModel.startRealtimeIssue()
+    }
+
+    override fun onDestroy() {
+        mRealtimeIssueViewModel.disposableInterval.dispose()
+
+        mBinding.apply {
+            tab.removeOnTabSelectedListener(this@MainFragment)
+            viewpager.adapter = null
+            realtimeIssueTab.removeOnTabSelectedListener(mRealtimeTabSelectedListener)
+        }
+
+        super.onDestroy()
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ICommandEventAware
@@ -243,45 +260,33 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND EVENT : $cmd")
+        }
+
         MainViewModel.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("COMMAND EVENT : $cmd")
-            }
-
             // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
-            viewController.apply {
-
-                // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
-                if (mViewModel.appbarOffsetLive.value == 0) {
-                    when (cmd) {
-                        CMD_SEARCH_FRAMGNET         -> searchFragment()
-                        CMD_REALTIME_ISSUE_FRAGMENT -> internalRealtimeFragment()
-                        CMD_NAVIGATION_FRAGMENT     -> navigationFragment()
-                        CMD_BRS_OPEN                -> browserFragment(data.toString())
-                        CMD_MEDIA_SEARCH_FRAGMENT   -> {
-                            if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-                                internalRealtimeFragment()
-                                mBinding.realtimeIssueViewpager.postDelayed(::mediaSearchFragment, RealtimeIssueViewModel.ANIM_DURATION)
-                            } else {
-                                mediaSearchFragment()
-                            }
-                        }
-                    }
+            // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
+            if (mViewModel.appbarOffsetLive.value == 0) {
+                when (cmd) {
+                    CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
+                    CMD_REALTIME_ISSUE_FRAGMENT -> showRealtimeIssue()
+                    CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
+                    CMD_BRS_OPEN                -> viewController.browserFragment(data.toString())
+                    CMD_MEDIA_SEARCH_FRAGMENT   -> showMediaSearch()
                 }
             }
         }
 
         RealtimeIssueViewModel.apply {
             when (cmd) {
-                CMD_LOADED_ISSUE -> mRealtimeIssueViewModel.apply {
-                    tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
-                }
-                CMD_CLOSE_ISSUE  -> internalRealtimeFragment()
+                CMD_LOADED_ISSUE -> changeRealtimeIssueTab()
+                CMD_CLOSE_ISSUE  -> showRealtimeIssue()
             }
         }
     }
 
-    private fun internalRealtimeFragment() {
+    private fun showRealtimeIssue() {
         // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
 
         val lp = mBinding.realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
@@ -323,32 +328,31 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
-    override fun onPause() {
-        mRealtimeIssueViewModel.stopRealtimeIssue()
-
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        mRealtimeIssueViewModel.startRealtimeIssue()
-    }
-
-    override fun onDestroy() {
-        mRealtimeIssueViewModel.dp.dispose()
-        mBinding.apply {
-            tab.removeOnTabSelectedListener(this@MainFragment)
-            viewpager.adapter = null
-            realtimeIssueTab.removeOnTabSelectedListener(mRealtimeTabSelectedListener)
+    private fun changeRealtimeIssueTab() {
+        mRealtimeIssueViewModel.apply {
+            tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
         }
-
-        super.onDestroy()
     }
 
+    private fun showMediaSearch() {
+        if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
+            showRealtimeIssue()
+            mBinding.realtimeIssueViewpager.postDelayed({ viewController.mediaSearchFragment() }
+                , RealtimeIssueViewModel.ANIM_DURATION)
+        } else {
+            viewController.mediaSearchFragment()
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+    
     override fun onBackPressed(): Boolean {
         if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-            internalRealtimeFragment()
+            showRealtimeIssue()
             return true
         }
 
@@ -362,9 +366,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onTabReselected(tab: TabLayout.Tab) { }
-    override fun onTabUnselected(tab: TabLayout.Tab) {
+    override fun onTabUnselected(tab: TabLayout.Tab) { }
 
-    }
     override fun onTabSelected(tab: TabLayout.Tab) {
         if (mLog.isDebugEnabled) {
             mLog.debug("TAB SELECTED ${tab.position}")
@@ -374,7 +377,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         mViewModel.currentTabPositionLive.value = tab.position
     }
 
-    fun customRealtimeIssueTabText(pos: Int) {
+    private fun customRealtimeIssueTabText(pos: Int) {
         var i = 0
         mBinding.realtimeIssueTab.tabs.forEach {
             val tv = (it?.customView as TextView)

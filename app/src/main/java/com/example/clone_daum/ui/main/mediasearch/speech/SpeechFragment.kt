@@ -52,7 +52,8 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         initClient()
     }
 
-    override fun initViewModelEvents() { }
+    override fun initViewModelEvents() {
+    }
 
     override fun onDestroyView() {
         keepScreen(false)
@@ -61,12 +62,6 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         resetClient()
 
         super.onDestroyView()
-    }
-
-    override fun onBackPressed(): Boolean {
-        finish()
-
-        return true
     }
 
     override fun onResume() {
@@ -79,6 +74,18 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         stopRecording()
 
         super.onPause()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        finish()
+
+        return true
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

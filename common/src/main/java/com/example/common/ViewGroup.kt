@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 
 /**
@@ -63,6 +64,21 @@ inline fun View.layoutWidth(width: Float) {
 
 inline fun TextView.gravityCenter() {
     gravity = Gravity.CENTER
+}
+
+inline fun View.showKeyboard(flags: Int = InputMethodManager.SHOW_IMPLICIT) {
+    postDelayed({
+        requestFocus()
+        context.systemService(InputMethodManager::class.java)?.apply {
+            showSoftInput(this@showKeyboard, flags) // InputMethodManager.SHOW_FORCED
+        }
+    }, 200)
+}
+
+inline fun View.hideKeyboard() {
+    context.systemService(InputMethodManager::class.java)?.apply {
+        hideSoftInputFromWindow(this@hideKeyboard.windowToken, 0)
+    }
 }
 
 inline fun View.dpToPx(v: Float) = v * context.displayDensity()

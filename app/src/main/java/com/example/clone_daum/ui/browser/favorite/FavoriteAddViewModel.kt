@@ -32,7 +32,6 @@ class FavoriteAddViewModel @Inject constructor(app: Application
         const val CMD_ADDRESS_RESET = "address-reset"
 
         const val CMD_FOLDER_DETAIL = "folder-detail"
-        const val CMD_FOLDER_ADD    = "folder-add"
         const val CMD_FAVORITE_ADD  = "favorite-add"
     }
 
@@ -41,63 +40,82 @@ class FavoriteAddViewModel @Inject constructor(app: Application
     override val dialogEvent   = SingleLiveEvent<DialogParam>()
     override val snackbarEvent = SingleLiveEvent<String>()
 
-    lateinit var dp: CompositeDisposable
+    private lateinit var mDisposable: CompositeDisposable
 
     val name      = ObservableField<String>()
     val url       = ObservableField<String>()
     val folder    = ObservableField<String>(string(R.string.folder_favorite))
     val enabledOk = ObservableBoolean(true)
 
+    fun init(disposable: CompositeDisposable) {
+        mDisposable = disposable
+    }
+
+    fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("TEXT CHANGED")
+        }
+
+        // 데이터 변화 시 ok 버튼을 활성화 또는 비활화 시켜야 함
+        enabledOk.set(!name.get().isNullOrEmpty() && !url.get().isNullOrEmpty())
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun commandEvent(cmd: String, data: Any) {
         when (cmd) {
             CMD_NAME_RESET    -> name.set("")
             CMD_ADDRESS_RESET -> url.set("")
-            CMD_FAVORITE_ADD  -> {
-                val name   = name.get()!!
-                val url    = url.get()!!
-                val folder = folder.get()!!
-
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ADD FAVORITE\n$name\n$url\n$folder")
-                }
-
-                dp.add(mFavoriteDao.hasUrl(url)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe ({
-                        if (it > 0) {
-                            if (mLog.isInfoEnabled) {
-                                mLog.info("EXIST FAVORITE $url")
-                            }
-
-                            snackbar(string(R.string.brs_exist_fav_url))
-                        } else {
-                            insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
-                        }
-                    }, {
-                        if (mLog.isDebugEnabled) {
-                            it.printStackTrace()
-                        }
-
-                        mLog.error("ERROR: ${it.message}")
-                        snackbar(it.message)
-                    })
-                )
-            }
-            else -> super.commandEvent(cmd, data)
+            CMD_FAVORITE_ADD  -> favoriteAdd()
+            else              -> super.commandEvent(cmd, data)
         }
     }
 
+    private fun favoriteAdd() {
+        val name   = name.get()!!
+        val url    = url.get()!!
+        val folder = folder.get()!!
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ADD FAVORITE\n$name\n$url\n$folder")
+        }
+
+        mDisposable.add(mFavoriteDao.hasUrl(url)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({
+                if (it > 0) {
+                    if (mLog.isInfoEnabled) {
+                        mLog.info("EXIST FAVORITE $url")
+                    }
+
+                    snackbar(string(R.string.brs_exist_fav_url))
+                } else {
+                    insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
+                }
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+                snackbar(it.message)
+            })
+        )
+    }
+
     private fun insertFavorite(name: String, url: String, folder: String) {
-        dp.add(mFavoriteDao.insert(MyFavorite(name, url, folder))
+        mDisposable.add(mFavoriteDao.insert(MyFavorite(name, url, folder))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("ADDED FAVORITE URL : $url")
                 }
-
-                snackbar(string(R.string.brs_fav_url_ok))
 
                 finishEvent()
             }, {
@@ -108,14 +126,5 @@ class FavoriteAddViewModel @Inject constructor(app: Application
                 mLog.error("ERROR: ${it.message}")
                 snackbar(it)
             }))
-    }
-
-    fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("TEXT CHANGED")
-        }
-
-        // 데이터 변화 시 ok 버튼을 활성화 또는 비활화 시켜야 함
-        enabledOk.set(!name.get().isNullOrEmpty() && !url.get().isNullOrEmpty())
     }
 }

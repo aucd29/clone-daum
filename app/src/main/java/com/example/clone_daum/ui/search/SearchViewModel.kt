@@ -42,7 +42,7 @@ class SearchViewModel @Inject constructor(app: Application
     @Inject lateinit var daum: DaumSuggestService
     @Inject lateinit var searchDao: SearchHistoryDao
 
-    var dp = CompositeDisposable()
+    private lateinit var mDisposable: CompositeDisposable
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
@@ -62,7 +62,9 @@ class SearchViewModel @Inject constructor(app: Application
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
     val itemAnimator             = ObservableField<RecyclerView.ItemAnimator?>()
 
-    fun init() {
+    fun init(disposable: CompositeDisposable) {
+        mDisposable = disposable
+
         editorAction.set {
             eventSearch(it)
             true
@@ -73,7 +75,7 @@ class SearchViewModel @Inject constructor(app: Application
     }
 
     fun reloadHistoryData() {
-        dp.add(searchDao.search()
+        mDisposable.add(searchDao.search()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -84,7 +86,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun eventSearch(keyword: String?) {
         keyword?.let {
-            dp.add(searchDao.insert(SearchHistory(
+            mDisposable.add(searchDao.insert(SearchHistory(
                 keyword = it,
                 date    = System.currentTimeMillis()))
                 .subscribeOn(Schedulers.io())
@@ -103,8 +105,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun eventToggleRecentSearch() {
         if (prefSearchRecycler) {
-            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search
-                , listener = { res, _ ->
+            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search, listener = { res, _ ->
                     if (res) toggleSearchRecyclerLayout()
                 })
         } else {
@@ -141,7 +142,7 @@ class SearchViewModel @Inject constructor(app: Application
     }
 
     fun eventDeleteHistory(item: SearchHistory) {
-        dp.add(searchDao.delete(item)
+        mDisposable.add(searchDao.delete(item)
             .subscribeOn(Schedulers.io())
             .subscribe ({
                 if (mLog.isDebugEnabled) {
@@ -153,7 +154,7 @@ class SearchViewModel @Inject constructor(app: Application
     fun eventDeleteAllHistory() {
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
             , listener = { res, _ -> if (res) {
-                dp.add(Completable.fromAction { searchDao.deleteAll() }
+                mDisposable.add(Completable.fromAction { searchDao.deleteAll() }
                     .subscribeOn(Schedulers.io())
                     .subscribe {
                         if (mLog.isDebugEnabled) {
@@ -166,7 +167,7 @@ class SearchViewModel @Inject constructor(app: Application
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
 
     fun suggest(keyword: String) {
-        dp.add(daum.suggest(keyword)
+        mDisposable.add(daum.suggest(keyword)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
@@ -203,7 +204,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    //
+    // ISnackbarAware
     //
     ////////////////////////////////////////////////////////////////////////////////////
 

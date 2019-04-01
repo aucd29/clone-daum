@@ -36,13 +36,11 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
     private var mPauseAnimator: Animator? = null
 
-
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.apply {
             globalLayoutListener {
                 translationY = height.toFloat() * -1
-                mBinding.mediaSearchButtonLayout.translationY =
-                        mBinding.mediaSearchButtonLayout.height.toFloat() * -1
+                mediaSearchButtonLayout.translationY = mediaSearchButtonLayout.height.toFloat() * -1
 
                 startAnimation()
 
@@ -69,16 +67,6 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
     }
 
     override fun initViewModelEvents() {
-
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
-        }
-
-        endAnimation()
-        return true
     }
 
     private fun startAnimation() {
@@ -124,6 +112,21 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             dimmingBgAlpha.set(dimmingBgAlphaAnim)
             containerTransY.set(containerTransYAnim)
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BACK PRESSED")
+        }
+
+        endAnimation()
+        return true
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

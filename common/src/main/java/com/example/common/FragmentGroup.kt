@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
@@ -54,19 +55,27 @@ inline fun Fragment.observeDialog(event: SingleLiveEvent<DialogParam>, disposabl
  * snackbar 호출
  */
 inline fun Fragment.snackbar(view: View, msg: String, length: Int = com.google.android.material.snackbar.Snackbar.LENGTH_SHORT) =
-    activity?.snackbar(view, msg, length)
+    requireActivity().snackbar(view, msg, length)
 
 /**
  * snackbar 호출
  */
 inline fun Fragment.snackbar(view: View, @StringRes resid: Int, length: Int = com.google.android.material.snackbar.Snackbar.LENGTH_SHORT) =
-    activity?.snackbar(view, resid, length)
+    requireActivity().snackbar(view, resid, length)
 
 /**
  * dialog 을 띄운다.
  */
 inline fun Fragment.dialog(params: DialogParam, disposable: CompositeDisposable? = null) {
-    activity?.dialog(params, disposable)
+    requireActivity().dialog(params, disposable)
+}
+
+inline fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
+    requireActivity().toast(msg, length)
+}
+
+inline fun Fragment.toast(@StringRes resid: Int, length:Int = Toast.LENGTH_SHORT) {
+    requireActivity().toast(resid, length)
 }
 
 /**

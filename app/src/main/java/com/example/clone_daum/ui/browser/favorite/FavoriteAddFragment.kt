@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.databinding.FavoriteAddFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
+import com.example.common.hideKeyboard
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -18,15 +19,14 @@ class FavoriteAddFragment
 
     @Inject lateinit var viewController: ViewController
 
-    override fun initViewBinding() {
-        mBinding.apply {
+    private var mFolderPosition = 0
 
-        }
+    override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
         arguments?.let { mViewModel.run {
-            dp = mDisposable
+            init(mDisposable)
 
             // ui 에서 name 으로 되어 있어 title -> name 으로 변경
             name.set(it.getString("title"))
@@ -34,12 +34,25 @@ class FavoriteAddFragment
         } }
     }
 
+    override fun onDestroyView() {
+        mBinding.root.hideKeyboard()
+
+        super.onDestroyView()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FOLDER FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     fun changeFolderName(pos: Int, name: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("CHANGE FOLDER $name ($pos)")
         }
 
         mViewModel.folder.set(name)
+        mFolderPosition = pos
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -50,12 +63,7 @@ class FavoriteAddFragment
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteAddViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager)
-            CMD_FOLDER_ADD    -> {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FOLDER ADD : $data")
-                }
-            }
+            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mFolderPosition)
         }
     }
 

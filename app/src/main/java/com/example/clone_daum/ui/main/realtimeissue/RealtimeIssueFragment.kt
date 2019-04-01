@@ -27,6 +27,33 @@ import javax.inject.Inject
  * 디자인이 변경됨 =_ = [aucd29][2019. 2. 22.]
  */
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+// RealtimeIssueTabAdapter
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+class RealtimeIssueTabAdapter constructor(fm: FragmentManager
+    , val mRealtimeIssue: List<Pair<String, List<RealtimeIssue>>>
+) : FragmentStatePagerAdapter(fm) {
+
+    override fun getItem(position: Int): Fragment {
+        val frgmt  = RealtimeIssueChildFragment()
+        val bundle = Bundle()
+        bundle.putInt("position", position)
+
+        frgmt.arguments = bundle
+
+        return frgmt
+    }
+
+    // 이슈 검색어 단어는 삭제하고 타이틀을 생성한다.
+    override fun getPageTitle(position: Int) =
+        mRealtimeIssue.get(position).first
+
+    override fun getCount() = mRealtimeIssue.size
+}
+
 //class RealtimeIssueFragment
 //    : BaseDaggerFragment<RealtimeIssueFragmentBinding, RealtimeIssueViewModel>()
 //    , OnBackPressedListener {
@@ -162,30 +189,3 @@ import javax.inject.Inject
 //        abstract fun contributeInjector(): RealtimeIssueFragment
 //    }
 //}
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// RealtimeIssueTabAdapter
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-class RealtimeIssueTabAdapter constructor(fm: FragmentManager,
-    val mRealtimeIssue: List<Pair<String, List<RealtimeIssue>>>)
-    : FragmentStatePagerAdapter(fm) {
-
-    override fun getItem(position: Int): Fragment {
-        val frgmt  = RealtimeIssueChildFragment()
-        val bundle = Bundle()
-        bundle.putInt("position", position)
-
-        frgmt.arguments = bundle
-
-        return frgmt
-    }
-
-    // 이슈 검색어 단어는 삭제하고 타이틀을 생성한다.
-    override fun getPageTitle(position: Int) =
-        mRealtimeIssue.get(position).first
-
-    override fun getCount() = mRealtimeIssue.size
-}

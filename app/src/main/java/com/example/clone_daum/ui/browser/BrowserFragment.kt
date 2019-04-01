@@ -3,9 +3,8 @@ package com.example.clone_daum.ui.browser
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.view.MotionEvent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
@@ -15,7 +14,6 @@ import com.example.common.*
 import com.example.common.bindingadapter.AnimParams
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
-import kotlinx.android.synthetic.main.main_webview_fragment.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -33,9 +31,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
+    private val webview: WebView
+        get() = mBinding.brsWebview
+
     private var mUrl: String? = null
     private var mScrollListener: () -> Unit = {
-        if (mBinding.brsWebview.scrollY > config.SCREEN.y) {
+        if (webview.scrollY > config.SCREEN.y) {
             if (mBinding.brsMoveTop.alpha == 0f) {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("SHOW BUTTON FOR MOVE TOP")
@@ -64,7 +65,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         startAnimation()
 
         mViewModel.apply {
-            brsWebview.defaultSetting(WebViewSettingParams(
+            webview.defaultSetting(WebViewSettingParams(
                 progress = {
                     if (mLog.isTraceEnabled()) {
                         mLog.trace("BRS PROGRESS $it")
@@ -74,7 +75,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }, receivedError = {
                     mLog.error("ERROR: $it")
 
-                    it?.let { snackbar(brsWebview, it, Snackbar.LENGTH_LONG)?.show() }
+                    it?.let { snackbar(webview, it, Snackbar.LENGTH_LONG)?.show() }
                 }, sslError = {
                     mLog.error("ERROR: SSL ")
 
@@ -101,10 +102,8 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             ))
         }
 
-        brsWebview.apply {
-            loadUrl(mUrl)
-            viewTreeObserver.addOnScrollChangedListener(mScrollListener)
-        }
+        loadUrl(mUrl!!)
+        webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
     }
 
     override fun initViewModelEvents() = mViewModel.run {
@@ -112,6 +111,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             return@run
         }
 
+        init(mDisposable)
         applyUrl(mUrl!!)
 
         // 임시 코드 추후 db 에서 얻어오도록 해야함
@@ -120,102 +120,22 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ICommandEventAware
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    override fun onCommandEvent(cmd: String, data: Any) {
-        BrowserViewModel.apply {
-            when (cmd) {
-                CMD_HOME,
-                CMD_BACK             -> onBackPressed()
-                CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment { cmd ->
-                    when (cmd) {
-                        "즐겨찾기목록" -> viewController.favoriteFragment()
-                        "즐겨찾기추가" -> {
-                            // https://stackoverflow.com/questions/8193239/how-to-get-loaded-web-page-title-in-android-webview
-                            val title = mBinding.brsWebview.title
-                            val url   = mBinding.brsWebview.url
-
-                            viewController.favoriteAddFragment(title, url)
-                        }
-                        "방문기록" -> {
-
-                        }
-                        "URL 복사" -> mUrl?.let {
-                            context?.toast(R.string.brs_copied_url)
-                            requireContext().clipboard(it)
-                        }
-                        "기타 브라우저" -> {
-                            confirm(R.string.brs_using_base_brs, R.string.common_notify,
-                                listener = { res, dlg -> if (res) showDefaultBrowser() })
-                        }
-                        "화면 내 검색" -> {
-                            // https://code.i-harness.com/en/q/b5bb99
-                        }
-                        "화면 캡쳐" -> {
-
-                        }
-                        "글자 크기" -> {
-
-                        }
-                        "홈 화면에 추가" -> {
-
-                        }
-                        "전체화면 보기" -> internalFullscreen(true)
-                        "앱설정" -> {
-
-                        }
-                    }
-                }
-                CMD_SHARE_EVENT      -> shareLink(data.toString())
-                CMD_GOTO_TOP         -> mBinding.brsWebview.scrollTo(0, 0)
-                CMD_NORMALSCREEN     -> internalFullscreen(false)
-                CMD_RELOAD           -> mBinding.brsWebview.reload()
-            }
-        }
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
-        }
-
-        mBinding.apply {
-            if (brsWebview.canGoBack()) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("BRS BACK")
-                }
-
-                brsWebview.goBack()
-            } else {
-                endAnimation()
-                finish()
-            }
-        }
-
-        return true
-    }
-
     override fun onPause() {
         super.onPause()
 
-        mBinding.brsWebview.pause()
+        webview.pause()
     }
 
     override fun onResume() {
-        mBinding.brsWebview.resume()
+        webview.resume()
 
-        activity?.let { internalFullscreen(it.isFullscreen()) }
+        activity?.let { fullscreen(it.isFullscreen()) }
 
         super.onResume()
     }
 
     override fun onDestroyView() {
-        mBinding.brsWebview.apply {
+        webview.apply {
             free()
             viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
         }
@@ -233,6 +153,82 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BACK PRESSED")
+        }
+
+        mBinding.apply {
+            if (webview.canGoBack()) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("BRS BACK")
+                }
+
+                webview.goBack()
+            } else {
+                endAnimation()
+                finish()
+            }
+        }
+
+        return true
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PUBLIC METHODS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    fun loadUrl(url: String) {
+        webview.loadUrl(url)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onCommandEvent(cmd: String, data: Any) {
+        BrowserViewModel.apply {
+            when (cmd) {
+                CMD_HOME,
+                CMD_BACK             -> onBackPressed()
+                CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
+                CMD_SUBMENU_FRAGMENT -> subMenu()
+                CMD_SHARE_EVENT      -> shareLink(data.toString())
+                CMD_GOTO_TOP         -> webview.scrollTo(0, 0)
+                CMD_NORMALSCREEN     -> fullscreen(false)
+                CMD_RELOAD           -> webview.reload()
+            }
+        }
+    }
+
+    private fun subMenu() {
+        viewController.browserSubFragment { cmd ->
+            when (cmd) {
+                "즐겨찾기목록"   -> viewController.favoriteFragment()
+                "즐겨찾기추가"   -> addFavorite()
+                "방문기록"      -> urlHistory()
+                "URL 복사"     -> copyUrl()
+                "기타 브라우저"  -> showSystemBrowser()
+                "화면 내 검색"  -> searchWithInScreen()
+                "화면 캡쳐"     -> capture()
+                "글자 크기"     -> resizeText()
+                "홈 화면에 추가" -> addIconFromLauncher()
+                "전체화면 보기"  -> fullscreen(true)
+                "앱설정"       -> appSetting()
+            }
+        }
+    }
+
     private fun shareLink(url: String) {
         val message = string(R.string.brs_intent_app_for_sharing)
 
@@ -243,14 +239,60 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }, message))
     }
 
-    private fun showDefaultBrowser() {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            setData(Uri.parse(mUrl))
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // browserSubFragment
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    private fun addFavorite() {
+        // https://stackoverflow.com/questions/8193239/how-to-get-loaded-web-page-title-in-android-webview
+        val title = webview.title
+        val url   = webview.url
+
+        viewController.favoriteAddFragment(title, url)
+    }
+
+    private fun urlHistory() {
+
+    }
+
+    private fun copyUrl() {
+        context?.toast(R.string.brs_copied_url)
+
+        mUrl?.let {
+            requireContext().clipboard(it)
+        }
+    }
+
+    private fun showSystemBrowser() {
+        confirm(R.string.brs_using_base_brs, R.string.common_notify, listener = { res, dlg ->
+            if (res) {
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    setData(Uri.parse(mUrl))
+                })
+            }
         })
     }
 
-    private fun internalFullscreen(fullscreen: Boolean) {
+    private fun searchWithInScreen() {
+        // https://code.i-harness.com/en/q/b5bb99
+    }
+
+    private fun capture() {
+
+    }
+
+    private fun resizeText() {
+
+    }
+
+    private fun addIconFromLauncher() {
+
+    }
+
+    private fun fullscreen(fullscreen: Boolean) {
         activity?.apply {
             fullscreen(fullscreen)
             mViewModel.isFullscreen.set(fullscreen)
@@ -270,8 +312,8 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
     }
 
-    fun loadUrl(url: String) {
-        mBinding.brsWebview.loadUrl(url)
+    private fun appSetting() {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

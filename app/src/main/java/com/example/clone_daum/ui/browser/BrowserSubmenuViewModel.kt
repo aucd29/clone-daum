@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 class BrowserSubmenuViewModel @Inject constructor(application: Application
     , config: PreloadConfig
-) : RecyclerViewModel<BrowserSubMenu>(application), IFinishFragmentAware
-    , ICommandEventAware {
+) : RecyclerViewModel<BrowserSubMenu>(application), IFinishFragmentAware, ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)
 

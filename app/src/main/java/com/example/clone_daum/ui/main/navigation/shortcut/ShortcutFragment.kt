@@ -36,8 +36,8 @@ class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutView
 
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
-        observe(brsSitemapEvent) {
+    override fun initViewModelEvents() {
+        observe(mViewModel.brsSitemapEvent) {
             viewController.browserFragment(it)
         }
 
@@ -45,6 +45,7 @@ class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutView
             viewController.browserFragment(it)
         }
 
+        mFrequentlySiteModel.init(mDisposable)
         observe(mFrequentlySiteModel.brsOpenEvent) {
             viewController.browserFragment(it)
         }

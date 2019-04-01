@@ -25,34 +25,30 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     private lateinit var mPopularViewModel: PopularViewModel
 
-
     override fun bindViewModel() {
         super.bindViewModel()
-
-        initPopularViewModel()
-    }
-
-    private fun initPopularViewModel() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INJECT POPULAR VIEW MODEL")
-        }
 
         mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
         mBinding.popularmodel = mPopularViewModel
     }
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init()
+        mViewModel.init(mDisposable)
         mPopularViewModel.apply {
             init()
             chipLayoutManager.set(layoutManager)
 
             observe(commandEvent) { onCommandEvent(it.first, it.second) }
         }
+    }
+
+    override fun onDestroyView() {
+        mBinding.searchEdit.hideKeyboard()
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -65,25 +61,13 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         mViewModel.finishEvent()
 
         when (cmd) {
-            SearchViewModel.CMD_BRS_OPEN -> {
-                viewController.browserFragment(data.toString())
-            }
-
-            PopularViewModel.CMD_BRS_SEARCH -> {
-                val url = "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H"
-                viewController.browserFragment(url)
-            }
+            SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())
+            PopularViewModel.CMD_BRS_SEARCH -> showBrowser(data.toString())
         }
     }
 
-    override fun onDestroyView() {
-        mViewModel.dp.clear()
-
-        hideKeyboard(mBinding.searchEdit)
-        mPopularViewModel.dp.clear()
-
-        super.onDestroyView()
-    }
+    private fun showBrowser(url: String) =
+        viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${url.urlencode()}&DA=13H")
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

@@ -29,15 +29,22 @@ class FavoriteFragment
     override fun initViewBinding() {
         mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.favorite_show_all    -> mViewModel.initShowAll(mDisposable)
-                R.id.favorite_show_folder -> mViewModel.initShowFolder(mDisposable)
+                R.id.favorite_show_all    -> mViewModel.initItems()
+                R.id.favorite_show_folder -> mViewModel.initItemByFolder()
             }
         }
     }
 
     override fun initViewModelEvents() {
-        mViewModel.initShowAll(mDisposable)
+        mViewModel.init(mDisposable)
+        mViewModel.initItems()
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
         if (mLog.isDebugEnabled) {
@@ -46,18 +53,20 @@ class FavoriteFragment
 
         FavoriteViewModel.apply {
             when (cmd) {
-                CMD_BRS_OPEN -> {
-                    finish()
-
-                    val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-                    if (frgmt is BrowserFragment) {
-                        frgmt.loadUrl(data.toString())
-                    }
-                }
+                CMD_BRS_OPEN           -> showBrowser(data.toString())
                 CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data.toString())
-                CMD_FOLDER_DIALOG_SHOW -> FolderDialog.show(requireContext(), mViewModel, false)
+                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(requireContext(), mViewModel, false)
                 CMD_FAVORITE_MODIFY    -> viewController.favoriteModifyFragment()
             }
+        }
+    }
+
+    private fun showBrowser(url: String) {
+        finish()
+
+        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
+        if (frgmt is BrowserFragment) {
+            frgmt.loadUrl(url)
         }
     }
 

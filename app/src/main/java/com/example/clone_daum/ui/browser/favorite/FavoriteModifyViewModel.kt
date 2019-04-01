@@ -1,8 +1,10 @@
 package com.example.clone_daum.ui.browser.favorite
 
-import android.annotation.SuppressLint
 import android.app.Application
+import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableInt
 import com.example.clone_daum.databinding.FavoriteModifyItemBinding
 import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
 import com.example.clone_daum.model.local.MyFavorite
@@ -28,25 +30,30 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyViewModel::class.java)
 
-        const val CMD_SELECT_ALL    = "select-all"
-        const val CMD_CHOOSE_DELETE = "choose-delete"
-        const val CMD_POPUP_MENU    = "popup-menu"
+        const val CMD_SELECT_ALL      = "select-all"
+        const val CMD_SELECTED_DELETE = "selected-delete"
+        const val CMD_POPUP_MENU      = "popup-menu"
     }
 
     override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
     override val finishEvent   = SingleLiveEvent<Void>()
     override val snackbarEvent = SingleLiveEvent<String>()
 
-    lateinit var dp: CompositeDisposable
+    private lateinit var mDisposable: CompositeDisposable
+    private var mFolderName: String? = null
 
-    private fun initItems() {
+    val selectedList = arrayListOf<MyFavorite>()
+    val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
+    val enableDelete = ObservableBoolean(false)
+
+    private fun initItems(folder: String?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT ITEMS")
         }
 
         // flowable 로 하면 디비 갱신 다시 쿼리를 전달 받아서 해주긴 하는데
         // touch helper 구조상 처음에만 쿼리를 전달 받도록 함
-        dp.add(favoriteDao.selectShowAll()
+        mDisposable.add(favoriteDao.selectShowAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -54,15 +61,17 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                     mLog.debug("FAVORITE MODIFY COUNT : ${it.size}")
                 }
 
+                visibleEmpty.set(if (it.size > 0) View.GONE else View.VISIBLE)
                 items.set(it)
             }, ::snackbar))
     }
 
-    fun initShowAll(dp: CompositeDisposable) {
-        this.dp = dp
+    fun init(folder: String?, dp: CompositeDisposable) {
+        mDisposable = dp
+        mFolderName = folder
 
         initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
-        initItems()
+        initItems(folder)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
                 if (mLog.isDebugEnabled) {
@@ -107,73 +116,110 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     fun rowColor(state: Boolean) = if (state) {
         ContextCompat.getColor(app, R.color.alpha_orange)
     } else {
-        ContextCompat.getColor(app, android.R.color.white)
+        ContextCompat.getColor(app, R.color.alpha_white)
     }
+
+    // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
+//    fun onCheckedChanged(view: CompoundButton, isChecked: Boolean) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("CHECKED CHANGED : ${view.id} = $isChecked")
+//        }
+//    }
+
+    // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
+    fun deleteList(state: Boolean, item: MyFavorite) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DELETE ITEM state : $state, id: ${item._id} ($item)")
+        }
+
+        if (state) {
+            selectedList.add(item)
+        } else {
+            selectedList.remove(item)
+        }
+
+        enableDelete.set(selectedList.size > 0)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEvent
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     override fun commandEvent(cmd: String, data: Any) {
         when (cmd) {
-            CMD_SELECT_ALL -> {
-                items.get()?.let {
-                    // 하나라도 true 가 아니라면
-                    var changeAllTrue = false
+            CMD_SELECT_ALL      -> selectAll()
+            CMD_SELECTED_DELETE -> deleteSelectedItem()
+            else -> super.commandEvent(cmd, data)
+        }
+    }
 
-                    for (item in it) {
-                        if (item.check.get() == false) {
-                            changeAllTrue = true
-                            break
-                        }
-                    }
+    private fun selectAll() {
+        adapter.get()?.notifyDataSetChanged()
+        items.get()?.let {
+            // 하나라도 true 가 아니라면
+            var changeAllTrue = false
 
-                    if (changeAllTrue) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("CHECKBOX CHECKED ALL")
-                        }
-
-                        it.forEach { it.check.set(true) }
-                    } else {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("CHECKBOX TOGGLE")
-                        }
-
-                        it.forEach { it.check.set(!it.check.get()) }
-                    }
+            for (item in it) {
+                if (item.check.get() == false) {
+                    changeAllTrue = true
+                    break
                 }
             }
 
-            CMD_CHOOSE_DELETE -> {
+            if (changeAllTrue) {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETE CHOOSE ITEMS")
+                    mLog.debug("CHECKBOX CHECKED ALL")
                 }
 
-                items.get()?.forEach {
-                    if (it.check.get()) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("DELETE ITEM : ${it._id}")
-                        }
+                it.forEach { it.check.set(true) }
+            } else {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("CHECKBOX TOGGLE")
+                }
 
-                        dp.add(favoriteDao.delete(it)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("DELETE ID ${it._id}")
-                                }
-                            })
+                it.forEach { it.check.set(!it.check.get()) }
+            }
+        }
+    }
 
-                        dp.add(Completable.fromAction { favoriteDao.delete(it.name) }
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("DELETE FOLDER : ${it.name}")
-                                }
-                            })
+    private fun deleteSelectedItem() {
+        enableDelete.set(false)
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DELETE SELECTED ITEMS (${selectedList.size})")
+        }
+
+        // 폴더의 경우 폴더명을 찾아서 해당 폴더를 가진 fav 를 모두 삭제 한다.
+        val folderNameList = arrayListOf<String>()
+        selectedList.forEach {
+            if (it.type() == MyFavorite.T_FOLDER) {
+                folderNameList.add(it.name)
+            }
+        }
+
+        if (folderNameList.size > 0) {
+            mDisposable.add(Completable.fromAction { favoriteDao.deleteByFolderNames(folderNameList) }
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("DELETE FAVORITE FOLDER LIST : $folderNameList")
                     }
+                })
+        }
+
+        mDisposable.add(favoriteDao.delete(selectedList)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("DELETED FAVORITE ITEMS")
                 }
 
                 // modify fragment 에서는 single 로 call 하고 있으므로
                 // 화면을 갱신 시켜줘야 한다.
-                initItems()
-            }
-            else -> super.commandEvent(cmd, data)
-        }
+                initItems(mFolderName)
+            })
     }
 }

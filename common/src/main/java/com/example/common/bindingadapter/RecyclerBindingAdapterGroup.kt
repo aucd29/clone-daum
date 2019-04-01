@@ -107,6 +107,16 @@ object RecyclerBindingAdapter {
 
         recycler.itemAnimator = animator
     }
+
+    @JvmStatic
+    @BindingAdapter("bindSmoothToPosition")
+    fun bindSmoothToPosition(recycler: RecyclerView, position: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND SMOOTH TO POSITION $position")
+        }
+
+        recycler.smoothScrollToPosition(position)
+    }
 }
 
 inline fun RecyclerView.decorator(@DrawableRes drawable: Int, type: Int = DividerItemDecoration.HORIZONTAL) {
@@ -117,6 +127,9 @@ inline fun RecyclerView.decorator(@DrawableRes drawable: Int, type: Int = Divide
         }
     }
 }
+
+
+
 //
 //inline fun ImageView.picasso(@DrawableRes resid: Int, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) =
 //    Picasso.get().load(resid).into(this)
