@@ -188,3 +188,7 @@ inline fun Context.toast(message: String, len: Int = Toast.LENGTH_SHORT) {
 inline fun Context.toast(@StringRes resid: Int, len: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, resid, len).show()
 }
+
+inline fun Context.addShortcut() {
+
+}

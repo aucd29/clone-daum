@@ -30,13 +30,16 @@ inline fun Fragment.popupMenu(@MenuRes resid: Int, anchor: View, noinline listen
 
 inline fun PopupMenu.enableAll(flag: Boolean = true) {
     val size = menu.size()
-    (0..size).forEach { menu.getItem(it).isEnabled = flag }
+    var i = 0
+    while (i < size) {
+        menu.getItem(i++).isEnabled = flag
+    }
 }
-
-inline fun PopupMenu.enable(@IdRes id: Int) {
-    menu.findItem(id)?.isEnabled = true
-}
-
-inline fun PopupMenu.disable(@IdRes id: Int) {
-    menu.findItem(id)?.isEnabled = false
-}
+//
+//inline fun PopupMenu.enable(@IdRes id: Int) {
+//    menu.findItem(id)?.isEnabled = true
+//}
+//
+//inline fun PopupMenu.disable(@IdRes id: Int) {
+//    menu.findItem(id)?.isEnabled = false
+//}

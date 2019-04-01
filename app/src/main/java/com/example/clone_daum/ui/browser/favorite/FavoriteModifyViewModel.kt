@@ -41,8 +41,8 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
     private lateinit var mDisposable: CompositeDisposable
     private var mFolderName: String? = null
-    private val deleteList = arrayListOf<MyFavorite>()
 
+    val selectedList = arrayListOf<MyFavorite>()
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
     val enableDelete = ObservableBoolean(false)
 
@@ -133,12 +133,12 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         }
 
         if (state) {
-            deleteList.add(item)
+            selectedList.add(item)
         } else {
-            deleteList.remove(item)
+            selectedList.remove(item)
         }
 
-        enableDelete.set(deleteList.size > 0)
+        enableDelete.set(selectedList.size > 0)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -188,12 +188,12 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         enableDelete.set(false)
 
         if (mLog.isDebugEnabled) {
-            mLog.debug("DELETE SELECTED ITEMS (${deleteList.size})")
+            mLog.debug("DELETE SELECTED ITEMS (${selectedList.size})")
         }
 
         // 폴더의 경우 폴더명을 찾아서 해당 폴더를 가진 fav 를 모두 삭제 한다.
         val folderNameList = arrayListOf<String>()
-        deleteList.forEach {
+        selectedList.forEach {
             if (it.type() == MyFavorite.T_FOLDER) {
                 folderNameList.add(it.name)
             }
@@ -209,7 +209,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                 })
         }
 
-        mDisposable.add(favoriteDao.delete(deleteList)
+        mDisposable.add(favoriteDao.delete(selectedList)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
