@@ -141,8 +141,13 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
 
     /**
      * view holder 에 view model 과 item 을 설정 시킨다.
+     *
      */
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND VIEW HOLDER")
+        }
+
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
         items.let { it.get(position).let { item ->
@@ -178,11 +183,18 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      * 아이템을 설정 한다. 이때 DiffUtil.calculateDiff 를 통해 데이터의 변동 지점을
      * 알아서 찾아 변경 시켜 준다.
      *
-     * FIXME [aucd29][2019. 3. 28.]
-     * 다수개의 데이터가 존재 시 새로 add 하면 리스트를 하단으로 이동 시키고 view 를 add 하는데
-     * 먼가 깜박이는 현상이 보여서 일단 수정이 필요해 보임
-     * 편하려고 DiffUtil 을 쓰긴 하는데 플리킹이 있으면 =_ = 안되니..
-     *
+     * FIXME [aucd29][2019. 4. 1.]
+     * ----
+     * 현재 문제점
+     * 1. recycler item 에 ObservableBoolean 형태로 CheckBox 를 둔 상태
+     * 2. checkbox 를 통해 아이템 하나를 삭제 하면 디비에서 새로운 list 를 생성해서 setItems 을 호출 함
+     * 3. DiffUtil 을 통해 해당 위치이 view 를 갱신 시킴
+     * 4. 이때 onBindViewHolder 의 setItem 이 호출되지는 않기에 xml 에 item 값이 이전의 데이터를 바라보고 있게 됨
+     * 5. 이후 view model 의 데이터를 수정하면 view model 의 item 과 xml 의 item 이 다르기에 원하는 동작을 하지 않음
+     * ----
+     * 해결 방법?
+     * ----
+     * -> 임시로 일단 checkbox 를 호출하기 전에 notifyDataSetChanged 를 호출 함 다른 방법이 있는지 찾아봐야할 듯
      */
     fun setItems(recycler: RecyclerView, newItems: List<T>) {
         if (items.size == 0) {

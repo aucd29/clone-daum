@@ -158,6 +158,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     }
 
     private fun selectAll() {
+        adapter.get()?.notifyDataSetChanged()
         items.get()?.let {
             // 하나라도 true 가 아니라면
             var changeAllTrue = false
@@ -183,7 +184,6 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                 it.forEach { it.check.set(!it.check.get()) }
             }
         }
-        items.notifyChange()
     }
 
     private fun deleteSelectedItem() {

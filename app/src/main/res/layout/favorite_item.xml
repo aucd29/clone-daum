@@ -33,8 +33,6 @@
                 app:bindFrequentlySiteUrl="@{item.url}"
                 app:bindFrequentlySiteTitle="@{``}"
         />
-        <!--app:bindFrequentlySiteUrl="@{item.url}"-->
-        <!--android:text="@{model.firstUrl(item.url)}"-->
 
         <TextView
                 android:id="@+id/text"

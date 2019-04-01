@@ -190,6 +190,14 @@ class FavoriteViewModel @Inject constructor(application: Application
 
     fun currentFolder() = selectedPosition to items.get()!!.get(selectedPosition).name
 
+    fun posStr(pos: Int): String {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("POS: $pos")
+        }
+
+        return pos.toString()
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ICommandEvent
