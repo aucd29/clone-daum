@@ -28,10 +28,6 @@ object RecyclerBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ADAPTER (${recycler.id}), ITEM COUNT (${items?.count()})")
-        }
-
         var myadapter: RecyclerAdapter<T>? = null
 
         adapter?.let {
@@ -41,6 +37,10 @@ object RecyclerBindingAdapter {
             } else {
                 myadapter = recycler.adapter as RecyclerAdapter<T>
             }
+        }
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND ADAPTER (${myadapter}, ${items?.hashCode()}), ITEM COUNT (${items?.count()})")
         }
 
         items?.let {

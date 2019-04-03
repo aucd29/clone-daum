@@ -74,7 +74,7 @@ data class UrlHistory (
 @Entity(tableName = "myFavorite")
 data class MyFavorite (
     /** 링크 명 or 폴더 명 */
-    val name: String,
+    var name: String,
     /** 링크 (url) */
     val url: String = "",
     /** 링크일 때 사용 될 폴더 */

@@ -26,7 +26,7 @@ import io.reactivex.Completable
 class FavoriteModifyViewModel @Inject constructor(application: Application
     , private val favoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(application), ICommandEventAware, IFinishFragmentAware
-    , ISnackbarAware {
+    , ISnackbarAware, IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyViewModel::class.java)
 
@@ -58,7 +58,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE MODIFY COUNT : ${it.size}")
+                    mLog.debug("FAVORITE MODIFY COUNT : ${it.size} ${it.hashCode()}")
                 }
 
                 visibleEmpty.set(if (it.size > 0) View.GONE else View.VISIBLE)
@@ -71,6 +71,8 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         mFolderName = folder
 
         initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
+        adapter.get()?.isNotifyAll = true
+
         initItems(folder)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
@@ -106,8 +108,8 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FIRST WORD : $firstWord")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("FIRST WORD : $firstWord")
         }
 
         return firstWord
@@ -129,7 +131,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
     fun deleteList(state: Boolean, item: MyFavorite) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("DELETE ITEM state : $state, id: ${item._id} ($item)")
+            mLog.debug("ITEM state : $state, id: ${item._id} ($item)")
         }
 
         if (state) {
@@ -156,7 +158,6 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     }
 
     private fun selectAll() {
-        adapter.get()?.notifyDataSetChanged()
         items.get()?.let {
             // 하나라도 true 가 아니라면
             var changeAllTrue = false
@@ -221,5 +222,47 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                 // 화면을 갱신 시켜줘야 한다.
                 initItems(mFolderName)
             })
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // IFolder
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun updateFolder(favorite: Any, fromFolderFragment: Boolean) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("UPDATE FAVORITE")
+        }
+
+        val fav = favorite as MyFavorite
+        mDisposable.add(favoriteDao.update(fav)
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                initItems(mFolderName)
+            }, ::snackbar))
+    }
+
+    override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
+        mDisposable.add(favoriteDao.hasFolder(name, id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    if (it > 0) {
+                        mLog.debug("HAS FAVORITE FOLDER : $name ($it)")
+                    }
+                }
+
+                callback(it > 0)
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+
+                callback(false)
+            }))
     }
 }

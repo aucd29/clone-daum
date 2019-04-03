@@ -31,8 +31,8 @@ object TextViewBindingAdapter {
         val char = splited.get(splited.size - 2).substring(0, 1)
         val domain = char.toCharArray().get(0).toInt()
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CHAR : $char, MOD : ${domain % 2}")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("CHAR : $char, MOD : ${domain % 2}")
         }
 
         view.apply {

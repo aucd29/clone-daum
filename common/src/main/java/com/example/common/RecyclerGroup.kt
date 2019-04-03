@@ -108,6 +108,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
     lateinit var viewModel: ViewModel
     var viewHolderCallback: ((RecyclerHolder, Int) -> Unit)? = null
     var isScrollToPosition = true
+    var isNotifyAll = false
 
     constructor(layoutId: String) : this(arrayOf(layoutId)) { }
 
@@ -144,9 +145,9 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      *
      */
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND VIEW HOLDER")
-        }
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("BIND VIEW HOLDER $this")
+//        }
 
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
@@ -161,6 +162,14 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
         holder.mBinding.executePendingBindings()
         viewHolderCallback?.invoke(holder, position)
     }
+
+//    override fun onBindViewHolder(holder: RecyclerHolder, position: Int, payloads: MutableList<Any>) {
+//        if (payloads.isEmpty()) {
+//            super.onBindViewHolder(holder, position, payloads)
+//        } else {
+//// TODO
+//        }
+//    }
 
     /**
      * 화면에 출력해야할 아이템의 총 개수를 반환 한다.
@@ -197,8 +206,20 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      * -> 임시로 일단 checkbox 를 호출하기 전에 notifyDataSetChanged 를 호출 함 다른 방법이 있는지 찾아봐야할 듯
      */
     fun setItems(recycler: RecyclerView, newItems: List<T>) {
+        if (isNotifyAll) {
+            items = newItems
+            notifyDataSetChanged()
+
+            return
+        }
+
         if (items.size == 0) {
             items = newItems
+
+            if (mLog.isDebugEnabled) {
+                mLog.debug("NEW ${newItems.hashCode()}")
+            }
+
             notifyItemRangeChanged(0, items.size)
 
             return
@@ -215,11 +236,20 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
                 val oldItem = oldItems[oldItemPosition]
                 val newItem = newItems[newItemPosition]
 
-                oldItem.compare(newItem)
-
-                return oldItem == newItem
+                return oldItem.compare(newItem)
             }
+
+            // https://medium.com/mindorks/diffutils-improving-performance-of-recyclerview-102b254a9e4a
+//            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+//                return super.getChangePayload(oldItemPosition, newItemPosition)
+//            }
         })
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("OLD ${oldItems.hashCode()}")
+            mLog.debug("NEW ${newItems.hashCode()}")
+            mLog.debug("DISPATCH UPDATES TO $this")
+        }
 
         // https://stackoverflow.com/questions/43458146/diffutil-in-recycleview-making-it-autoscroll-if-a-new-item-is-added
         result.dispatchUpdatesTo(object: ListUpdateCallback {

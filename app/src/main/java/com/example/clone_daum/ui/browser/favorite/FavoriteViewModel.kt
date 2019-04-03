@@ -22,7 +22,7 @@ import com.example.clone_daum.R
 class FavoriteViewModel @Inject constructor(application: Application
     , private val favoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(application), ICommandEventAware, IFinishFragmentAware
-    , IDialogAware, ISnackbarAware {
+    , IDialogAware, ISnackbarAware, IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
 
@@ -69,7 +69,7 @@ class FavoriteViewModel @Inject constructor(application: Application
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE COUNT : ${it.size}")
+                    mLog.debug("FAVORITE COUNT : ${it.size} ${it.hashCode()}")
                 }
 
                 items.set(it)
@@ -101,12 +101,6 @@ class FavoriteViewModel @Inject constructor(application: Application
             }))
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // FAVORITE FRAGMENT, FOLDER FRAGMENT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
     fun insertFolder(folderName: String, fromFolderFragment: Boolean) {
         mDisposable.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
@@ -119,8 +113,24 @@ class FavoriteViewModel @Inject constructor(application: Application
             }, ::snackbar))
     }
 
-    fun hasFolder(dp: CompositeDisposable, name: String, callback: (Boolean) -> Unit) {
-        dp.add(favoriteDao.hasFolder(name)
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FAVORITE FRAGMENT, FOLDER FRAGMENT
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // IFolder
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun updateFolder(folderName: Any, fromFolderFragment: Boolean) {
+        insertFolder(folderName.toString(), fromFolderFragment)
+    }
+
+    override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
+        mDisposable.add(favoriteDao.hasFolder(name)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -181,8 +191,8 @@ class FavoriteViewModel @Inject constructor(application: Application
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FIRST WORD : $firstWord")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("FIRST WORD : $firstWord")
         }
 
         return firstWord

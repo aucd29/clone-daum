@@ -35,11 +35,7 @@ inline fun PopupMenu.enableAll(flag: Boolean = true) {
         menu.getItem(i++).isEnabled = flag
     }
 }
-//
-//inline fun PopupMenu.enable(@IdRes id: Int) {
-//    menu.findItem(id)?.isEnabled = true
-//}
-//
-//inline fun PopupMenu.disable(@IdRes id: Int) {
-//    menu.findItem(id)?.isEnabled = false
-//}
+
+inline fun PopupMenu.enable(@IdRes id: Int, enable: Boolean = true) {
+    menu.findItem(id)?.isEnabled = enable
+}
