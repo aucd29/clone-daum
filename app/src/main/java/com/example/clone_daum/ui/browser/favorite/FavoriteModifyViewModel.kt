@@ -25,8 +25,7 @@ import io.reactivex.Completable
 
 class FavoriteModifyViewModel @Inject constructor(application: Application
     , private val favoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), ICommandEventAware, IFinishFragmentAware
-    , ISnackbarAware, IFolder {
+) : RecyclerViewModel<MyFavorite>(application), IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyViewModel::class.java)
 
@@ -35,10 +34,6 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         const val CMD_POPUP_MENU      = "popup-menu"
     }
 
-    override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent   = SingleLiveEvent<Void>()
-    override val snackbarEvent = SingleLiveEvent<String>()
-
     private lateinit var mDisposable: CompositeDisposable
     private var mFolderName: String? = null
 
@@ -46,7 +41,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
     val enableDelete = ObservableBoolean(false)
 
-    private fun initItems(folder: String?) {
+    private fun initItems(folder: String?, notify: (() -> Unit)? = null) {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT ITEMS")
         }
@@ -63,7 +58,16 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
                 visibleEmpty.set(if (it.size > 0) View.GONE else View.VISIBLE)
                 items.set(it)
-            }, ::snackbar))
+
+                notify?.invoke()
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+                snackbar(it)
+            }))
     }
 
     fun init(folder: String?, dp: CompositeDisposable) {
@@ -71,8 +75,6 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         mFolderName = folder
 
         initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
-        adapter.get()?.isNotifyAll = true
-
         initItems(folder)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
@@ -149,11 +151,11 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun commandEvent(cmd: String, data: Any) {
+    override fun command(cmd: String, data: Any) {
         when (cmd) {
             CMD_SELECT_ALL      -> selectAll()
             CMD_SELECTED_DELETE -> deleteSelectedItem()
-            else -> super.commandEvent(cmd, data)
+            else                -> super.command(cmd, data)
         }
     }
 
@@ -220,7 +222,10 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
                 // modify fragment 에서는 single 로 call 하고 있으므로
                 // 화면을 갱신 시켜줘야 한다.
-                initItems(mFolderName)
+
+                initItems(mFolderName) {
+                    adapter.get()?.notifyDataSetChanged()
+                }
             })
     }
 
@@ -238,9 +243,27 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         val fav = favorite as MyFavorite
         mDisposable.add(favoriteDao.update(fav)
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                initItems(mFolderName)
-            }, ::snackbar))
+                // 데이터 수정의 경우 해당 메모리를 직접 수정한 이후 디비를 변경했기 때문에
+                // adapter 의 setItems 에서 변경된 지점을 알 수 없는 현상이 발생 된다.
+                // 그렇기에 직접 해당 위치의 데이터가 변경되었음을 알려주도록 한다.
+                // 이렇게 하기 싫으면 해당 객체를 직접 수정하지 않고 새로 객체를 만들어서
+                // 수정하거나 객체가 아닌 query 를 통해 해당 값과 _id 를 직접 전달하면
+                // 된다.
+                adapter.get()?.notifyItemChanged(fav.pos)
+
+                // 하나만 수정하기 싫으면 initItems 를 호출하고 items 을 설정한 이후의
+                // 이벤트를 전달 받아 notifyDataSetChanged 를 호출해줘도 된다.
+                // 단 이렇게 되면 모든 데이터를 다시 불러들이게 된다.
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+                snackbar(it)
+            }))
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {

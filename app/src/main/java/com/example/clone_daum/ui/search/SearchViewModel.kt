@@ -28,8 +28,7 @@ import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(app: Application
     , val config: Config
-) : RecyclerViewModel<ISearchRecyclerData>(app), ISnackbarAware, IDialogAware
-    , IFinishFragmentAware, ICommandEventAware {
+) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
@@ -46,8 +45,6 @@ class SearchViewModel @Inject constructor(app: Application
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
-    override val snackbarEvent   = SingleLiveEvent<String>()
-    override val finishEvent     = SingleLiveEvent<Void>()
 
     val searchKeyword            = ObservableField<String>()
     val searchIconResId          = ObservableInt(config.SEARCH_ICON)
@@ -97,9 +94,16 @@ class SearchViewModel @Inject constructor(app: Application
                     }
 
                     searchKeyword.set("")
-                }, ::snackbar))
+                }, {
+                    if (mLog.isDebugEnabled) {
+                        it.printStackTrace()
+                    }
 
-            commandEvent(CMD_BRS_SEARCH, it)
+                    mLog.error("ERROR: ${it.message}")
+                    snackbar(it)
+                }))
+
+            command(CMD_BRS_SEARCH, it)
         } ?: snackbarEvent(R.string.error_empty_keyword)
     }
 
@@ -148,7 +152,15 @@ class SearchViewModel @Inject constructor(app: Application
                 if (mLog.isDebugEnabled) {
                     mLog.debug("DELETED : $item")
                 }
-            }, ::snackbar))
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+
+                snackbar(it)
+            }))
     }
 
     fun eventDeleteAllHistory() {
@@ -210,14 +222,4 @@ class SearchViewModel @Inject constructor(app: Application
 
     private fun snackbarEvent(@StringRes resid: Int) =
         snackbar(string(resid))
-
-    override fun snackbar(e: Throwable) {
-        if (mLog.isDebugEnabled) {
-            e.printStackTrace()
-        }
-
-        mLog.error("ERROR: ${e.message}")
-
-        super.snackbar(e)
-    }
 }

@@ -1,12 +1,17 @@
 package com.example.common
 
+import android.app.Application
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import com.example.common.arch.SingleLiveEvent
 import com.example.common.di.module.DaggerViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
@@ -22,8 +27,8 @@ import javax.inject.Inject
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-private const val SET_VIEW_MODEL = "setModel"       // view model 을 설정하기 위한 메소드 명
-private const val LAYOUT         = "layout"         // 레이아웃
+private const val SET_VIEW_MODEL  = "setModel"       // view model 을 설정하기 위한 메소드 명
+private const val LAYOUT          = "layout"         // 레이아웃
 
 /**
  * dagger 를 기본적으로 이용하면서 MVVM 아키텍처를 가지는 Activity
@@ -53,9 +58,7 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
 
         bindViewModel()
 
-        snackbarAware()
         dialogAware()
-        finishFragmentAware()
         commandEventAware()
 
         initViewBinding()
@@ -98,15 +101,6 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
     ////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * view model 에 등록되어 있는 snackbar live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
-     */
-    protected open fun snackbarAware() = mViewModel.run {
-        if (this is ISnackbarAware) {
-            observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT).show() }
-        }
-    }
-
-    /**
      * view model 에 등록되어 있는 dialog live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
      */
     protected open fun dialogAware() = mViewModel.run {
@@ -116,22 +110,26 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
     }
 
     /**
-     * view model 에 등록되어 있는 finish live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
-     */
-    protected open fun finishFragmentAware() = mViewModel.run {
-        if (this is IFinishFragmentAware) {
-            observe(finishEvent) { finish() }
-        }
-    }
-
-    /**
      * view model 에 등록되어 있는 command live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
      */
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
+            observe(commandEvent) {
+                when (it.first) {
+                    ICommandEventAware.CMD_FINISH   -> commandFinish()
+                    ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
+                    ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
+
+                    else -> onCommandEvent(it.first, it.second)
+                }
+            }
         }
     }
+
+    protected open fun commandFinish() = finish()
+    protected open fun commandToast(message: String) = toast(message)
+    protected open fun commandSnackbar(message: String) =
+        snackbar(mBinding.root, message).show()
 
     protected open fun onCommandEvent(cmd: String, data: Any) { }
 
@@ -181,9 +179,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        snackbarAware()
         dialogAware()
-        finishFragmentAware()
         commandEventAware()
 
         initViewBinding()
@@ -219,29 +215,30 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    protected open fun snackbarAware() = mViewModel.run {
-        if (this is ISnackbarAware) {
-            observe(snackbarEvent) { snackbar(mBinding.root, it, Snackbar.LENGTH_SHORT)?.show() }
-        }
-    }
-
     protected open fun dialogAware() = mViewModel.run {
         if (this is IDialogAware) {
             observeDialog(dialogEvent, mDisposable)
         }
     }
 
-    protected open fun finishFragmentAware() = mViewModel.run {
-        if (this is IFinishFragmentAware) {
-            observe(finishEvent) { finish() }
+    protected fun commandEventAware() = mViewModel.run {
+        if (this is ICommandEventAware) {
+            observe(commandEvent) {
+                when (it.first) {
+                    ICommandEventAware.CMD_FINISH   -> commandFinish()
+                    ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
+                    ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
+
+                    else -> onCommandEvent(it.first, it.second)
+                }
+            }
         }
     }
 
-    protected fun commandEventAware() = mViewModel.run {
-        if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
-        }
-    }
+    protected open fun commandFinish() = finish()
+    protected open fun commandToast(message: String) = toast(message)
+    protected open fun commandSnackbar(message: String) =
+        snackbar(mBinding.root, message, Snackbar.LENGTH_SHORT).show()
 
     protected open fun onCommandEvent(cmd: String, data: Any) { }
 
@@ -290,7 +287,6 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        finishFragmentAware()
         commandEventAware()
 
         initViewBinding()
@@ -326,15 +322,15 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    protected open fun finishFragmentAware() = mViewModel.run {
-        if (this is IFinishFragmentAware) {
-            observe(finishEvent) { dismiss() }
-        }
-    }
-
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
+            observe(commandEvent) {
+                when (it.first) {
+                    ICommandEventAware.CMD_FINISH -> dismiss()
+
+                    else -> onCommandEvent(it.first, it.second)
+                }
+            }
         }
     }
 
@@ -385,7 +381,6 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        finishFragmentAware()
         commandEventAware()
 
         initViewBinding()
@@ -420,16 +415,14 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    protected open fun finishFragmentAware() = mViewModel.run {
-        if (this is IFinishFragmentAware) {
-            observe(finishEvent) { dismiss() }
-        }
-    }
-
     protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
             observe(commandEvent) {
-                onCommandEvent(it.first, it.second)
+                when (it.first) {
+                    ICommandEventAware.CMD_FINISH -> dismiss()
+
+                    else -> onCommandEvent(it.first, it.second)
+                }
             }
         }
     }

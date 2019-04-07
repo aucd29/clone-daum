@@ -23,7 +23,7 @@ import javax.inject.Inject
 class BrowserViewModel @Inject constructor(app: Application
     , var urlDao: UrlHistoryDao
     , val zzimDao: ZzimDao
-) : CommandEventViewModel(app), ISnackbarAware, IWebViewEventAware {
+) : CommandEventViewModel(app), IWebViewEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
@@ -37,7 +37,7 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_RELOAD           = "reload"
     }
 
-    override val snackbarEvent = SingleLiveEvent<String>()
+//    override val snackbarEvent = SingleLiveEvent<String>()
     override val webviewEvent  = ObservableField<WebViewEvent>()
 
     private lateinit var mDisposable: CompositeDisposable
@@ -92,7 +92,7 @@ class BrowserViewModel @Inject constructor(app: Application
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            commandEvent(CMD_RELOAD)
+            command(CMD_RELOAD)
         }
     }
 
@@ -125,7 +125,7 @@ class BrowserViewModel @Inject constructor(app: Application
                 }
 
                 mLog.error("ERROR: ${it.message}")
-                snackbar(it.message)
+                snackbar(it)
             }))
     }
 
@@ -146,7 +146,7 @@ class BrowserViewModel @Inject constructor(app: Application
                 }
 
                 mLog.error("ERROR: ${it.message}")
-                snackbar(it.message)
+                snackbar(it)
             }))
     }
 }

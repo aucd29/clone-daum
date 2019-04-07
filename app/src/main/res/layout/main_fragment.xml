@@ -40,7 +40,7 @@
                     android:layout_width="match_parent" android:layout_height="match_parent"
                     android:background="#52000000"
                     android:alpha="0"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                     app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
                     android:visibility="@{realtimeIssueModel.visibleDetail}"
             />
@@ -86,7 +86,7 @@
                                 android:layout_marginEnd="@dimen/main_search_mgn_e"
                                 android:focusable="false"
                                 android:background="@drawable/shape_search_background"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAMGNET)}"
+                                android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAMGNET)}"
                         />
 
                         <ImageView
@@ -112,7 +112,7 @@
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:padding="@dimen/main_search_extend_pad"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
+                                android:onClick="@{() -> model.command(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
                         />
 
                         <!-- REALTIME ISSUE -->
@@ -139,7 +139,7 @@
                                 android:padding="@dimen/main_realtime_issue_text_pad"
                                 android:text="@{realtimeIssueModel.titleConvert(realtimeIssueModel.currentIssue)}"
                                 android:layout_marginStart="15dp"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, realtimeIssueModel.currentIssue.url)}"
+                                android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, realtimeIssueModel.currentIssue.url)}"
                                 app:layout_constraintStart_toEndOf="@+id/realtime_label"
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
@@ -180,7 +180,7 @@
                                 android:paddingStart="10dp"
                                 android:paddingEnd="14dp"
                                 app:bindRotation="@{realtimeIssueModel.tabMenuRotation}"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
+                                android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                         />
 
                         <!--android:background="?selectableItemBackgroundBorderless"-->
@@ -274,7 +274,7 @@
                             android:paddingEnd="@dimen/main_tab_menu_pad"
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
-                            android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT)}"
+                            android:onClick="@{() -> model.command(model.CMD_NAVIGATION_FRAGMENT)}"
                     />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

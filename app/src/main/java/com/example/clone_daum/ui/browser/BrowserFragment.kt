@@ -26,6 +26,8 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
         private const val WEBVIEW_SLIDING = 3
+
+        const val K_URL = "url"
     }
 
     @Inject lateinit var viewController: ViewController
@@ -55,7 +57,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
-        mUrl = arguments?.getString("url")
+        mUrl = arguments?.getString(K_URL)
 
         if (mUrl == null) {
             mLog.error("ERROR: URL : $mUrl")
@@ -250,7 +252,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         val title = webview.title
         val url   = webview.url
 
-        viewController.favoriteAddFragment(title, url)
+        viewController.favoriteProcessFragment(title, url)
     }
 
     private fun urlHistory() {

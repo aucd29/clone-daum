@@ -23,7 +23,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="#8F000000"
                 app:bindAlpha="@{model.dimmingBgAlpha}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
+                android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
                 android:alpha="0"
         />
 
@@ -82,7 +82,7 @@
                         android:paddingEnd="14dp"
                         android:paddingStart="10dp"
                         android:background="?selectableItemBackgroundBorderless"
-                        android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
+                        android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
                         app:bindRotation="@{model.tabMenuRotation}"
                 />
 
@@ -153,7 +153,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/realtime_issue_search"
                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_search"
                 android:padding="@dimen/main_search_extend_pad"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
+                android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

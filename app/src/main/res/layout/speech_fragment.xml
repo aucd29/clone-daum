@@ -47,7 +47,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
         />
 
         <TextView

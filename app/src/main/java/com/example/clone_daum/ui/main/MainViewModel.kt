@@ -19,7 +19,7 @@ import java.util.*
 
 class MainViewModel @Inject constructor(val app: Application
     , val config: Config
-) : AndroidViewModel(app), ICommandEventAware {
+) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
@@ -32,8 +32,6 @@ class MainViewModel @Inject constructor(val app: Application
 
         const val CMD_BRS_OPEN                = "brs-open"
     }
-
-    override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
 
     val tabAdapter              = ObservableField<MainTabAdapter>()
     val viewpager               = ObservableField<ViewPager>()

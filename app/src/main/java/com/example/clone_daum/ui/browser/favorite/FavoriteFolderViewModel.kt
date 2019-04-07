@@ -17,16 +17,13 @@ import javax.inject.Inject
 
 class FavoriteFolderViewModel @Inject constructor(application: Application
     , private val favoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), ICommandEventAware, IFinishFragmentAware {
+) : RecyclerViewModel<MyFavorite>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
 
         const val CMD_BRS_OPEN        = "brs-open"
         const val CMD_FAVORITE_MODIFY = "favorite-modify"
     }
-
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent  = SingleLiveEvent<Void>()
 
     private lateinit var mDisposable: CompositeDisposable
 

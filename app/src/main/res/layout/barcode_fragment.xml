@@ -43,7 +43,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:padding="@dimen/barcode_back_icon_pad"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
         />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +63,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="@dimen/barcode_back_icon_pad"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FILE_OPEN)}"
+                    android:onClick="@{() -> model.command(model.CMD_FILE_OPEN)}"
             />
 
             <TextView
@@ -81,7 +81,7 @@
                     android:paddingBottom="@dimen/barcode_input_pad_tb"
                     android:layout_margin="@dimen/barcode_input_mgn"
                     android:text="@string/barcode_input"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_INPUT_CODE)}"
+                    android:onClick="@{() -> model.command(model.CMD_INPUT_CODE)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

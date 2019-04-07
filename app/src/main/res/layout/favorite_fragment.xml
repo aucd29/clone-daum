@@ -32,7 +32,7 @@
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:padding="15dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <TextView
@@ -58,7 +58,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_external_link_alt"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SHOW_FOLDER_DIALOG)}"
+                    android:onClick="@{() -> model.command(model.CMD_SHOW_FOLDER_DIALOG)}"
             />
 
             <TextView
@@ -73,7 +73,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_pen"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_MODIFY)}"
+                    android:onClick="@{() -> model.command(model.CMD_FAVORITE_MODIFY)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,7 +61,7 @@ class RealtimeIssueChildFragment
     }
 
     private fun showBrowser(url: String) {
-        mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
+        mRealtimeIssueViewModel.command(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
 
         viewController.browserFragment(url)
     }

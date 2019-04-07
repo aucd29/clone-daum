@@ -17,6 +17,8 @@ class FavoriteFolderFragment
     : BaseDaggerFragment<FavoriteFolderFragmentBinding, FavoriteFolderViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
+
+        const val K_FOLDER = "folder"
     }
 
     @Inject lateinit var viewController: ViewController
@@ -25,7 +27,7 @@ class FavoriteFolderFragment
     }
 
     override fun initViewModelEvents() {
-        arguments?.getString("folder")?.let {
+        arguments?.getString(K_FOLDER)?.let {
             if (mLog.isDebugEnabled) {
                 mLog.debug("FOLDER NAME : $it")
             }
@@ -60,7 +62,7 @@ class FavoriteFolderFragment
     }
 
     private fun modifyFavorite() {
-        arguments?.getString("folder")?.let {
+        arguments?.getString(K_FOLDER)?.let {
             if (mLog.isDebugEnabled) {
                 mLog.debug("FOLDER NAME : $it")
             }

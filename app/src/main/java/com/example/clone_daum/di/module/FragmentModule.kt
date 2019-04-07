@@ -60,7 +60,7 @@ import dagger.Module
     , FavoriteFragment.Module::class
     , FavoriteModifyFragment.Module::class
     , FavoriteFolderFragment.Module::class
-    , FavoriteAddFragment.Module::class
+    , FavoriteProcessFragment.Module::class
     , FolderFragment.Module::class
 ])
 class FragmentModule {

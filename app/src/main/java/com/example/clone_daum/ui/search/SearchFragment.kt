@@ -58,7 +58,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        mViewModel.finishEvent()
+        mViewModel.finish()
 
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())

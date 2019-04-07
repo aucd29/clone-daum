@@ -8,6 +8,7 @@ import com.example.clone_daum.model.*
 import com.example.common.IRecyclerDiff
 import com.example.common.IRecyclerItem
 import com.example.common.IRecyclerPosition
+import java.io.Serializable
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -85,8 +86,11 @@ data class MyFavorite (
     var date: Long = System.currentTimeMillis(),
     /** id 값 */
     @PrimaryKey(autoGenerate = true)
-    val _id: Int       = 0
-) : IRecyclerDiff, IRecyclerItem, IRecyclerPosition {
+    var _id: Int       = 0
+) : IRecyclerDiff, IRecyclerItem, IRecyclerPosition, Serializable {
+    constructor(fav: MyFavorite)
+        : this(fav.name, fav.url, fav.folder, fav.favType,fav.date, fav._id)
+
     @Ignore
     var pos: Int   = 0
 

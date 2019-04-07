@@ -21,8 +21,7 @@ import com.example.clone_daum.R
 
 class FavoriteViewModel @Inject constructor(application: Application
     , private val favoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), ICommandEventAware, IFinishFragmentAware
-    , IDialogAware, ISnackbarAware, IFolder {
+) : RecyclerViewModel<MyFavorite>(application), IDialogAware, IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
 
@@ -38,16 +37,14 @@ class FavoriteViewModel @Inject constructor(application: Application
         const val CMD_SHOW_FOLDER_DIALOG = "show-folder-dialog"
     }
 
-    override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent   = SingleLiveEvent<Void>()
     override val dialogEvent   = SingleLiveEvent<DialogParam>()
-    override val snackbarEvent = SingleLiveEvent<String>()
 
     private lateinit var mDisposable: CompositeDisposable
 
     val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
 
     // FolderFragment
+    private var mCurrentFolder: String? = null
     var selectedPosition: Int = 0
     var smoothToPosition = ObservableInt(0)
 
@@ -64,6 +61,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     }
 
     fun initItems() {
+        mDisposable.clear()
         mDisposable.add(favoriteDao.selectShowAllFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -82,7 +80,8 @@ class FavoriteViewModel @Inject constructor(application: Application
             }))
     }
 
-    fun initItemByFolder() {
+    fun initItemsByFolder() {
+        mDisposable.clear()
         mDisposable.add(favoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -105,19 +104,33 @@ class FavoriteViewModel @Inject constructor(application: Application
         mDisposable.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
-                if (fromFolderFragment) {
-                    reloadFolderItems()
-                } else {
-                    initItems()
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("INSERTED FOLDER")
                 }
-            }, ::snackbar))
+
+//                if (fromFolderFragment) {
+//                    reloadFolderItems()
+//                } else {
+                    //initItems()
+//                }
+            }, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+            }))
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // FAVORITE FRAGMENT, FOLDER FRAGMENT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
+    fun firstWord(name: String): String {
+        val firstWord = name.substring(0, 1)
+
+        if (mLog.isTraceEnabled) {
+            mLog.trace("FIRST WORD : $firstWord")
+        }
+
+        return firstWord
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -150,84 +163,5 @@ class FavoriteViewModel @Inject constructor(application: Application
 
                 callback(false)
             }))
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // FOLDER FRAGMENT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    fun initFolder(dp: CompositeDisposable, position: Int) {
-        this.mDisposable = dp
-        selectedPosition = position
-
-        initAdapter("folder_item")
-        reloadFolderItems()
-    }
-
-    fun reloadFolderItems() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RELOAD FOLDER LIST")
-        }
-
-        mDisposable.add(favoriteDao.selectShowFolderFlowable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FOLDER COUNT : ${it.size}")
-                }
-
-                // 첫 번째 위치에 즐겨찾기를 추가
-                val list = it.toMutableList()
-                list.add(0, MyFavorite(string(R.string.favorite_title), favType = MyFavorite.T_FOLDER))
-
-                items.set(list)
-                smoothToPosition.set(selectedPosition)
-            })
-    }
-
-    fun firstWord(name: String): String {
-        val firstWord = name.substring(0, 1)
-
-        if (mLog.isTraceEnabled) {
-            mLog.trace("FIRST WORD : $firstWord")
-        }
-
-        return firstWord
-    }
-
-    fun currentFolder() = selectedPosition to items.get()!!.get(selectedPosition).name
-
-    fun posStr(pos: Int): String {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("POS: $pos")
-        }
-
-        return pos.toString()
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ICommandEvent
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    override fun commandEvent(cmd: String, data: Any) {
-        when (cmd) {
-            CMD_CHANGE_FOLDER -> {
-                // 선택 된 위치 값을 표현 하기 위해 화면 갱신을 줌
-                val oldPos  = selectedPosition
-                selectedPosition = data as Int
-
-                adapter.get()?.let {
-                    it.notifyItemChanged(oldPos)
-                    it.notifyItemChanged(selectedPosition)
-                }
-            }
-        }
-
-        super.commandEvent(cmd, data)
     }
 }

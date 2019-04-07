@@ -44,7 +44,7 @@ object RecyclerBindingAdapter {
         }
 
         items?.let {
-            myadapter?.setItems(recycler, it)
+            myadapter?.setItems(recycler, it as ArrayList<T>)
         }
     }
 

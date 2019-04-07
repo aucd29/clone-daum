@@ -44,7 +44,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/ic_arrow_back_white_24dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
         />
 
         <TextView
@@ -59,7 +59,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 tools:text="MESSAGE"
-                android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, model.message)}"
+                android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, model.message)}"
                 android:padding="10dp"
                 android:background="@drawable/selector_button_bgcolor"
         />

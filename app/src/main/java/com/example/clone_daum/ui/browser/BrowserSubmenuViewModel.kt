@@ -15,15 +15,12 @@ import javax.inject.Inject
 
 class BrowserSubmenuViewModel @Inject constructor(application: Application
     , config: PreloadConfig
-) : RecyclerViewModel<BrowserSubMenu>(application), IFinishFragmentAware, ICommandEventAware {
+) : RecyclerViewModel<BrowserSubMenu>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)
 
         const val CMD_SUBMENU = "submenu"
     }
-
-    override val finishEvent  = SingleLiveEvent<Void>()
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     val gridCount = ObservableInt(4)
 

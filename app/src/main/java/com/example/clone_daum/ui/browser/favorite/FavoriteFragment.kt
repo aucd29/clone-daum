@@ -30,7 +30,7 @@ class FavoriteFragment
         mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.favorite_show_all    -> mViewModel.initItems()
-                R.id.favorite_show_folder -> mViewModel.initItemByFolder()
+                R.id.favorite_show_folder -> mViewModel.initItemsByFolder()
             }
         }
     }

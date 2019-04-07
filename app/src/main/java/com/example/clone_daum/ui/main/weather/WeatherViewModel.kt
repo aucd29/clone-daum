@@ -6,15 +6,12 @@ import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Weather
 import com.example.clone_daum.model.remote.WeatherDetail
 import com.example.common.ICommandEventAware
-import com.example.common.IFinishFragmentAware
 import com.example.common.RecyclerViewModel
 import com.example.common.arch.SingleLiveEvent
 import com.patloew.rxlocation.RxLocation
@@ -34,8 +31,7 @@ class WeatherViewModel @Inject constructor(application: Application
     , val preConfig: PreloadConfig
     , val disposable: CompositeDisposable
     , val rxLocation: RxLocation
-) : RecyclerViewModel<WeatherDetail>(application), ICommandEventAware
-    , IFinishFragmentAware {
+) : RecyclerViewModel<WeatherDetail>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(WeatherViewModel::class.java)
 
@@ -43,9 +39,6 @@ class WeatherViewModel @Inject constructor(application: Application
         const val CMD_REFRESH_LOCATION              = "refresh-location"
         const val CMD_CHECK_PERMISSION_AND_LOAD_GPS = "check-permission-and-load-gps"
     }
-
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent  = SingleLiveEvent<Void>()
 
     val currentLocation  = ObservableField<String>(config.DEFAULT_LOCATION)
     val thoroughfare     = ObservableField<String>(config.DEFAULT_LOCATION)
@@ -73,7 +66,7 @@ class WeatherViewModel @Inject constructor(application: Application
 
                     thoroughfare.set(it.thoroughfare)
                     currentLocation.set(current)
-                    commandEvent(CMD_REFRESH_LOCATION, current)
+                    command(CMD_REFRESH_LOCATION, current)
                 })
         }
     }

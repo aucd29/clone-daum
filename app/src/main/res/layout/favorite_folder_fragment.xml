@@ -33,7 +33,7 @@
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <TextView
@@ -72,7 +72,7 @@
                     android:textColor="@android:color/black"
                     android:enabled="false"
                     android:text="@string/fa_pen"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_MODIFY)}"
+                    android:onClick="@{() -> model.command(model.CMD_FAVORITE_MODIFY)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

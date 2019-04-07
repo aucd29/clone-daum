@@ -15,14 +15,12 @@ import javax.inject.Inject
  */
 
 class RealtimeIssueChildViewModel @Inject constructor(app: Application
-) : RecyclerViewModel<RealtimeIssue>(app), ICommandEventAware {
+) : RecyclerViewModel<RealtimeIssue>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildViewModel::class.java)
 
         const val CMD_BRS_OPEN = "brs-open"
     }
-
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     fun initRealtimeIssueAdapter(list: List<RealtimeIssue>) {
         if (mLog.isDebugEnabled) {

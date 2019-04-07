@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteAddViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteFolderViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteModifyViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteViewModel
+import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
@@ -26,7 +23,6 @@ import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
-import com.example.clone_daum.ui.main.weather.WeatherViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
@@ -201,6 +197,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FavoriteAddViewModel::class)
-    abstract fun bindFavoriteAddViewModel(vm: FavoriteAddViewModel): ViewModel
+    @ViewModelKey(FavoriteProcessViewModel::class)
+    abstract fun bindFavoriteAddViewModel(vm: FavoriteProcessViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FolderViewModel::class)
+    abstract fun bindFolderViewModel(vm: FolderViewModel): ViewModel
 }

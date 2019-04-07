@@ -6,6 +6,8 @@ import dagger.android.ContributesAndroidInjector
 import com.example.common.*
 import org.slf4j.LoggerFactory
 import com.example.clone_daum.model.local.MyFavorite
+import com.example.clone_daum.ui.ViewController
+import javax.inject.Inject
 
 
 /**
@@ -15,7 +17,11 @@ import com.example.clone_daum.model.local.MyFavorite
 class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, FavoriteModifyViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyFragment::class.java)
+
+        const val K_FOLDER = "folder"
     }
+
+    @Inject lateinit var viewController: ViewController
 
     override fun initViewBinding() {
         mBinding.apply {
@@ -24,7 +30,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     }
 
     override fun initViewModelEvents() {
-        val folder = arguments?.getString("folder")
+        val folder = arguments?.getString(K_FOLDER)
         mViewModel.init(folder, mDisposable)
     }
 
@@ -60,12 +66,17 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
             }
         }
 
+        // 팝업 메뉴의 경우 folder 를 1개 이상 선택 시,
+        // 폴더와 link 를 같이 선택 시
+        // 아무것도 선택 안했을때 에 모두 비활성화 처리 한다.
         if (mViewModel.selectedList.size == 0 || folderCount > 1 ||
             folderCount > 0 && favCount > 0) {
             popup.enableAll(false)
             return
         }
 
+        // 그리고 link 를 1개 이상 선택 하거나 폴더를 1개 이상 선택 했을때에는
+        // favorite 수정 메뉴를 비활성화 처리 한다.
         val enableMoveFolder = favCount > 0 && folderCount == 0
         val enableFavorite = favCount < 2 || folderCount == 1
         popup.apply {
@@ -77,18 +88,25 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
 
     private fun moveFavoriteFolder() {
         val fav = mViewModel.selectedList.get(0)
+        viewController.folderFragment(childFragmentManager, fav.folder)
     }
 
     private fun modifyFavorite() {
         val fav = mViewModel.selectedList.get(0)
         when (fav.favType) {
             MyFavorite.T_FOLDER  -> modifyFavoriteFolderName(fav)
-            MyFavorite.T_DEFAULT -> {}
+            MyFavorite.T_DEFAULT -> modifyFavoriteLink(fav)
         }
     }
 
     private fun modifyFavoriteFolderName(fav: MyFavorite) {
         FolderDialog.show(this, mViewModel, fav)
+    }
+
+    private fun modifyFavoriteLink(fav: MyFavorite) {
+        finish()
+
+        viewController.favoriteProcessFragment(fav)
     }
 
     private fun addIconToHomeLauncher() {

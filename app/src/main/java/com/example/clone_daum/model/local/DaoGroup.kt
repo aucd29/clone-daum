@@ -21,7 +21,7 @@ import io.reactivex.Single
    mFavoriteDao.insert(MyFavorite(name, url, folder))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(::finishEvent) {
+        .subscribe(::finish) {
             if (mLog.isDebugEnabled) {
                 it.printStackTrace()
             }

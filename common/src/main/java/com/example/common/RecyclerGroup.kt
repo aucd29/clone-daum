@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -55,7 +56,7 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 }
 
 /**
- * xml 에서 event 와 data 를 binding 하므로 viewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
+ * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
 class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
@@ -104,11 +105,11 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
         }
     }
 
-    var items: List<T> = arrayListOf()
+    var items: ArrayList<T> = arrayListOf()
     lateinit var viewModel: ViewModel
     var viewHolderCallback: ((RecyclerHolder, Int) -> Unit)? = null
     var isScrollToPosition = true
-    var isNotifyAll = false
+    var isNotifySetChanged = false
 
     constructor(layoutId: String) : this(arrayOf(layoutId)) { }
 
@@ -145,10 +146,6 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      *
      */
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("BIND VIEW HOLDER $this")
-//        }
-
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
         items.let { it.get(position).let { item ->
@@ -204,9 +201,17 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      * 해결 방법?
      * ----
      * -> 임시로 일단 checkbox 를 호출하기 전에 notifyDataSetChanged 를 호출 함 다른 방법이 있는지 찾아봐야할 듯
+     * ----
+     * 잠시 생각한게 diff util 로 삭제될 데이터 위치와 추가해야할 데이터 위치를 알 수 있으므로 현재 데이터를
+     * items = newItems 할게 아니고 items 내에 특정 위치를 삭제 또는 추가한 뒤 inserted 의 경우
+     * notifyDataSetChanged(position) 을 호출해주면 부하가 좀 적지 않을까? 라는 생각이 듬
+     * 일단 arrayList 로 하는데 이런 구조라면 linked list 가 더 적합할 듯 한 ?
+     * ----
+     *
+     *
      */
-    fun setItems(recycler: RecyclerView, newItems: List<T>) {
-        if (isNotifyAll) {
+    fun setItems(recycler: RecyclerView, newItems: ArrayList<T>) {
+        if (isNotifySetChanged) {
             items = newItems
             notifyDataSetChanged()
 
@@ -244,6 +249,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
 //                return super.getChangePayload(oldItemPosition, newItemPosition)
 //            }
         })
+
 
         if (mLog.isDebugEnabled) {
             mLog.debug("OLD ${oldItems.hashCode()}")
@@ -306,10 +312,13 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
 /**
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
-open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewModel(app) {
+open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
+    : AndroidViewModel(app), ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
     }
+
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     val items           = ObservableField<List<T>>()
     val adapter         = ObservableField<RecyclerAdapter<T>>()

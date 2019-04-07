@@ -72,7 +72,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
                 mRealtimeIssueList = it
                 mAllIssueList      = it.get(0).second
 
-                commandEvent(CMD_LOADED_ISSUE)
+                command(CMD_LOADED_ISSUE)
                 startRealtimeIssue()
             })
     }
