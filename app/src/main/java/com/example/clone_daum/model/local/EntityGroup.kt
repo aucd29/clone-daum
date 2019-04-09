@@ -79,7 +79,7 @@ data class MyFavorite (
     /** 링크 (url) */
     val url: String = "",
     /** 링크일 때 사용 될 폴더 */
-    val folder: String = "",
+    var folder: String = "",
     /** 타입 (링크: 0, 폴더: 1) */
     val favType: Int = T_DEFAULT,
     /** 날짜 인데 이를 기준으로 order 처리 한다. */

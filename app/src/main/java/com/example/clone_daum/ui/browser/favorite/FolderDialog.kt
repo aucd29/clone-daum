@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.browser.favorite
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -17,9 +16,11 @@ import kotlinx.android.synthetic.main.folder_dialog.view.*
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 3. <p/>
  */
 
+// IFolder 는 FavoriteViewModel, FavoriteModifyViewModel, FolderViewModel 에서 사용되며
+// 각자 다른 형태로 구현된다.
 interface IFolder {
     fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int = -1)
-    fun updateFolder(folderName: Any, fromFolderFragment: Boolean)
+    fun processFolder(folderName: Any)
 }
 
 object FolderDialog {
@@ -57,11 +58,15 @@ object FolderDialog {
 
             ok.setOnClickListener {
                 params.dialog?.dismiss()
+
                 if (favorite == null) {
-                    viewModel.updateFolder(folder_name.text.toString(), fromFolderFragment)
+                    viewModel.processFolder(folder_name.text.toString())
                 } else {
+                    val oldName = favorite.name
                     favorite.name = folder_name.text.toString()
-                    viewModel.updateFolder(favorite, fromFolderFragment)
+
+                    val data = oldName to favorite
+                    viewModel.processFolder(data)
                 }
             }
 

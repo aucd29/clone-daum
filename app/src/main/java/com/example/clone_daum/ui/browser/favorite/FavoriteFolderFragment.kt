@@ -67,7 +67,7 @@ class FavoriteFolderFragment
                 mLog.debug("FOLDER NAME : $it")
             }
 
-            viewController.favoriteModifyFragment()
+            viewController.favoriteModifyFragment(it)
         }
     }
 

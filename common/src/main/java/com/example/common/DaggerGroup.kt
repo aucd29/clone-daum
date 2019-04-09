@@ -1,17 +1,12 @@
 package com.example.common
 
-import android.app.Application
-import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import com.example.common.arch.SingleLiveEvent
 import com.example.common.di.module.DaggerViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
@@ -225,7 +220,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         if (this is ICommandEventAware) {
             observe(commandEvent) {
                 when (it.first) {
-                    ICommandEventAware.CMD_FINISH   -> commandFinish()
+                    ICommandEventAware.CMD_FINISH   -> commandFinish(it.second as Boolean)
                     ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
                     ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
 
@@ -235,7 +230,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected open fun commandFinish() = finish()
+    protected open fun commandFinish(animate: Boolean) = finish(animate)
     protected open fun commandToast(message: String) = toast(message)
     protected open fun commandSnackbar(message: String) =
         snackbar(mBinding.root, message, Snackbar.LENGTH_SHORT).show()

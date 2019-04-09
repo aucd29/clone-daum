@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.AndroidViewModel
@@ -324,6 +325,11 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
     val adapter         = ObservableField<RecyclerAdapter<T>>()
     val itemTouchHelper = ObservableField<ItemTouchHelper>()
 
+    /**
+     * adapter 에 사용될 layout 을 설정한다.
+     *
+     * @param id 문자열 형태의 layout 이름
+     */
     fun initAdapter(id: String) {
         val adapter = RecyclerAdapter<T>(id)
         adapter.viewModel = this
@@ -331,6 +337,11 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
         this.adapter.set(adapter)
     }
 
+    /**
+     * adapter 에 사용될 layout 들 을 설정한다.
+     *
+     * @param id 문자열 배열 형태의 layout 이름들
+     */
     fun initAdapter(ids: Array<String>) {
         val adapter = RecyclerAdapter<T>(ids)
         adapter.viewModel = this
@@ -357,6 +368,9 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
             }
         }
     }
+
+    inline fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
+    inline fun toast(@StringRes resid: Int) = toast(string(resid))
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

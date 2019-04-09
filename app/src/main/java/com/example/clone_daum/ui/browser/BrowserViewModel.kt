@@ -115,7 +115,7 @@ class BrowserViewModel @Inject constructor(app: Application
                         mLog.info("EXIST URL : $url ($it)")
                     }
 
-                    snackbar(string(R.string.brs_exist_fav_url))
+                    snackbar(R.string.brs_exist_fav_url)
                 } else {
                     insertZzim(url)
                 }
@@ -139,7 +139,7 @@ class BrowserViewModel @Inject constructor(app: Application
                     mLog.debug("ZZIM URL : $url")
                 }
 
-                snackbar(string(R.string.brs_fav_url_ok))
+                snackbar(R.string.brs_fav_url_ok)
             }, {
                 if (mLog.isDebugEnabled) {
                     it.printStackTrace()

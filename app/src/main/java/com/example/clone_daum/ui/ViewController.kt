@@ -227,12 +227,12 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             }))
     }
 
-    fun folderFragment(child: FragmentManager, currentFolder: String? = null) {
+    fun folderFragment(child: FragmentManager, currentFolder: String? = null, container: Int = FAVORITE_CONTAINER) {
         if (mLog.isInfoEnabled) {
             mLog.info("FOLDER FRAGMENT (${currentFolder})")
         }
 
-        child.show(FragmentParams(FAVORITE_CONTAINER, FolderFragment::class.java
+        child.show(FragmentParams(container, FolderFragment::class.java
             , anim   = FragmentAnim.RIGHT
             , bundle = Bundle().apply {
                 putString(FolderFragment.K_CURRENT_FOLDER, currentFolder)

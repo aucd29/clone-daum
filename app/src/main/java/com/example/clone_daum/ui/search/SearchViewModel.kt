@@ -104,7 +104,7 @@ class SearchViewModel @Inject constructor(app: Application
                 }))
 
             command(CMD_BRS_SEARCH, it)
-        } ?: snackbarEvent(R.string.error_empty_keyword)
+        } ?: snackbar(R.string.error_empty_keyword)
     }
 
     fun eventToggleRecentSearch() {
@@ -213,13 +213,4 @@ class SearchViewModel @Inject constructor(app: Application
             View.VISIBLE
         })
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ISnackbarAware
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    private fun snackbarEvent(@StringRes resid: Int) =
-        snackbar(string(resid))
 }

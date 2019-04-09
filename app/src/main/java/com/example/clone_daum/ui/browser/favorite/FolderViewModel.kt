@@ -88,13 +88,13 @@ class FolderViewModel @Inject constructor(application: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun updateFolder(folderName: Any, fromFolderFragment: Boolean) {
+    override fun processFolder(folderName: Any) {
         mDisposable.add(favoriteDao.insert(MyFavorite(folderName.toString()
             , favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("INSERTED FAVORITE")
+                    mLog.debug("INSERTED FAVORITE FOLDER")
                 }
             }, {
                 if (mLog.isDebugEnabled) {

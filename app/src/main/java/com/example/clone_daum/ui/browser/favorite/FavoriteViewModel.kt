@@ -44,9 +44,9 @@ class FavoriteViewModel @Inject constructor(application: Application
     val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
 
     // FolderFragment
-    private var mCurrentFolder: String? = null
-    var selectedPosition: Int = 0
-    var smoothToPosition = ObservableInt(0)
+//    private var mCurrentFolder: String? = null
+//    var selectedPosition: Int = 0
+//    var smoothToPosition = ObservableInt(0)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -77,6 +77,7 @@ class FavoriteViewModel @Inject constructor(application: Application
                 }
 
                 mLog.error("ERROR: ${it.message}")
+                snackbar(it)
             }))
     }
 
@@ -97,10 +98,11 @@ class FavoriteViewModel @Inject constructor(application: Application
                 }
 
                 mLog.error("ERROR: ${it.message}")
+                snackbar(it)
             }))
     }
 
-    fun insertFolder(folderName: String, fromFolderFragment: Boolean) {
+    fun insertFolder(folderName: String) {
         mDisposable.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
@@ -119,6 +121,7 @@ class FavoriteViewModel @Inject constructor(application: Application
                 }
 
                 mLog.error("ERROR: ${it.message}")
+                snackbar(it)
             }))
     }
 
@@ -138,8 +141,8 @@ class FavoriteViewModel @Inject constructor(application: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun updateFolder(folderName: Any, fromFolderFragment: Boolean) {
-        insertFolder(folderName.toString(), fromFolderFragment)
+    override fun processFolder(folderName: Any) {
+        insertFolder(folderName.toString())
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
@@ -160,7 +163,7 @@ class FavoriteViewModel @Inject constructor(application: Application
                 }
 
                 mLog.error("ERROR: ${it.message}")
-
+                snackbar(it)
                 callback(false)
             }))
     }

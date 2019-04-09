@@ -110,8 +110,16 @@ inline fun Fragment.hideKeyboard(view: View) =
 /**
  * fragment 를 종료 시키낟.
  */
-inline fun Fragment.finish() =
-    fragmentManager?.pop()
+inline fun Fragment.finish(animate: Boolean = true) {
+    if (animate) {
+        fragmentManager?.pop()
+    } else {
+        fragmentManager?.let {
+            it.beginTransaction().setCustomAnimations(0, 0).commitNow()
+            it.popBackStack()
+        }
+    }
+}
 
 /**
  * 화면을 ON / OFF 시킨다.

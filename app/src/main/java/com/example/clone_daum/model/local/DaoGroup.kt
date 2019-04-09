@@ -115,7 +115,10 @@ interface MyFavoriteDao {
     fun selectShowAll(): Single<List<MyFavorite>>
 
     @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY date ASC")
-    fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
+    fun selectByFolderNameFlowable(folderName: String): Flowable<List<MyFavorite>>
+
+    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY date ASC")
+    fun selectByFolderName(folderName: String): Single<List<MyFavorite>>
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
@@ -131,6 +134,9 @@ interface MyFavoriteDao {
 
     @Update
     fun update(vararg data: MyFavorite): Completable
+
+    @Query("UPDATE myFavorite SET folder=:newName WHERE folder=:oldName")
+    fun updateFolderName(newName: String, oldName: String)
 
     @Delete
     fun delete(data: MyFavorite): Completable

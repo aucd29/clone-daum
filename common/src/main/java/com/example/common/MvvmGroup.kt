@@ -145,9 +145,8 @@ interface ICommandEventAware {
 
     val commandEvent: SingleLiveEvent<Pair<String, Any>>
 
-    // @JvmOverloads 를 넣고 싶긴한데 =_ = 흠;
-
-    fun finish() = command(CMD_FINISH)
+    fun finish() = command(CMD_FINISH, true)
+    fun finish(animate: Boolean) = command(CMD_FINISH, animate)     // XML 에서 호출해야 되서
     fun snackbar(msg: String) = command(CMD_SNACKBAR, msg)
     fun snackbar(e: Throwable) { e.message?.let { command(CMD_SNACKBAR, it) } }
     fun toast(msg: String) = command(CMD_TOAST, msg)
@@ -162,14 +161,6 @@ interface ICommandEventAware {
         command(cmd, -1)
     }
 }
-//
-//interface IFinishFragmentAware {
-//    val finishEvent: SingleLiveEvent<Void>
-//
-//    fun finishEvent() {
-//        finishEvent.call()
-//    }
-//}
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -179,9 +170,12 @@ interface ICommandEventAware {
 
 open class CommandEventViewModel(application: Application)
     : AndroidViewModel(application)
-    , ICommandEventAware { // , IFinishFragmentAware
+    , ICommandEventAware {
+
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
-//    override val finishEvent  = SingleLiveEvent<Void>()
+
+    inline fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
+    inline fun toast(@StringRes resid: Int) = toast(string(resid))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -255,7 +249,7 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
         data.observe(this, Observer { observer(it) })
     }
 
-    protected fun activity() = activity as BaseActivity<out ViewDataBinding>
+    protected fun activity()  = requireActivity()
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()
@@ -284,7 +278,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
         data.observe(this, Observer { observer(it) })
     }
 
-    fun activity() = activity as BaseActivity<out ViewDataBinding>
+    protected fun activity()  = requireActivity()
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()

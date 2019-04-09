@@ -31,6 +31,11 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
 
     override fun initViewModelEvents() {
         val folder = arguments?.getString(K_FOLDER)
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("FOLDER : $folder")
+        }
+
         mViewModel.init(folder, mDisposable)
     }
 
@@ -88,7 +93,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
 
     private fun moveFavoriteFolder() {
         val fav = mViewModel.selectedList.get(0)
-        viewController.folderFragment(childFragmentManager, fav.folder)
+        viewController.folderFragment(childFragmentManager, fav.folder, R.id.favorite_modify_container)
     }
 
     private fun modifyFavorite() {
@@ -115,10 +120,23 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
                 mLog.debug("ADD ICON TO HOME LAUNCHER : $it.url")
             }
 
-            shortcut(ShortcutParams(it.url, R.mipmap.ic_launcher, it.name))
+            shortcut(ShortcutParams(it.url, R.mipmap.ic_launcher, it.name, it.name))
         }
 
         finish()
+    }
+
+    fun changeFolderName(pos: Int, name: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CHANGE FOLDER $name ($pos)")
+        }
+
+        val fav = mViewModel.selectedList.get(0)
+        fav.folder = if (name == string(R.string.folder_favorite)) "" else name
+
+        mViewModel.updateFavorite(fav) {
+            finish()
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

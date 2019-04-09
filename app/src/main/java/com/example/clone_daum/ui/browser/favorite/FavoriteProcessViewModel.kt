@@ -110,7 +110,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
                             mLog.info("EXIST FAVORITE $url")
                         }
 
-                        snackbar(string(R.string.brs_exist_fav_url))
+                        snackbar(R.string.brs_exist_fav_url)
                     } else {
                         insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
                     }
