@@ -30,7 +30,6 @@ object FolderDialog {
 
         val view = LayoutInflater.from(frgmt.requireContext()).inflate(R.layout.folder_dialog, null)
         val params = DialogParam(view = view)
-        val fromFolderFragment = frgmt is FolderFragment
 
         frgmt.dialog(params)
 
@@ -65,8 +64,7 @@ object FolderDialog {
                     val oldName = favorite.name
                     favorite.name = folder_name.text.toString()
 
-                    val data = oldName to favorite
-                    viewModel.processFolder(data)
+                    viewModel.processFolder(oldName to favorite)
                 }
             }
 

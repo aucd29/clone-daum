@@ -87,7 +87,7 @@ interface ZzimDao {
 @Dao
 interface UrlHistoryDao {
     @Query("SELECT * FROM urlHistory ORDER BY _id DESC")
-    fun search(): Flowable<List<UrlHistory>>
+    fun select(): Flowable<List<UrlHistory>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data: UrlHistory): Completable

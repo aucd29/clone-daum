@@ -134,9 +134,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
         val fav = mViewModel.selectedList.get(0)
         fav.folder = if (name == string(R.string.folder_favorite)) "" else name
 
-        mViewModel.updateFavorite(fav) {
-            finish()
-        }
+        mViewModel.updateFavorite(fav) { finish() }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

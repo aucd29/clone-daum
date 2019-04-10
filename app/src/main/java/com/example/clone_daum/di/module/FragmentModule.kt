@@ -3,6 +3,8 @@ package com.example.clone_daum.di.module
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.*
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryModifyFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
@@ -62,6 +64,10 @@ import dagger.Module
     , FavoriteFolderFragment.Module::class
     , FavoriteProcessFragment.Module::class
     , FolderFragment.Module::class
+
+    // URL HISTORY
+    , UrlHistoryFragment.Module::class
+    , UrlHistoryModifyFragment.Module::class
 ])
 class FragmentModule {
 

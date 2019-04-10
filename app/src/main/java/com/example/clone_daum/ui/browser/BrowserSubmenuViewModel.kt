@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 
 class BrowserSubmenuViewModel @Inject constructor(application: Application
-    , config: PreloadConfig
+    , val config: PreloadConfig
 ) : RecyclerViewModel<BrowserSubMenu>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)

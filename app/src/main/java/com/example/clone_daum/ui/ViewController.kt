@@ -7,6 +7,8 @@ import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.*
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryModifyFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -238,4 +240,25 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
                 putString(FolderFragment.K_CURRENT_FOLDER, currentFolder)
             }))
     }
+
+    fun urlHistoryFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("URL HISTORY FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, UrlHistoryFragment::class.java
+            , anim   = FragmentAnim.RIGHT
+            ))
+    }
+
+    fun urlHistoryModifyFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("URL HISTORY MODIFY FRAGMENT")
+        }
+
+        manager.show(FragmentParams(CONTAINER, UrlHistoryModifyFragment::class.java
+            , anim   = FragmentAnim.RIGHT
+            ))
+    }
+
 }

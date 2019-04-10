@@ -6,7 +6,6 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -18,7 +17,7 @@ import javax.inject.Inject
  */
 
 class FolderViewModel @Inject constructor(application: Application
-    , private val favoriteDao: MyFavoriteDao
+    , private val mFavoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(application), IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FolderViewModel::class.java)
@@ -52,7 +51,7 @@ class FolderViewModel @Inject constructor(application: Application
             mLog.debug("RELOAD FOLDER LIST")
         }
 
-        mDisposable.add(favoriteDao.selectShowFolderFlowable()
+        mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
@@ -89,7 +88,7 @@ class FolderViewModel @Inject constructor(application: Application
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun processFolder(folderName: Any) {
-        mDisposable.add(favoriteDao.insert(MyFavorite(folderName.toString()
+        mDisposable.add(mFavoriteDao.insert(MyFavorite(folderName.toString()
             , favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
@@ -108,7 +107,7 @@ class FolderViewModel @Inject constructor(application: Application
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
-        mDisposable.add(favoriteDao.hasFolder(name)
+        mDisposable.add(mFavoriteDao.hasFolder(name)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

@@ -19,7 +19,7 @@ inline fun Activity.shortcut(params: ShortcutParams) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(params.link))
 
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
-        systemService(ShortcutManager::class.java)?.apply {
+        systemService<ShortcutManager>()?.apply {
             if (isRequestPinShortcutSupported) {
                 requestPinShortcut(ShortcutInfo.Builder(applicationContext, params.link)
                     .setShortLabel(params.shortLabel)

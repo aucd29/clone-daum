@@ -1,10 +1,13 @@
 package com.example.clone_daum.di.module
 
 import androidx.lifecycle.ViewModel
+import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryModifyViewModel
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
@@ -204,4 +207,20 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FolderViewModel::class)
     abstract fun bindFolderViewModel(vm: FolderViewModel): ViewModel
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // URL HISTORY
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UrlHistoryViewModel::class)
+    abstract fun bindUrlHistoryViewModel(vm: UrlHistoryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UrlHistoryModifyViewModel::class)
+    abstract fun bindUrlHistoryModifyViewModel(vm: UrlHistoryModifyViewModel): ViewModel
 }

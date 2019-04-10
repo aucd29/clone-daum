@@ -28,20 +28,15 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     init {
-        // MainViewModel 를 MainWebViewFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
+        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
 
-//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
-//    private lateinit var mWeatherViewModel: WeatherViewModel
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
-
-    // SearchFragment 와 공유
-    private lateinit var mPopularViewModel: PopularViewModel
+    private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
 
     private var mCurrentTabPos: Int = 0
     private val mRealtimeTabSelectedListener = object: TabLayout.OnTabSelectedListener {

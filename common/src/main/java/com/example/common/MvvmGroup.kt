@@ -65,13 +65,13 @@ inline fun AndroidViewModel.pxToDp(v: Float) = v / app.displayDensity()
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline fun <reified T : ViewModel> FragmentActivity.obtainViewModel(clazz: Class<T>,
-        provider: ViewModelProvider.Factory? = null) =
-        provider?.let { ViewModelProviders.of(this, it).get(clazz) } ?:
-                        ViewModelProviders.of(this).get(clazz)
+inline fun <reified T : ViewModel> FragmentActivity.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
+    provider?.let {
+        ViewModelProviders.of(this, it).get(T::class.java)
+    } ?: ViewModelProviders.of(this).get(T::class.java)
 
-inline fun <reified T : ViewModel> Fragment.obtainViewModel(clazz: Class<T>,
-        provider: ViewModelProvider.Factory? = null) = activity?.obtainViewModel(clazz, provider)
+inline fun <reified T : ViewModel> Fragment.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
+    activity?.obtainViewModel<T>( provider)
 
 ////////////////////////////////////////////////////////////////////////////////////
 //

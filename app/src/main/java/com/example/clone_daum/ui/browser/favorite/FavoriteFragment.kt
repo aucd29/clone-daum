@@ -64,10 +64,7 @@ class FavoriteFragment
     private fun showBrowser(url: String) {
         finish()
 
-        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-        if (frgmt is BrowserFragment) {
-            frgmt.loadUrl(url)
-        }
+        fragmentManager?.find<BrowserFragment>()?.loadUrl(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

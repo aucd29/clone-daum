@@ -23,7 +23,7 @@ class RotationListener {
         mRotationCallback = callback
 
         context.applicationContext.apply {
-            mWindowManager = systemService(WindowManager::class.java)
+            mWindowManager = systemService<WindowManager>()
             mOrientationEventListener = object: OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
                 override fun onOrientationChanged(orientation: Int) {
                     if (mWindowManager != null && mRotationCallback != null) {

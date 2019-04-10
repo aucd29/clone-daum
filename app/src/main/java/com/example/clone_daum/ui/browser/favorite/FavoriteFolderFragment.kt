@@ -55,10 +55,7 @@ class FavoriteFolderFragment
         finish()
         finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
 
-        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-        if (frgmt is BrowserFragment) {
-            frgmt.loadUrl(url)
-        }
+        fragmentManager?.find<BrowserFragment>()?.loadUrl(url)
     }
 
     private fun modifyFavorite() {

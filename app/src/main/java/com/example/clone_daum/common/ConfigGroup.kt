@@ -8,7 +8,6 @@ import android.os.Build
 import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.R
-import com.example.clone_daum.common.camera.CameraInstance
 import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.BrowserSubMenu
 import com.example.clone_daum.model.local.FrequentlySite
@@ -68,7 +67,7 @@ class Config @Inject constructor(val context: Context) {
         //
         // W / H
         //
-        context.systemService(WindowManager::class.java)?.defaultDisplay?.getSize(SCREEN)
+        context.systemService<WindowManager>()?.defaultDisplay?.getSize(SCREEN)
 
         //
         // STATUS_BAR_HEIGHT
@@ -101,11 +100,11 @@ class Config @Inject constructor(val context: Context) {
 ////////////////////////////////////////////////////////////////////////////////////
 
 @Singleton
-class PreloadConfig @Inject constructor(val daum: DaumService
-                                        , val db: DbRepository
-                                        , val dp: CompositeDisposable
-                                        , val assets: AssetManager
-                                        , val context: Context
+class PreloadConfig @Inject constructor(private val mDaum: DaumService
+    , private val mDb: DbRepository
+    , private val mDisposable: CompositeDisposable
+    , private val mAssetManager: AssetManager
+    , private val mContext: Context
 ) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
@@ -115,27 +114,20 @@ class PreloadConfig @Inject constructor(val daum: DaumService
     lateinit var brsSubMenuList: List<BrowserSubMenu>
     lateinit var naviSitemapList: List<Sitemap>
 
-    // 초기 로딩 문제로 사용하는 곳에서 async 하게 call 하도록 수정
-    // html parsing 이 sync 해서 느렸던건가?
-    // DOM + XPATH 가 느리긴 하지만... -_ - [aucd29][2019. 1. 21.]
-//    lateinit var weatherDetailList: List<WeatherDetail>
-//    val realtimeIssueList: List<Pair<String, List<RealtimeIssue>>>
     init {
-        dp.add(
-            Observable.just(assets.open("res/brs_submenu.json").readBytes())
+        mDisposable.add(Observable.just(mAssetManager.open("res/brs_submenu.json").readBytes())
                 .observeOn(Schedulers.io())
                 .map { it.jsonParse<List<BrowserSubMenu>>() }
                 .map {
                     it.forEach {
-                        it.iconResid = context.stringId(it.icon)
+                        it.iconResid = mContext.stringId(it.icon)
                     }
 
                     it
                 }
                 .subscribe { brsSubMenuList = it })
 
-        dp.add(
-            Observable.just(assets.open("res/navi_sitemap.json").readBytes())
+        mDisposable.add(Observable.just(mAssetManager.open("res/navi_sitemap.json").readBytes())
                 .observeOn(Schedulers.io())
                 .map { it.jsonParse<List<Sitemap>>() }
                 .subscribe {
@@ -146,12 +138,11 @@ class PreloadConfig @Inject constructor(val daum: DaumService
                     naviSitemapList = it
                 })
 
-        dp.add(db.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
+        mDisposable.add(mDb.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
             if (it.size == 0) {
                 // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
                 // 기본 값 생성하는 것.
-                dp.add(
-                    Observable.just(assets.open("res/frequently_site.json").readBytes())
+                mDisposable.add(Observable.just(mAssetManager.open("res/frequently_site.json").readBytes())
                         .observeOn(Schedulers.io())
                         .map { it.jsonParse<List<FrequentlySite>>() }
                         .subscribe {
@@ -159,7 +150,7 @@ class PreloadConfig @Inject constructor(val daum: DaumService
                                 mLog.debug("PARSE OK : frequently_site.json ")
                             }
 
-                            db.frequentlySiteDao.insertAll(it).subscribe {
+                            mDb.frequentlySiteDao.insertAll(it).subscribe {
                                 if (mLog.isDebugEnabled) {
                                     mLog.debug("INSERTED FrequentlySite")
                                 }
@@ -168,16 +159,16 @@ class PreloadConfig @Inject constructor(val daum: DaumService
             }
         })
 
-        tabLabelList = Observable.just(assets.open("res/tab.json").readBytes())
+        tabLabelList = Observable.just(mAssetManager.open("res/tab.json").readBytes())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
     }
 
-    fun daumMain() = daum.main().observeOn(Schedulers.io())
+    fun daumMain() = mDaum.main().observeOn(Schedulers.io())
 
     fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
-        dp.add(Observable.just(assets.open("res/weather_default.json").readBytes())
+        mDisposable.add(Observable.just(mAssetManager.open("res/weather_default.json").readBytes())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<WeatherDetail>>() }
             .observeOn(AndroidSchedulers.mainThread())

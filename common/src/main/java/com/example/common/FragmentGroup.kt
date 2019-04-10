@@ -42,7 +42,9 @@ inline val FragmentManager.count: Int
     get() = backStackEntryCount
 
 /** 등록되어 있는 Fragment 내에서 원하는 Fragment 를 검색해서 반환 */
-inline fun FragmentManager.find(clazz: Class<out Fragment>) = findFragmentByTag(clazz.name)
+inline fun <reified T: Fragment> FragmentManager.find() =
+    findFragmentByTag(T::class.java.name) as T?
+
 
 /**
  * 다이얼로그를 띄우기 위한 옵저버 로 view model 에 선언되어 있는 single live event 의 값의 변화를 인지 하여 dialog 을 띄운다.

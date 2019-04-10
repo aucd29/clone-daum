@@ -4,7 +4,6 @@ import android.app.Application
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -16,7 +15,7 @@ import javax.inject.Inject
  */
 
 class FavoriteFolderViewModel @Inject constructor(application: Application
-    , private val favoriteDao: MyFavoriteDao
+    , private val mFavoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
@@ -32,7 +31,7 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
 
         // folder 형태의 index 값이 0
         initAdapter(arrayOf("favorite_item_from_folder", "favorite_item_from_folder"))
-        mDisposable.add(favoriteDao.selectByFolderNameFlowable(folderName)
+        mDisposable.add(mFavoriteDao.selectByFolderNameFlowable(folderName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
