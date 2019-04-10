@@ -58,6 +58,7 @@ data class Zzim (
 
 @Entity(tableName = "urlHistory")
 data class UrlHistory (
+    val title: String,
     val url: String,
     val date: Long,
     @PrimaryKey(autoGenerate = true)

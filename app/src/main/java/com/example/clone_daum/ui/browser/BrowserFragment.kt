@@ -98,6 +98,8 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }, pageFinished = {
                     visibleProgress.set(View.GONE)
                     reloadIconResId.set(R.drawable.ic_replay_black_24dp)
+
+                    addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }
                 , userAgent    = { config.USER_AGENT }
@@ -120,6 +122,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+    }
+
+    private fun addHistory() {
+        mViewModel.addHistory(webview.url, webview.title)
     }
 
     override fun onPause() {
@@ -256,7 +262,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun urlHistory() {
-
+        viewController.urlHistoryFragment()
     }
 
     private fun copyUrl() {

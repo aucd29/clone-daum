@@ -63,10 +63,19 @@ class BrowserViewModel @Inject constructor(app: Application
         }
 
         visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
-
         urlString.set(url)
-        mUrlHistoryDao.insert(UrlHistory(url = url, date = System.currentTimeMillis()))
-            .subscribeOn(Schedulers.io()).subscribe()
+    }
+
+    fun addHistory(url: String, title: String) {
+        mDisposable.add(mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
+            .subscribeOn(Schedulers.io())
+            .subscribe({}, {
+                if (mLog.isDebugEnabled) {
+                    it.printStackTrace()
+                }
+
+                mLog.error("ERROR: ${it.message}")
+            }))
     }
 
     fun applyBrsCount(count: Int) {

@@ -14,11 +14,17 @@ class UrlHistoryFragment : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHist
     }
 
     override fun initViewModelEvents() {
+        mViewModel.apply {
+            init(mDisposable)
+            initItems()
+        }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
     //
     // Module
     //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {

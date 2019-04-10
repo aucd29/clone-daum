@@ -57,12 +57,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             .subscribe({ html ->
                 mRealtimeIssueViewModel.load(html)
                 mPopularViewModel.load(html, mDisposable)
-            }, { e ->
+            }, {
                 if (mLog.isDebugEnabled) {
-                    e.printStackTrace()
+                    it.printStackTrace()
                 }
 
-                mLog.error("ERROR: ${e.message}")
+                mLog.error("ERROR: ${it.message}")
             }))
     }
 
