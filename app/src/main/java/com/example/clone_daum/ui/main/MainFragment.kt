@@ -67,12 +67,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     private fun initRealtimeIssueViewModel() {
-        mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
+        mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this)
         mBinding.realtimeIssueModel = mRealtimeIssueViewModel
     }
 
     private fun initPopularViewModel() {
-        mPopularViewModel = mViewModelFactory.injectOfActivity(this, PopularViewModel::class.java)
+        mPopularViewModel = mViewModelFactory.injectOfActivity(this)
     }
 
     override fun initViewBinding() {

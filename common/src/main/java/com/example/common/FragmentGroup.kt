@@ -84,7 +84,7 @@ inline fun Fragment.toast(@StringRes resid: Int, length:Int = Toast.LENGTH_SHORT
  * alert 형태의 다이얼로그를 띄운다.
  */
 inline fun Fragment.alert(messageId: Int, titleId: Int? = null
-                          , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+    , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = requireContext()
         , messageId = messageId
         , titleId   = titleId
@@ -95,7 +95,7 @@ inline fun Fragment.alert(messageId: Int, titleId: Int? = null
  * confirm 형태의 다이얼로그를 띄운다.
  */
 inline fun Fragment.confirm(messageId: Int, titleId: Int? = null
-                            , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+    , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = requireContext()
         , messageId  = messageId
         , titleId    = titleId
@@ -116,9 +116,9 @@ inline fun Fragment.finish(animate: Boolean = true) {
     if (animate) {
         fragmentManager?.pop()
     } else {
-        fragmentManager?.let {
-            it.beginTransaction().setCustomAnimations(0, 0).commitNow()
-            it.popBackStack()
+        fragmentManager?.apply {
+            beginTransaction().setCustomAnimations(0, 0).commitNow()
+            pop()
         }
     }
 }
@@ -174,16 +174,15 @@ object FragmentCommit {
         get() = "notallow"
 }
 
-inline fun FragmentManager.show(params: FragmentParams) {
+inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams) {
     val frgmt: Fragment
-
-    val existFrgmt = findFragmentByTag(params.fragment.name)
+    val existFrgmt = findFragmentByTag(T::class.java.name)
     if (existFrgmt != null && existFrgmt.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
         return
     }
 
-    frgmt = params.fragment.newInstance() as Fragment
+    frgmt = T::class.java.newInstance() as Fragment
     val transaction = beginTransaction()
 
     params.apply {
@@ -234,10 +233,10 @@ inline fun FragmentManager.show(params: FragmentParams) {
 /**
  * Fragment 를 삭제 한다.
  */
-inline fun FragmentManager.remove(clazz: Class<*>) {
-    findFragmentByTag(clazz.name)?.let {
+inline fun <reified T: Fragment> FragmentManager.remove() {
+    findFragmentByTag(T::class.java.name)?.let {
         beginTransaction().remove(it).commit()
-    } ?: throw AssertionError("Fragment Not Found : ${clazz.name}")
+    } ?: throw AssertionError("Fragment Not Found : ${T::class.java.name}")
 }
 
 /**
@@ -270,8 +269,6 @@ inline fun FragmentManager.popAll() {
 data class FragmentParams(
     /** add 또는 replace 에 대상이 되는 view 의 id */
     @IdRes val containerId: Int,
-    /** 띄워야할 Fragment class */
-    val fragment: Class<*>,
     /** true 면 add 시키고 false 면 replace 한다. add 면 기존에 Fragment 를 나두고 추가 시키고 replace 면 기존에 걸 교체 한다.  */
     val add: Boolean = true,
     /** 트렌젝션 시 화면에 나타나야할 animation 종류 */

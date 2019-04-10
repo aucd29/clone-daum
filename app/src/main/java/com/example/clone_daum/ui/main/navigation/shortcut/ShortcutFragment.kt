@@ -22,8 +22,8 @@ class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutView
 
         mViewModelFactory.apply {
             // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로 injectOf 를 이용 한다.
-            mSitemapViewModel    = injectOf(this@ShortcutFragment, SitemapViewModel::class.java)
-            mFrequentlySiteModel = injectOf(this@ShortcutFragment, FrequentlySiteViewModel::class.java)
+            mSitemapViewModel    = injectOf(this@ShortcutFragment)
+            mFrequentlySiteModel = injectOf(this@ShortcutFragment)
         }
 
         mBinding.apply {

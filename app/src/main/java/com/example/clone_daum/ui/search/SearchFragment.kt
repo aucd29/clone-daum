@@ -28,7 +28,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
+        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment)
         mBinding.popularmodel = mPopularViewModel
     }
 

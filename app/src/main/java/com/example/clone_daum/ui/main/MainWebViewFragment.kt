@@ -42,8 +42,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mSplashViewModel = mViewModelFactory.injectOfActivity(this, SplashViewModel::class.java)
-        mMainViewModel   = mViewModelFactory.injectOfActivity(this, MainViewModel::class.java)
+        mSplashViewModel = mViewModelFactory.injectOfActivity(this)
+        mMainViewModel   = mViewModelFactory.injectOfActivity(this)
     }
 
     @SuppressLint("ClickableViewAccessibility")
