@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.example.clone_daum.model.*
+import com.example.common.IDateCalculator
 import com.example.common.IRecyclerDiff
 import com.example.common.IRecyclerItem
 import com.example.common.IRecyclerPosition
@@ -59,18 +60,22 @@ data class Zzim (
 @Entity(tableName = "urlHistory")
 data class UrlHistory (
     val title: String,
-    val url: String,
-    val date: Long,
+    val url: String?,
+    val date: Long?,
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0
-) : IRecyclerDiff, IRecyclerItem {
+) : IRecyclerDiff, IRecyclerItem, IDateCalculator {
     companion object {
         const val T_HISTORY   = 0
         const val T_SEPERATOR = 1
     }
 
+    @Ignore
+    var type = T_HISTORY
+
     override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
-    override fun type() = T_HISTORY
+    override fun type() = type
+    override fun timeInMillis() = date?.let { it } ?: 0
 }
 
 @Entity(tableName = "myFavorite")

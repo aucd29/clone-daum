@@ -4,7 +4,9 @@ import android.app.Application
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
+import com.example.common.DateCalculator
 import com.example.common.RecyclerViewModel
+import com.example.common.lastTimeToday
 import com.example.common.string
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -29,6 +31,11 @@ class UrlHistoryViewModel @Inject constructor(application: Application
     }
 
     private lateinit var mDisposable: CompositeDisposable
+    private val dateCal = DateCalculator<UrlHistory>()
+
+    init {
+        dateCal.dateFormat(string(R.string.history_date_format))
+    }
 
     fun init(dp: CompositeDisposable) {
         mDisposable = dp
@@ -39,36 +46,13 @@ class UrlHistoryViewModel @Inject constructor(application: Application
         mDisposable.add(mUrlHistoryDao.select()
             .subscribeOn(Schedulers.io())
             .map {
-                var index = 0
-                var cal = Calendar.getInstance()
-                val sdf = SimpleDateFormat(string(R.string.history_date_format), Locale.getDefault())
-
-                cal.add(Calendar.DAY_OF_WEEK, -1)
-                val week = cal.timeInMillis
-
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("WEEK ${sdf.format(cal.time)}")
-                }
-
-                cal = Calendar.getInstance()
-                cal.add(Calendar.MONTH, -1)
-                var month = cal.timeInMillis
-
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("MONTH ${sdf.format(cal.time)}")
-                }
-
-
-                for (data in it) {
-
+                it.forEach {
+                    dateCal.process(it)
                 }
 
             }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-
-
-
 
 
             }, {
@@ -79,6 +63,4 @@ class UrlHistoryViewModel @Inject constructor(application: Application
                 mLog.error("ERROR: ${it.message}")
             }))
     }
-
-
 }

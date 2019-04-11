@@ -89,6 +89,9 @@ interface UrlHistoryDao {
     @Query("SELECT * FROM urlHistory ORDER BY _id DESC")
     fun select(): Flowable<List<UrlHistory>>
 
+    @Query("SELECT COUNT(*) FROM urlHistory WHERE url=:url")
+    fun hasUrl(url: String): Maybe<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data: UrlHistory): Completable
 

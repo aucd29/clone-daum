@@ -114,11 +114,10 @@
     <string name="folder_exist_folder_name">동일한 폴더명이 존재 합니다.</string>
 
     <!--history-->
-    <string-array name="history_seperator">
-        <item>지난 7일 동안 - %s</item>
-        <item>지난 달 - %s</item>
-        <item>오래된 항목</item>
-    </string-array>
+    <string name="history_today">오늘 - %s</string>
+    <string name="history_week">지난 7일 동안 - %s</string>
+    <string name="history_month">지난 달 - %s</string>
+    <string name="history_old">오래된 항목</string>
     <string name="history_date_format">"yyyy년 MM월 dd일 EEE요일"</string>
 
     <!-- error -->
