@@ -66,7 +66,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 visibleProgress.set(View.GONE)
 
                 mRealtimeIssueList = it
@@ -74,7 +74,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
                 command(CMD_LOADED_ISSUE)
                 startRealtimeIssue()
-            })
+            }, { errorLog(it, mLog) }))
     }
 
     private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {

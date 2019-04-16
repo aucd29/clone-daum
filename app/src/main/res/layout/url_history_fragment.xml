@@ -44,7 +44,7 @@
                     tools:text="URL HISTORY"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text=""
+                    android:text="@string/history_title"
                     android:textColor="@android:color/black"
             />
 

@@ -115,11 +115,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
                         insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
                     }
                 }, {
-                    if (mLog.isDebugEnabled) {
-                        it.printStackTrace()
-                    }
-
-                    mLog.error("ERROR: ${it.message}")
+                    errorLog(it, mLog)
                     snackbar(it)
                 })
             )
@@ -137,11 +133,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
 
                     finish()
                 }, {
-                    if (mLog.isDebugEnabled) {
-                        it.printStackTrace()
-                    }
-
-                    mLog.error("ERROR: ${it.message}")
+                    errorLog(it, mLog)
                     snackbar(it)
                 }))
         }
@@ -158,11 +150,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
 
                 finish()
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it, mLog)
                 snackbar(it)
             }))
     }

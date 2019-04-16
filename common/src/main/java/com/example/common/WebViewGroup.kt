@@ -51,6 +51,7 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
         userAgent?.invoke().let { userAgentString = it }
     }
 
+
     webViewClient = object : WebViewClient() {
         private val mLog = LoggerFactory.getLogger(WebView::class.java)
 
@@ -58,14 +59,15 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
         var redirect        = false
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            if (!loadingFinished) {
-                redirect = true
-            }
-
             if (mLog.isDebugEnabled) {
                 mLog.debug("shouldOverrideUrlLoading : $url")
             }
 
+            if (!loadingFinished) {
+                redirect = true
+            }
+
+            loadingFinished = false
             urlLoading?.invoke(view, url) ?: view?.loadUrl(url)
 
             return true
@@ -83,17 +85,22 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
 
-            if (!redirect) {
-                loadingFinished = true
+            if (mLog.isWarnEnabled) {
+                mLog.warn("PAGE FINISHED")
             }
 
-            if (loadingFinished && !redirect) {
+            if (!redirect) {
+                loadingFinished = true
+
+                if (mLog.isWarnEnabled) {
+                    mLog.warn("PAGE FINISHED INVOKE")
+                }
+
                 pageFinished?.invoke(url)
+                view?.let { canGoForward?.invoke(it.canGoForward()) }
             } else {
                 redirect = false
             }
-
-            view?.let { canGoForward?.invoke(it.canGoForward()) }
         }
 
         override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {

@@ -1,18 +1,25 @@
 package com.example.common
 
-import junit.framework.TestCase.assertNotNull
+import junit.framework.Assert.assertNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 11. <p/>
  */
 
 class CalendarTest {
-    @Test
+    companion object {
+        const val EXCLUSION_TODAY       = 1
+        const val EXCLUSION_YESTERDAY   = 2
+        const val EXCLUSION_WEEK        = 3
+        const val EXCLUSION_MONTH       = 4
+        const val EXCLUSION_OLD         = 5
+    }
+
+//    @Test
     fun calTest() {
         val cal = Calendar.getInstance()
         val sdf = cal.defaultDateFormat()
@@ -53,8 +60,8 @@ class CalendarTest {
     class MonthList : BaseDataList()
     class OldList : BaseDataList()
 
-    private fun dumyData(): ArrayList<DumyData> {
-        var cal = Calendar.getInstance()
+    private fun dumyData(exclusion: Int = 0): ArrayList<DumyData> {
+        val cal = Calendar.getInstance()
         val dumyList = arrayListOf<DumyData>()
         val sdf = cal.defaultDateFormat()
 
@@ -62,37 +69,50 @@ class CalendarTest {
             set(y(), m(), d(), 15, 0, 0)
         }
 
-        dumyList.add(DumyData("today", cal.timeInMillis))
+        if (exclusion != EXCLUSION_TODAY) {
+            dumyList.add(DumyData("today", cal.timeInMillis))
+        }
 
         cal.setDayAgo(-1)
-        dumyList.add(DumyData("yesterday", cal.timeInMillis))
+
+        if (exclusion != EXCLUSION_YESTERDAY) {
+            dumyList.add(DumyData("yesterday", cal.timeInMillis))
+        }
 
         cal.setDayAgo(1)
         cal.setWeekAgo(-1)
-        dumyList.add(DumyData("prev week", cal.timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(1).timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(2).timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(3).timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(4).timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(5).timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(6).timeInMillis))
-        dumyList.add(DumyData("prev week", cal.dayAgo(7).timeInMillis))
+
+        if (exclusion != EXCLUSION_WEEK) {
+            dumyList.add(DumyData("prev week", cal.timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(1).timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(2).timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(3).timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(4).timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(5).timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(6).timeInMillis))
+            dumyList.add(DumyData("prev week", cal.dayAgo(7).timeInMillis))
+        }
 
         cal.setWeekAgo(1)
         cal.setMonthAgo(-1)
-        dumyList.add(DumyData("prev month", cal.timeInMillis))
-        dumyList.add(DumyData("prev month", cal.dayAgo(1).timeInMillis))
-        dumyList.add(DumyData("prev month", cal.dayAgo(3).timeInMillis))
-        dumyList.add(DumyData("prev month", cal.dayAgo(5).timeInMillis))
+
+        if (exclusion != EXCLUSION_MONTH) {
+            dumyList.add(DumyData("prev month", cal.timeInMillis))
+            dumyList.add(DumyData("prev month", cal.dayAgo(1).timeInMillis))
+            dumyList.add(DumyData("prev month", cal.dayAgo(3).timeInMillis))
+            dumyList.add(DumyData("prev month", cal.dayAgo(5).timeInMillis))
+        }
 
         cal.setMonthAgo(-1)
-        dumyList.add(DumyData("old", cal.timeInMillis))
+
+        if (exclusion != EXCLUSION_OLD) {
+            dumyList.add(DumyData("old", cal.timeInMillis))
+        }
 
         return dumyList
     }
 
-
-    @Test
+//    @Test
     fun dumyTest() {
         val cal = Calendar.getInstance()
         val dumyList = dumyData()
@@ -214,9 +234,46 @@ class CalendarTest {
     }
 
     @Test
-    fun dateCalculatorTest() {
+    fun dateCalTestAll() {
+        dateCalculatorTest()
+    }
+
+    @Test
+    fun dateCalTestExclusionToday() {
+        dateCalculatorTest(EXCLUSION_TODAY)
+    }
+
+    @Test
+    fun dateCalTestExclusionYesterday() {
+        dateCalculatorTest(EXCLUSION_YESTERDAY)
+    }
+
+    @Test
+    fun dateCalTestExclusionWeek() {
+        dateCalculatorTest(EXCLUSION_WEEK)
+    }
+
+    @Test
+    fun dateCalTestExclusionMonth() {
+        dateCalculatorTest(EXCLUSION_MONTH)
+    }
+
+    @Test
+    fun dateCalTestExclusionOld() {
+        dateCalculatorTest(EXCLUSION_OLD)
+    }
+
+    private fun keyToString(key: Int) = DateCalculator.run {when (key) {
+        K_TODAY     -> "TODAY"
+        K_YESTERDAY -> "YESTERDAY"
+        K_WEEK      -> "WEEK"
+        K_MONTH     -> "MONTH"
+        else        -> "OLD"
+    } }
+
+    private fun dateCalculatorTest(exclusion: Int = 0) {
         val cal = Calendar.getInstance()
-        val dumyList = dumyData()
+        val dumyList = dumyData(exclusion)
         val sdf = cal.defaultDateFormat()
 
         val calculator = DateCalculator<DumyData>()
@@ -231,22 +288,63 @@ class CalendarTest {
             val yesterdayList = get(DateCalculator.K_YESTERDAY)
             val weekList = get(DateCalculator.K_WEEK)
             val monthList = get(DateCalculator.K_MONTH)
-            val otherList = get(DateCalculator.K_OTHER)
+            val oldList = get(DateCalculator.K_OTHER)
 
-            assertNotNull(todayList)
-            assertNotNull(yesterdayList)
-            assertNotNull(weekList)
-            assertNotNull(monthList)
-            assertNotNull(otherList)
+            when (exclusion) {
+                EXCLUSION_TODAY -> {
+                    assertTrue(todayList?.size == 1)
+                    assertTrue(yesterdayList?.size == 2)
+                    assertTrue(weekList?.size == 6)
+                    assertTrue(monthList?.size == 4)
+                    assertTrue(oldList?.size == 1)
+                }
+                EXCLUSION_YESTERDAY -> {
+                    assertTrue(todayList?.size == 2)
+                    assertTrue(yesterdayList?.size == 1)
+                    assertTrue(weekList?.size == 6)
+                    assertTrue(monthList?.size == 4)
+                    assertTrue(oldList?.size == 1)
+                }
+                EXCLUSION_WEEK -> {
+                    assertTrue(todayList?.size == 1)
+                    assertTrue(yesterdayList?.size == 1)
+                    assertNull(weekList)
+                    assertTrue(monthList?.size == 4)
+                    assertTrue(oldList?.size == 1)
+                }
+                EXCLUSION_MONTH -> {
+                    assertTrue(todayList?.size == 2)
+                    assertTrue(yesterdayList?.size == 2)
+                    assertTrue(weekList?.size == 6)
+                    assertNull(monthList)
+                    assertTrue(oldList?.size == 1)
+                }
+                EXCLUSION_OLD -> {
+                    assertTrue(todayList?.size == 2)
+                    assertTrue(yesterdayList?.size == 2)
+                    assertTrue(weekList?.size == 6)
+                    assertTrue(monthList?.size == 4)
+                    assertNull(oldList)
+                }
+                else -> {
+                    assertTrue(todayList?.size == 2)
+                    assertTrue(yesterdayList?.size == 2)
+                    assertTrue(weekList?.size == 6)
+                    assertTrue(monthList?.size == 4)
+                    assertTrue(oldList?.size == 1)
+                }
+            }
 
             System.out.println("==")
             forEach {
-                System.out.println("TYPE: ${calculator.dateFormatString(it.key)} (${it.value.size})")
+                System.out.println("${keyToString(it.key)} - ${calculator.dateFormatString(it.key)} (${it.value.size})")
                 it.value.forEach {
                     System.out.println(it.date.toDateString())
                 }
                 System.out.println("==")
             }
+
+            System.out.println("== END ($exclusion) == ")
         }
     }
 }

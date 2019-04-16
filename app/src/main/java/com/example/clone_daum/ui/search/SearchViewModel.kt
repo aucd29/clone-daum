@@ -67,7 +67,7 @@ class SearchViewModel @Inject constructor(app: Application
             true
         }
 
-        initAdapter(arrayOf("search_recycler_history_item", "search_recycler_suggest_item"))
+        initAdapter("search_recycler_history_item", "search_recycler_suggest_item")
         reloadHistoryData()
     }
 
@@ -75,10 +75,10 @@ class SearchViewModel @Inject constructor(app: Application
         mDisposable.add(searchDao.search()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe({
                 items.set(it)
                 visibleSearchRecycler(it.size > 0)
-            })
+            }, ::errorLog))
     }
 
     fun eventSearch(keyword: String?) {
@@ -95,11 +95,7 @@ class SearchViewModel @Inject constructor(app: Application
 
                     searchKeyword.set("")
                 }, {
-                    if (mLog.isDebugEnabled) {
-                        it.printStackTrace()
-                    }
-
-                    mLog.error("ERROR: ${it.message}")
+                    errorLog(it)
                     snackbar(it)
                 }))
 
@@ -153,12 +149,7 @@ class SearchViewModel @Inject constructor(app: Application
                     mLog.debug("DELETED : $item")
                 }
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-
+                errorLog(it)
                 snackbar(it)
             }))
     }
@@ -168,11 +159,11 @@ class SearchViewModel @Inject constructor(app: Application
             , listener = { res, _ -> if (res) {
                 mDisposable.add(Completable.fromAction { searchDao.deleteAll() }
                     .subscribeOn(Schedulers.io())
-                    .subscribe {
+                    .subscribe ({
                         if (mLog.isDebugEnabled) {
                             mLog.debug("DELETE ALL")
                         }
-                    })
+                    }, ::errorLog))
             }})
     }
 
@@ -195,7 +186,10 @@ class SearchViewModel @Inject constructor(app: Application
                 }
 
                 items.set(suggestList.toList())
-            }, ::snackbar))
+            }, {
+                errorLog(it)
+                snackbar(it)
+            }))
     }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

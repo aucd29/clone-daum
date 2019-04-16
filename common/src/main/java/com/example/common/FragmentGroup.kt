@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ArrayRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
@@ -31,7 +32,9 @@ inline fun Fragment.dpToPx(v: Int) = dpToPx(v.toFloat()).toInt()
 inline fun Fragment.pxToDp(v: Int) = pxToDp(v.toFloat()).toInt()
 
 /** 문자열 리소스에 해당하는 문자열을 반환 */
-inline fun Fragment.string(@StringRes resid: Int): String = requireContext().string(resid)
+inline fun Fragment.string(@StringRes resid: Int) = requireContext().string(resid)
+inline fun Fragment.stringArray(@ArrayRes resid: Int) = requireContext().stringArray(resid)
+inline fun Fragment.intArray(@ArrayRes resid: Int) = requireContext().intArray(resid)
 
 /** 현재 화면에 위치하는 Fragment 를 반환 */
 inline val FragmentManager.current: Fragment?

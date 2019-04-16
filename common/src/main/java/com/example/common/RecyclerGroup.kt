@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.example.common.arch.SingleLiveEvent
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -51,6 +52,11 @@ interface IRecyclerPosition {
     fun position(): Int
 }
 
+interface IRecyclerExpandable<T> {
+    fun add(list: ArrayList<T>)
+    fun remove(list:ArrayList<T>)
+}
+
 /** view holder */
 class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var mBinding: ViewDataBinding
@@ -60,14 +66,14 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
  * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
-class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
-    : RecyclerView.Adapter<RecyclerHolder>() {
+class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
+) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)
 
-        const private val METHOD_NAME_VIEW_MODEL = "setModel"
-        const private val METHOD_NAME_ITEM       = "setItem"
-        const private val METHOD_NAME_BIND       = "bind"
+        private const val METHOD_NAME_VIEW_MODEL = "setModel"
+        private const val METHOD_NAME_ITEM       = "setItem"
+        private const val METHOD_NAME_BIND       = "bind"
 
         fun bindingClassName(context: Context, layoutId: String): String {
             var classPath = context.packageName
@@ -208,8 +214,6 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      * notifyDataSetChanged(position) 을 호출해주면 부하가 좀 적지 않을까? 라는 생각이 듬
      * 일단 arrayList 로 하는데 이런 구조라면 linked list 가 더 적합할 듯 한 ?
      * ----
-     *
-     *
      */
     fun setItems(recycler: RecyclerView, newItems: ArrayList<T>) {
         if (isNotifySetChanged) {
@@ -330,20 +334,8 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
      *
      * @param id 문자열 형태의 layout 이름
      */
-    fun initAdapter(id: String) {
-        val adapter = RecyclerAdapter<T>(id)
-        adapter.viewModel = this
-
-        this.adapter.set(adapter)
-    }
-
-    /**
-     * adapter 에 사용될 layout 들 을 설정한다.
-     *
-     * @param id 문자열 배열 형태의 layout 이름들
-     */
-    fun initAdapter(ids: Array<String>) {
-        val adapter = RecyclerAdapter<T>(ids)
+    fun initAdapter(vararg ids: String) {
+        val adapter = RecyclerAdapter<T>(ids.toList().toTypedArray())
         adapter.viewModel = this
 
         this.adapter.set(adapter)
@@ -369,8 +361,15 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
         }
     }
 
-    inline fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
-    inline fun toast(@StringRes resid: Int) = toast(string(resid))
+    fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
+    fun toast(@StringRes resid: Int) = toast(string(resid))
+    fun errorLog(e: Throwable) {
+        if (mLog.isDebugEnabled) {
+            e.printStackTrace()
+        }
+
+        mLog.error("ERROR: ${e.message}")
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

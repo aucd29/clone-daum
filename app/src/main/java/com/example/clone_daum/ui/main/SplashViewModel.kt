@@ -22,7 +22,7 @@ class SplashViewModel @Inject constructor(val config: Config
     companion object {
         private val mLog = LoggerFactory.getLogger(SplashViewModel::class.java)
 
-        private val SPLASH_TIMEOUT = 5L
+        private val SPLASH_TIMEOUT = 7L
     }
 
     val visibleSplash = ObservableInt(View.VISIBLE)

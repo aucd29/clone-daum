@@ -67,15 +67,23 @@ class BrowserViewModel @Inject constructor(app: Application
     }
 
     fun addHistory(url: String, title: String) {
-        mDisposable.add(mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
+        mDisposable.add(mUrlHistoryDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
-            .subscribe({}, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
+            .subscribe({
+                if (it > 0) {
+                    mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("ADDED URL HISTORY : $title ($url)")
+                            }
+                        }, { errorLog(it, mLog) })
+                } else {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("EXIST URL HISTORY : $title ($url)")
+                    }
                 }
-
-                mLog.error("ERROR: ${it.message}")
-            }))
+            }, { errorLog(it, mLog) }))
     }
 
     fun applyBrsCount(count: Int) {
@@ -126,11 +134,7 @@ class BrowserViewModel @Inject constructor(app: Application
                     insertZzim(url)
                 }
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it, mLog)
                 snackbar(it)
             }))
     }
@@ -147,11 +151,7 @@ class BrowserViewModel @Inject constructor(app: Application
 
                 snackbar(R.string.brs_fav_url_ok)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it, mLog)
                 snackbar(it)
             }))
     }

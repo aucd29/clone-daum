@@ -5,44 +5,62 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
-        <variable name="item" type="com.example.clone_daum.model.local.MyFavorite"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel"/>
+        <variable name="item" type="com.example.clone_daum.model.local.UrlHistory"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
+            android:id="@+id/url_history_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackgroundBorderless"
+            android:background="@drawable/selector_button_bgcolor"
             android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, item.url)}"
     >
 
         <TextView
                 android:id="@+id/icon"
-                android:layout_width="25dp" android:layout_height="25dp"
+                android:layout_width="30dp" android:layout_height="30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="15dp"
-                android:textSize="8sp"
+                android:textSize="9sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
                 app:bindUrlToChar="@{item.url}"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
         />
 
         <TextView
                 android:id="@+id/text"
                 android:layout_width="0dp" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/icon"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="7dp"
-                android:layout_marginEnd="7dp"
-                android:text="@{item.name}"
-                android:padding="10dp"
+                android:layout_marginEnd="17dp"
+                android:text="@{item.title}"
+                android:textSize="11sp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 tools:text="NAME"
+        />
+
+        <TextView
+                android:id="@+id/url"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/text"
+                app:layout_constraintTop_toBottomOf="@+id/text"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="17dp"
+                android:text="@{item.url}"
+                android:maxLines="1"
+                android:textSize="9sp"
+                android:ellipsize="end"
+                tools:text="URL"
         />
 
         <View

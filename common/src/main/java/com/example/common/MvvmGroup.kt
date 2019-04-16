@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ArrayRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
@@ -22,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.*
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -36,6 +38,12 @@ private const val LAYOUT = "layout"
  */
 inline fun AndroidViewModel.string(@StringRes resid: Int) =
     app.getString(resid)
+
+inline fun AndroidViewModel.stringArray(@ArrayRes resid: Int) =
+    app.resources.getStringArray(resid)
+
+inline fun AndroidViewModel.intArray(@ArrayRes resid: Int) =
+    app.resources.getIntArray(resid)
 
 inline fun AndroidViewModel.requireContext() =
     if (app == null) {
@@ -176,6 +184,13 @@ open class CommandEventViewModel(application: Application)
 
     inline fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
     inline fun toast(@StringRes resid: Int) = toast(string(resid))
+    inline fun errorLog(e: Throwable, logger: Logger) {
+        if (logger.isDebugEnabled) {
+            e.printStackTrace()
+        }
+
+        logger.error("ERROR: ${e.message}")
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

@@ -30,16 +30,16 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
         mDisposable = dp
 
         // folder 형태의 index 값이 0
-        initAdapter(arrayOf("favorite_item_from_folder", "favorite_item_from_folder"))
+        initAdapter("favorite_item_from_folder", "favorite_item_from_folder")
         mDisposable.add(mFavoriteDao.selectByFolderNameFlowable(folderName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FAVORITE COUNT (BY FOLDER NAME) : ${it.size}")
                 }
 
                 items.set(it)
-            })
+            }, ::errorLog))
     }
 }

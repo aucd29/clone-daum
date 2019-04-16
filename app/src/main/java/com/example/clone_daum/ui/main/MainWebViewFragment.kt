@@ -66,17 +66,14 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
                         viewController.browserFragment(it)
                     } else {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("JUST LOAD URL : $url")
-                        }
-
                         // uri 를 redirect 시키는 이유가 뭘까나?
                         webview.loadUrl(url)
                     }
                 }
             }, pageFinished = {
+                val position = arguments?.getInt(MainTabAdapter.K_POSITION)
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("PAGE FINISHED")
+                    mLog.debug("PAGE FINISHED ($position)")
                 }
 
                 swipeRefresh.apply {
@@ -96,21 +93,27 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                         }
                     }
                 }
-            }
-            , userAgent = { config.USER_AGENT }
-            , progress  = {
-                val position = arguments?.getInt(MainTabAdapter.K_POSITION)
-
-                if (mLog.isTraceEnabled) {
-                    mLog.trace("TAB($position) WEBVIEW PROGRESS : $it")
-                }
 
                 // 이 값이 구 버전에서는 제대로 안들어왔음 =_ =
-                if (it == 100 && position == MainViewModel.INDEX_NEWS) {
+                if (position == MainViewModel.INDEX_NEWS) {
                     if (!mIsClosedSplash) {
                         mIsClosedSplash = true
 
+                        if (mLog.isInfoEnabled) {
+                            mLog.info("CALL CLOSE SPLASH")
+                        }
+
                         mSplashViewModel.closeEvent.call()
+                    }
+                }
+            }
+            , userAgent = { config.USER_AGENT }
+            , progress  = {
+                if (it == 100) {
+                    val position = arguments?.getInt(MainTabAdapter.K_POSITION)
+
+                    if (mLog.isWarnEnabled) {
+                        mLog.warn("WEBVIEW PROGRESS $it ($position)")
                     }
                 }
             }
@@ -126,7 +129,9 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             webview.reload()
 
             mTimerDisposable.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                .take(1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXPLODE RELOAD ICO TIMER")
                     }

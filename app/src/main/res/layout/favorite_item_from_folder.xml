@@ -30,10 +30,8 @@
                 android:textSize="9sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
-                app:bindFrequentlySiteUrl="@{item.url}"
-                app:bindFrequentlySiteTitle="@{``}"
+                app:bindUrlToChar="@{item.url}"
         />
-        <!--app:bindFrequentlySiteUrl="@{item.url}"-->
         <!--android:text="@{model.firstUrl(item.url)}"-->
 
         <TextView

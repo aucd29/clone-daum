@@ -99,6 +99,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                     visibleProgress.set(View.GONE)
                     reloadIconResId.set(R.drawable.ic_replay_black_24dp)
 
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("PAGE FINISHED ${System.currentTimeMillis()}")
+                    }
+
                     addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }

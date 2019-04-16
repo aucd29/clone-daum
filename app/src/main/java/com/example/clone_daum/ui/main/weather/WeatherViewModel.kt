@@ -57,7 +57,7 @@ class WeatherViewModel @Inject constructor(application: Application
         if (config.HAS_PERMISSION_GPS) {
             disposable.add(rxLocation.location().lastLocation()
                 .flatMap { location -> rxLocation.geocoding().fromLocation(location) }
-                .subscribe {
+                .subscribe ({
                     if (mLog.isInfoEnabled) {
                         mLog.info("CURRENT LOCATION : ${it.locality} ${it.subLocality} ${it.thoroughfare}")
                     }
@@ -67,7 +67,7 @@ class WeatherViewModel @Inject constructor(application: Application
                     thoroughfare.set(it.thoroughfare)
                     currentLocation.set(current)
                     command(CMD_REFRESH_LOCATION, current)
-                })
+                }, ::errorLog))
         }
     }
 
@@ -85,7 +85,7 @@ class WeatherViewModel @Inject constructor(application: Application
 
     fun initRecycler() {
         preConfig.weatherData {
-            initAdapter(arrayOf("weather_dust_item", "weather_other_item"))
+            initAdapter("weather_dust_item", "weather_other_item")
             items.set(it)
         }
     }

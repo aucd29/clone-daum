@@ -64,14 +64,60 @@ data class UrlHistory (
     val date: Long?,
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0
-) : IRecyclerDiff, IRecyclerItem, IDateCalculator {
+) : IRecyclerDiff, IRecyclerItem, IDateCalculator { // , IRecyclerPosition
     companion object {
         const val T_HISTORY   = 0
         const val T_SEPERATOR = 1
     }
 
+//    @Ignore
+//    var pos: Int = 0
+
     @Ignore
     var type = T_HISTORY
+
+    @Ignore
+    var toggle = false
+
+    @Ignore
+    var childList = arrayListOf<UrlHistory>()
+
+    fun toggle(list: List<UrlHistory>) {
+        if (toggle) {
+            remove(list)
+        } else {
+            add(list)
+        }
+
+        this.toggle = !toggle
+    }
+
+    fun remove(list: List<UrlHistory>) {
+        if (list is ArrayList) {
+            childList.forEach {
+                list.remove(it)
+            }
+        }
+    }
+
+    fun add(list: List<UrlHistory>) {
+        var i = 0
+        if (list is ArrayList) {
+            for (it in list) {
+                ++i
+
+                if (it == this) {
+                    list.addAll(i, childList)
+                    break
+                }
+            }
+        }
+    }
+//
+//    override fun position(pos: Int) {
+//        this.pos = pos
+//    }
+//    override fun position() = pos
 
     override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
     override fun type() = type

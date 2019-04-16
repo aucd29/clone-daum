@@ -1,6 +1,8 @@
 package com.example.clone_daum.model
 
+import com.example.clone_daum.model.local.UrlHistory
 import com.example.common.IRecyclerDiff
+import com.example.common.IRecyclerExpandable
 import com.example.common.IRecyclerItem
 
 /**

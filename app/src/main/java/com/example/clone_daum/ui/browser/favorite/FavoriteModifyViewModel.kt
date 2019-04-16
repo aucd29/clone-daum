@@ -66,11 +66,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
                 notify?.invoke()
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 snackbar(it)
             }))
     }
@@ -79,7 +75,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         mDisposable = dp
         mFolderName = folder
 
-        initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
+        initAdapter("favorite_modify_item_folder", "favorite_modify_item")
         initItems(folder)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
@@ -96,10 +92,13 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe ({
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("UPDATED DATE")
-                    }
-                }, ::snackbar))
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("UPDATED DATE")
+                        }
+                    }, {
+                        errorLog(it)
+                        snackbar(it)
+                    }))
             }
             // 디비 수정
         }) { binding ->
@@ -126,6 +125,10 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         ContextCompat.getColor(app, R.color.alpha_orange)
     } else {
         ContextCompat.getColor(app, R.color.alpha_white)
+    }
+
+    fun toggleCheckbox(fav: MyFavorite) {
+        fav.check.set(!fav.check.get())
     }
 
     // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
@@ -220,7 +223,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         mDisposable.add(mFavoriteDao.delete(selectedList)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("DELETED FAVORITE ITEMS")
                 }
@@ -231,7 +234,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                 initItems(mFolderName) {
                     adapter.get()?.notifyDataSetChanged()
                 }
-            })
+            }, ::errorLog))
     }
 
     fun updateFavorite(fav: MyFavorite, callback: (Boolean) -> Unit) {
@@ -245,11 +248,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
                 callback.invoke(true)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 snackbar(it)
 
                 callback.invoke(false)
@@ -263,11 +262,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             .subscribe({
                 callback.invoke(true)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 callback.invoke(false)
             }))
     }
@@ -314,12 +309,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
 
                 callback(it > 0)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-
+                errorLog(it)
                 callback(false)
             }))
     }

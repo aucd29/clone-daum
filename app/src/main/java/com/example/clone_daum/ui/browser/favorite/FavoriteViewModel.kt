@@ -37,7 +37,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     fun init(dp: CompositeDisposable) {
         this.mDisposable = dp
 
-        initAdapter(arrayOf("favorite_item_folder", "favorite_item"))
+        initAdapter("favorite_item_folder", "favorite_item")
         adapter.get()?.run { isScrollToPosition = false }
     }
 
@@ -53,11 +53,7 @@ class FavoriteViewModel @Inject constructor(application: Application
 
                 items.set(it)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 snackbar(it)
             }))
     }
@@ -74,11 +70,7 @@ class FavoriteViewModel @Inject constructor(application: Application
 
                 items.set(it)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 snackbar(it)
             }))
     }
@@ -91,11 +83,7 @@ class FavoriteViewModel @Inject constructor(application: Application
                     mLog.debug("INSERTED FOLDER: $folderName")
                 }
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 snackbar(it)
             }))
     }
@@ -133,11 +121,7 @@ class FavoriteViewModel @Inject constructor(application: Application
 
                 callback(it > 0)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
+                errorLog(it)
                 snackbar(it)
                 callback(false)
             }))

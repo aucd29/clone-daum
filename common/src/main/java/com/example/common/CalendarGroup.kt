@@ -126,11 +126,12 @@ class DateCalculator<T : IDateCalculator> {
     var dateFormat: SimpleDateFormat? = null
 
     init {
-        mToday.setYmd()
-
-        if (mLog.isDebugEnabled) {
-            mLog.debug("TODAY: ${mToday.timeInMillis.toDateString()}")
-        }
+        // 데이터가 순차적으로 들어올거라는 단순한 생각이 있었는데
+        // 다 초기화 해놔야 된다는 사실을 뒤늦게 깨닳고는 init 에서 죄다 초가화 하는걸로 수정
+        initToday()
+        initYesterday()
+        initWeek()
+        initMonth()
     }
 
     fun dateFormat(value: String) {
@@ -148,13 +149,10 @@ class DateCalculator<T : IDateCalculator> {
 
     fun process(date: T) {
         addData(if (isToday(date)) {
-            initYesterday()
             K_TODAY
         } else if (isYesterday(date)) {
-            initWeek()
             K_YESTERDAY
         } else if (isWeek(date)) {
-            initMonth()
             K_WEEK
         } else if (isMonth(date)) {
             K_MONTH
@@ -163,12 +161,20 @@ class DateCalculator<T : IDateCalculator> {
         }, date)
     }
 
+    private fun initToday() {
+        mToday.setYmd()
+
+        if (mLog.isTraceEnabled) {
+            mLog.trace("TODAY: ${mToday.timeInMillis.toDateString()}")
+        }
+    }
+
     private fun initYesterday() {
         if (mYesterday == null) {
             mYesterday = mToday.dayAgo(-1)
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("YESTERDAY: ${mYesterday!!.timeInMillis.toDateString()}")
+            if (mLog.isTraceEnabled) {
+                mLog.trace("YESTERDAY: ${mYesterday!!.timeInMillis.toDateString()}")
             }
         }
     }
@@ -177,8 +183,8 @@ class DateCalculator<T : IDateCalculator> {
         if (mWeek == null) {
             mWeek = mToday.prevWeek()
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("WEEK: ${mWeek!!.timeInMillis.toDateString()}")
+            if (mLog.isTraceEnabled) {
+                mLog.trace("WEEK: ${mWeek!!.timeInMillis.toDateString()}")
             }
         }
     }
@@ -187,8 +193,8 @@ class DateCalculator<T : IDateCalculator> {
         if (mMonth == null) {
             mMonth = mToday.prevMonth()
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("MONTH: ${mMonth!!.timeInMillis.toDateString()}")
+            if (mLog.isTraceEnabled) {
+                mLog.trace("MONTH: ${mMonth!!.timeInMillis.toDateString()}")
             }
         }
     }

@@ -54,7 +54,7 @@ class FolderViewModel @Inject constructor(application: Application
         mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FOLDER COUNT : ${it.size}")
                 }
@@ -78,7 +78,7 @@ class FolderViewModel @Inject constructor(application: Application
 
                 items.set(list)
                 smoothToPosition.set(selectedPosition)
-            })
+            }, ::errorLog))
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -96,12 +96,7 @@ class FolderViewModel @Inject constructor(application: Application
                     mLog.debug("INSERTED FAVORITE FOLDER")
                 }
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-
+                errorLog(it)
                 snackbar(it)
             }))
     }
@@ -119,12 +114,7 @@ class FolderViewModel @Inject constructor(application: Application
 
                 callback(it > 0)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-
+                errorLog(it)
                 callback(false)
             }))
     }

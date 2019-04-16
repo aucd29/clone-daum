@@ -14,6 +14,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
@@ -124,6 +125,8 @@ inline fun Context.forceHideKeyboard(window: Window?) {
  * 문자열 데이터를 얻는다.
  */
 inline fun Context.string(@StringRes resid: Int) = getString(resid)
+inline fun Context.stringArray(@ArrayRes resid: Int) = resources.getStringArray(resid)
+inline fun Context.intArray(@ArrayRes resid: Int) = resources.getIntArray(resid)
 
 /**
  * 문자열 데이터를 얻는다.

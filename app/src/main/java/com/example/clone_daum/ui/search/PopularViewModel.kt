@@ -54,9 +54,9 @@ class PopularViewModel @Inject constructor(app: Application)
                 .observeOn(Schedulers.io())
                 .map(::parsePopular)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     mPopularList = it
-                })
+                }, ::errorLog))
         }
     }
 

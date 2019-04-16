@@ -52,6 +52,10 @@ class FavoriteFolderFragment
     }
 
     private fun showBrowser(url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHOW BROWSER $url")
+        }
+
         finish()
         finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
 
