@@ -19,6 +19,7 @@ import com.example.common.arch.SingleLiveEvent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
@@ -43,18 +44,53 @@ interface IRecyclerDiff {
 
 /** Item 타입 비교 인터페이스 */
 interface IRecyclerItem {
-    fun type(): Int
+    var type: Int
 }
 
 /** 아이템 위치 정보 인터페이스 */
 interface IRecyclerPosition {
-    fun position(pos: Int)
-    fun position(): Int
+    var position: Int
 }
 
 interface IRecyclerExpandable<T> {
-    fun add(list: ArrayList<T>)
-    fun remove(list:ArrayList<T>)
+    var toggle: Boolean
+    var childList: List<T>
+
+    fun toggle(list: List<T>, adapter: RecyclerView.Adapter<*>? = null) {
+        var i = 0
+        if (list is ArrayList) {
+            if (!this.toggle) {
+                i = findIndex(list)
+
+                list.addAll(i, childList)
+                adapter?.notifyItemRangeInserted(i, childList.size)
+            } else {
+                if (adapter != null) {
+                    i = findIndex(list)
+                }
+
+                list.removeAll(childList)
+                adapter?.notifyItemRangeRemoved(i, childList.size)
+            }
+        }
+
+        this.toggle = !toggle
+    }
+
+    private fun findIndex(list: List<T>): Int {
+        var i = 0
+        if (list is ArrayList) {
+            for (it in list) {
+                ++i
+
+                if (it == this) {
+                    break
+                }
+            }
+        }
+
+        return i
+    }
 }
 
 /** view holder */
@@ -157,7 +193,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
 
         items.let { it.get(position).let { item ->
             when (item) {
-                is IRecyclerPosition -> item.position(position)
+                is IRecyclerPosition -> item.position = position
             }
 
             invokeMethod(holder.mBinding, METHOD_NAME_ITEM, item.javaClass, item, true)
@@ -186,7 +222,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
     override fun getItemViewType(position: Int): Int {
         val item = items.get(position)
         when (item) {
-            is IRecyclerItem -> return item.type()
+            is IRecyclerItem -> return item.type
         }
 
         return 0

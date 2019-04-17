@@ -35,7 +35,7 @@ class SplashViewModel @Inject constructor(val config: Config
     init {
         // 초기 로딩시 적용되는 v center 와 실제 레이아웃에 들어가는 v center 랑 값이 달라
         // 이를 보정하기 위해 transition 값을 조정 한다.
-        translationY.set(config.STATUS_BAR_HEIGHT * -1 / 2)
+        translationY.set(config.splashMargin())
         viewHeight.set(config.SCREEN.y + config.STATUS_BAR_HEIGHT)
 
         // splash view 를 만들까도 생각했는데 굳이? 라는 생각에 그냥 vm 으로만 하도록 함

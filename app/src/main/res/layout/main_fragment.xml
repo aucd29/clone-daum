@@ -8,9 +8,6 @@
         <import type="android.view.View"/>
 
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
-        <!--디자인 변경으로 인해 제거 -->
-        <!--<variable name="weatherModel"-->
-        <!--type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>-->
         <variable name="realtimeIssueModel"
                   type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
     </data>

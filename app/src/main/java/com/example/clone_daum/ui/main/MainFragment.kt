@@ -21,6 +21,9 @@ import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 
+
+// 어라라.. 머지가 잘못되었나? 왜 검색 영역에서 스크롤이 되는것이냐? ㄷ ㄷ ㄷ [aucd29][2019. 4. 17.]
+
 class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     , TabLayout.OnTabSelectedListener, OnBackPressedListener {
     companion object {
@@ -57,13 +60,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             .subscribe({ html ->
                 mRealtimeIssueViewModel.load(html)
                 mPopularViewModel.load(html, mDisposable)
-            }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-            }))
+            }, { errorLog(it, mLog) }))
     }
 
     private fun initRealtimeIssueViewModel() {
@@ -77,6 +74,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
     override fun initViewBinding() {
         mBinding.apply {
+            viewpager.offscreenPageLimit = 3
+
             tab.apply {
                 addOnTabSelectedListener(this@MainFragment)
 
@@ -92,7 +91,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 }
 
                 mViewModel.progressViewOffsetLive.value = searchBar.height
-                mViewModel.searchAreaHeight = searchBar.height - tabLayout.height
+                mViewModel.searchAreaHeight             = searchBar.height - tabLayout.height
 
                 result
             }
@@ -104,7 +103,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                     }
 
                     it.translationY = it.height * -1f
-
                     it.translationY != 0f
                 }
             }

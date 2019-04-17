@@ -13,7 +13,7 @@
             android:id="@+id/url_history_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.command(model.CMD_EXPANDABLE, item)}"
+            android:onClick="@{() -> model.command(model.CMD_TOGGLE, item)}"
     >
 
         <TextView
@@ -30,6 +30,14 @@
                 android:paddingBottom="5dp"
                 tools:text="NAME"
                 android:background="#F1F1F1"
+        />
+
+        <ImageView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@{item.toggle ? @drawable/ic_expand_less_black_24dp : @drawable/ic_keyboard_arrow_down_black_24dp}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

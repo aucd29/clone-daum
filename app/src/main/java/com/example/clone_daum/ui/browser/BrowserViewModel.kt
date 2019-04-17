@@ -67,10 +67,14 @@ class BrowserViewModel @Inject constructor(app: Application
     }
 
     fun addHistory(url: String, title: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ADD HISTORY : $title ($url)")
+        }
+
         mDisposable.add(mUrlHistoryDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .subscribe({
-                if (it > 0) {
+                if (it == 0) {
                     mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
                         .subscribeOn(Schedulers.io())
                         .subscribe({
@@ -124,14 +128,14 @@ class BrowserViewModel @Inject constructor(app: Application
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (it > 0) {
+                if (it == 0) {
+                    insertZzim(url)
+                } else {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXIST URL : $url ($it)")
                     }
 
                     snackbar(R.string.brs_exist_fav_url)
-                } else {
-                    insertZzim(url)
                 }
             }, {
                 errorLog(it, mLog)

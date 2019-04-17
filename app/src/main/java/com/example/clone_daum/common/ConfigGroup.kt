@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Point
 import android.os.Build
+import android.util.DisplayMetrics
 import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.R
@@ -38,6 +39,7 @@ class Config @Inject constructor(val context: Context) {
     val ACTION_BAR_HEIGHT: Float
     val SCREEN = Point()
     val STATUS_BAR_HEIGHT: Int
+    val SOFT_BUTTON_BAR_HEIGHT: Int
 
     var HAS_PERMISSION_GPS = false
     var DEFAULT_LOCATION   = "서울"
@@ -67,7 +69,8 @@ class Config @Inject constructor(val context: Context) {
         //
         // W / H
         //
-        context.systemService<WindowManager>()?.defaultDisplay?.getSize(SCREEN)
+        val windowManager = context.systemService<WindowManager>()
+        windowManager?.defaultDisplay?.getSize(SCREEN)
 
         //
         // STATUS_BAR_HEIGHT
@@ -75,6 +78,23 @@ class Config @Inject constructor(val context: Context) {
         val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         STATUS_BAR_HEIGHT = if (resourceId > 0) {
             context.resources.getDimensionPixelSize(resourceId)
+        } else 0
+
+        //
+        // https://stackoverflow.com/questions/29398929/how-get-height-of-the-status-bar-and-soft-key-buttons-bar
+        //
+        SOFT_BUTTON_BAR_HEIGHT = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            val metrics = DisplayMetrics()
+            windowManager?.defaultDisplay?.getMetrics(metrics)
+            val usableHeight = metrics.heightPixels
+
+            windowManager?.defaultDisplay?.getRealMetrics(metrics)
+            val realHeight = metrics.heightPixels
+
+            if (realHeight > usableHeight)
+                 realHeight - usableHeight;
+            else
+                0
         } else 0
 
         //
@@ -90,6 +110,14 @@ class Config @Inject constructor(val context: Context) {
             2    -> R.drawable.ic_spa_black_24dp
             else -> R.drawable.ic_visibility_black_24dp
         }
+    }
+
+    fun splashMargin(): Int {
+        // softkey 가 존재 시 안맞는 부분 존재
+        val statusMargin = STATUS_BAR_HEIGHT * -1 / 2
+        val bottomButtonMargin = if (SOFT_BUTTON_BAR_HEIGHT == 0) 0 else SOFT_BUTTON_BAR_HEIGHT / 2
+
+        return statusMargin + bottomButtonMargin
     }
 }
 

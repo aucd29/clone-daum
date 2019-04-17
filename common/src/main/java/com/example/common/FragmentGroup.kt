@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.example.common.arch.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
+import org.slf4j.Logger
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 8. <p/>
@@ -81,6 +82,10 @@ inline fun Fragment.toast(msg: String, length: Int = Toast.LENGTH_SHORT) {
 
 inline fun Fragment.toast(@StringRes resid: Int, length:Int = Toast.LENGTH_SHORT) {
     requireActivity().toast(resid, length)
+}
+
+inline fun Fragment.errorLog(e: Throwable, logger: Logger) {
+    activity?.errorLog(e, logger)
 }
 
 /**

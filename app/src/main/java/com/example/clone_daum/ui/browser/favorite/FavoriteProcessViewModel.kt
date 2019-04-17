@@ -105,14 +105,14 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({
-                    if (it > 0) {
+                    if (it == 0) {
+                        insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
+                    } else {
                         if (mLog.isInfoEnabled) {
                             mLog.info("EXIST FAVORITE $url")
                         }
 
                         snackbar(R.string.brs_exist_fav_url)
-                    } else {
-                        insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
                     }
                 }, {
                     errorLog(it, mLog)

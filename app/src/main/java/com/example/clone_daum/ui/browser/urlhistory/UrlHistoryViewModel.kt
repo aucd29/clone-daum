@@ -10,7 +10,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 10. <p/>
@@ -25,7 +24,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
         const val CMD_BRS_OPEN           = "brs-open"
         const val CMD_URL_HISTORY_MODIFY = "url-history-modify"
-        const val CMD_EXPANDABLE         = "url-history-expandable"
+        const val CMD_TOGGLE             = "toggle"
     }
 
     private lateinit var mDisposable: CompositeDisposable
@@ -97,14 +96,14 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            CMD_EXPANDABLE  -> expandable(data as UrlHistory)
-            else            -> super.command(cmd, data)
+            CMD_TOGGLE -> toggle(data as UrlHistory)
+            else       -> super.command(cmd, data)
         }
     }
 
-    private fun expandable(data: UrlHistory) {
+    private fun toggle(data: UrlHistory) {
         items.get()?.let {
-            data.toggle(it)
+            data.toggle(it, adapter.get())
 
             if (mLog.isDebugEnabled) {
                 mLog.debug("URL HISTORY ITEM (${items.get()?.size})")

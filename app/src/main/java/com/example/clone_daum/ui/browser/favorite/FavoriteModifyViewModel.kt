@@ -205,7 +205,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         // 폴더의 경우 폴더명을 찾아서 해당 폴더를 가진 fav 를 모두 삭제 한다.
         val folderNameList = arrayListOf<String>()
         selectedList.forEach {
-            if (it.type() == MyFavorite.T_FOLDER) {
+            if (it.type == MyFavorite.T_FOLDER) {
                 folderNameList.add(it.name)
             }
         }

@@ -52,10 +52,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
-                if (mLog.isInfoEnabled) {
-                    mLog.info("URL LOADING : $url")
-                }
-
                 url?.let {
                     if (!it.contains("m.daum.net")) {
                         if (mLog.isDebugEnabled) {
@@ -64,6 +60,10 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
                         viewController.browserFragment(it)
                     } else {
+                        if (mLog.isInfoEnabled) {
+                            mLog.info("URL LOADING : $url")
+                        }
+
                         // uri 를 redirect 시키는 이유가 뭘까나?
                         webview.loadUrl(url)
                     }
