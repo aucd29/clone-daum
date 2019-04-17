@@ -49,16 +49,8 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        observe(closeEvent) {
-            disposable.dispose()
-
-            if (mLog.isInfoEnabled) {
-                mLog.info("GONE SPLASH")
-            }
-
+        observe(closeSplashEvent) {
             visibleSplash.set(View.GONE)
-
-            // SPLASH 뷰 삭제
             mBinding.root.removeView(mBinding.splash)
         }
     }

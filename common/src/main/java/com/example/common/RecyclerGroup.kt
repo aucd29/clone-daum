@@ -216,21 +216,9 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
      * ----
      */
     fun setItems(recycler: RecyclerView, newItems: ArrayList<T>) {
-        if (isNotifySetChanged) {
+        if (items.size == 0 || isNotifySetChanged) {
             items = newItems
             notifyDataSetChanged()
-
-            return
-        }
-
-        if (items.size == 0) {
-            items = newItems
-
-            if (mLog.isDebugEnabled) {
-                mLog.debug("NEW ${newItems.hashCode()}")
-            }
-
-            notifyItemRangeChanged(0, items.size)
 
             return
         }

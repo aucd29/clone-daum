@@ -36,8 +36,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     private lateinit var mMainViewModel: MainViewModel
 
     private var mTimerDisposable = CompositeDisposable()
-    private var mIsClosedSplash  = false
-
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -72,9 +70,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                 }
             }, pageFinished = {
                 val position = arguments?.getInt(MainTabAdapter.K_POSITION)
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("PAGE FINISHED ($position)")
-                }
 
                 swipeRefresh.apply {
                     if (isRefreshing) {
@@ -96,27 +91,10 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
                 // 이 값이 구 버전에서는 제대로 안들어왔음 =_ =
                 if (position == MainViewModel.INDEX_NEWS) {
-                    if (!mIsClosedSplash) {
-                        mIsClosedSplash = true
-
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("CALL CLOSE SPLASH")
-                        }
-
-                        mSplashViewModel.closeEvent.call()
-                    }
+                    mSplashViewModel.closeSplash()
                 }
             }
             , userAgent = { config.USER_AGENT }
-            , progress  = {
-                if (it == 100) {
-                    val position = arguments?.getInt(MainTabAdapter.K_POSITION)
-
-                    if (mLog.isWarnEnabled) {
-                        mLog.warn("WEBVIEW PROGRESS $it ($position)")
-                    }
-                }
-            }
         ))
 
         swipeRefresh.setOnRefreshListener {
@@ -206,7 +184,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         super.onPause()
 
         mBinding.webview.pause()
-
         mTimerDisposable.clear()
     }
 
@@ -217,6 +194,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     }
 
     override fun onDestroyView() {
+        mTimerDisposable.dispose()
         mBinding.webview.free()
 
         super.onDestroyView()

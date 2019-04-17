@@ -110,14 +110,14 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
         private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
 
-    lateinit var tabLabelList: ArrayList<TabData>
-    lateinit var brsSubMenuList: ArrayList<BrowserSubMenu>
-    lateinit var naviSitemapList: ArrayList<Sitemap>
+    lateinit var tabLabelList: List<TabData>
+    lateinit var brsSubMenuList: List<BrowserSubMenu>
+    lateinit var naviSitemapList: List<Sitemap>
 
     init {
         mDisposable.add(Observable.just(mAssetManager.open("res/brs_submenu.json").readBytes())
                 .observeOn(Schedulers.io())
-                .map { it.jsonParse<ArrayList<BrowserSubMenu>>() }
+                .map { it.jsonParse<List<BrowserSubMenu>>() }
                 .map {
                     it.forEach {
                         it.iconResid = mContext.stringId(it.icon)
@@ -129,7 +129,7 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
 
         mDisposable.add(Observable.just(mAssetManager.open("res/navi_sitemap.json").readBytes())
                 .observeOn(Schedulers.io())
-                .map { it.jsonParse<ArrayList<Sitemap>>() }
+                .map { it.jsonParse<List<Sitemap>>() }
                 .subscribe {
                     if (mLog.isDebugEnabled) {
                         mLog.debug("PARSE OK : navi_sitemap.json")
@@ -161,7 +161,7 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
 
         tabLabelList = Observable.just(mAssetManager.open("res/tab.json").readBytes())
             .observeOn(Schedulers.io())
-            .map { it.jsonParse<ArrayList<TabData>>() }
+            .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
     }
 
