@@ -117,21 +117,16 @@ class DateCalculator<T : IDateCalculator> {
         const val K_OTHER     = 4
     }
 
-    private var mToday: Calendar      = Calendar.getInstance()
-    private var mYesterday: Calendar? = null
-    private var mWeek: Calendar?      = null
-    private var mMonth: Calendar?     = null
+    private val mToday = Calendar.getInstance()
+    private val mYesterday by lazy { mToday.dayAgo(-1) }
+    private val mWeek      by lazy { mToday.prevWeek() }
+    private val mMonth     by lazy { mToday.prevMonth() }
 
     var mapData = hashMapOf<Int, ArrayList<T>>()
     var dateFormat: SimpleDateFormat? = null
 
     init {
-        // 데이터가 순차적으로 들어올거라는 단순한 생각이 있었는데
-        // 다 초기화 해놔야 된다는 사실을 뒤늦게 깨닳고는 init 에서 죄다 초가화 하는걸로 수정
         initToday()
-        initYesterday()
-        initWeek()
-        initMonth()
     }
 
     fun dateFormat(value: String) {
@@ -166,36 +161,6 @@ class DateCalculator<T : IDateCalculator> {
 
         if (mLog.isTraceEnabled) {
             mLog.trace("TODAY: ${mToday.timeInMillis.toDateString()}")
-        }
-    }
-
-    private fun initYesterday() {
-        if (mYesterday == null) {
-            mYesterday = mToday.dayAgo(-1)
-
-            if (mLog.isTraceEnabled) {
-                mLog.trace("YESTERDAY: ${mYesterday!!.timeInMillis.toDateString()}")
-            }
-        }
-    }
-
-    private fun initWeek() {
-        if (mWeek == null) {
-            mWeek = mToday.prevWeek()
-
-            if (mLog.isTraceEnabled) {
-                mLog.trace("WEEK: ${mWeek!!.timeInMillis.toDateString()}")
-            }
-        }
-    }
-
-    private fun initMonth() {
-        if (mMonth == null) {
-            mMonth = mToday.prevMonth()
-
-            if (mLog.isTraceEnabled) {
-                mLog.trace("MONTH: ${mMonth!!.timeInMillis.toDateString()}")
-            }
         }
     }
 
