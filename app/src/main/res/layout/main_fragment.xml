@@ -280,29 +280,23 @@
         appbar 내부에 있으면 layout 을 재 조정해야 되서 첫 로딩 때
         버벅이는 문제로 그냥 top level 의 layout 에 view 를 넣는 형태로 변경
         -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
                 android:id="@+id/realtime_issue_area"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:background="#7fFFE0E0"
         >
-
             <com.example.clone_daum.common.widget.BkViewPager
                     android:id="@+id/realtime_issue_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:bindPagerAdapter="@{realtimeIssueModel.tabAdapter}"
                     app:bindViewPagerLoaded="@{realtimeIssueModel.viewPagerLoaded}"
                     app:bindTranslateY="@{realtimeIssueModel.containerTransY}"
             />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
 
         <ImageView
                 android:id="@+id/over_back"

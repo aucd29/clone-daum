@@ -158,7 +158,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                         mLog.info("REALTIME ISSUE AREA TOP MARGIN : ${it.topMargin}")
                     }
 
-                    it.height    = 0
+                    it.height    = 1    // 0 의 경우 제대로 동작하지 않는 문제?
                     layoutParams = it
 
                     return it.topMargin != 0
@@ -316,7 +316,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                     mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
 
-                mBinding.realtimeIssueArea.layoutHeight(0f)
+                mBinding.realtimeIssueArea.layoutHeight(1f)
             }
         }
     }
