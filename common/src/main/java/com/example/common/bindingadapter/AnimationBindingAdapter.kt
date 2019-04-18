@@ -2,11 +2,14 @@ package com.example.common.bindingadapter
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Interpolator
+import android.view.animation.RotateAnimation
 import androidx.databinding.BindingAdapter
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 14. <p/>
@@ -15,6 +18,8 @@ import androidx.databinding.BindingAdapter
 // view.animate 가 보기는 좋아서 바꿨다가 기능의 문제로 원래대로 ObjectAnimator 로 변경 OTL
 //
 object AnimationBindingAdapter {
+    private val mLog = LoggerFactory.getLogger(AnimationBindingAdapter::class.java)
+
     private const val K_TRANSLATION_Y = "translationY"
     private const val K_TRANSLATION_X = "translationX"
     private const val K_ALPHA         = "alpha"
@@ -116,6 +121,18 @@ object AnimationBindingAdapter {
         }
 
         objectAnim(anim, params)
+
+
+//        val pvhPivotX = PropertyValuesHolder.ofFloat("pivotX", 0.5f)
+////        val pvhPivotY = PropertyValuesHolder.ofFloat("pivotY", 0.5f)
+//
+//        val anim = if (params.initValue == null) {
+//            val rotate = PropertyValuesHolder.ofFloat(K_ROTATION, params.value)
+//            ObjectAnimator.ofPropertyValuesHolder(view, pvhPivotX, rotate)
+//        } else {
+//            val rotate = PropertyValuesHolder.ofFloat(K_ROTATION, params.initValue, params.value)
+//            ObjectAnimator.ofPropertyValuesHolder(view, pvhPivotX, rotate)
+//        }
     }
 
     private fun objectAnim(anim: ObjectAnimator, params: AnimParams) {

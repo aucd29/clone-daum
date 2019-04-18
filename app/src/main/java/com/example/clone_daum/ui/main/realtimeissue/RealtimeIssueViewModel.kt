@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.app.Application
 import android.text.Spanned
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.viewpager.widget.ViewPager
@@ -59,6 +60,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     val visibleDetail   = ObservableInt(View.GONE)
     val viewPagerLoaded = ObservableField<(() -> Unit)?>()
+    val enableClick     = ObservableBoolean(false)
 
     fun load(html: String) {
         disposableInterval.add(Observable.just(html)
@@ -72,6 +74,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
                 mRealtimeIssueList = it
                 mAllIssueList      = it.get(0).second
 
+                enableClick.set(true)
                 command(CMD_LOADED_ISSUE)
                 startRealtimeIssue()
             }, { errorLog(it, mLog) }))

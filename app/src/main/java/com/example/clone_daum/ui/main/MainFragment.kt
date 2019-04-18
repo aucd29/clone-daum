@@ -322,6 +322,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     private fun changeRealtimeIssueTab() {
+
+
         mRealtimeIssueViewModel.apply {
             tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
         }

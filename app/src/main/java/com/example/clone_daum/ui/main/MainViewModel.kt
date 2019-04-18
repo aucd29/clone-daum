@@ -39,7 +39,6 @@ class MainViewModel @Inject constructor(val app: Application
     val searchIconResId         = ObservableInt(config.SEARCH_ICON)
 
     val visibleBack             = ObservableInt(View.GONE)
-
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()
 
