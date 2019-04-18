@@ -263,7 +263,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             if (mViewModel.appbarOffsetLive.value == 0) {
                 when (cmd) {
                     CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
-                    CMD_REALTIME_ISSUE_FRAGMENT -> showRealtimeIssue()
+                    CMD_REALTIME_ISSUE_FRAGMENT -> toggleRealtimeIssueArea()
                     CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
                     CMD_BRS_OPEN                -> viewController.browserFragment(data.toString())
                     CMD_MEDIA_SEARCH_FRAGMENT   -> showMediaSearch()
@@ -274,12 +274,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         RealtimeIssueViewModel.apply {
             when (cmd) {
                 CMD_LOADED_ISSUE -> changeRealtimeIssueTab()
-                CMD_CLOSE_ISSUE  -> showRealtimeIssue()
+                CMD_CLOSE_ISSUE  -> toggleRealtimeIssueArea()
             }
         }
     }
 
-    private fun showRealtimeIssue() {
+    private fun toggleRealtimeIssueArea() {
         // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
 
         val lp = mBinding.realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
@@ -303,6 +303,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             } else {
                 tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION, endListener = {
                     visibleDetail.set(View.GONE)
+                    mBinding.realtimeIssueArea.layoutHeight(1f)
                 }))
                 tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
@@ -315,8 +316,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 if (mLog.isDebugEnabled) {
                     mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
-
-                mBinding.realtimeIssueArea.layoutHeight(1f)
             }
         }
     }
@@ -331,7 +330,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
     private fun showMediaSearch() {
         if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-            showRealtimeIssue()
+            toggleRealtimeIssueArea()
             mBinding.realtimeIssueViewpager.postDelayed({ viewController.mediaSearchFragment() }
                 , RealtimeIssueViewModel.ANIM_DURATION)
         } else {
@@ -347,7 +346,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     
     override fun onBackPressed(): Boolean {
         if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-            showRealtimeIssue()
+            toggleRealtimeIssueArea()
             return true
         }
 

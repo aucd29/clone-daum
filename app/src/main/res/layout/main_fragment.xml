@@ -53,7 +53,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:elevation="0dp"
-                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}">
+                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}"
+                    app:bindAppBarDrag="@{model.appbarDrag}">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                         android:id="@+id/toolbar_layout"

@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main
 
 import android.app.Application
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
@@ -41,6 +42,7 @@ class MainViewModel @Inject constructor(val app: Application
     val visibleBack             = ObservableInt(View.GONE)
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()
+    val appbarDrag              = ObservableBoolean(false)
 
     var progressViewOffsetLive  = MutableLiveData<Int>()
     var currentTabPositionLive  = MutableLiveData<Int>()
