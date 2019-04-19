@@ -171,6 +171,7 @@
                 android:onClick="@{() -> model.command(model.CMD_FOLDER_DETAIL)}"
                 android:background="@drawable/selector_button_bgcolor"
         >
+
             <TextView
                     android:id="@+id/favorite_label_folder"
                     style="@style/favorite_edit"
@@ -218,6 +219,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/favorite_label_folder"
                     app:layout_constraintEnd_toEndOf="parent"
             />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View

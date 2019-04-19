@@ -108,25 +108,32 @@ interface UrlHistoryDao {
 
 @Dao
 interface MyFavoriteDao {
-    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY date ASC")
+    @Query("SELECT * FROM myFavorite WHERE folderId=0 ORDER BY date ASC")
     fun selectShowAllFlowable(): Flowable<List<MyFavorite>>
 
+    @Query("SELECT * FROM myFavorite WHERE folderId=0 ORDER BY date ASC")
+    fun selectShowAll(): Single<List<MyFavorite>>
+
+
+    // 폴더 타입만 전달
     @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY date ASC")
     fun selectShowFolderFlowable(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY date ASC")
-    fun selectShowAll(): Single<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY date ASC")
-    fun selectByFolderNameFlowable(folderName: String): Flowable<List<MyFavorite>>
+    @Query("SELECT * FROM myFavorite WHERE folderId=:folderId ORDER BY date ASC")
+    fun selectByFolderIdFlowable(folderId: Int): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY date ASC")
-    fun selectByFolderName(folderName: String): Single<List<MyFavorite>>
+    @Query("SELECT * FROM myFavorite WHERE folderId=:folderId ORDER BY date ASC")
+    fun selectByFolderId(folderId: Int): Single<List<MyFavorite>>
+
+    @Query("SELECT name FROM myFavorite WHERE _id=:id")
+    fun selectFolderName(id: Int): Single<String>
+
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
 
-    @Query("SELECT COUNT(*) FROM myFavorite WHERE name=:folder")
+    @Query("SELECT COUNT(*) FROM myFavorite WHERE name=:folder AND favType=${MyFavorite.T_FOLDER}")
     fun hasFolder(folder: String): Maybe<Int>
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE name=:folder AND _id != :id")
@@ -138,8 +145,8 @@ interface MyFavoriteDao {
     @Update
     fun update(vararg data: MyFavorite): Completable
 
-    @Query("UPDATE myFavorite SET folder=:newName WHERE folder=:oldName")
-    fun updateFolderName(newName: String, oldName: String)
+//    @Query("UPDATE myFavorite SET folder=:newName WHERE folder=:oldName")
+//    fun updateFolderName(newName: String, oldName: String)
 
     @Delete
     fun delete(data: MyFavorite): Completable
@@ -147,12 +154,12 @@ interface MyFavoriteDao {
     @Delete
     fun delete(dataList: List<MyFavorite>): Completable
 
-    @Query("DELETE FROM myFavorite WHERE folder=:name")
+    @Query("DELETE FROM myFavorite WHERE name=:name")
     fun delete(name: String)
 
     // https://stackoverflow.com/questions/48406228/room-select-query-with-in-condition
-    @Query("DELETE FROM myFavorite WHERE folder IN(:name)")
-    fun deleteByFolderNames(name: List<String>)
+    @Query("DELETE FROM myFavorite WHERE folderId IN(:ids)")
+    fun deleteByFolderIds(ids: List<Int>)
 
     @Query("DELETE FROM myFavorite WHERE _id=:index")
     fun deleteById(index: Int)

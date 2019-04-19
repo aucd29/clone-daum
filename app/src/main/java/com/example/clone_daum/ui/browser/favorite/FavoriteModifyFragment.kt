@@ -30,13 +30,13 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     }
 
     override fun initViewModelEvents() {
-        val folder = arguments?.getString(K_FOLDER)
+        arguments?.getInt(K_FOLDER)?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FOLDER : $it")
+            }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FOLDER : $folder")
+            mViewModel.init(it, mDisposable)
         }
-
-        mViewModel.init(folder, mDisposable)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
 
     private fun moveFavoriteFolder() {
         val fav = mViewModel.selectedList.get(0)
-        viewController.folderFragment(childFragmentManager, fav.folder, R.id.favorite_modify_container)
+        viewController.folderFragment(childFragmentManager, fav.folderId, R.id.favorite_modify_container)
     }
 
     private fun modifyFavorite() {
@@ -126,15 +126,16 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
         finish()
     }
 
-    fun changeFolderName(pos: Int, name: String) {
+    fun changeFolderName(pos: Int, fav: MyFavorite) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("CHANGE FOLDER $name ($pos)")
+            mLog.debug("CHANGE FOLDER ${fav.name} ($pos)")
         }
 
-        val fav = mViewModel.selectedList.get(0)
-        fav.folder = if (name == string(R.string.folder_favorite)) "" else name
+        val modifyFav = mViewModel.selectedList.get(0)
+        modifyFav.folderId = fav._id
+        // FIXME fav.folderId = if (name == string(R.string.folder_favorite)) "" else name
 
-        mViewModel.updateFavorite(fav) { finish() }
+        mViewModel.updateFavorite(modifyFav) { finish() }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

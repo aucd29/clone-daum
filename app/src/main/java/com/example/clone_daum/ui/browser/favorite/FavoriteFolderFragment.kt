@@ -27,9 +27,9 @@ class FavoriteFolderFragment
     }
 
     override fun initViewModelEvents() {
-        arguments?.getString(K_FOLDER)?.let {
+        arguments?.getInt(K_FOLDER)?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER NAME : $it")
+                mLog.debug("FOLDER ID : $it")
             }
 
             mViewModel.initByFolder(it, mDisposable)
@@ -63,9 +63,9 @@ class FavoriteFolderFragment
     }
 
     private fun modifyFavorite() {
-        arguments?.getString(K_FOLDER)?.let {
+        arguments?.getInt(K_FOLDER)?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER NAME : $it")
+                mLog.debug("FOLDER ID : $it")
             }
 
             viewController.favoriteModifyFragment(it)

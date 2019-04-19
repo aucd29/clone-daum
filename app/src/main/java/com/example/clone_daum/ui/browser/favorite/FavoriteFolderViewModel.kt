@@ -26,12 +26,12 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
 
     private lateinit var mDisposable: CompositeDisposable
 
-    fun initByFolder(folderName: String, dp: CompositeDisposable) {
+    fun initByFolder(folderId: Int, dp: CompositeDisposable) {
         mDisposable = dp
 
         // folder 형태의 index 값이 0
         initAdapter("favorite_item_from_folder", "favorite_item_from_folder")
-        mDisposable.add(mFavoriteDao.selectByFolderNameFlowable(folderName)
+        mDisposable.add(mFavoriteDao.selectByFolderIdFlowable(folderId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({

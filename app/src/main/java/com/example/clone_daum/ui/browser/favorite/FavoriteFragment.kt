@@ -54,7 +54,7 @@ class FavoriteFragment
         FavoriteViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN           -> showBrowser(data.toString())
-                CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data.toString())
+                CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data as Int)
                 CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, mViewModel)
                 CMD_FAVORITE_MODIFY    -> viewController.favoriteModifyFragment()
             }

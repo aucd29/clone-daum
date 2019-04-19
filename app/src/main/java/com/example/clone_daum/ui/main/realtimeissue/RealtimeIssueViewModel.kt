@@ -57,6 +57,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val dimmingBgAlpha  = ObservableField<AnimParams>()
     val tabMenuRotation = ObservableField<AnimParams>()
     val tabAlpha        = ObservableField<AnimParams>()
+    val bgAlpha         = ObservableField<AnimParams>()
 
     val visibleDetail   = ObservableInt(View.GONE)
     val viewPagerLoaded = ObservableField<(() -> Unit)?>()

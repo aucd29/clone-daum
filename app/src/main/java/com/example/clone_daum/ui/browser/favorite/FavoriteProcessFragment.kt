@@ -38,8 +38,6 @@ class FavoriteProcessFragment
                     mLog.debug(fav.toString())
                 }
 
-                // 이상하긴 하지만 클래스를 새로 만들기 뭐해서 일단 이렇게 진행
-                // 클래스 명을 전체적으로 변경해야 될 듯
                 favorite(fav)
             } else {
                 if (mLog.isDebugEnabled) {
@@ -65,12 +63,15 @@ class FavoriteProcessFragment
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun changeFolderName(pos: Int, name: String) {
+    fun changeFolderName(pos: Int, fav: MyFavorite) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("CHANGE FOLDER $name ($pos)")
+            mLog.debug("CHANGE FOLDER ${fav.name} ($pos)")
         }
 
-        mViewModel.folder.set(name)
+        mViewModel.apply {
+            folder.set(fav.name)
+            folderId = fav._id
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +82,7 @@ class FavoriteProcessFragment
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteProcessViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mViewModel.folder.get())
+            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mViewModel.folderId)
         }
     }
 

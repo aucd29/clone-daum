@@ -40,6 +40,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
     val url       = ObservableField<String>()
     val folder    = ObservableField<String>(string(R.string.folder_favorite))
     val enabledOk = ObservableBoolean(true)
+    var folderId  = 0
 
     // MODIFY
     val title     = ObservableInt(R.string.favorite_title_add)
@@ -52,10 +53,16 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
     fun favorite(fav: MyFavorite) {
         _id = fav._id
 
-        // 폴더에 데이터가 없으면 기본 값인 즐겨찾기이다.
-        if (!fav.folder.isEmpty()) {
-            folder.set(fav.folder)
-        }
+        // MODIFY
+
+        mDisposable.add(mFavoriteDao.selectFolderName(fav.folderId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                folder.set(it)
+            }, { errorLog(it, mLog) }))
+
+        folderId = fav.folderId
 
         name.set(fav.name)
         url.set(fav.url)
@@ -106,7 +113,8 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({
                     if (it == 0) {
-                        insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
+                        //insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
+                        insertFavorite(name, url, folderId)
                     } else {
                         if (mLog.isInfoEnabled) {
                             mLog.info("EXIST FAVORITE $url")
@@ -120,7 +128,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
                 })
             )
         } else {
-            val modifyData = MyFavorite(name, url, folder)
+            val modifyData = MyFavorite(name, url, folderId)
             modifyData._id = _id
 
             mDisposable.add(mFavoriteDao.update(modifyData)
@@ -139,8 +147,8 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
         }
     }
 
-    private fun insertFavorite(name: String, url: String, folder: String) {
-        mDisposable.add(mFavoriteDao.insert(MyFavorite(name, url, folder))
+    private fun insertFavorite(name: String, url: String, folderId: Int) {
+        mDisposable.add(mFavoriteDao.insert(MyFavorite(name, url, folderId))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

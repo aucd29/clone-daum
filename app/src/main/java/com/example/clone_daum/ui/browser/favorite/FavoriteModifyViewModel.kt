@@ -34,21 +34,22 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     }
 
     private lateinit var mDisposable: CompositeDisposable
-    private var mFolderName: String? = null
+    private var mFolderId: Int = 0
 
     val selectedList = arrayListOf<MyFavorite>()
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
     val enableDelete = ObservableBoolean(false)
 
-    private fun initItems(folder: String?, notify: (() -> Unit)? = null) {
+
+    private fun initItems(folderId: Int, notify: (() -> Unit)? = null) {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT ITEMS")
         }
 
-        val fav = if (folder.isNullOrEmpty()) {
+        val fav = if (folderId == 0) {
             mFavoriteDao.selectShowAll()
         } else {
-            mFavoriteDao.selectByFolderName(folder)
+            mFavoriteDao.selectByFolderId(folderId)
         }
 
         // flowable 로 하면 디비 갱신 다시 쿼리를 전달 받아서 해주긴 하는데
@@ -71,12 +72,12 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             }))
     }
 
-    fun init(folder: String?, dp: CompositeDisposable) {
+    fun init(folderId: Int, dp: CompositeDisposable) {
         mDisposable = dp
-        mFolderName = folder
+        mFolderId   = folderId
 
         initAdapter("favorite_modify_item_folder", "favorite_modify_item")
-        initItems(folder)
+        initItems(folderId)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
                 if (mLog.isDebugEnabled) {
@@ -203,19 +204,21 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         }
 
         // 폴더의 경우 폴더명을 찾아서 해당 폴더를 가진 fav 를 모두 삭제 한다.
-        val folderNameList = arrayListOf<String>()
+        val folderIdList = arrayListOf<Int>()
         selectedList.forEach {
             if (it.type == MyFavorite.T_FOLDER) {
-                folderNameList.add(it.name)
+                folderIdList.add(it._id)
             }
         }
 
-        if (folderNameList.size > 0) {
-            mDisposable.add(Completable.fromAction { mFavoriteDao.deleteByFolderNames(folderNameList) }
+        //  TODO zip 처리 필요
+
+        if (folderIdList.size > 0) {
+            mDisposable.add(Completable.fromAction { mFavoriteDao.deleteByFolderIds(folderIdList) }
                 .subscribeOn(Schedulers.io())
                 .subscribe {
                     if (mLog.isDebugEnabled) {
-                        mLog.debug("DELETE FAVORITE FOLDER LIST : $folderNameList")
+                        mLog.debug("DELETE FAVORITE FOLDER LIST : $folderIdList")
                     }
                 })
         }
@@ -231,7 +234,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                 // modify fragment 에서는 single 로 call 하고 있으므로
                 // 화면을 갱신 시켜줘야 한다.
 
-                initItems(mFolderName) {
+                initItems(mFolderId) {
                     adapter.get()?.notifyDataSetChanged()
                 }
             }, ::errorLog))
@@ -243,7 +246,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("UPDATED FAVORITE FOLDER : ${fav.folder}")
+                    mLog.debug("UPDATED FAVORITE FOLDER : ${fav.name}")
                 }
 
                 callback.invoke(true)
@@ -255,17 +258,17 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             }))
     }
 
-    private fun updateFolderName(newName: String, oldName: String, callback: (Boolean) -> Unit) {
-        mDisposable.add(Completable.fromAction { mFavoriteDao.updateFolderName(newName, oldName) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                callback.invoke(true)
-            }, {
-                errorLog(it)
-                callback.invoke(false)
-            }))
-    }
+//    private fun updateFolderName(newName: String, oldName: String, callback: (Boolean) -> Unit) {
+//        mDisposable.add(Completable.fromAction { mFavoriteDao.updateFolderName(newName, oldName) }
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                callback.invoke(true)
+//            }, {
+//                errorLog(it)
+//                callback.invoke(false)
+//            }))
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -279,20 +282,20 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
             mLog.debug("UPDATE FAVORITE (OLD: ${pair.first}, NEW: ${pair.second.name})")
         }
 
-        val oldName = pair.first
-        val newName = pair.second.name
+//        val oldName = pair.first
+//        val newName = pair.second.name
         val fav = pair.second
 
         updateFavorite(fav) {
-            if (fav.favType == MyFavorite.T_FOLDER) {
-                // 폴더 변경시 하위의 favorite link 를 수정한다.
-                // 이렇게 안하려면 폴더에 별도의 table 을 생성하고 참조를 _id 값을 참조해서 join 하면 되긴하는데
-                // 데이터 양이 많지 않을거라 생각해서 이리 생성..
-                // 그리고 swap 도 하려면 한개의 테이블이 편함
-                updateFolderName(oldName, newName) {
+//            if (fav.favType == MyFavorite.T_FOLDER) {
+//                // 폴더 변경시 하위의 favorite link 를 수정한다.
+//                // 이렇게 안하려면 폴더에 별도의 table 을 생성하고 참조를 _id 값을 참조해서 join 하면 되긴하는데
+//                // 데이터 양이 많지 않을거라 생각해서 이리 생성..
+//                // 그리고 swap 도 하려면 한개의 테이블이 편함
+//                updateFolderName(oldName, newName) {
                     finish(false)
-                }
-            }
+//                }
+//            }
         }
     }
 

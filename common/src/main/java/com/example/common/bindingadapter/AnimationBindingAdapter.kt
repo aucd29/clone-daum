@@ -40,7 +40,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_TRANSLATION_Y, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -56,7 +56,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_TRANSLATION_X, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -72,7 +72,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_ALPHA, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -88,7 +88,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_SCALE_X, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -104,7 +104,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_SCALE_Y, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -120,22 +120,10 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_ROTATION, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
-
-
-//        val pvhPivotX = PropertyValuesHolder.ofFloat("pivotX", 0.5f)
-////        val pvhPivotY = PropertyValuesHolder.ofFloat("pivotY", 0.5f)
-//
-//        val anim = if (params.initValue == null) {
-//            val rotate = PropertyValuesHolder.ofFloat(K_ROTATION, params.value)
-//            ObjectAnimator.ofPropertyValuesHolder(view, pvhPivotX, rotate)
-//        } else {
-//            val rotate = PropertyValuesHolder.ofFloat(K_ROTATION, params.initValue, params.value)
-//            ObjectAnimator.ofPropertyValuesHolder(view, pvhPivotX, rotate)
-//        }
+        objectAnim(view, anim, params)
     }
 
-    private fun objectAnim(anim: ObjectAnimator, params: AnimParams) {
+    private fun objectAnim(view: View, anim: ObjectAnimator, params: AnimParams) {
         params.apply {
             anim.setDuration(duration)
             interpolator?.let { anim.setInterpolator(it) }
@@ -154,7 +142,7 @@ object AnimationBindingAdapter {
                         reverse?.invoke(animator)
                     }
                     override fun onAnimationEnd(animator: Animator?) {
-                        endListener?.invoke(animator)
+                        endListener?.invoke(view, animator)
                     }
                 })
             }
@@ -172,7 +160,7 @@ data class AnimParams(
     var value          : Float,
     val initValue      : Float? = null,
     var duration       : Long = 300,
-    var endListener    : ((Animator?) -> Unit)? = null,
+    var endListener    : ((View, Animator?) -> Unit)? = null,
     var interpolator   : Interpolator? = null,
     var startDelay     : Long? = null,
     var reverse        : ((Animator?) -> Unit)? = null,

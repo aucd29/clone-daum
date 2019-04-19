@@ -65,7 +65,7 @@ data class MyFavorite (
     /** 링크 (url) */
     val url: String = "",
     /** 링크일 때 사용 될 폴더 */
-    var folder: String = "",
+    var folderId: Int = 0,
     /** 타입 (링크: 0, 폴더: 1) */
     val favType: Int = T_DEFAULT,
     /** 날짜 인데 이를 기준으로 order 처리 한다. */
@@ -75,7 +75,7 @@ data class MyFavorite (
     var _id: Int       = 0
 ) : IRecyclerDiff, IRecyclerItem, IRecyclerPosition, Serializable {
     constructor(fav: MyFavorite)
-        : this(fav.name, fav.url, fav.folder, fav.favType,fav.date, fav._id)
+        : this(fav.name, fav.url, fav.folderId, fav.favType,fav.date, fav._id)
 
     companion object {
         const val T_FOLDER  = 0

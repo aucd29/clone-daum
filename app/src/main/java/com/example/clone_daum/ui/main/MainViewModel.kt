@@ -26,7 +26,7 @@ class MainViewModel @Inject constructor(val app: Application
 
         const val INDEX_NEWS = 1
 
-        const val CMD_SEARCH_FRAMGNET         = "search"
+        const val CMD_SEARCH_FRAMGNET         = "search-fragment"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"

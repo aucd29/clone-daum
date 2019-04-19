@@ -29,6 +29,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
     private lateinit var mDisposable: CompositeDisposable
     private val dateCal = DateCalculator<UrlHistory>()
+    private var firstLoad = true
 
     init {
         dateCal.dateFormat(string(R.string.history_date_format))
@@ -44,7 +45,13 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
         mDisposable.add(mUrlHistoryDao.select()
             .subscribeOn(Schedulers.io())
+            .filter{ firstLoad }
             .map {
+                // BRS 에서 finished 가 뒤늦게 들어온 경우
+                // flowable 로직을 다시 타게 되는데 그리되면 toggle 을 다시 타는 문제가 존재 한다.
+                // 그래서 일단 filter 를 둠
+                firstLoad = false
+
                 if (mLog.isDebugEnabled) {
                     mLog.debug("RAW HISTORY DATA (${it.size})")
                 }
@@ -86,7 +93,6 @@ class UrlHistoryViewModel @Inject constructor(application: Application
                 items.set(it)
             }, ::errorLog))
     }
-
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

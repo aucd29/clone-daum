@@ -74,8 +74,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
     override fun initViewBinding() {
         mBinding.apply {
-            viewpager.offscreenPageLimit = 3
-
             tab.apply {
                 addOnTabSelectedListener(this@MainFragment)
 
@@ -262,10 +260,10 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
             if (mViewModel.appbarOffsetLive.value == 0) {
                 when (cmd) {
-                    CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
+                    CMD_SEARCH_FRAMGNET         -> showSearchFragment()
                     CMD_REALTIME_ISSUE_FRAGMENT -> toggleRealtimeIssueArea()
                     CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
-                    CMD_BRS_OPEN                -> viewController.browserFragment(data.toString())
+                    CMD_BRS_OPEN                -> showBrowser(data)
                     CMD_MEDIA_SEARCH_FRAGMENT   -> showMediaSearch()
                 }
             }
@@ -279,16 +277,26 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
-    private fun toggleRealtimeIssueArea() {
+    private fun showSearchFragment() {
+        toggleRealtimeIssueArea { viewController.searchFragment() }
+    }
+
+    private fun toggleRealtimeIssueArea(visibleCallback: (() -> Unit)? = null) {
         // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
 
         val lp = mBinding.realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
 
         mRealtimeIssueViewModel.apply {
             if (visibleDetail.get() == View.GONE) {
+                visibleCallback?.let {
+                    it.invoke()
+                    return@apply
+                }
+
                 visibleDetail.set(View.VISIBLE)
 
                 tabAlpha.set(AnimParams(1f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+                bgAlpha.set(tabAlpha.get())
                 tabMenuRotation.set(AnimParams(180f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 containerTransY.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
@@ -301,10 +309,15 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                 mBinding.realtimeIssueArea.layoutHeight(changeTabHeight)
             } else {
-                tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION, endListener = {
-                    visibleDetail.set(View.GONE)
-                    mBinding.realtimeIssueArea.layoutHeight(1f)
-                }))
+                tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION
+                    , endListener = { v, anim ->
+                        if (v.id == mBinding.realtimeIssueTab.id) {
+                            visibleDetail.set(View.GONE)
+                            mBinding.realtimeIssueArea.layoutHeight(1f)
+
+                            visibleCallback?.invoke()
+                        }
+                    }))
                 tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
                 val height = mBinding.realtimeIssueViewpager.height * -1f
@@ -321,21 +334,17 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     private fun changeRealtimeIssueTab() {
-
-
         mRealtimeIssueViewModel.apply {
             tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
         }
     }
 
+    private fun showBrowser(url: Any) {
+        toggleRealtimeIssueArea { viewController.browserFragment(url.toString()) }
+    }
+
     private fun showMediaSearch() {
-        if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-            toggleRealtimeIssueArea()
-            mBinding.realtimeIssueViewpager.postDelayed({ viewController.mediaSearchFragment() }
-                , RealtimeIssueViewModel.ANIM_DURATION)
-        } else {
-            viewController.mediaSearchFragment()
-        }
+        toggleRealtimeIssueArea { viewController.mediaSearchFragment() }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

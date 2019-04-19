@@ -1,7 +1,6 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import com.example.clone_daum.databinding.FolderFragmentBinding
-import com.example.clone_daum.model.local.MyFavorite
 import com.example.common.BaseDaggerFragment
 import com.example.common.finish
 import dagger.android.ContributesAndroidInjector
@@ -11,21 +10,22 @@ import org.slf4j.LoggerFactory
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 8. <p/>
  */
 
+// 화면내 폴더 목록을 보여주고 그중에 하나 선택하게 끔 함
 class FolderFragment
     : BaseDaggerFragment<FolderFragmentBinding, FolderViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FolderFragment::class.java)
 
-        const val K_CURRENT_FOLDER = "currentFolder"
+        const val K_CURRENT_FOLDER = "current-folder"
     }
 
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
-        val currentFolder = arguments?.getString(K_CURRENT_FOLDER, null)
+        val currentFolderId = arguments?.getInt(K_CURRENT_FOLDER, 0) ?: 0
 
-        mViewModel.initFolder(mDisposable, currentFolder)
+        mViewModel.initFolder(mDisposable, currentFolderId)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

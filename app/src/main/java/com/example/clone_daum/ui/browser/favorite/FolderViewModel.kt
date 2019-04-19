@@ -22,13 +22,13 @@ class FolderViewModel @Inject constructor(application: Application
     companion object {
         private val mLog = LoggerFactory.getLogger(FolderViewModel::class.java)
 
-        const val CMD_CHANGE_FOLDER      = "change-folder"
         const val CMD_SHOW_FOLDER_DIALOG = "show-folder-dialog"
+        const val CMD_CHANGE_FOLDER      = "change-folder"
     }
 
     private lateinit var mDisposable: CompositeDisposable
+    private var mCurrentFolderId: Int = 0
 
-    private var mCurrentFolder: String? = null
     var selectedPosition: Int = 0
     var smoothToPosition = ObservableInt(0)
 
@@ -38,9 +38,9 @@ class FolderViewModel @Inject constructor(application: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun initFolder(dp: CompositeDisposable, currentFolder: String?) {
-        this.mDisposable    = dp
-        this.mCurrentFolder = currentFolder
+    fun initFolder(dp: CompositeDisposable, currentFolderId: Int) {
+        this.mDisposable      = dp
+        this.mCurrentFolderId = currentFolderId
 
         initAdapter("folder_item")
         reloadFolderItems()
@@ -53,21 +53,21 @@ class FolderViewModel @Inject constructor(application: Application
 
         mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe ({
+            .filter { it.isNotEmpty() }
+            .map {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FOLDER COUNT : ${it.size}")
                 }
 
-                // 첫 번째 위치에 즐겨찾기를 추가
-                val list = it.toMutableList()
+                // 첫 번째 항목에 기본 위치인 '즐겨찾기' 를 추가 (0)
+                val list = it as ArrayList
                 val defaultFolder = string(R.string.favorite_title)
-                var pos = 0
-
                 list.add(0, MyFavorite(defaultFolder, favType = MyFavorite.T_FOLDER))
-                if (mCurrentFolder != defaultFolder) {
-                    for (it in list) {
-                        if (it.name == mCurrentFolder) {
+
+                var pos = 0
+                if (mCurrentFolderId != 0) {
+                    for (item in it) {
+                        if (item._id == mCurrentFolderId) {
                             selectedPosition = pos
                             break;
                         }
@@ -76,7 +76,11 @@ class FolderViewModel @Inject constructor(application: Application
                     }
                 }
 
-                items.set(list)
+                list
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({
+                items.set(it)
                 smoothToPosition.set(selectedPosition)
             }, ::errorLog))
     }
@@ -119,7 +123,7 @@ class FolderViewModel @Inject constructor(application: Application
             }))
     }
 
-    fun currentFolder() = selectedPosition to items.get()!!.get(selectedPosition).name
+    fun currentFolder() = selectedPosition to items.get()!!.get(selectedPosition)
 
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)

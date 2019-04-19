@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
-            android:onClick="@{() -> model.command(model.CMD_FOLDER_CHOOSE, item.name)}"
+            android:onClick="@{() -> model.command(model.CMD_FOLDER_CHOOSE, item._id)}"
     >
 
         <TextView
