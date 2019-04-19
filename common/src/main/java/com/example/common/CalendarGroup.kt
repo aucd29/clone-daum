@@ -142,6 +142,8 @@ class DateCalculator<T : IDateCalculator> {
             else        -> null
         }
 
+    fun reset() = mapData.clear()
+
     fun process(date: T) {
         addData(if (isToday(date)) {
             K_TODAY
