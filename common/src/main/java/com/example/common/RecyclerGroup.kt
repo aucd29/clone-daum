@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.AndroidViewModel
@@ -14,8 +15,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
+import com.example.common.arch.SingleLiveEvent
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
@@ -40,13 +44,53 @@ interface IRecyclerDiff {
 
 /** Item 타입 비교 인터페이스 */
 interface IRecyclerItem {
-    fun type(): Int
+    var type: Int
 }
 
 /** 아이템 위치 정보 인터페이스 */
 interface IRecyclerPosition {
-    fun position(pos: Int)
-    fun position(): Int
+    var position: Int
+}
+
+interface IRecyclerExpandable<T> {
+    var toggle: Boolean
+    var childList: List<T>
+
+    fun toggle(list: List<T>, adapter: RecyclerView.Adapter<*>? = null) {
+        var i = 0
+        if (list is ArrayList) {
+            if (!this.toggle) {
+                i = findIndex(list)
+
+                list.addAll(i, childList)
+                adapter?.notifyItemRangeInserted(i, childList.size)
+            } else {
+                if (adapter != null) {
+                    i = findIndex(list)
+                }
+
+                list.removeAll(childList)
+                adapter?.notifyItemRangeRemoved(i, childList.size)
+            }
+        }
+
+        this.toggle = !toggle
+    }
+
+    private fun findIndex(list: List<T>): Int {
+        var i = 0
+        if (list is ArrayList) {
+            for (it in list) {
+                ++i
+
+                if (it == this) {
+                    break
+                }
+            }
+        }
+
+        return i
+    }
 }
 
 /** view holder */
@@ -55,17 +99,17 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 }
 
 /**
- * xml 에서 event 와 data 를 binding 하므로 viewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
+ * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
-class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
-    : RecyclerView.Adapter<RecyclerHolder>() {
+class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
+) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)
 
-        const private val METHOD_NAME_VIEW_MODEL = "setModel"
-        const private val METHOD_NAME_ITEM       = "setItem"
-        const private val METHOD_NAME_BIND       = "bind"
+        private const val METHOD_NAME_VIEW_MODEL = "setModel"
+        private const val METHOD_NAME_ITEM       = "setItem"
+        private const val METHOD_NAME_BIND       = "bind"
 
         fun bindingClassName(context: Context, layoutId: String): String {
             var classPath = context.packageName
@@ -104,10 +148,11 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
         }
     }
 
-    var items: List<T> = arrayListOf()
+    var items: ArrayList<T> = arrayListOf()
     lateinit var viewModel: ViewModel
     var viewHolderCallback: ((RecyclerHolder, Int) -> Unit)? = null
     var isScrollToPosition = true
+    var isNotifySetChanged = false
 
     constructor(layoutId: String) : this(arrayOf(layoutId)) { }
 
@@ -144,15 +189,11 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      *
      */
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND VIEW HOLDER")
-        }
-
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
         items.let { it.get(position).let { item ->
             when (item) {
-                is IRecyclerPosition -> item.position(position)
+                is IRecyclerPosition -> item.position = position
             }
 
             invokeMethod(holder.mBinding, METHOD_NAME_ITEM, item.javaClass, item, true)
@@ -161,6 +202,14 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
         holder.mBinding.executePendingBindings()
         viewHolderCallback?.invoke(holder, position)
     }
+
+//    override fun onBindViewHolder(holder: RecyclerHolder, position: Int, payloads: MutableList<Any>) {
+//        if (payloads.isEmpty()) {
+//            super.onBindViewHolder(holder, position, payloads)
+//        } else {
+//// TODO
+//        }
+//    }
 
     /**
      * 화면에 출력해야할 아이템의 총 개수를 반환 한다.
@@ -173,7 +222,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
     override fun getItemViewType(position: Int): Int {
         val item = items.get(position)
         when (item) {
-            is IRecyclerItem -> return item.type()
+            is IRecyclerItem -> return item.type
         }
 
         return 0
@@ -195,11 +244,17 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
      * 해결 방법?
      * ----
      * -> 임시로 일단 checkbox 를 호출하기 전에 notifyDataSetChanged 를 호출 함 다른 방법이 있는지 찾아봐야할 듯
+     * ----
+     * 잠시 생각한게 diff util 로 삭제될 데이터 위치와 추가해야할 데이터 위치를 알 수 있으므로 현재 데이터를
+     * items = newItems 할게 아니고 items 내에 특정 위치를 삭제 또는 추가한 뒤 inserted 의 경우
+     * notifyDataSetChanged(position) 을 호출해주면 부하가 좀 적지 않을까? 라는 생각이 듬
+     * 일단 arrayList 로 하는데 이런 구조라면 linked list 가 더 적합할 듯 한 ?
+     * ----
      */
-    fun setItems(recycler: RecyclerView, newItems: List<T>) {
-        if (items.size == 0) {
+    fun setItems(recycler: RecyclerView, newItems: ArrayList<T>) {
+        if (items.size == 0 || isNotifySetChanged) {
             items = newItems
-            notifyItemRangeChanged(0, items.size)
+            notifyDataSetChanged()
 
             return
         }
@@ -215,11 +270,21 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
                 val oldItem = oldItems[oldItemPosition]
                 val newItem = newItems[newItemPosition]
 
-                oldItem.compare(newItem)
-
-                return oldItem == newItem
+                return oldItem.compare(newItem)
             }
+
+            // https://medium.com/mindorks/diffutils-improving-performance-of-recyclerview-102b254a9e4a
+//            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+//                return super.getChangePayload(oldItemPosition, newItemPosition)
+//            }
         })
+
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("OLD ${oldItems.hashCode()}")
+            mLog.debug("NEW ${newItems.hashCode()}")
+            mLog.debug("DISPATCH UPDATES TO $this")
+        }
 
         // https://stackoverflow.com/questions/43458146/diffutil-in-recycleview-making-it-autoscroll-if-a-new-item-is-added
         result.dispatchUpdatesTo(object: ListUpdateCallback {
@@ -276,24 +341,25 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>)
 /**
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
-open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewModel(app) {
+open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
+    : AndroidViewModel(app), ICommandEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
     }
+
+    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     val items           = ObservableField<List<T>>()
     val adapter         = ObservableField<RecyclerAdapter<T>>()
     val itemTouchHelper = ObservableField<ItemTouchHelper>()
 
-    fun initAdapter(id: String) {
-        val adapter = RecyclerAdapter<T>(id)
-        adapter.viewModel = this
-
-        this.adapter.set(adapter)
-    }
-
-    fun initAdapter(ids: Array<String>) {
-        val adapter = RecyclerAdapter<T>(ids)
+    /**
+     * adapter 에 사용될 layout 을 설정한다.
+     *
+     * @param id 문자열 형태의 layout 이름
+     */
+    fun initAdapter(vararg ids: String) {
+        val adapter = RecyclerAdapter<T>(ids.toList().toTypedArray())
         adapter.viewModel = this
 
         this.adapter.set(adapter)
@@ -317,6 +383,16 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application): AndroidViewMod
                 }
             }
         }
+    }
+
+    fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
+    fun toast(@StringRes resid: Int) = toast(string(resid))
+    fun errorLog(e: Throwable) {
+        if (mLog.isDebugEnabled) {
+            e.printStackTrace()
+        }
+
+        mLog.error("ERROR: ${e.message}")
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

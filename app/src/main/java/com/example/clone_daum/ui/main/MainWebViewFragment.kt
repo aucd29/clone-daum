@@ -36,14 +36,12 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     private lateinit var mMainViewModel: MainViewModel
 
     private var mTimerDisposable = CompositeDisposable()
-    private var mIsClosedSplash  = false
-
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mSplashViewModel = mViewModelFactory.injectOfActivity(this, SplashViewModel::class.java)
-        mMainViewModel   = mViewModelFactory.injectOfActivity(this, MainViewModel::class.java)
+        mSplashViewModel = mViewModelFactory.injectOfActivity(this)
+        mMainViewModel   = mViewModelFactory.injectOfActivity(this)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -54,10 +52,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
-                if (mLog.isInfoEnabled) {
-                    mLog.info("URL LOADING : $url")
-                }
-
                 url?.let {
                     if (!it.contains("m.daum.net")) {
                         if (mLog.isDebugEnabled) {
@@ -66,8 +60,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
                         viewController.browserFragment(it)
                     } else {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("JUST LOAD URL : $url")
+                        if (mLog.isInfoEnabled) {
+                            mLog.info("URL LOADING : $url")
                         }
 
                         // uri 를 redirect 시키는 이유가 뭘까나?
@@ -75,9 +69,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     }
                 }
             }, pageFinished = {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("PAGE FINISHED")
-                }
+                val position = arguments?.getInt(MainTabAdapter.K_POSITION)
 
                 swipeRefresh.apply {
                     if (isRefreshing) {
@@ -96,24 +88,13 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                         }
                     }
                 }
-            }
-            , userAgent = { config.USER_AGENT }
-            , progress  = {
-                val position = arguments?.getInt(MainTabAdapter.K_POSITION)
-
-                if (mLog.isTraceEnabled) {
-                    mLog.trace("TAB($position) WEBVIEW PROGRESS : $it")
-                }
 
                 // 이 값이 구 버전에서는 제대로 안들어왔음 =_ =
-                if (it == 100 && position == MainViewModel.INDEX_NEWS) {
-                    if (!mIsClosedSplash) {
-                        mIsClosedSplash = true
-
-                        mSplashViewModel.closeEvent.call()
-                    }
+                if (position == MainViewModel.INDEX_NEWS) {
+                    mSplashViewModel.closeSplash()
                 }
             }
+            , userAgent = { config.USER_AGENT }
         ))
 
         swipeRefresh.setOnRefreshListener {
@@ -126,7 +107,9 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             webview.reload()
 
             mTimerDisposable.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                .take(1).observeOn(AndroidSchedulers.mainThread()).subscribe {
+                .take(1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXPLODE RELOAD ICO TIMER")
                     }
@@ -201,7 +184,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         super.onPause()
 
         mBinding.webview.pause()
-
         mTimerDisposable.clear()
     }
 
@@ -212,6 +194,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     }
 
     override fun onDestroyView() {
+        mTimerDisposable.dispose()
         mBinding.webview.free()
 
         super.onDestroyView()

@@ -21,6 +21,9 @@ import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 
+
+// 어라라.. 머지가 잘못되었나? 왜 검색 영역에서 스크롤이 되는것이냐? ㄷ ㄷ ㄷ [aucd29][2019. 4. 17.]
+
 class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     , TabLayout.OnTabSelectedListener, OnBackPressedListener {
     companion object {
@@ -28,20 +31,15 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     init {
-        // MainViewModel 를 MainWebViewFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
+        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
 
-//    디자인 변경으로 삭제 [aucd29][2019. 2. 28.]
-//    private lateinit var mWeatherViewModel: WeatherViewModel
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
-
-    // SearchFragment 와 공유
-    private lateinit var mPopularViewModel: PopularViewModel
+    private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
 
     private var mCurrentTabPos: Int = 0
     private val mRealtimeTabSelectedListener = object: TabLayout.OnTabSelectedListener {
@@ -62,22 +60,16 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             .subscribe({ html ->
                 mRealtimeIssueViewModel.load(html)
                 mPopularViewModel.load(html, mDisposable)
-            }, { e ->
-                if (mLog.isDebugEnabled) {
-                    e.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${e.message}")
-            }))
+            }, { errorLog(it, mLog) }))
     }
 
     private fun initRealtimeIssueViewModel() {
-        mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
+        mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this)
         mBinding.realtimeIssueModel = mRealtimeIssueViewModel
     }
 
     private fun initPopularViewModel() {
-        mPopularViewModel = mViewModelFactory.injectOfActivity(this, PopularViewModel::class.java)
+        mPopularViewModel = mViewModelFactory.injectOfActivity(this)
     }
 
     override fun initViewBinding() {
@@ -97,7 +89,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 }
 
                 mViewModel.progressViewOffsetLive.value = searchBar.height
-                mViewModel.searchAreaHeight = searchBar.height - tabLayout.height
+                mViewModel.searchAreaHeight             = searchBar.height - tabLayout.height
 
                 result
             }
@@ -109,7 +101,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                     }
 
                     it.translationY = it.height * -1f
-
                     it.translationY != 0f
                 }
             }
@@ -165,7 +156,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                         mLog.info("REALTIME ISSUE AREA TOP MARGIN : ${it.topMargin}")
                     }
 
-                    it.height    = 0
+                    it.height    = 1    // 0 의 경우 제대로 동작하지 않는 문제?
                     layoutParams = it
 
                     return it.topMargin != 0
@@ -269,10 +260,10 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
             if (mViewModel.appbarOffsetLive.value == 0) {
                 when (cmd) {
-                    CMD_SEARCH_FRAMGNET         -> viewController.searchFragment()
-                    CMD_REALTIME_ISSUE_FRAGMENT -> showRealtimeIssue()
+                    CMD_SEARCH_FRAMGNET         -> showSearchFragment()
+                    CMD_REALTIME_ISSUE_FRAGMENT -> toggleRealtimeIssueArea()
                     CMD_NAVIGATION_FRAGMENT     -> viewController.navigationFragment()
-                    CMD_BRS_OPEN                -> viewController.browserFragment(data.toString())
+                    CMD_BRS_OPEN                -> showBrowser(data)
                     CMD_MEDIA_SEARCH_FRAGMENT   -> showMediaSearch()
                 }
             }
@@ -281,21 +272,31 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         RealtimeIssueViewModel.apply {
             when (cmd) {
                 CMD_LOADED_ISSUE -> changeRealtimeIssueTab()
-                CMD_CLOSE_ISSUE  -> showRealtimeIssue()
+                CMD_CLOSE_ISSUE  -> toggleRealtimeIssueArea()
             }
         }
     }
 
-    private fun showRealtimeIssue() {
+    private fun showSearchFragment() {
+        toggleRealtimeIssueArea { viewController.searchFragment() }
+    }
+
+    private fun toggleRealtimeIssueArea(visibleCallback: (() -> Unit)? = null) {
         // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
 
         val lp = mBinding.realtimeIssueArea.layoutParams as ConstraintLayout.LayoutParams
 
         mRealtimeIssueViewModel.apply {
             if (visibleDetail.get() == View.GONE) {
+                visibleCallback?.let {
+                    it.invoke()
+                    return@apply
+                }
+
                 visibleDetail.set(View.VISIBLE)
 
                 tabAlpha.set(AnimParams(1f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+                bgAlpha.set(tabAlpha.get())
                 tabMenuRotation.set(AnimParams(180f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 containerTransY.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
@@ -308,9 +309,15 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                 mBinding.realtimeIssueArea.layoutHeight(changeTabHeight)
             } else {
-                tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION, endListener = {
-                    visibleDetail.set(View.GONE)
-                }))
+                tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION
+                    , endListener = { v, anim ->
+                        if (v.id == mBinding.realtimeIssueTab.id) {
+                            visibleDetail.set(View.GONE)
+                            mBinding.realtimeIssueArea.layoutHeight(1f)
+
+                            visibleCallback?.invoke()
+                        }
+                    }))
                 tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
                 val height = mBinding.realtimeIssueViewpager.height * -1f
@@ -322,8 +329,6 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                 if (mLog.isDebugEnabled) {
                     mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
-
-                mBinding.realtimeIssueArea.layoutHeight(0f)
             }
         }
     }
@@ -334,14 +339,12 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
+    private fun showBrowser(url: Any) {
+        toggleRealtimeIssueArea { viewController.browserFragment(url.toString()) }
+    }
+
     private fun showMediaSearch() {
-        if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-            showRealtimeIssue()
-            mBinding.realtimeIssueViewpager.postDelayed({ viewController.mediaSearchFragment() }
-                , RealtimeIssueViewModel.ANIM_DURATION)
-        } else {
-            viewController.mediaSearchFragment()
-        }
+        toggleRealtimeIssueArea { viewController.mediaSearchFragment() }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -352,7 +355,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     
     override fun onBackPressed(): Boolean {
         if (mRealtimeIssueViewModel.visibleDetail.get() == View.VISIBLE) {
-            showRealtimeIssue()
+            toggleRealtimeIssueArea()
             return true
         }
 

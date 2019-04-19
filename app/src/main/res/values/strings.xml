@@ -88,7 +88,7 @@
     <string name="brs_dlg_message_ssl_error">인증서 오류, 페이지를 열까옹?</string>
     <string name="brs_favorite">Favorite</string>
     <string name="brs_intent_app_for_sharing">공유에 사용할 앱</string>
-    <string name="brs_exist_fav_url">이미 입력된 찜임</string>
+    <string name="brs_exist_fav_url">이미 존재하는 데이터 임</string>
     <string name="brs_fav_url_ok">저장되었삼</string>
     <string name="brs_copied_url">URL 이 클립보드에 복사됨</string>
     <string name="brs_using_base_brs">기본 브라우저로 열면 로그인 및 위치 정보는 유지 안됨</string>
@@ -112,6 +112,19 @@
     <string name="folder_folder">폴더</string>
     <string name="folder_pls_insert_name">폴더명을 입력해 주세요</string>
     <string name="folder_exist_folder_name">동일한 폴더명이 존재 합니다.</string>
+
+    <!--history-->
+    <string name="history_title">방문기록</string>
+    <string-array name="history_labels">
+        <item>오늘 · %s</item>
+        <item>어제 · %s</item>
+        <item>지난 7일 동안 · %s</item>
+        <item>지난 달 · %s</item>
+        <item>오래된 항목</item>
+    </string-array>
+
+    <string name="history_old">오래된 항목</string>
+    <string name="history_date_format">"yyyy년 MM월 dd일 EEE요일"</string>
 
     <!-- error -->
     <string name="error_title">오류</string>

@@ -69,14 +69,14 @@ inline fun TextView.gravityCenter() {
 inline fun View.showKeyboard(flags: Int = InputMethodManager.SHOW_IMPLICIT) {
     postDelayed({
         requestFocus()
-        context.systemService(InputMethodManager::class.java)?.apply {
+        context.systemService<InputMethodManager>()?.apply {
             showSoftInput(this@showKeyboard, flags) // InputMethodManager.SHOW_FORCED
         }
     }, 200)
 }
 
 inline fun View.hideKeyboard() {
-    context.systemService(InputMethodManager::class.java)?.apply {
+    context.systemService<InputMethodManager>()?.apply {
         hideSoftInputFromWindow(this@hideKeyboard.windowToken, 0)
     }
 }

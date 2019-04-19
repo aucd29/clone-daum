@@ -73,7 +73,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="X"
-                        android:onClick="@{() -> model.finishEvent()}"
+                        android:onClick="@{() -> model.finish()}"
                 />
 
                 <!-- line 1 -->

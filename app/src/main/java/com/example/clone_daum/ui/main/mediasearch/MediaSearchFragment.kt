@@ -97,7 +97,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         val searchExtendMenuHeight = mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
         val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
         val containerTransYAnim = AnimParams(searchExtendMenuHeight, duration = ANIM_DURATION
-            , endListener = {
+            , endListener = { v, anim ->
                 finish()
                 endCallback?.invoke()
             })

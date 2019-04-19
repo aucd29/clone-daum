@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.browser.favorite
 
-import com.example.clone_daum.databinding.FavoriteAddFragmentBinding
+import com.example.clone_daum.databinding.FavoriteProcessFragmentBinding
+import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.ViewController
 import com.example.common.BaseDaggerFragment
 import com.example.common.hideKeyboard
@@ -11,15 +12,17 @@ import javax.inject.Inject
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
-class FavoriteAddFragment
-    : BaseDaggerFragment<FavoriteAddFragmentBinding, FavoriteAddViewModel>() {
+class FavoriteProcessFragment
+    : BaseDaggerFragment<FavoriteProcessFragmentBinding, FavoriteProcessViewModel>() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteAddFragment::class.java)
+        private val mLog = LoggerFactory.getLogger(FavoriteProcessFragment::class.java)
+
+        const val K_TITLE  = "title"
+        const val K_URL    = "url"
+        const val K_MODIFY = "modify"
     }
 
     @Inject lateinit var viewController: ViewController
-
-    private var mFolderPosition = 0
 
     override fun initViewBinding() {
     }
@@ -28,9 +31,23 @@ class FavoriteAddFragment
         arguments?.let { mViewModel.run {
             init(mDisposable)
 
-            // ui 에서 name 으로 되어 있어 title -> name 으로 변경
-            name.set(it.getString("title"))
-            url.set(it.getString("url"))
+            val fav = it.getSerializable(K_MODIFY)
+            if (fav is MyFavorite) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("MODIFY FAVORITE")
+                    mLog.debug(fav.toString())
+                }
+
+                favorite(fav)
+            } else {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("ADD FAVORITE")
+                }
+
+                // ui 에서 name 으로 되어 있어 title -> name 으로 변경
+                name.set(it.getString("title"))
+                url.set(it.getString("url"))
+            }
         } }
     }
 
@@ -46,13 +63,15 @@ class FavoriteAddFragment
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun changeFolderName(pos: Int, name: String) {
+    fun changeFolderName(pos: Int, fav: MyFavorite) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("CHANGE FOLDER $name ($pos)")
+            mLog.debug("CHANGE FOLDER ${fav.name} ($pos)")
         }
 
-        mViewModel.folder.set(name)
-        mFolderPosition = pos
+        mViewModel.apply {
+            folder.set(fav.name)
+            folderId = fav._id
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -61,9 +80,9 @@ class FavoriteAddFragment
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun onCommandEvent(cmd: String, data: Any) = FavoriteAddViewModel.run {
+    override fun onCommandEvent(cmd: String, data: Any) = FavoriteProcessViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mFolderPosition)
+            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mViewModel.folderId)
         }
     }
 
@@ -76,6 +95,6 @@ class FavoriteAddFragment
     @dagger.Module
     abstract class Module {
         @ContributesAndroidInjector
-        abstract fun contributeInjector(): FavoriteAddFragment
+        abstract fun contributeInjector(): FavoriteProcessFragment
     }
 }

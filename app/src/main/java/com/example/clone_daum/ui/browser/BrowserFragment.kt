@@ -26,6 +26,8 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
         private const val WEBVIEW_SLIDING = 3
+
+        const val K_URL = "url"
     }
 
     @Inject lateinit var viewController: ViewController
@@ -55,7 +57,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
-        mUrl = arguments?.getString("url")
+        mUrl = arguments?.getString(K_URL)
 
         if (mUrl == null) {
             mLog.error("ERROR: URL : $mUrl")
@@ -96,6 +98,12 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }, pageFinished = {
                     visibleProgress.set(View.GONE)
                     reloadIconResId.set(R.drawable.ic_replay_black_24dp)
+
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("PAGE FINISHED ${System.currentTimeMillis()}")
+                    }
+
+                    addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }
                 , userAgent    = { config.USER_AGENT }
@@ -118,6 +126,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+    }
+
+    private fun addHistory() {
+        mViewModel.addHistory(webview.url, webview.title)
     }
 
     override fun onPause() {
@@ -250,11 +262,11 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         val title = webview.title
         val url   = webview.url
 
-        viewController.favoriteAddFragment(title, url)
+        viewController.favoriteProcessFragment(title, url)
     }
 
     private fun urlHistory() {
-
+        viewController.urlHistoryFragment()
     }
 
     private fun copyUrl() {

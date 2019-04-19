@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import com.example.common.arch.SingleLiveEvent
+import org.slf4j.Logger
 import java.util.concurrent.TimeUnit
 
 /**
@@ -47,6 +48,14 @@ inline fun Activity.snackbar(view: View, msg: String, length: Int = Snackbar.LEN
  */
 inline fun Activity.snackbar(view: View, @StringRes resid: Int, length: Int = Snackbar.LENGTH_SHORT) =
     snackbar(view, getString(resid), length)
+
+inline fun Activity.errorLog(e: Throwable, logger: Logger) {
+    if (logger.isDebugEnabled) {
+        e.printStackTrace()
+    }
+
+    logger.error("ERROR: ${e.message}")
+}
 
 /**
  * 종료 하려면 다시 선택 하라는 메뉴 호출

@@ -23,7 +23,7 @@ class CafeFragment: BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mLoginViewModel = mViewModelFactory.injectOf(this, NavigationLoginViewModel::class.java)
+        mLoginViewModel = mViewModelFactory.injectOf(this)
     }
 
     override fun initViewBinding() = mBinding.run {

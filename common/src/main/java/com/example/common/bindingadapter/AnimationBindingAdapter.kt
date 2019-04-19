@@ -2,11 +2,14 @@ package com.example.common.bindingadapter
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Interpolator
+import android.view.animation.RotateAnimation
 import androidx.databinding.BindingAdapter
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 14. <p/>
@@ -15,6 +18,8 @@ import androidx.databinding.BindingAdapter
 // view.animate 가 보기는 좋아서 바꿨다가 기능의 문제로 원래대로 ObjectAnimator 로 변경 OTL
 //
 object AnimationBindingAdapter {
+    private val mLog = LoggerFactory.getLogger(AnimationBindingAdapter::class.java)
+
     private const val K_TRANSLATION_Y = "translationY"
     private const val K_TRANSLATION_X = "translationX"
     private const val K_ALPHA         = "alpha"
@@ -35,7 +40,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_TRANSLATION_Y, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -51,7 +56,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_TRANSLATION_X, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -67,7 +72,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_ALPHA, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -83,7 +88,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_SCALE_X, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -99,7 +104,7 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_SCALE_Y, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
     @JvmStatic
@@ -115,10 +120,10 @@ object AnimationBindingAdapter {
             ObjectAnimator.ofFloat(view, K_ROTATION, params.initValue, params.value)
         }
 
-        objectAnim(anim, params)
+        objectAnim(view, anim, params)
     }
 
-    private fun objectAnim(anim: ObjectAnimator, params: AnimParams) {
+    private fun objectAnim(view: View, anim: ObjectAnimator, params: AnimParams) {
         params.apply {
             anim.setDuration(duration)
             interpolator?.let { anim.setInterpolator(it) }
@@ -137,7 +142,7 @@ object AnimationBindingAdapter {
                         reverse?.invoke(animator)
                     }
                     override fun onAnimationEnd(animator: Animator?) {
-                        endListener?.invoke(animator)
+                        endListener?.invoke(view, animator)
                     }
                 })
             }
@@ -155,7 +160,7 @@ data class AnimParams(
     var value          : Float,
     val initValue      : Float? = null,
     var duration       : Long = 300,
-    var endListener    : ((Animator?) -> Unit)? = null,
+    var endListener    : ((View, Animator?) -> Unit)? = null,
     var interpolator   : Interpolator? = null,
     var startDelay     : Long? = null,
     var reverse        : ((Animator?) -> Unit)? = null,

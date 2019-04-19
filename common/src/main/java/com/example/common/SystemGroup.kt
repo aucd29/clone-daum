@@ -14,7 +14,7 @@ import android.os.Looper
 
 @SuppressLint("MissingPermission")
 inline fun Context.isNetworkConntected(): Boolean {
-    systemService(ConnectivityManager::class.java)?.apply {
+    systemService<ConnectivityManager>()?.apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             for (network in allNetworks) {
                 if (getNetworkInfo(network).state == NetworkInfo.State.CONNECTED) {

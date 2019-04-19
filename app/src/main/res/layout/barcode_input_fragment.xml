@@ -34,7 +34,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:padding="@dimen/barcode_back_icon_pad"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
         />
 
         <TextView
@@ -97,7 +97,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/barcode_edit"
                 android:src="@drawable/ic_clear_black_24dp"
                 android:padding="10dp"
-                android:onClick="@{() -> model.commandEvent(model.CMD_CLEAR_EDIT)}"
+                android:onClick="@{() -> model.command(model.CMD_CLEAR_EDIT)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

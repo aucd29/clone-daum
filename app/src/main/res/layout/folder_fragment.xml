@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FolderViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +30,7 @@
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <TextView
@@ -58,7 +58,7 @@
                     android:text="@string/fa_folder"
                     android:textColor="@android:color/black"
                     android:padding="@dimen/brs_back_pad"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SHOW_FOLDER_DIALOG)}"
+                    android:onClick="@{() -> model.command(model.CMD_SHOW_FOLDER_DIALOG)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

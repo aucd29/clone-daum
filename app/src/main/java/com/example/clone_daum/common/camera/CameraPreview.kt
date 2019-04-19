@@ -117,7 +117,7 @@ open class CameraPreview: ViewGroup {
             mLog.debug("INIT LAYOUT")
         }
 
-        mWindowManager    = context.systemService(WindowManager::class.java)!!
+        mWindowManager    = context.systemService<WindowManager>()!!
         mStateHandler     = Handler(mStateCallback)
         mRotationListener = RotationListener()
     }

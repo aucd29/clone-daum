@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.app.Application
 import android.text.Spanned
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.viewpager.widget.ViewPager
@@ -56,9 +57,11 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val dimmingBgAlpha  = ObservableField<AnimParams>()
     val tabMenuRotation = ObservableField<AnimParams>()
     val tabAlpha        = ObservableField<AnimParams>()
+    val bgAlpha         = ObservableField<AnimParams>()
 
     val visibleDetail   = ObservableInt(View.GONE)
     val viewPagerLoaded = ObservableField<(() -> Unit)?>()
+    val enableClick     = ObservableBoolean(false)
 
     fun load(html: String) {
         disposableInterval.add(Observable.just(html)
@@ -66,15 +69,16 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe ({
                 visibleProgress.set(View.GONE)
 
                 mRealtimeIssueList = it
                 mAllIssueList      = it.get(0).second
 
-                commandEvent(CMD_LOADED_ISSUE)
+                enableClick.set(true)
+                command(CMD_LOADED_ISSUE)
                 startRealtimeIssue()
-            })
+            }, { errorLog(it, mLog) }))
     }
 
     private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {

@@ -32,7 +32,7 @@
                     android:src="@drawable/ic_arrow_back_white_24dp"
                     android:padding="15dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
                     tools:ignore="ContentDescription"/>
 
             <TextView
@@ -58,7 +58,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_check_circle"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SELECT_ALL)}"
+                    android:onClick="@{() -> model.command(model.CMD_SELECT_ALL)}"
             />
 
             <!-- disable 항목 추가해야 함 -->
@@ -72,7 +72,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@drawable/selector_fav_del_color"
                     android:text="@string/fa_trash_alt"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SELECTED_DELETE)}"
+                    android:onClick="@{() -> model.command(model.CMD_SELECTED_DELETE)}"
                     android:enabled="@{model.enableDelete}"
             />
 
@@ -88,7 +88,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_ellipsis_v"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_POPUP_MENU)}"
+                    android:onClick="@{() -> model.command(model.CMD_POPUP_MENU)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,8 +28,7 @@ import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(app: Application
     , val config: Config
-) : RecyclerViewModel<ISearchRecyclerData>(app), ISnackbarAware, IDialogAware
-    , IFinishFragmentAware, ICommandEventAware {
+) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
 
@@ -46,8 +45,6 @@ class SearchViewModel @Inject constructor(app: Application
 
     override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
-    override val snackbarEvent   = SingleLiveEvent<String>()
-    override val finishEvent     = SingleLiveEvent<Void>()
 
     val searchKeyword            = ObservableField<String>()
     val searchIconResId          = ObservableInt(config.SEARCH_ICON)
@@ -70,7 +67,7 @@ class SearchViewModel @Inject constructor(app: Application
             true
         }
 
-        initAdapter(arrayOf("search_recycler_history_item", "search_recycler_suggest_item"))
+        initAdapter("search_recycler_history_item", "search_recycler_suggest_item")
         reloadHistoryData()
     }
 
@@ -78,10 +75,10 @@ class SearchViewModel @Inject constructor(app: Application
         mDisposable.add(searchDao.search()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+            .subscribe({
                 items.set(it)
                 visibleSearchRecycler(it.size > 0)
-            })
+            }, ::errorLog))
     }
 
     fun eventSearch(keyword: String?) {
@@ -97,10 +94,13 @@ class SearchViewModel @Inject constructor(app: Application
                     }
 
                     searchKeyword.set("")
-                }, ::snackbar))
+                }, {
+                    errorLog(it)
+                    snackbar(it)
+                }))
 
-            commandEvent(CMD_BRS_SEARCH, it)
-        } ?: snackbarEvent(R.string.error_empty_keyword)
+            command(CMD_BRS_SEARCH, it)
+        } ?: snackbar(R.string.error_empty_keyword)
     }
 
     fun eventToggleRecentSearch() {
@@ -148,7 +148,10 @@ class SearchViewModel @Inject constructor(app: Application
                 if (mLog.isDebugEnabled) {
                     mLog.debug("DELETED : $item")
                 }
-            }, ::snackbar))
+            }, {
+                errorLog(it)
+                snackbar(it)
+            }))
     }
 
     fun eventDeleteAllHistory() {
@@ -156,11 +159,11 @@ class SearchViewModel @Inject constructor(app: Application
             , listener = { res, _ -> if (res) {
                 mDisposable.add(Completable.fromAction { searchDao.deleteAll() }
                     .subscribeOn(Schedulers.io())
-                    .subscribe {
+                    .subscribe ({
                         if (mLog.isDebugEnabled) {
                             mLog.debug("DELETE ALL")
                         }
-                    })
+                    }, ::errorLog))
             }})
     }
 
@@ -183,7 +186,10 @@ class SearchViewModel @Inject constructor(app: Application
                 }
 
                 items.set(suggestList.toList())
-            }, ::snackbar))
+            }, {
+                errorLog(it)
+                snackbar(it)
+            }))
     }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -200,24 +206,5 @@ class SearchViewModel @Inject constructor(app: Application
             reloadHistoryData()
             View.VISIBLE
         })
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ISnackbarAware
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    private fun snackbarEvent(@StringRes resid: Int) =
-        snackbar(string(resid))
-
-    override fun snackbar(e: Throwable) {
-        if (mLog.isDebugEnabled) {
-            e.printStackTrace()
-        }
-
-        mLog.error("ERROR: ${e.message}")
-
-        super.snackbar(e)
     }
 }

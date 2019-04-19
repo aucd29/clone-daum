@@ -3,6 +3,7 @@ package com.example.common
 
 import org.slf4j.LoggerFactory
 import java.lang.reflect.ParameterizedType
+import kotlin.reflect.jvm.jvmName
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 19. <p/>
@@ -34,9 +35,8 @@ object Reflect {
      */
     inline fun <reified T> create(clazzPath: String, params: Params? = null): T {
         try {
-            val clazz = Class.forName(clazzPath)
-
-            return create(clazz, params) as T
+//            val clazz = Class.forName(clazzPath)
+            return create(params)
         } catch (e: Exception) {
             throw java.lang.RuntimeException(e)
         }
@@ -45,7 +45,8 @@ object Reflect {
     /**
      * 클래스형틀 지정하고 인자 타입과 인자를 전달하여 클래스를 인스턴스 시킨다.
      */
-    inline fun <reified T> create(clazz: Class<out T>, params: Params? = null): T {
+    inline fun <reified T> create(params: Params? = null): T {
+        val clazz = T::class.java
         if (clazz.isInterface) {
             throw RuntimeException("Specified class is hsp4: " + clazz.name)
         }
@@ -68,7 +69,7 @@ object Reflect {
         val list: ArrayList<T> = arrayListOf()
 
         classes?.forEach {
-            list.add(create(it, params))
+            list.add(create(params))
         }
 
         return list
@@ -77,7 +78,7 @@ object Reflect {
     inline fun <reified K, reified T> create(classes: Map<K, Class<out T>>?, params: Params? = null): Map<K, T> {
         val map: HashMap<K, T> = hashMapOf()
 
-        classes?.forEach { (k, v) -> map.put(k, create(v, params)) }
+        classes?.forEach { (k, v) -> map.put(k, create(params)) }
 
         return map
     }

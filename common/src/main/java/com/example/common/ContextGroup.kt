@@ -14,6 +14,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import java.util.concurrent.Executors
@@ -34,7 +35,7 @@ fun ioThread(f : () -> Unit) {
 /**
  * pkgName 에 해당하는 앱이 foreground 인지 확인
  */
-inline fun Context.isForegroundApp(pkgName: String) = systemService(ActivityManager::class.java)?.apply {
+inline fun Context.isForegroundApp(pkgName: String) = systemService<ActivityManager>()?.apply {
     runningAppProcesses.filter {
         it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
             && it.processName == pkgName
@@ -96,7 +97,7 @@ inline fun Context.showKeyboard(view: View?, flags: Int = InputMethodManager.SHO
     view?.let {
         it.postDelayed({
             it.requestFocus()
-            systemService(InputMethodManager::class.java)?.apply {
+            systemService<InputMethodManager>()?.apply {
                 showSoftInput(it, flags) // InputMethodManager.SHOW_FORCED
             }
         }, 200)
@@ -108,7 +109,7 @@ inline fun Context.showKeyboard(view: View?, flags: Int = InputMethodManager.SHO
  */
 inline fun Context.hideKeyboard(view: View?) {
     view?.let {
-        val manager = systemService(InputMethodManager::class.java)
+        val manager = systemService<InputMethodManager>()
         manager?.hideSoftInputFromWindow(it.windowToken, 0)
     }
 }
@@ -124,6 +125,8 @@ inline fun Context.forceHideKeyboard(window: Window?) {
  * 문자열 데이터를 얻는다.
  */
 inline fun Context.string(@StringRes resid: Int) = getString(resid)
+inline fun Context.stringArray(@ArrayRes resid: Int) = resources.getStringArray(resid)
+inline fun Context.intArray(@ArrayRes resid: Int) = resources.getIntArray(resid)
 
 /**
  * 문자열 데이터를 얻는다.
@@ -147,22 +150,22 @@ inline fun Context.sdPath() = Environment.getExternalStorageDirectory().absolute
 /**
  * clipboard 데이터를 읽어온다.
  */
-inline fun Context.clipboard(): String? = systemService(ClipboardManager::class.java)?.run {
+inline fun Context.clipboard(): String? = systemService<ClipboardManager>()?.run {
     primaryClip?.getItemAt(0)?.text.toString()
 }
 
 /**
  * clipboard 떼이터를 설정 한다.
  */
-inline fun Context.clipboard(value: String) = systemService(ClipboardManager::class.java)?.run {
+inline fun Context.clipboard(value: String) = systemService<ClipboardManager>()?.run {
     primaryClip = ClipData.newPlainText("burke-data", value)
 }
 
 /**
  * systemService 반환
  */
-inline fun <T> Context.systemService(serviceClass: Class<T>): T? {
-    return ContextCompat.getSystemService(this, serviceClass)
+inline fun <reified T> Context.systemService(): T? {
+    return ContextCompat.getSystemService(this, T::class.java)
 }
 
 /**
@@ -170,7 +173,7 @@ inline fun <T> Context.systemService(serviceClass: Class<T>): T? {
  */
 inline fun Context.availMem(percent: Int): Long {
     val mi = ActivityManager.MemoryInfo()
-    systemService(ActivityManager::class.java)?.getMemoryInfo(mi)
+    systemService<ActivityManager>()?.getMemoryInfo(mi)
 
     return percent.toLong() * mi.availMem / 100L
 }
@@ -187,8 +190,4 @@ inline fun Context.toast(message: String, len: Int = Toast.LENGTH_SHORT) {
  */
 inline fun Context.toast(@StringRes resid: Int, len: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(this, resid, len).show()
-}
-
-inline fun Context.addShortcut() {
-
 }

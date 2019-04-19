@@ -6,7 +6,8 @@ import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
-import com.example.common.IFinishFragmentAware
+import com.example.common.CommandEventViewModel
+import com.example.common.ICommandEventAware
 import com.example.common.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 class NavigationViewModel @Inject constructor(
     application: Application
-): AndroidViewModel(application), IFinishFragmentAware {
+) : CommandEventViewModel(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationViewModel::class.java)
 
@@ -29,9 +30,6 @@ class NavigationViewModel @Inject constructor(
     // AWARE
     //
     ////////////////////////////////////////////////////////////////////////////////////
-
-    override val finishEvent = SingleLiveEvent<Void>()
-
 
     val itemSelected = ObservableField<(MenuItem) -> Unit>()
     val newIcon      = ObservableInt(View.GONE)

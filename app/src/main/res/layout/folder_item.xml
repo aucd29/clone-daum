@@ -6,7 +6,7 @@
 
     <data>
         <import type="android.view.View" />
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FolderViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.local.MyFavorite"/>
     </data>
 
@@ -14,7 +14,7 @@
             android:id="@+id/folder_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.commandEvent(model.CMD_CHANGE_FOLDER, item.pos)}"
+            android:onClick="@{() -> model.command(model.CMD_CHANGE_FOLDER, item.position)}"
     >
 
         <TextView
@@ -25,8 +25,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:background="@{item.pos == 0 ? @drawable/ic_star_border_black_24dp : @drawable/ic_work_black_24dp}"
-                android:text="@{item.pos != 0 ? model.firstWord(item.name) : ``}"
+                android:background="@{item.position == 0 ? @drawable/ic_star_border_black_24dp : @drawable/ic_work_black_24dp}"
+                android:text="@{item.position != 0 ? model.firstWord(item.name) : ``}"
                 android:textColor="@android:color/white"
                 android:textSize="8sp"
                 android:textStyle="bold"
@@ -56,7 +56,7 @@
                 android:padding="10dp"
                 android:text="@string/fa_check"
                 android:textColor="@color/colorAccent"
-                android:visibility="@{model.selectedPosition == item.pos ? View.VISIBLE : View.GONE}"
+                android:visibility="@{model.selectedPosition == item.position ? View.VISIBLE : View.GONE}"
         />
 
         <View

@@ -17,10 +17,10 @@ data class Suggest (
 data class SuggestItem (
     val keyword: String, val rawKeyword: String
 ) : ISearchRecyclerData {
+    override var type: Int = SearchRecyclerType.T_SUGGEST
+
     override fun compare(item: IRecyclerDiff): Boolean {
         val nitem = item as SuggestItem
         return keyword == nitem.keyword
     }
-
-    override fun type() = SearchRecyclerType.T_SUGGEST
 }

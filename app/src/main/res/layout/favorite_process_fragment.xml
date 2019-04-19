@@ -5,7 +5,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteAddViewModel"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteProcessViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <TextView
@@ -97,7 +97,7 @@
                 android:paddingEnd="15dp"
                 android:src="@drawable/ic_clear_black_24dp"
                 android:background="@android:color/transparent"
-                android:onClick="@{() -> model.commandEvent(model.CMD_NAME_RESET)}"
+                android:onClick="@{() -> model.command(model.CMD_NAME_RESET)}"
         />
 
         <View
@@ -147,7 +147,7 @@
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:background="@android:color/transparent"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ADDRESS_RESET)}"
+                android:onClick="@{() -> model.command(model.CMD_ADDRESS_RESET)}"
         />
 
         <View
@@ -168,9 +168,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/favorite_label_address"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:onClick="@{() -> model.commandEvent(model.CMD_FOLDER_DETAIL)}"
+                android:onClick="@{() -> model.command(model.CMD_FOLDER_DETAIL)}"
                 android:background="@drawable/selector_button_bgcolor"
         >
+
             <TextView
                     android:id="@+id/favorite_label_folder"
                     style="@style/favorite_edit"
@@ -218,6 +219,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/favorite_label_folder"
                     app:layout_constraintEnd_toEndOf="parent"
             />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -236,7 +238,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 android:padding="20dp"
                 android:gravity="center"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
         />
 
         <TextView
@@ -250,7 +252,7 @@
                 android:padding="20dp"
                 android:gravity="center"
                 android:enabled="@{model.enabledOk}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_ADD)}"
+                android:onClick="@{() -> model.command(model.CMD_FAVORITE_PROCESS)}"
         />
 
         <View

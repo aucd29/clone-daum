@@ -53,20 +53,15 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
 
     webViewClient = object : WebViewClient() {
         private val mLog = LoggerFactory.getLogger(WebView::class.java)
-
-        var loadingFinished = true
-        var redirect        = false
+        var redirectFlag = false
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            if (!loadingFinished) {
-                redirect = true
-            }
-
             if (mLog.isDebugEnabled) {
-                mLog.debug("shouldOverrideUrlLoading : $url")
+                mLog.debug("OVERRIDE URL LOADING : $url")
             }
 
             urlLoading?.invoke(view, url) ?: view?.loadUrl(url)
+            redirectFlag = true
 
             return true
         }
@@ -75,25 +70,30 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
 
-            loadingFinished = false
-            view?.let { canGoForward?.invoke(it.canGoForward()) }
-            url?.let  { pageStarted?.invoke(it) }
+            if (!redirectFlag) {
+                if (mLog.isInfoEnabled) {
+                    mLog.info("PAGE STARTED : $url")
+                }
+
+                view?.let { canGoForward?.invoke(it.canGoForward()) }
+                pageStarted?.invoke(url)
+            }
+
+            redirectFlag = false
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
 
-            if (!redirect) {
-                loadingFinished = true
-            }
+            // 어래 수정한다고 했는데 callback 이 2번 나가서 다시 수정 =_ = [aucd29][2019. 4. 17.]
+            if (!redirectFlag) {
+                if (mLog.isInfoEnabled) {
+                    mLog.info("PAGE FINISHED")
+                }
 
-            if (loadingFinished && !redirect) {
+                view?.let { canGoForward?.invoke(it.canGoForward()) }
                 pageFinished?.invoke(url)
-            } else {
-                redirect = false
             }
-
-            view?.let { canGoForward?.invoke(it.canGoForward()) }
         }
 
         override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {

@@ -8,7 +8,6 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.*
 import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -21,9 +20,9 @@ import javax.inject.Inject
  */
 
 class BrowserViewModel @Inject constructor(app: Application
-    , var urlDao: UrlHistoryDao
-    , val zzimDao: ZzimDao
-) : CommandEventViewModel(app), ISnackbarAware, IWebViewEventAware {
+    , private var mUrlHistoryDao: UrlHistoryDao
+    , private val mZzimDao: ZzimDao
+) : CommandEventViewModel(app), IWebViewEventAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
@@ -37,20 +36,18 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_RELOAD           = "reload"
     }
 
-    override val snackbarEvent = SingleLiveEvent<String>()
     override val webviewEvent  = ObservableField<WebViewEvent>()
-
     private lateinit var mDisposable: CompositeDisposable
 
-    val urlString           = ObservableField<String>()
-    val brsCount            = ObservableField<String>()
-    val sslIconResId        = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
-    val reloadIconResId     = ObservableInt(R.drawable.ic_clear_black_24dp)
-    val valProgress         = ObservableInt()
-    val visibleProgress     = ObservableInt(View.VISIBLE)
-    val visibleSslIcon      = ObservableInt(View.GONE)
-    val enableForward       = ObservableBoolean(false)
-    val isFullscreen        = ObservableBoolean(false)
+    val urlString       = ObservableField<String>()
+    val brsCount        = ObservableField<String>()
+    val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
+    val reloadIconResId = ObservableInt(R.drawable.ic_clear_black_24dp)
+    val valProgress     = ObservableInt()
+    val visibleProgress = ObservableInt(View.VISIBLE)
+    val visibleSslIcon  = ObservableInt(View.GONE)
+    val enableForward   = ObservableBoolean(false)
+    val isFullscreen    = ObservableBoolean(false)
 
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
@@ -66,10 +63,31 @@ class BrowserViewModel @Inject constructor(app: Application
         }
 
         visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
-
         urlString.set(url)
-        urlDao.insert(UrlHistory(url = url, date = System.currentTimeMillis()))
-            .subscribeOn(Schedulers.io()).subscribe()
+    }
+
+    fun addHistory(url: String, title: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ADD HISTORY : $title ($url)")
+        }
+
+        mDisposable.add(mUrlHistoryDao.hasUrl(url)
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                if (it == 0) {
+                    mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("ADDED URL HISTORY : $title ($url)")
+                            }
+                        }, { errorLog(it, mLog) })
+                } else {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("EXIST URL HISTORY : $title ($url)")
+                    }
+                }
+            }, { errorLog(it, mLog) }))
     }
 
     fun applyBrsCount(count: Int) {
@@ -92,7 +110,7 @@ class BrowserViewModel @Inject constructor(app: Application
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            commandEvent(CMD_RELOAD)
+            command(CMD_RELOAD)
         }
     }
 
@@ -106,31 +124,27 @@ class BrowserViewModel @Inject constructor(app: Application
             mLog.error("ERROR: ${urlString.get()}")
         }
 
-        mDisposable.add(zzimDao.hasUrl(url)
+        mDisposable.add(mZzimDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (it > 0) {
+                if (it == 0) {
+                    insertZzim(url)
+                } else {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXIST URL : $url ($it)")
                     }
 
-                    snackbar(string(R.string.brs_exist_fav_url))
-                } else {
-                    insertZzim(url)
+                    snackbar(R.string.brs_exist_fav_url)
                 }
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-                snackbar(it.message)
+                errorLog(it, mLog)
+                snackbar(it)
             }))
     }
 
     private fun insertZzim(url: String) {
-        mDisposable.add(zzimDao.insert(Zzim(url = url
+        mDisposable.add(mZzimDao.insert(Zzim(url = url
             , title = "title"))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -139,14 +153,10 @@ class BrowserViewModel @Inject constructor(app: Application
                     mLog.debug("ZZIM URL : $url")
                 }
 
-                snackbar(string(R.string.brs_fav_url_ok))
+                snackbar(R.string.brs_fav_url_ok)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-                snackbar(it.message)
+                errorLog(it, mLog)
+                snackbar(it)
             }))
     }
 }

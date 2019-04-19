@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.search
 
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
@@ -25,14 +26,19 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
     private lateinit var mPopularViewModel: PopularViewModel
 
+    override fun initViewBinding() {
+//        mBinding.searchRecycler.itemAnimator.apply {
+//            if (this is DefaultItemAnimator) {
+//                supportsChangeAnimations = false
+//            }
+//        }
+    }
+
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
+        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment)
         mBinding.popularmodel = mPopularViewModel
-    }
-
-    override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
@@ -58,7 +64,7 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        mViewModel.finishEvent()
+        mViewModel.finish()
 
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())

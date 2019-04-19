@@ -30,7 +30,7 @@ class FavoriteFragment
         mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.favorite_show_all    -> mViewModel.initItems()
-                R.id.favorite_show_folder -> mViewModel.initItemByFolder()
+                R.id.favorite_show_folder -> mViewModel.initItemsByFolder()
             }
         }
     }
@@ -54,8 +54,8 @@ class FavoriteFragment
         FavoriteViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN           -> showBrowser(data.toString())
-                CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data.toString())
-                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(requireContext(), mViewModel, false)
+                CMD_FOLDER_CHOOSE      -> viewController.favoriteFolderFragment(data as Int)
+                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, mViewModel)
                 CMD_FAVORITE_MODIFY    -> viewController.favoriteModifyFragment()
             }
         }
@@ -64,10 +64,7 @@ class FavoriteFragment
     private fun showBrowser(url: String) {
         finish()
 
-        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-        if (frgmt is BrowserFragment) {
-            frgmt.loadUrl(url)
-        }
+        fragmentManager?.find<BrowserFragment>()?.loadUrl(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

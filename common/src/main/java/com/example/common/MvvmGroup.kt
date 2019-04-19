@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ArrayRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.databinding.DataBindingUtil
@@ -22,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.*
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -37,6 +39,12 @@ private const val LAYOUT = "layout"
 inline fun AndroidViewModel.string(@StringRes resid: Int) =
     app.getString(resid)
 
+inline fun AndroidViewModel.stringArray(@ArrayRes resid: Int) =
+    app.resources.getStringArray(resid)
+
+inline fun AndroidViewModel.intArray(@ArrayRes resid: Int) =
+    app.resources.getIntArray(resid)
+
 inline fun AndroidViewModel.requireContext() =
     if (app == null) {
         throw IllegalStateException("AndroidViewModel $this not attached to a context.")
@@ -47,8 +55,7 @@ inline fun AndroidViewModel.requireContext() =
 /**
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
  */
-inline fun AndroidViewModel.string(resid: String) =
-    app.string(resid)
+inline fun AndroidViewModel.string(resid: String) = app.string(resid)
 
 inline val AndroidViewModel.app : Application
         get() = getApplication()
@@ -66,15 +73,13 @@ inline fun AndroidViewModel.pxToDp(v: Float) = v / app.displayDensity()
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline fun <reified T : ViewModel> FragmentActivity.viewModel(clazz: Class<T>,
-                                                      provider: ViewModelProvider.Factory? = null) =
-        provider?.let { ViewModelProviders.of(this, it).get(clazz) } ?:
-                        ViewModelProviders.of(this).get(clazz)
+inline fun <reified T : ViewModel> FragmentActivity.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
+    provider?.let {
+        ViewModelProviders.of(this, it).get(T::class.java)
+    } ?: ViewModelProviders.of(this).get(T::class.java)
 
-inline fun <reified T : ViewModel> Fragment.viewModel(clazz: Class<T>,
-                                              provider: ViewModelProvider.Factory? = null) =
-        activity?.viewModel(clazz, provider)
-
+inline fun <reified T : ViewModel> Fragment.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
+    activity?.obtainViewModel<T>( provider)
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -117,7 +122,8 @@ interface IDialogAware {
             , titleId   = titleId))
     }
 
-    fun confirm(context: Context, messageId: Int, titleId: Int? = null, listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+    fun confirm(context: Context, messageId: Int, titleId: Int? = null,
+                listener: ((Boolean, DialogInterface) -> Unit)? = null) {
         dialog(DialogParam(context = context
             , messageId  = messageId
             , titleId    = titleId
@@ -126,39 +132,41 @@ interface IDialogAware {
     }
 }
 
-interface ISnackbarAware {
-    val snackbarEvent: SingleLiveEvent<String>
-
-    fun snackbar(msg: String?) {
-        msg?.let { snackbarEvent.value = it }
-    }
-
-    fun snackbar(e: Throwable) = snackbar(e.message)
-}
+//interface ISnackbarAware {
+//    val snackbarEvent: SingleLiveEvent<String>
+//
+//    fun snackbar(msg: String?) {
+//        msg?.let { snackbarEvent.value = it }
+//    }
+//
+//    fun snackbar(e: Throwable) = snackbar(e.message)
+//}
 
 // xml 에서는 다음과 같이 사용할 수 있다.
-// android:onClick="@{() -> model.commandEvent(model.CMD_YOUR_COMMAND)}"
+// android:onClick="@{() -> model.command(model.CMD_YOUR_COMMAND)}"
 interface ICommandEventAware {
+    companion object {
+        const val CMD_FINISH   = "cmd-finish"
+        const val CMD_SNACKBAR = "cmd-snackbar"
+        const val CMD_TOAST    = "cmd-toast"
+    }
+
     val commandEvent: SingleLiveEvent<Pair<String, Any>>
 
-    // @JvmOverloads 를 넣고 싶긴한데 =_ = 흠;
+    fun finish() = command(CMD_FINISH, true)
+    fun finish(animate: Boolean) = command(CMD_FINISH, animate)     // XML 에서 호출해야 되서
+    fun snackbar(msg: String) = command(CMD_SNACKBAR, msg)
+    fun snackbar(e: Throwable) { e.message?.let { command(CMD_SNACKBAR, it) } }
+    fun toast(msg: String) = command(CMD_TOAST, msg)
 
     // 기존에 Any? = null 형태일때 xml 에서 문제됨.
-    fun commandEvent(cmd: String, data: Any) {
+    fun command(cmd: String, data: Any) {
         commandEvent.value = cmd to data
     }
 
     // xml 에서 호출이 쉽게 하도록 추가
-    fun commandEvent(cmd: String) {
-        commandEvent(cmd, -1)
-    }
-}
-
-interface IFinishFragmentAware {
-    val finishEvent: SingleLiveEvent<Void>
-
-    fun finishEvent() {
-        finishEvent.call()
+    fun command(cmd: String) {
+        command(cmd, -1)
     }
 }
 
@@ -168,10 +176,21 @@ interface IFinishFragmentAware {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-open class CommandEventViewModel(application: Application) : AndroidViewModel(application)
-    , ICommandEventAware, IFinishFragmentAware {
+open class CommandEventViewModel(application: Application)
+    : AndroidViewModel(application)
+    , ICommandEventAware {
+
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent  = SingleLiveEvent<Void>()
+
+    inline fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
+    inline fun toast(@StringRes resid: Int) = toast(string(resid))
+    inline fun errorLog(e: Throwable, logger: Logger) {
+        if (logger.isDebugEnabled) {
+            e.printStackTrace()
+        }
+
+        logger.error("ERROR: ${e.message}")
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -245,7 +264,7 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
         data.observe(this, Observer { observer(it) })
     }
 
-    protected fun activity() = activity as BaseActivity<out ViewDataBinding>
+    protected fun activity()  = requireActivity()
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()
@@ -260,7 +279,8 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
 abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFragment() {
     protected lateinit var mBinding : T
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId(), container, false)
         mBinding.root.isClickable = true
 
@@ -273,7 +293,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding> : DaggerAppCompatDialogFra
         data.observe(this, Observer { observer(it) })
     }
 
-    fun activity() = activity as BaseActivity<out ViewDataBinding>
+    protected fun activity()  = requireActivity()
 
     abstract fun layoutId(): Int
     abstract fun bindViewModel()
@@ -316,8 +336,6 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding>
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(this, Observer { observer(it) })
     }
-
-    fun activity() = activity as BaseActivity<out ViewDataBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -8,9 +8,6 @@
         <import type="android.view.View"/>
 
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
-        <!--디자인 변경으로 인해 제거 -->
-        <!--<variable name="weatherModel"-->
-        <!--type="com.example.clone_daum.ui.main.weather.WeatherViewModel"/>-->
         <variable name="realtimeIssueModel"
                   type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
     </data>
@@ -30,9 +27,9 @@
                     android:id="@+id/viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:offscreenPageLimit="@{3}"
                     app:bindPagerAdapter="@{model.tabAdapter}"
             />
-            <!--app:bindOffscreenPageLimit="@{model.offscreenPageLimit}"-->
 
             <!-- realtime issue 쪽 배경 용 -->
             <View
@@ -40,7 +37,7 @@
                     android:layout_width="match_parent" android:layout_height="match_parent"
                     android:background="#52000000"
                     android:alpha="0"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                     app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
                     android:visibility="@{realtimeIssueModel.visibleDetail}"
             />
@@ -56,7 +53,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:elevation="0dp"
-                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}">
+                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}"
+                    app:bindAppBarDrag="@{model.appbarDrag}">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                         android:id="@+id/toolbar_layout"
@@ -86,7 +84,7 @@
                                 android:layout_marginEnd="@dimen/main_search_mgn_e"
                                 android:focusable="false"
                                 android:background="@drawable/shape_search_background"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAMGNET)}"
+                                android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAMGNET)}"
                         />
 
                         <ImageView
@@ -112,7 +110,7 @@
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:padding="@dimen/main_search_extend_pad"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
+                                android:onClick="@{() -> model.command(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
                         />
 
                         <!-- REALTIME ISSUE -->
@@ -139,7 +137,7 @@
                                 android:padding="@dimen/main_realtime_issue_text_pad"
                                 android:text="@{realtimeIssueModel.titleConvert(realtimeIssueModel.currentIssue)}"
                                 android:layout_marginStart="15dp"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, realtimeIssueModel.currentIssue.url)}"
+                                android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, realtimeIssueModel.currentIssue.url)}"
                                 app:layout_constraintStart_toEndOf="@+id/realtime_label"
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
@@ -170,20 +168,21 @@
                                 tools:text="791"
                         />
 
+                        <!-- REALTIME ISSUE TAB LAYOUT -->
+
                         <ImageView
                                 android:id="@+id/realtime_issue_extend"
-                                android:layout_width="wrap_content" android:layout_height="0dp"
+                                android:layout_width="30dp" android:layout_height="0dp"
                                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
                                 app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
-                                android:paddingStart="10dp"
-                                android:paddingEnd="14dp"
+                                android:layout_marginEnd="14dp"
+                                android:padding="5dp"
                                 app:bindRotation="@{realtimeIssueModel.tabMenuRotation}"
-                                android:onClick="@{() -> model.commandEvent(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
+                                android:clickable="@{realtimeIssueModel.enableClick}"
+                                android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                         />
-
-                        <!--android:background="?selectableItemBackgroundBorderless"-->
 
                         <View
                                 android:id="@+id/search_underline"
@@ -192,9 +191,6 @@
                                 app:layout_constraintTop_toBottomOf="@+id/realtime_issue_extend"
                                 app:layout_constraintEnd_toEndOf="parent"
                         />
-
-                        <!-- REALTIME ISSUE TAB LAYOUT -->
-                        <!-- pivot 을 변경해야 함 -->
 
                         <com.google.android.material.tabs.TabLayout
                                 android:id="@+id/realtime_issue_tab"
@@ -274,7 +270,7 @@
                             android:paddingEnd="@dimen/main_tab_menu_pad"
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
-                            android:onClick="@{() -> model.commandEvent(model.CMD_NAVIGATION_FRAGMENT)}"
+                            android:onClick="@{() -> model.command(model.CMD_NAVIGATION_FRAGMENT)}"
                     />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -282,31 +278,26 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <!--
-        appbar 내부에 있으면 layout 을 재 조정해야 하므로 첫 로딩 때
+        appbar 내부에 있으면 layout 을 재 조정해야 되서 첫 로딩 때
         버벅이는 문제로 그냥 top level 의 layout 에 view 를 넣는 형태로 변경
         -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
                 android:id="@+id/realtime_issue_area"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
         >
-
             <com.example.clone_daum.common.widget.BkViewPager
                     android:id="@+id/realtime_issue_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:bindPagerAdapter="@{realtimeIssueModel.tabAdapter}"
                     app:bindViewPagerLoaded="@{realtimeIssueModel.viewPagerLoaded}"
                     app:bindTranslateY="@{realtimeIssueModel.containerTransY}"
             />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
 
         <ImageView
                 android:id="@+id/over_back"

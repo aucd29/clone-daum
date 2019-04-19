@@ -52,7 +52,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_CHECK_PERMISSION_AND_LOAD_GPS)}"
+                    android:onClick="@{() -> model.command(model.CMD_CHECK_PERMISSION_AND_LOAD_GPS)}"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/weather_close"
                     app:layout_constraintBottom_toBottomOf="@+id/weather_current_location"
@@ -220,7 +220,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/weather_area"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.commandEvent(model.CMD_MORE_DETAIL)}"
+                android:onClick="@{() -> model.command(model.CMD_MORE_DETAIL)}"
                 android:textColor="@android:color/black"
         />
 

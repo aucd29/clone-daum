@@ -14,7 +14,7 @@
             android:id="@+id/suggest_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_SEARCH, item.rawKeyword)}"
+            android:onClick="@{() -> model.command(model.CMD_BRS_SEARCH, item.rawKeyword)}"
             >
 
         <TextView

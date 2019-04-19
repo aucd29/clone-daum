@@ -35,7 +35,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK)}"
+                    android:onClick="@{() -> model.command(model.CMD_BACK)}"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
             />
@@ -154,7 +154,7 @@
                 android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
                 android:text="@string/fa_home"
                 android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_HOME)}"
+                android:onClick="@{() -> model.command(model.CMD_HOME)}"
         />
 
         <TextView
@@ -166,7 +166,7 @@
                 android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
                 android:text="@string/fa_hand_point_up"
                 android:alpha="0"
-                android:onClick="@{() -> model.commandEvent(model.CMD_GOTO_TOP)}"
+                android:onClick="@{() -> model.command(model.CMD_GOTO_TOP)}"
                 app:bindAlpha="@{model.brsGoTop}"
         />
 
@@ -179,7 +179,7 @@
                 android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
                 android:text="@string/fa_external_link_alt"
                 android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_NORMALSCREEN)}"
+                android:onClick="@{() -> model.command(model.CMD_NORMALSCREEN)}"
         />
 
         <!-- bottom buttons -->
@@ -199,7 +199,7 @@
                     android:id="@+id/brs_bottom_back"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_chevron_left_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK)}"
+                    android:onClick="@{() -> model.command(model.CMD_BACK)}"
             />
 
             <ImageButton
@@ -214,7 +214,7 @@
                     android:id="@+id/brs_bottom_home"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_home_black_24dp"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <ImageView
@@ -229,21 +229,21 @@
                     android:id="@+id/brs_bottom_search"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_search_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAGMENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAGMENT)}"
             />
 
             <ImageView
                     android:id="@+id/brs_bottom_share"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_share_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SHARE_EVENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_SHARE_EVENT)}"
             />
 
             <ImageView
                     android:id="@+id/brs_bottom_menu"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_menu_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU_FRAGMENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_SUBMENU_FRAGMENT)}"
             />
 
         </LinearLayout>

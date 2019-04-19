@@ -18,7 +18,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/favorite_bar"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:padding="@dimen/brs_urlbar_pad"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -30,10 +29,10 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:padding="15dp"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
             />
 
             <TextView
@@ -61,7 +60,7 @@
             <!--/>-->
 
             <TextView
-                    android:id="@+id/favorite_write"
+                    android:id="@+id/favorite_modify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -70,9 +69,9 @@
                     tools:text="1"
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
-                    android:enabled="false"
                     android:text="@string/fa_pen"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FAVORITE_MODIFY)}"
+                    android:padding="15dp"
+                    android:onClick="@{() -> model.command(model.CMD_FAVORITE_MODIFY)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

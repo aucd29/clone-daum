@@ -1,12 +1,14 @@
 package com.example.clone_daum.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.R
+import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.*
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryModifyFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -42,33 +44,17 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("MAIN FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER,
-            MainFragment::class.java, commit = FragmentCommit.NOW, backStack = false))
+        manager.show<MainFragment>(FragmentParams(CONTAINER
+            , commit = FragmentCommit.NOW
+            , backStack = false))
     }
-
-//    fun realtimeIssueFragment() {
-//        if (mLog.isInfoEnabled) {
-//            mLog.info("REALTIME ISSUE FRAGMENT")
-//        }
-//
-//        manager.show(FragmentParams(CONTAINER, RealtimeIssueFragment::class.java))
-////        manager.showDialog(RealtimeIssueFragment(), "realtime-issue")
-//    }
-
-//    fun weatherFragment() {
-//        if (mLog.isInfoEnabled) {
-//            mLog.info("WEATHER FRAGMENT")
-//        }
-//
-//        manager.showDialog(WeatherFragment(), "weather")
-//    }
 
     fun mediaSearchFragment() {
         if (mLog.isInfoEnabled) {
             mLog.info("MEDIA SEARCH FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, MediaSearchFragment::class.java))
+        manager.show<MediaSearchFragment>(FragmentParams(CONTAINER))
     }
 
     fun speechFragment() {
@@ -76,7 +62,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("SPEECH FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, SpeechFragment::class.java
+        manager.show<SpeechFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT))
     }
 
@@ -85,7 +71,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("MUSIC FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, MusicFragment::class.java
+        manager.show<MusicFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT))
     }
 
@@ -94,7 +80,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("FLOWER FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, FlowerFragment::class.java
+        manager.show<FlowerFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT))
     }
 
@@ -103,7 +89,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("BARCORD FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, BarcodeFragment::class.java
+        manager.show<BarcodeFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT))
     }
 
@@ -112,7 +98,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("BARCODE INPUT FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, BarcodeInputFragment::class.java
+        manager.show<BarcodeInputFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT))
     }
 
@@ -121,7 +107,7 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("NAVIGATION FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, NavigationFragment::class.java))
+        manager.show<NavigationFragment>(FragmentParams(CONTAINER))
     }
 
     fun cafeFragment(child: FragmentManager) {
@@ -129,7 +115,8 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("CAFE FRAGMENT")
         }
 
-        child.show(FragmentParams(NAV_TAB_CONTAINER, CafeFragment::class.java, add = false))
+        child.show<CafeFragment>(FragmentParams(NAV_TAB_CONTAINER
+            , add = false))
     }
 
     fun mailFragment(child: FragmentManager) {
@@ -137,7 +124,8 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("MAIL FRAGMENT")
         }
 
-        child.show(FragmentParams(NAV_TAB_CONTAINER, MailFragment::class.java, add = false))
+        child.show<MailFragment>(FragmentParams(NAV_TAB_CONTAINER
+            , add = false))
     }
 
     fun shortcutFragment(child: FragmentManager, add: Boolean = false) {
@@ -145,7 +133,8 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("SHORTCUT FRAGMENT")
         }
 
-        child.show(FragmentParams(NAV_TAB_CONTAINER, ShortcutFragment::class.java, add = add))
+        child.show<ShortcutFragment>(FragmentParams(NAV_TAB_CONTAINER
+            , add = add))
     }
 
     fun searchFragment() {
@@ -153,8 +142,8 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("SEARCH FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER,
-            SearchFragment::class.java, anim = FragmentAnim.ALPHA))
+        manager.show<SearchFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.ALPHA))
     }
 
     fun browserFragment(url: String?) {
@@ -162,12 +151,17 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("BROWSER FRAGMENT $url")
         }
 
-        url?.let {
-            manager.show(FragmentParams(CONTAINER,
-                BrowserFragment::class.java, anim = FragmentAnim.ALPHA, bundle = Bundle().apply {
-                    putString("url", it)
-                }))
+        if (url == null) {
+            mLog.error("ERROR: URL == NULL")
+
+            return
         }
+
+        manager.show<BrowserFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.ALPHA
+            , bundle = Bundle().apply {
+                putString(BrowserFragment.K_URL, url)
+            }))
     }
 
     fun browserSubFragment(callback: (String) -> Unit) {
@@ -183,54 +177,87 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
             mLog.info("FAVORITE FRAGMENT")
         }
 
-        manager.show(FragmentParams(CONTAINER, FavoriteFragment::class.java
-            , anim   = FragmentAnim.RIGHT))
+        manager.show<FavoriteFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.RIGHT))
     }
 
-    fun favoriteModifyFragment(folder: String? = null) {
+    fun favoriteModifyFragment(folderId: Int = 0) {
         if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE MODIFY FRAGMENT ($folder)")
+            mLog.info("FAVORITE MODIFY FRAGMENT ($folderId)")
         }
 
-        manager.show(FragmentParams(CONTAINER, FavoriteModifyFragment::class.java
+        manager.show<FavoriteModifyFragment>(FragmentParams(CONTAINER
             , bundle = Bundle().apply {
-                putString("folder", folder)
+                putInt(FavoriteModifyFragment.K_FOLDER, folderId)
             }))
     }
 
-    fun favoriteFolderFragment(folder: String) {
+    fun favoriteFolderFragment(folderId: Int = 0) {
         if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE FOLDER FRAGMENT ($folder)")
+            mLog.info("FAVORITE FOLDER FRAGMENT ($folderId)")
         }
 
-        manager.show(FragmentParams(CONTAINER, FavoriteFolderFragment::class.java
-            , anim   = FragmentAnim.RIGHT
-            , bundle = Bundle().apply {
-                putString("folder", folder)
-            }))
-    }
-
-    fun favoriteAddFragment(title: String, url: String) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE ADD FRAGMENT")
-        }
-
-        manager.show(FragmentParams(CONTAINER, FavoriteAddFragment::class.java
-            , anim = FragmentAnim.RIGHT, bundle = Bundle().apply {
-                putString("title", title)
-                putString("url", url)
-            }))
-    }
-
-    fun folderFragment(child: FragmentManager, position: Int) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FOLDER FRAGMENT")
-        }
-
-        child.show(FragmentParams(FAVORITE_CONTAINER, FolderFragment::class.java
+        manager.show<FavoriteFolderFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT
             , bundle = Bundle().apply {
-                putInt("position", position)
+                putInt(FavoriteFolderFragment.K_FOLDER, folderId)
             }))
     }
+
+    fun favoriteProcessFragment(title: String, url: String) {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE PROCESS(ADD) FRAGMENT")
+        }
+
+        manager.show<FavoriteProcessFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.RIGHT
+            , bundle = Bundle().apply {
+                putString(FavoriteProcessFragment.K_TITLE, title)
+                putString(FavoriteProcessFragment.K_URL, url)
+            }))
+    }
+
+    fun favoriteProcessFragment(favorite: MyFavorite) {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FAVORITE PROCESS(MODIFY) FRAGMENT")
+        }
+
+        // add fragment 로 ui 를 대신해 봄
+        manager.show<FavoriteProcessFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.RIGHT
+            , bundle = Bundle().apply {
+                putSerializable(FavoriteProcessFragment.K_MODIFY, favorite)
+            }))
+    }
+
+    fun folderFragment(child: FragmentManager, currentFolderId: Int = 0, container: Int = FAVORITE_CONTAINER) {
+        if (mLog.isInfoEnabled) {
+            mLog.info("FOLDER FRAGMENT (${currentFolderId})")
+        }
+
+        child.show<FolderFragment>(FragmentParams(container
+            , anim = FragmentAnim.RIGHT
+            , bundle = Bundle().apply {
+                putInt(FolderFragment.K_CURRENT_FOLDER, currentFolderId)
+            }))
+    }
+
+    fun urlHistoryFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("URL HISTORY FRAGMENT")
+        }
+
+        manager.show<UrlHistoryFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.RIGHT))
+    }
+
+    fun urlHistoryModifyFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("URL HISTORY MODIFY FRAGMENT")
+        }
+
+        manager.show<UrlHistoryModifyFragment>(FragmentParams(CONTAINER
+            , anim = FragmentAnim.RIGHT))
+    }
+
 }

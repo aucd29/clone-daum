@@ -5,7 +5,8 @@ import android.text.Spanned
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
-import com.example.common.IFinishFragmentAware
+import com.example.common.CommandEventViewModel
+import com.example.common.ICommandEventAware
 import com.example.common.arch.SingleLiveEvent
 import com.example.common.bindingadapter.AnimParams
 import com.example.common.html
@@ -16,9 +17,7 @@ import javax.inject.Inject
  */
 
 class SpeechViewModel @Inject constructor(app: Application)
-    : AndroidViewModel(app), IFinishFragmentAware {
-
-    override val finishEvent  = SingleLiveEvent<Void>()
+    : CommandEventViewModel(app) {
 
     val bgScale      = ObservableField<AnimParams>()
     val messageResId = ObservableField<Int>(R.string.speech_pls_speak_search_keyword)

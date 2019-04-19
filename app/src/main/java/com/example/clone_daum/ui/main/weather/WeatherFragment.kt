@@ -95,7 +95,7 @@ class WeatherFragment
                         .take(1)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            runtimePermissions(PermissionParams(activity()
+                            runtimePermissions(PermissionParams(requireActivity()
                                 , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
                                 , listener = { req, res ->
                                     config.HAS_PERMISSION_GPS = res

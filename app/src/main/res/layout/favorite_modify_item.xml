@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@{model.rowColor(item.check)}"
+            android:onClick="@{() -> model.toggleCheckbox(item)}"
     >
 
         <CheckBox
@@ -37,8 +38,7 @@
                 android:textSize="8sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
-                app:bindFrequentlySiteUrl="@{item.url}"
-                app:bindFrequentlySiteTitle="@{``}"
+                app:bindUrlToChar="@{item.url}"
         />
 
         <TextView

@@ -91,9 +91,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun finishFragmentAware()  = mViewModel.run {
-        observe(finishEvent) { onBackPressed() }
-    }
+    override fun commandFinish(animate: Boolean) { onBackPressed() }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

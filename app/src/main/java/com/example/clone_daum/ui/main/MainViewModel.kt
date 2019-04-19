@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main
 
 import android.app.Application
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
@@ -19,13 +20,13 @@ import java.util.*
 
 class MainViewModel @Inject constructor(val app: Application
     , val config: Config
-) : AndroidViewModel(app), ICommandEventAware {
+) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
         const val INDEX_NEWS = 1
 
-        const val CMD_SEARCH_FRAMGNET         = "search"
+        const val CMD_SEARCH_FRAMGNET         = "search-fragment"
         const val CMD_NAVIGATION_FRAGMENT     = "navigation"
         const val CMD_REALTIME_ISSUE_FRAGMENT = "realtime-issue"
         const val CMD_MEDIA_SEARCH_FRAGMENT   = "media-search"
@@ -33,17 +34,15 @@ class MainViewModel @Inject constructor(val app: Application
         const val CMD_BRS_OPEN                = "brs-open"
     }
 
-    override val commandEvent   = SingleLiveEvent<Pair<String, Any>>()
-
     val tabAdapter              = ObservableField<MainTabAdapter>()
     val viewpager               = ObservableField<ViewPager>()
     var gotoNewsEvent           = ObservableInt(0)
     val searchIconResId         = ObservableInt(config.SEARCH_ICON)
 
     val visibleBack             = ObservableInt(View.GONE)
-
     val appbarOffsetChangedLive = ObservableField<(AppBarLayout, Int) -> Unit>()
     val appbarOffsetLive        = MutableLiveData<Int>()
+    val appbarDrag              = ObservableBoolean(false)
 
     var progressViewOffsetLive  = MutableLiveData<Int>()
     var currentTabPositionLive  = MutableLiveData<Int>()

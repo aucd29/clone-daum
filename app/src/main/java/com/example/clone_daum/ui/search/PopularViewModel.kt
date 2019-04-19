@@ -23,14 +23,12 @@ import javax.inject.Inject
  */
 
 class PopularViewModel @Inject constructor(app: Application)
-    : RecyclerViewModel<PopularKeyword>(app), ICommandEventAware {
+    : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
 
         const val CMD_BRS_SEARCH = "brs-search"
     }
-
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
     private var mPopularList: PopularSearchedWord? = null
     private lateinit var mDisposable: CompositeDisposable
@@ -56,9 +54,9 @@ class PopularViewModel @Inject constructor(app: Application)
                 .observeOn(Schedulers.io())
                 .map(::parsePopular)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe({
                     mPopularList = it
-                })
+                }, ::errorLog))
         }
     }
 

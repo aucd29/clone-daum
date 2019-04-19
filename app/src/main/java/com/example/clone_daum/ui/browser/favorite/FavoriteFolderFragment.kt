@@ -17,6 +17,8 @@ class FavoriteFolderFragment
     : BaseDaggerFragment<FavoriteFolderFragmentBinding, FavoriteFolderViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
+
+        const val K_FOLDER = "folder"
     }
 
     @Inject lateinit var viewController: ViewController
@@ -25,9 +27,9 @@ class FavoriteFolderFragment
     }
 
     override fun initViewModelEvents() {
-        arguments?.getString("folder")?.let {
+        arguments?.getInt(K_FOLDER)?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER NAME : $it")
+                mLog.debug("FOLDER ID : $it")
             }
 
             mViewModel.initByFolder(it, mDisposable)
@@ -50,22 +52,23 @@ class FavoriteFolderFragment
     }
 
     private fun showBrowser(url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHOW BROWSER $url")
+        }
+
         finish()
         finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
 
-        val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-        if (frgmt is BrowserFragment) {
-            frgmt.loadUrl(url)
-        }
+        fragmentManager?.find<BrowserFragment>()?.loadUrl(url)
     }
 
     private fun modifyFavorite() {
-        arguments?.getString("folder")?.let {
+        arguments?.getInt(K_FOLDER)?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER NAME : $it")
+                mLog.debug("FOLDER ID : $it")
             }
 
-            viewController.favoriteModifyFragment()
+            viewController.favoriteModifyFragment(it)
         }
     }
 
