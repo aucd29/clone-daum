@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.AndroidViewModel
@@ -53,13 +54,13 @@ interface IRecyclerPosition {
 }
 
 interface IRecyclerExpandable<T> {
-    var toggle: Boolean
+    var toggle: ObservableBoolean
     var childList: List<T>
 
     fun toggle(list: List<T>, adapter: RecyclerView.Adapter<*>? = null) {
         var i = 0
         if (list is ArrayList) {
-            if (!this.toggle) {
+            if (!this.toggle.get()) {
                 i = findIndex(list)
 
                 list.addAll(i, childList)
@@ -74,7 +75,7 @@ interface IRecyclerExpandable<T> {
             }
         }
 
-        this.toggle = !toggle
+        this.toggle.set(!toggle.get())
     }
 
     private fun findIndex(list: List<T>): Int {

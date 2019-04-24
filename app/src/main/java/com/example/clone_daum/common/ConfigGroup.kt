@@ -111,14 +111,6 @@ class Config @Inject constructor(val context: Context) {
             else -> R.drawable.ic_visibility_black_24dp
         }
     }
-
-    fun splashMargin(): Int {
-        // softkey 가 존재 시 안맞는 부분 존재
-        val statusMargin = STATUS_BAR_HEIGHT * -1 / 2
-        val bottomButtonMargin = if (SOFT_BUTTON_BAR_HEIGHT == 0) 0 else SOFT_BUTTON_BAR_HEIGHT / 2
-
-        return statusMargin + bottomButtonMargin
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

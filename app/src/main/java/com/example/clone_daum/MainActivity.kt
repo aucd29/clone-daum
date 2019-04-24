@@ -32,6 +32,7 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
             mLog.debug("START ACTIVITY")
         }
 
+        initCookieManager()
         chromeInspector()
 
         if (savedInstanceState == null) {
@@ -42,6 +43,18 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     override fun attachBaseContext(newBase: Context) {
         // https://github.com/InflationX/Calligraphy
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        startCookieSync()
+    }
+
+    override fun onPause() {
+        stopCookieSync()
+
+        super.onPause()
     }
 
     override fun initViewBinding() {

@@ -21,7 +21,7 @@ class SplashViewModel @Inject constructor(val config: Config
     companion object {
         private val mLog = LoggerFactory.getLogger(SplashViewModel::class.java)
 
-        private val SPLASH_TIMEOUT = 10L
+        private const val SPLASH_TIMEOUT = 10L
     }
 
     private val mDisposable = CompositeDisposable()
@@ -35,7 +35,7 @@ class SplashViewModel @Inject constructor(val config: Config
     init {
         // 초기 로딩시 적용되는 v center 와 실제 레이아웃에 들어가는 v center 랑 값이 달라
         // 이를 보정하기 위해 transition 값을 조정 한다.
-        translationY.set(config.splashMargin())
+        translationY.set(splashMargin())
         viewHeight.set(config.SCREEN.y + config.STATUS_BAR_HEIGHT)
 
         // splash view 를 만들까도 생각했는데 굳이? 라는 생각에 그냥 vm 으로만 하도록 함
@@ -52,6 +52,14 @@ class SplashViewModel @Inject constructor(val config: Config
 
                 closeSplash()
             })
+    }
+
+    // 목적상 이건 config 보단 여기에 위치하는게 나을듯
+    private fun splashMargin() = config.run {
+        val statusMargin = STATUS_BAR_HEIGHT * -1 / 2
+        val bottomButtonMargin = if (SOFT_BUTTON_BAR_HEIGHT == 0) 0 else SOFT_BUTTON_BAR_HEIGHT / 2
+
+        statusMargin + bottomButtonMargin
     }
 
     fun closeSplash() {

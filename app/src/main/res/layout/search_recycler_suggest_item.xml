@@ -33,7 +33,7 @@
         <ImageView
                 android:id="@+id/search_suggest"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:src="@drawable/ic_expand_less_black_24dp"
+                android:src="@drawable/ic_expand_less_black_14dp"
                 app:layout_constraintTop_toTopOf="@+id/suggest_keyword"
                 app:layout_constraintBottom_toBottomOf="@+id/suggest_keyword"
                 app:layout_constraintEnd_toEndOf="parent"

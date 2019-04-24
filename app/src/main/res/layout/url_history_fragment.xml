@@ -23,6 +23,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
         >
 
+            <!--android:background="@{model.editMode ? "-->
+
             <ImageView
                     android:id="@+id/urlhistory_back"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -48,6 +50,7 @@
                     android:textColor="@android:color/black"
             />
 
+            <!-- normal mode -->
             <TextView
                     android:id="@+id/urlhistory_folder_edit"
                     android:layout_width="wrap_content"
@@ -61,6 +64,40 @@
                     android:textColor="@android:color/black"
                     android:text="@string/fa_pen"
                     android:onClick="@{() -> model.command(model.CMD_URL_HISTORY_MODIFY)}"
+                    android:visibility="@{model.editMode ? View.GONE : View.VISIBLE}"
+            />
+
+            <!-- edit mode -->
+            <TextView
+                    android:id="@+id/urlhistory_checkbox_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/urlhistory_delete"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:text="1"
+                    android:padding="15dp"
+                    android:textAppearance="@style/solid"
+                    android:textColor="@android:color/white"
+                    android:text="@string/fa_check"
+                    android:onClick="@{() -> model.command(model.CMD_URL_HISTORY_CHECKBOX_TOGGLE)}"
+                    android:visibility="@{model.editMode ? View.VISIBLE : View.GONE}"
+            />
+
+            <TextView
+                    android:id="@+id/urlhistory_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:text="1"
+                    android:padding="15dp"
+                    android:textAppearance="@style/solid"
+                    android:textColor="@android:color/white"
+                    android:text="@string/fa_trash"
+                    android:onClick="@{() -> model.command(model.CMD_URL_HISTORY_DELETE)}"
+                    android:visibility="@{model.editMode ? View.VISIBLE : View.GONE}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

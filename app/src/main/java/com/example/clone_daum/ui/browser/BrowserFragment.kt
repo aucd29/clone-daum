@@ -103,6 +103,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                         mLog.debug("PAGE FINISHED ${System.currentTimeMillis()}")
                     }
 
+                    syncCookie()
                     addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }

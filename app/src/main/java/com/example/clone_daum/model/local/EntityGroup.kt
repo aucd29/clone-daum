@@ -51,8 +51,9 @@ data class UrlHistory (
     }
 
     @Ignore override var type: Int = T_HISTORY
-    @Ignore override var toggle = false
+    @Ignore override var toggle = ObservableBoolean(false)
     @Ignore override var childList: List<UrlHistory> = arrayListOf()
+    @Ignore val check = ObservableBoolean(false)
 
     override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
     override fun timeInMillis() = date?.let { it } ?: 0

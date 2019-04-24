@@ -93,6 +93,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                 if (position == MainViewModel.INDEX_NEWS) {
                     mSplashViewModel.closeSplash()
                 }
+
+                syncCookie()
             }
             , userAgent = { config.USER_AGENT }
         ))

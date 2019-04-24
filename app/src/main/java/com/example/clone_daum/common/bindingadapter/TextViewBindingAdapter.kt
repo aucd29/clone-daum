@@ -35,11 +35,11 @@ object TextViewBindingAdapter {
             mLog.debug("URL : $url, DATA : $data")
         }
 
-        if (data == null || (data.isNotEmpty() && data != "사이트이동")) {
+        if (data.isNotEmpty() && data != "사이트이동") {
             urlToCharAndBackground(view, url)
         } else {
             view.apply {
-                setText("http")
+                text = "http"
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
                 setTypeface(null, Typeface.BOLD_ITALIC)
                 setTextColor(0xff000000.toInt())
@@ -63,7 +63,7 @@ object TextViewBindingAdapter {
 
         view.apply {
             // 배경이 늘어나서 when 이 귀찮으면 나중에 identifier 로~
-            setText(char)
+            text = char
             setBackgroundResource(
                 when (domain % 2) {
                     0    -> R.drawable.shape_frequently_0_background

@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.browser.urlhistory
 
 import android.app.Application
+import androidx.databinding.ObservableBoolean
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
@@ -23,13 +24,17 @@ class UrlHistoryViewModel @Inject constructor(application: Application
         private val mLog = LoggerFactory.getLogger(UrlHistoryViewModel::class.java)
 
         const val CMD_BRS_OPEN           = "brs-open"
-        const val CMD_URL_HISTORY_MODIFY = "url-history-modify"
         const val CMD_TOGGLE             = "toggle"
+        const val CMD_URL_HISTORY_MODIFY = "url-history-modify"
+        const val CMD_URL_HISTORY_DELETE = "url-history-delete"
+        const val CMD_URL_HISTORY_CHECKBOX_TOGGLE = "url-history-checkbox-toggle"
     }
 
     private lateinit var mDisposable: CompositeDisposable
     private val dateCal = DateCalculator<UrlHistory>()
     private var firstLoad = true
+
+    val editMode = ObservableBoolean(false)
 
     init {
         dateCal.dateFormat(string(R.string.history_date_format))
@@ -45,7 +50,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
         mDisposable.add(mUrlHistoryDao.select()
             .subscribeOn(Schedulers.io())
-            .filter{ firstLoad }
+            .filter { firstLoad }
             .map {
                 // BRS 에서 finished 가 뒤늦게 들어온 경우
                 // flowable 로직을 다시 타게 되는데 그리되면 toggle 을 다시 타는 문제가 존재 한다.
@@ -78,9 +83,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
                 }
 
                 // 0번째 아이템은 화면에 보이도록
-                newList.get(0)?.let {
-                    it.toggle(newList)
-                }
+                newList.get(0).toggle(newList)
 
                 newList
             }
@@ -108,6 +111,8 @@ class UrlHistoryViewModel @Inject constructor(application: Application
     }
 
     private fun toggle(data: UrlHistory) {
+        vibrate(50L)
+
         items.get()?.let {
             data.toggle(it, adapter.get())
 
