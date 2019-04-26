@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 5. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 5. <p/>
  */
 
 class FolderViewModel @Inject constructor(application: Application

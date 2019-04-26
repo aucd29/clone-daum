@@ -265,6 +265,8 @@ abstract class BaseFragment<T: ViewDataBinding> : DaggerFragment() {
     }
 
     protected fun activity()  = requireActivity()
+    protected inline fun <reified F: Fragment> find() =
+        fragmentManager?.find<F>()
 
     protected abstract fun layoutId(): Int
     protected abstract fun bindViewModel()

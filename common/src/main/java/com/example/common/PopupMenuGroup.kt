@@ -11,7 +11,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 26. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 26. <p/>
  */
 
 inline fun Activity.popupMenu(@MenuRes resid: Int, anchor: View, noinline listener: ((MenuItem) -> Boolean)? = null): PopupMenu {

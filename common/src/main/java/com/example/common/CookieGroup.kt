@@ -8,7 +8,7 @@ import android.webkit.CookieSyncManager
 import androidx.fragment.app.Fragment
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-04-22 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-04-22 <p/>
  */
 
 inline fun Activity.initCookieManager() {

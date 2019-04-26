@@ -32,9 +32,3 @@ inline fun Context.isNetworkConntected(): Boolean {
 
     return false
 }
-
-fun validateMainThread() {
-    if (Looper.getMainLooper() != Looper.myLooper()) {
-        throw IllegalStateException("Must be called from the main thread.")
-    }
-}

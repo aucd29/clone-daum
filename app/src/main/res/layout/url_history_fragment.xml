@@ -21,9 +21,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:background="@android:color/white"
         >
-
-            <!--android:background="@{model.editMode ? "-->
 
             <ImageView
                     android:id="@+id/urlhistory_back"
@@ -31,7 +30,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:src="@{model.editMode ? @drawable/ic_arrow_back_white_24dp : @drawable/ic_arrow_back_black_24dp}"
                     android:padding="15dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finish()}"
@@ -47,7 +46,7 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="@string/history_title"
-                    android:textColor="@android:color/black"
+                    android:textColor="@{model.editMode ? @android:color/white : @android:color/black}"
             />
 
             <!-- normal mode -->
@@ -63,7 +62,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
                     android:text="@string/fa_pen"
-                    android:onClick="@{() -> model.command(model.CMD_URL_HISTORY_MODIFY)}"
+                    android:onClick="@{() -> model.command(model.CMD_MODIFY)}"
                     android:visibility="@{model.editMode ? View.GONE : View.VISIBLE}"
             />
 
@@ -80,7 +79,7 @@
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/white"
                     android:text="@string/fa_check"
-                    android:onClick="@{() -> model.command(model.CMD_URL_HISTORY_CHECKBOX_TOGGLE)}"
+                    android:onClick="@{() -> model.command(model.CMD_CHECKBOX_TOGGLE)}"
                     android:visibility="@{model.editMode ? View.VISIBLE : View.GONE}"
             />
 
@@ -94,10 +93,11 @@
                     tools:text="1"
                     android:padding="15dp"
                     android:textAppearance="@style/solid"
-                    android:textColor="@android:color/white"
+                    android:textColor="@drawable/selector_fav_del_color"
                     android:text="@string/fa_trash"
-                    android:onClick="@{() -> model.command(model.CMD_URL_HISTORY_DELETE)}"
+                    android:onClick="@{() -> model.command(model.CMD_DELETE)}"
                     android:visibility="@{model.editMode ? View.VISIBLE : View.GONE}"
+                    android:enabled="@{model.enableDelete}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

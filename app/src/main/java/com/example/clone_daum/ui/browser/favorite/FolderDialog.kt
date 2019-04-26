@@ -13,7 +13,7 @@ import com.example.common.showKeyboard
 import kotlinx.android.synthetic.main.folder_dialog.view.*
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 3. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 3. <p/>
  */
 
 // IFolder 는 FavoriteViewModel, FavoriteModifyViewModel, FolderViewModel 에서 사용되며

@@ -13,7 +13,7 @@
             android:id="@+id/url_history_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.command(model.CMD_TOGGLE, item)}"
+            android:onClick="@{() -> model.command(model.CMD_EXPANDABLE_TOGGLE, item)}"
     >
 
         <TextView

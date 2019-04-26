@@ -12,7 +12,7 @@ import android.os.Build
 import androidx.fragment.app.Fragment
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 3. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 3. <p/>
  */
 
 inline fun Activity.shortcut(params: ShortcutParams) {

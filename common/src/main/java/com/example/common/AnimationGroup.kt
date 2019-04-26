@@ -33,7 +33,7 @@ inline fun View.fadeColor(fcolor: Int, scolor: Int, noinline aniListener: AniLis
 
 inline fun View.fadeColorResource(@ColorRes fcolor: Int, @ColorRes scolor: Int,
                                   noinline aniListener: AniListener? = null, duration: Long = 600) {
-    FadeColor.start(this, fcolor, scolor, aniListener, duration)
+    FadeColor.startResource(this, fcolor, scolor, aniListener, duration)
 }
 
 object Resize {

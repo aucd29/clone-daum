@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 4. 11. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 11. <p/>
  */
 
 inline fun Calendar.setYmd() {
@@ -142,7 +142,7 @@ class DateCalculator<T : IDateCalculator> {
             else        -> null
         }
 
-    fun reset() = mapData.clear()
+    fun clear() = mapData.clear()
 
     fun process(date: T) {
         addData(if (isToday(date)) {

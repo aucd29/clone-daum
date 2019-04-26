@@ -23,15 +23,6 @@ import java.util.concurrent.Executors
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 1. 24.. <p/>
  */
 
-private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
-
-/**
- * Utility method to run blocks on a dedicated background thread, used for io/database work.
- */
-fun ioThread(f : () -> Unit) {
-    IO_EXECUTOR.execute(f)
-}
-
 /**
  * pkgName 에 해당하는 앱이 foreground 인지 확인
  */

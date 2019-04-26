@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 28. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 28. <p/>
  *
  * touch intercept 를 목적으로 한 커스텀
  */

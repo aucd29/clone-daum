@@ -4,7 +4,7 @@ import android.graphics.*
 import java.io.ByteArrayOutputStream
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 class SourceData

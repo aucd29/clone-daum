@@ -29,6 +29,7 @@
                 android:visibility="@{model.editMode ? View.VISIBLE : View.GONE}"
                 android:checked="@={item.check}"
                 tools:ignore="MissingConstraints"
+                android:onCheckedChanged="@{(v, state) -> model.deleteList(state, item)}"
         />
 
         <TextView

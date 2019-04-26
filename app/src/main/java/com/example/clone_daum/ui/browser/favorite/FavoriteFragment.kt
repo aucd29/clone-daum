@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  *
  * 찜이랑 성격이 같은거 같은데, 폴더 구분이 다르긴 하지만 중복되는 내용은 없어도 될듯한
  */
@@ -64,7 +64,7 @@ class FavoriteFragment
     private fun showBrowser(url: String) {
         finish()
 
-        fragmentManager?.find<BrowserFragment>()?.loadUrl(url)
+        find<BrowserFragment>()?.loadUrl(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
