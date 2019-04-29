@@ -12,6 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
+
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 10. <p/>
  */
@@ -45,6 +46,10 @@ class UrlHistoryViewModel @Inject constructor(application: Application
     fun init(dp: CompositeDisposable) {
         mDisposable = dp
         initAdapter("url_history_item", "url_history_expandable_item")
+    }
+
+    fun toggleCheckbox(check: ObservableBoolean) {
+        check.toggle()
     }
 
     fun initItems() {

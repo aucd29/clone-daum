@@ -57,7 +57,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="1"
+                    tools:text="@string/fa_pen"
                     android:padding="15dp"
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/black"
@@ -75,7 +75,9 @@
                     app:layout_constraintEnd_toStartOf="@+id/urlhistory_delete"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="1"
-                    android:padding="15dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:layout_marginEnd="10dp"
                     android:textAppearance="@style/solid"
                     android:textColor="@android:color/white"
                     android:text="@string/fa_check"
@@ -98,6 +100,7 @@
                     android:onClick="@{() -> model.command(model.CMD_DELETE)}"
                     android:visibility="@{model.editMode ? View.VISIBLE : View.GONE}"
                     android:enabled="@{model.enableDelete}"
+                    android:layout_marginEnd="10dp"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -108,7 +111,7 @@
                 android:textAppearance="@style/solid"
                 android:textSize="50sp"
                 android:text="@string/fa_external_link_alt"
-                tools:text="1"
+                tools:text="@string/fa_external_link_alt"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/urlhistory_bar"
                 app:layout_constraintEnd_toEndOf="parent"

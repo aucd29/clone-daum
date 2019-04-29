@@ -16,9 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_button_bgcolor"
-            android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, item.url)}"
+            android:onClick="@{() -> model.editMode ? model.toggleCheckbox(item.check) : model.command(model.CMD_BRS_OPEN, item.url)}"
     >
-        
+
         <CheckBox
                 android:id="@+id/checkbox"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"

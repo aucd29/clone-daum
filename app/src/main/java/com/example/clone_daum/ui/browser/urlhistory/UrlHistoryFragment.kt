@@ -23,11 +23,17 @@ class UrlHistoryFragment : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHist
     override fun initViewBinding() {
     }
 
-    override fun initViewModelEvents() { mViewModel.apply {
-        init(mDisposable)
-        initItems()
+    override fun initViewModelEvents() {
+        mViewModel.apply {
+            init(mDisposable)
+            initItems()
+        }
 
-        editMode.observe {
+        urlHistoryBarBackground()
+    }
+
+    private fun urlHistoryBarBackground() {
+        mViewModel.editMode.observe {
             mBinding.urlhistoryBar.apply {
                 if (it.get()) {
                     fadeColorResource(android.R.color.white, com.example.clone_daum.R.color.colorAccent)
@@ -36,7 +42,7 @@ class UrlHistoryFragment : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHist
                 }
             }
         }
-    } }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

@@ -118,9 +118,9 @@ class DateCalculator<T : IDateCalculator> {
     }
 
     private val mToday = Calendar.getInstance()
-    private val mYesterday by lazy { mToday.dayAgo(-1) }
-    private val mWeek      by lazy { mToday.prevWeek() }
-    private val mMonth     by lazy { mToday.prevMonth() }
+    private val mYesterday by lazy(LazyThreadSafetyMode.NONE) { mToday.dayAgo(-1) }
+    private val mWeek      by lazy(LazyThreadSafetyMode.NONE) { mToday.prevWeek() }
+    private val mMonth     by lazy(LazyThreadSafetyMode.NONE) { mToday.prevMonth() }
 
     var mapData = hashMapOf<Int, ArrayList<T>>()
     var dateFormat: SimpleDateFormat? = null

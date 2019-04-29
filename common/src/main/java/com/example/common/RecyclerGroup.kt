@@ -468,7 +468,8 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
 }
 
 inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
-                                                                     targetCallback: (T) -> ObservableBoolean) {
+    targetCallback: (T) -> ObservableBoolean) {
+
     forEach {
         if (it is IRecyclerItem && it.type == type) {
             it.childList.toggleItems(targetCallback)
