@@ -3,8 +3,8 @@ package com.example.clone_daum.ui.main
 import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
-import com.example.common.IWebViewEventAware
-import com.example.common.WebViewEvent
+import brigitte.IWebViewEventAware
+import brigitte.WebViewEvent
 import javax.inject.Inject
 
 /**

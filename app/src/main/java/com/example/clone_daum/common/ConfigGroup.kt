@@ -16,10 +16,10 @@ import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.clone_daum.model.remote.WeatherDetail
-import com.example.common.jsonParse
-import com.example.common.runtimepermission.RuntimePermission
-import com.example.common.stringId
-import com.example.common.systemService
+import brigitte.jsonParse
+import brigitte.runtimepermission.RuntimePermission
+import brigitte.stringId
+import brigitte.systemService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

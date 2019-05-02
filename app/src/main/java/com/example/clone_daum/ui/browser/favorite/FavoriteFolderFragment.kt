@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
-import com.example.common.*
+import brigitte.*
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory

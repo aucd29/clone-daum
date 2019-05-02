@@ -7,9 +7,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.MyFavorite
-import com.example.common.DialogParam
-import com.example.common.dialog
-import com.example.common.showKeyboard
+import brigitte.DialogParam
+import brigitte.dialog
+import brigitte.showKeyboard
 import kotlinx.android.synthetic.main.folder_dialog.view.*
 
 /**

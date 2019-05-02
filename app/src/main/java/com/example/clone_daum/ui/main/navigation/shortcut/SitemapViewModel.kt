@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Sitemap
-import com.example.common.RecyclerViewModel
-import com.example.common.app
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.launchApp
+import brigitte.RecyclerViewModel
+import brigitte.app
+import brigitte.arch.SingleLiveEvent
+import brigitte.launchApp
 import javax.inject.Inject
 
 /**

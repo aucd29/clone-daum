@@ -1,8 +1,8 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import com.example.clone_daum.databinding.FolderFragmentBinding
-import com.example.common.BaseDaggerFragment
-import com.example.common.finish
+import brigitte.BaseDaggerFragment
+import brigitte.finish
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 

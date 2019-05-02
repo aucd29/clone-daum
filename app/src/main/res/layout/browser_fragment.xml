@@ -6,7 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.example.common.WebViewEvent"/>
+        <import type="brigitte.WebViewEvent"/>
 
         <variable name="model" type="com.example.clone_daum.ui.browser.BrowserViewModel"/>
     </data>
@@ -51,9 +51,6 @@
                     android:visibility="@{model.visibleSslIcon}"
             />
 
-            <!--android:src="@drawable/ic_vpn_key_black_24dp"-->
-            <!--android:src="@{model.sslIconResId}"-->
-
             <TextView
                     android:id="@+id/brs_url"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -95,6 +92,18 @@
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ViewStub
+                android:id="@+id/brs_inner_search"
+                android:layout_width="0dp" android:layout_height="0dp"
+                android:layout="@layout/browser_fragment_inner_search"
+                app:layout_constraintStart_toStartOf="@+id/brs_url_bar"
+                app:layout_constraintTop_toTopOf="@+id/brs_url_bar"
+                app:layout_constraintEnd_toEndOf="@+id/brs_url_bar"
+                app:layout_constraintBottom_toBottomOf="@+id/brs_url_bar"
+                app:model="@{model}"
+                android:visibility="@{model.visibleInnerSearch}"
+        />
 
         <View
                 android:id="@+id/brs_url_bar_underline"

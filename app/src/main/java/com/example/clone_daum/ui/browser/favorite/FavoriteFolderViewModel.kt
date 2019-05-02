@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.browser.favorite
 import android.app.Application
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
-import com.example.common.*
+import brigitte.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

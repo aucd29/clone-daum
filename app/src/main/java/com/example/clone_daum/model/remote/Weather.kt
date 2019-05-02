@@ -1,7 +1,7 @@
 package com.example.clone_daum.model.remote
 
-import com.example.common.IRecyclerDiff
-import com.example.common.IRecyclerItem
+import brigitte.IRecyclerDiff
+import brigitte.IRecyclerItem
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 15. <p/>

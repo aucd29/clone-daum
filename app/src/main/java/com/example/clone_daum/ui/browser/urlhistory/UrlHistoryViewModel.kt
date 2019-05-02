@@ -5,7 +5,7 @@ import androidx.databinding.ObservableBoolean
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
-import com.example.common.*
+import brigitte.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

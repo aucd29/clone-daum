@@ -4,7 +4,7 @@ import android.view.View
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
 import com.example.clone_daum.common.Config
-import com.example.common.arch.SingleLiveEvent
+import brigitte.arch.SingleLiveEvent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

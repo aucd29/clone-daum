@@ -4,9 +4,9 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
-import com.example.common.BaseDaggerFragment
-import com.example.common.find
-import com.example.common.finish
+import brigitte.BaseDaggerFragment
+import brigitte.find
+import brigitte.finish
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

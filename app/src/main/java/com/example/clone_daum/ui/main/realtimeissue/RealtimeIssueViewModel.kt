@@ -11,8 +11,8 @@ import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 //import com.example.clone_daum.model.remote.RealtimeIssueParser
 import com.example.clone_daum.model.remote.RealtimeIssueType
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

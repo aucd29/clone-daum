@@ -5,8 +5,8 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager

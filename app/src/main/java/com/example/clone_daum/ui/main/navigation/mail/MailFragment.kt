@@ -4,8 +4,8 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MailFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
-import com.example.common.*
-import com.example.common.di.module.injectOf
+import brigitte.*
+import brigitte.di.module.injectOf
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 

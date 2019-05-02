@@ -1,7 +1,7 @@
 package com.example.smartlenskotlin.tf.detector
 
 import android.graphics.RectF
-import com.example.common.IRecyclerDiff
+import brigitte.IRecyclerDiff
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 12. <p/>

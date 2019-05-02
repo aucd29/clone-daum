@@ -6,9 +6,9 @@ import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.AndroidViewModel
-import com.example.common.CommandEventViewModel
-import com.example.common.ICommandEventAware
-import com.example.common.arch.SingleLiveEvent
+import brigitte.CommandEventViewModel
+import brigitte.ICommandEventAware
+import brigitte.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

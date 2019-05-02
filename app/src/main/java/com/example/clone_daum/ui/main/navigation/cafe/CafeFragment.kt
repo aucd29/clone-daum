@@ -5,10 +5,10 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.CafeFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
-import com.example.common.BaseDaggerFragment
-import com.example.common.dataBinding
-import com.example.common.di.module.injectOf
-import com.example.common.lpmm
+import brigitte.BaseDaggerFragment
+import brigitte.dataBinding
+import brigitte.di.module.injectOf
+import brigitte.lpmm
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

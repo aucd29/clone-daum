@@ -20,7 +20,7 @@ import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.search.SearchFragment
-import com.example.common.*
+import brigitte.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

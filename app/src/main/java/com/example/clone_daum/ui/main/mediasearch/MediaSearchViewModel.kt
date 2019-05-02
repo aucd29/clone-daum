@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.Config
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import javax.inject.Inject
 
 /**

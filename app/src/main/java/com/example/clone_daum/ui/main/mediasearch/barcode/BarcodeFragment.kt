@@ -6,8 +6,8 @@ import android.graphics.BitmapFactory
 import android.view.View
 import com.example.clone_daum.databinding.BarcodeFragmentBinding
 import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerFragment
-import com.example.common.finish
+import brigitte.BaseDaggerFragment
+import brigitte.finish
 import com.google.zxing.*
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult

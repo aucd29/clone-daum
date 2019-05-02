@@ -1,8 +1,8 @@
 package com.example.clone_daum.ui.main.mediasearch.barcode
 
 import com.example.clone_daum.databinding.BarcodeInputFragmentBinding
-import com.example.common.BaseDaggerFragment
-import com.example.common.hideKeyboard
+import brigitte.BaseDaggerFragment
+import brigitte.hideKeyboard
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

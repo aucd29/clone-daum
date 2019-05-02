@@ -2,10 +2,10 @@ package com.example.clone_daum.di.module
 
 import com.example.clone_daum.di.module.common.AssetModule
 import com.example.clone_daum.model.remote.DaumService
-import com.example.common.di.module.RxModule
+import brigitte.di.module.RxModule
 import com.example.clone_daum.model.remote.DaumSuggestService
 import com.example.clone_daum.model.remote.GithubService
-import com.example.common.di.module.ViewModelFactoryModule
+import brigitte.di.module.ViewModelFactoryModule
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

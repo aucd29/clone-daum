@@ -5,7 +5,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.common.Config
-import com.example.common.*
+import brigitte.*
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

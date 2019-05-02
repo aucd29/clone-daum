@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.example.clone_daum.model.*
-import com.example.common.*
+import brigitte.*
 import java.io.Serializable
 
 /**
@@ -50,13 +50,13 @@ data class UrlHistory (
         const val T_SEPERATOR = 1
     }
 
-    @Ignore override var type: Int = T_HISTORY
-    @Ignore override var toggle = ObservableBoolean(false)
+    @Ignore override var type           = T_HISTORY
+    @Ignore override var toggle         = ObservableBoolean(false)
+    @Ignore override var timeInMillis   = date?.let { it } ?: 0
     @Ignore override var childList: List<UrlHistory> = arrayListOf()
     @Ignore val check = ObservableBoolean(false)
 
     override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
-    override fun timeInMillis() = date?.let { it } ?: 0
 }
 
 @Entity(tableName = "myFavorite")
@@ -91,7 +91,7 @@ data class MyFavorite (
 
     fun swapDate(fav: MyFavorite) {
         val tmp = date
-        date = fav.date
+        date     = fav.date
         fav.date = tmp
     }
 }

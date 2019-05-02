@@ -8,9 +8,9 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
 import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerBottomSheetDialogFragment
-import com.example.common.runtimepermission.PermissionParams
-import com.example.common.runtimepermission.runtimePermissions
+import brigitte.BaseDaggerBottomSheetDialogFragment
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable

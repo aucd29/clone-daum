@@ -11,8 +11,8 @@ import com.example.clone_daum.databinding.RealtimeIssueFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory

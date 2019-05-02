@@ -9,8 +9,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.example.clone_daum.common.Config
-import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
+import brigitte.*
+import brigitte.arch.SingleLiveEvent
 import com.google.android.material.appbar.AppBarLayout
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

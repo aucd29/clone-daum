@@ -11,9 +11,9 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Weather
 import com.example.clone_daum.model.remote.WeatherDetail
-import com.example.common.ICommandEventAware
-import com.example.common.RecyclerViewModel
-import com.example.common.arch.SingleLiveEvent
+import brigitte.ICommandEventAware
+import brigitte.RecyclerViewModel
+import brigitte.arch.SingleLiveEvent
 import com.patloew.rxlocation.RxLocation
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory

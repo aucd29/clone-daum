@@ -8,7 +8,7 @@ import android.webkit.WebView
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
-import com.example.common.*
+import brigitte.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
