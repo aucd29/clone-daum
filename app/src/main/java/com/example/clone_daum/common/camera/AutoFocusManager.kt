@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 class AutoFocusManager(private val camera: Camera, settings: CameraSettings) {

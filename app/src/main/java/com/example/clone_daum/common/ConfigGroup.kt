@@ -16,10 +16,10 @@ import com.example.clone_daum.model.local.TabData
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.clone_daum.model.remote.WeatherDetail
-import com.example.common.jsonParse
-import com.example.common.runtimepermission.RuntimePermission
-import com.example.common.stringId
-import com.example.common.systemService
+import brigitte.jsonParse
+import brigitte.runtimepermission.RuntimePermission
+import brigitte.stringId
+import brigitte.systemService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -110,14 +110,6 @@ class Config @Inject constructor(val context: Context) {
             2    -> R.drawable.ic_spa_black_24dp
             else -> R.drawable.ic_visibility_black_24dp
         }
-    }
-
-    fun splashMargin(): Int {
-        // softkey 가 존재 시 안맞는 부분 존재
-        val statusMargin = STATUS_BAR_HEIGHT * -1 / 2
-        val bottomButtonMargin = if (SOFT_BUTTON_BAR_HEIGHT == 0) 0 else SOFT_BUTTON_BAR_HEIGHT / 2
-
-        return statusMargin + bottomButtonMargin
     }
 }
 

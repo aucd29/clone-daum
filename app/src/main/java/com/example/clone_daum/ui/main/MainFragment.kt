@@ -12,9 +12,9 @@ import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
-import com.example.common.di.module.injectOfActivity
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
+import brigitte.di.module.injectOfActivity
 import com.google.android.material.tabs.TabLayout
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

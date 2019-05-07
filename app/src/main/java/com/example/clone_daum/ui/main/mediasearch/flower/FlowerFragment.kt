@@ -2,9 +2,9 @@ package com.example.clone_daum.ui.main.mediasearch.flower
 
 import com.example.clone_daum.databinding.FlowerFragmentBinding
 import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerFragment
-import com.example.common.finish
-import com.example.common.urlencode
+import brigitte.BaseDaggerFragment
+import brigitte.finish
+import brigitte.urlencode
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory

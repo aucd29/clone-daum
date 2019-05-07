@@ -13,7 +13,6 @@
     <color name="alpha_orange">#5CFF9800</color>
     <color name="alpha_white">#5CFFFFFF</color>
 
-
     <!-- zxing -->
     <color name="zxing_viewfinder_laser">@android:color/transparent</color>
     <color name="zxing_possible_result_points">@android:color/transparent</color>

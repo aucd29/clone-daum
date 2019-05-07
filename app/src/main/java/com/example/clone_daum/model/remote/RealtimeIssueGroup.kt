@@ -1,6 +1,6 @@
 package com.example.clone_daum.model.remote
 
-import com.example.common.*
+import brigitte.*
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.slf4j.LoggerFactory

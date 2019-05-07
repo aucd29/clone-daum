@@ -99,7 +99,7 @@ interface UrlHistoryDao {
     fun update(data: UrlHistory): Completable
 
     @Delete
-    fun delete(data: UrlHistory): Completable
+    fun delete(data: List<UrlHistory>): Completable
 
     @Query("DELETE FROM urlHistory")
     fun deleteAll()

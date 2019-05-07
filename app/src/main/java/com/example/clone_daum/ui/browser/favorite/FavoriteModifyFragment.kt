@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteModifyFragmentBinding
 import dagger.android.ContributesAndroidInjector
-import com.example.common.*
+import brigitte.*
 import org.slf4j.LoggerFactory
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.ViewController
@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 25. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 25. <p/>
  */
 
 class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, FavoriteModifyViewModel>() {
@@ -25,7 +25,8 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
 
     override fun initViewBinding() {
         mBinding.apply {
-            favoriteModifyBar.fadeColorResource(android.R.color.white, R.color.colorAccent)
+            favoriteModifyBar.fadeColorResource(android.R.color.white,
+                com.example.clone_daum.R.color.colorAccent)
         }
     }
 

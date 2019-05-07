@@ -7,8 +7,8 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.*
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -34,24 +34,30 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_GOTO_TOP         = "goto-top"
         const val CMD_NORMALSCREEN     = "normalscreen"
         const val CMD_RELOAD           = "reload"
+
+        const val CMD_SEARCH_PREV      = "inner-search-prev"
+        const val CMD_SEARCH_NEXT      = "inner-search-next"
     }
 
-    override val webviewEvent  = ObservableField<WebViewEvent>()
+    override val webviewEvent = ObservableField<WebViewEvent>()
     private lateinit var mDisposable: CompositeDisposable
 
-    val urlString       = ObservableField<String>()
-    val brsCount        = ObservableField<String>()
-    val sslIconResId    = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
-    val reloadIconResId = ObservableInt(R.drawable.ic_clear_black_24dp)
-    val valProgress     = ObservableInt()
-    val visibleProgress = ObservableInt(View.VISIBLE)
-    val visibleSslIcon  = ObservableInt(View.GONE)
-    val enableForward   = ObservableBoolean(false)
-    val isFullscreen    = ObservableBoolean(false)
+    val urlString           = ObservableField<String>()
+    val brsCount            = ObservableField<String>()
+    val sslIconResId        = ObservableInt(R.drawable.ic_vpn_key_black_24dp)
+    val reloadIconResId     = ObservableInt(R.drawable.ic_clear_black_24dp)
+    val valProgress         = ObservableInt()
+    val visibleProgress     = ObservableInt(View.VISIBLE)
+    val visibleSslIcon      = ObservableInt(View.GONE)
+    val visibleInnerSearch  = ObservableInt(View.GONE)
+    val enableForward       = ObservableBoolean(false)
+    val isFullscreen        = ObservableBoolean(false)
 
     val brsUrlBarAni    = ObservableField<AnimParams>()
     val brsAreaAni      = ObservableField<AnimParams>()
     val brsGoTop        = ObservableField<AnimParams>()
+    val innerSearch     = ObservableField<String>()
+
 
     fun init(disposable: CompositeDisposable) {
         mDisposable = disposable

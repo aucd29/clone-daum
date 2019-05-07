@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.local.BrowserSubMenu
-import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
+import brigitte.*
+import brigitte.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

@@ -4,7 +4,6 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
-import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryModifyFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
@@ -67,7 +66,6 @@ import dagger.Module
 
     // URL HISTORY
     , UrlHistoryFragment.Module::class
-    , UrlHistoryModifyFragment.Module::class
 ])
 class FragmentModule {
 

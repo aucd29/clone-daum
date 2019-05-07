@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserSubmenuFragmentBinding
-import com.example.common.*
+import brigitte.*
 import dagger.android.ContributesAndroidInjector
 
 /**

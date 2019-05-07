@@ -3,14 +3,14 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.databinding.FavoriteProcessFragmentBinding
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerFragment
-import com.example.common.hideKeyboard
+import brigitte.BaseDaggerFragment
+import brigitte.hideKeyboard
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 class FavoriteProcessFragment
     : BaseDaggerFragment<FavoriteProcessFragmentBinding, FavoriteProcessViewModel>() {

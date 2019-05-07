@@ -6,10 +6,10 @@ import android.os.Build
 import android.view.animation.*
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
-import com.example.common.runtimepermission.PermissionParams
-import com.example.common.runtimepermission.runtimePermissions
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

@@ -3,10 +3,10 @@ package com.example.clone_daum.ui.main.mediasearch.music
 import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
-import com.example.common.CommandEventViewModel
-import com.example.common.ICommandEventAware
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.bindingadapter.AnimParams
+import brigitte.CommandEventViewModel
+import brigitte.ICommandEventAware
+import brigitte.arch.SingleLiveEvent
+import brigitte.bindingadapter.AnimParams
 import javax.inject.Inject
 
 /**

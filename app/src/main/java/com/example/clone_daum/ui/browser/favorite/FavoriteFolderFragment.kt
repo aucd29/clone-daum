@@ -3,14 +3,14 @@ package com.example.clone_daum.ui.browser.favorite
 import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
-import com.example.common.*
+import brigitte.*
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
 class FavoriteFolderFragment
@@ -59,7 +59,7 @@ class FavoriteFolderFragment
         finish()
         finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
 
-        fragmentManager?.find<BrowserFragment>()?.loadUrl(url)
+        find<BrowserFragment>()?.loadUrl(url)
     }
 
     private fun modifyFavorite() {

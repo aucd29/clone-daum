@@ -5,10 +5,10 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.local.FrequentlySiteDao
-import com.example.common.RecyclerViewModel
-import com.example.common.app
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.launchApp
+import brigitte.RecyclerViewModel
+import brigitte.app
+import brigitte.arch.SingleLiveEvent
+import brigitte.launchApp
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

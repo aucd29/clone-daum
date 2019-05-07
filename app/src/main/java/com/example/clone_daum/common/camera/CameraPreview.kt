@@ -13,8 +13,8 @@ import android.util.AttributeSet
 import android.view.TextureView
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.example.common.systemService
-import com.example.common.validateMainThread
+import brigitte.systemService
+import brigitte.validateMainThread
 import org.slf4j.LoggerFactory
 
 /**

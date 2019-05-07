@@ -140,7 +140,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-android:1.2.0'
 
     // local lib
-    implementation project(path: ':common')
+    implementation project(path: ':brigitte')
     implementation project(path: ':dingbat')
 }
 

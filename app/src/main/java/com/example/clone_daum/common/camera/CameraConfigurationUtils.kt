@@ -10,7 +10,7 @@ import java.util.*
 import java.util.regex.Pattern
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 object CameraConfigurationUtils {

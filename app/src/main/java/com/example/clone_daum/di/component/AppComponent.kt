@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.di.module.*
 import com.example.clone_daum.di.module.common.AppModule
-import com.example.common.di.module.ViewModelFactoryModule
+import brigitte.di.module.ViewModelFactoryModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule

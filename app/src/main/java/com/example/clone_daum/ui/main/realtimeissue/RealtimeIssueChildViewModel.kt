@@ -3,10 +3,10 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.app.Application
 import android.text.Spanned
 import com.example.clone_daum.model.remote.RealtimeIssue
-import com.example.common.ICommandEventAware
-import com.example.common.RecyclerViewModel
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.html
+import brigitte.ICommandEventAware
+import brigitte.RecyclerViewModel
+import brigitte.arch.SingleLiveEvent
+import brigitte.html
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

@@ -3,9 +3,9 @@ package com.example.clone_daum.ui.main.mediasearch.flower
 import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
-import com.example.common.CommandEventViewModel
-import com.example.common.ICommandEventAware
-import com.example.common.arch.SingleLiveEvent
+import brigitte.CommandEventViewModel
+import brigitte.ICommandEventAware
+import brigitte.arch.SingleLiveEvent
 import javax.inject.Inject
 
 /**

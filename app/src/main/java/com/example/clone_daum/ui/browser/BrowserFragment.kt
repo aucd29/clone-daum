@@ -10,8 +10,8 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -69,7 +69,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         mViewModel.apply {
             webview.defaultSetting(WebViewSettingParams(
                 progress = {
-                    if (mLog.isTraceEnabled()) {
+                    if (mLog.isTraceEnabled) {
                         mLog.trace("BRS PROGRESS $it")
                     }
 
@@ -77,7 +77,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }, receivedError = {
                     mLog.error("ERROR: $it")
 
-                    it?.let { snackbar(webview, it, Snackbar.LENGTH_LONG)?.show() }
+                    it?.let { snackbar(it) }
                 }, sslError = {
                     mLog.error("ERROR: SSL ")
 
@@ -103,6 +103,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                         mLog.debug("PAGE FINISHED ${System.currentTimeMillis()}")
                     }
 
+                    syncCookie()
                     addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }
@@ -177,6 +178,28 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
 
         mBinding.apply {
+//            if (brsInnerSearch.isInflated) {
+//                if (brsInnerSearch.binding?.root?.visibility == View.VISIBLE) {
+//                    return true
+//                }
+//            }
+//
+//            if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
+//                brsInnerSearch.viewStub?.visibility = View.GONE
+//
+//                return true
+//            }
+
+            if (mViewModel.visibleInnerSearch.isVisible()) {
+                mViewModel.visibleInnerSearch.gone()
+
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("${mViewModel.visibleInnerSearch.get()}")
+                }
+
+                return true
+            }
+
             if (webview.canGoBack()) {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("BRS BACK")
@@ -219,8 +242,18 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 CMD_GOTO_TOP         -> webview.scrollTo(0, 0)
                 CMD_NORMALSCREEN     -> fullscreen(false)
                 CMD_RELOAD           -> webview.reload()
+                CMD_SEARCH_PREV      -> searchPrev()
+                CMD_SEARCH_NEXT      -> searchNext()
             }
         }
+    }
+
+    private fun searchPrev() {
+
+    }
+
+    private fun searchNext() {
+
     }
 
     private fun subMenu() {
@@ -245,7 +278,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         val message = string(R.string.brs_intent_app_for_sharing)
 
         startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-            setType("text/plain")
+            type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, message)
             putExtra(Intent.EXTRA_TEXT, url)
         }, message))
@@ -282,7 +315,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             if (res) {
                 startActivity(Intent(Intent.ACTION_VIEW).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    setData(Uri.parse(mUrl))
+                    data = Uri.parse(mUrl)
                 })
             }
         })
@@ -290,6 +323,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     private fun searchWithInScreen() {
         // https://code.i-harness.com/en/q/b5bb99
+        mViewModel.visibleInnerSearch.visible()
     }
 
     private fun capture() {

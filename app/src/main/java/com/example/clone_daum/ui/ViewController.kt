@@ -8,7 +8,6 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
-import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryModifyFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
@@ -21,7 +20,7 @@ import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.search.SearchFragment
-import com.example.common.*
+import brigitte.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -248,15 +247,6 @@ class ViewController @Inject constructor(val manager: FragmentManager) {
         }
 
         manager.show<UrlHistoryFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
-    }
-
-    fun urlHistoryModifyFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("URL HISTORY MODIFY FRAGMENT")
-        }
-
-        manager.show<UrlHistoryModifyFragment>(FragmentParams(CONTAINER
             , anim = FragmentAnim.RIGHT))
     }
 

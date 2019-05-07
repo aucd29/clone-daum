@@ -1,6 +1,6 @@
 package com.example.clone_daum.model.local
 
-import com.example.common.IRecyclerDiff
+import brigitte.IRecyclerDiff
 import java.io.Serializable
 
 /**

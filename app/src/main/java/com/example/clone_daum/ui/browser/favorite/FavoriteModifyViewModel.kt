@@ -9,7 +9,7 @@ import com.example.clone_daum.databinding.FavoriteModifyItemBinding
 import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
-import com.example.common.*
+import brigitte.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -19,7 +19,7 @@ import com.example.clone_daum.R
 import io.reactivex.Completable
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
 class FavoriteModifyViewModel @Inject constructor(application: Application
@@ -169,31 +169,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     }
 
     private fun selectAll() {
-        items.get()?.let {
-            // 하나라도 true 가 아니라면
-            var changeAllTrue = false
-
-            for (item in it) {
-                if (item.check.get() == false) {
-                    changeAllTrue = true
-                    break
-                }
-            }
-
-            if (changeAllTrue) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CHECKBOX CHECKED ALL")
-                }
-
-                it.forEach { it.check.set(true) }
-            } else {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CHECKBOX TOGGLE")
-                }
-
-                it.forEach { it.check.set(!it.check.get()) }
-            }
-        }
+        items.get()?.toggleItems { it.check }
     }
 
     private fun deleteSelectedItem() {

@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
-import com.example.common.di.module.injectOfActivity
+import brigitte.di.module.injectOfActivity
 import com.example.clone_daum.ui.ViewController
-import com.example.common.*
+import brigitte.*
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -93,6 +93,8 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                 if (position == MainViewModel.INDEX_NEWS) {
                     mSplashViewModel.closeSplash()
                 }
+
+                syncCookie()
             }
             , userAgent = { config.USER_AGENT }
         ))

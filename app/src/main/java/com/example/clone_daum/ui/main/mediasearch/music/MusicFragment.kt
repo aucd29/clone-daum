@@ -5,8 +5,8 @@ import android.animation.ValueAnimator
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MusicFragmentBinding
 import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory

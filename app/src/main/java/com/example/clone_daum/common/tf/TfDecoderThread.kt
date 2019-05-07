@@ -6,7 +6,7 @@ import android.os.HandlerThread
 import android.os.Message
 import com.example.clone_daum.common.camera.CameraInstance
 import com.example.clone_daum.common.camera.SourceData
-import com.example.common.validateMainThread
+import brigitte.validateMainThread
 import org.slf4j.LoggerFactory
 
 /**

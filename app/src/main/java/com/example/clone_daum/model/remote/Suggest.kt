@@ -2,7 +2,7 @@ package com.example.clone_daum.model.remote
 
 import com.example.clone_daum.model.ISearchRecyclerData
 import com.example.clone_daum.model.SearchRecyclerType
-import com.example.common.IRecyclerDiff
+import brigitte.IRecyclerDiff
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 11. <p/>
