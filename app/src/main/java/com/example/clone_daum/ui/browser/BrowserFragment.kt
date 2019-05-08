@@ -323,7 +323,22 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     private fun searchWithInScreen() {
         // https://code.i-harness.com/en/q/b5bb99
-        mViewModel.visibleInnerSearch.visible()
+        mViewModel.run {
+            visibleInnerSearch.visible()
+            findAllAsync(innerSearch.get())
+        }
+    }
+
+    private fun findAllAsync(keyword: String?) {
+        try {
+            webview.findAllAsync(keyword)
+        } catch (e: Exception) {
+            webview.findAll(keyword)
+
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun capture() {

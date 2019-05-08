@@ -24,6 +24,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/brs_inner_search_prev"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:maxLines="1"
+                android:imeOptions="actionSearch"
                 android:text="@={model.innerSearch}"
         />
 
