@@ -44,7 +44,9 @@ object RecyclerBindingAdapter {
         }
 
         items?.let {
-            myadapter?.setItems(recycler, it as ArrayList<T>)
+            if (it is ArrayList<T>) {
+                myadapter?.setItems(recycler, it)
+            }
         }
     }
 
