@@ -47,7 +47,9 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
             init()
             chipLayoutManager.set(layoutManager)
 
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
+            observe(commandEvent) {
+                mViewModel.command(it.first, it.second)
+            }
         }
     }
 
@@ -64,16 +66,21 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        mViewModel.finish()
-
+//        mViewModel.finish()
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())
             PopularViewModel.CMD_BRS_SEARCH -> showBrowser(data.toString())
         }
     }
 
-    private fun showBrowser(url: String) =
+    private fun showBrowser(url: String)  {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHOW BROWSER !!!!!")
+        }
+
+        finish()
         viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${url.urlencode()}&DA=13H")
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

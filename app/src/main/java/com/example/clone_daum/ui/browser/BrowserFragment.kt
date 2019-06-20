@@ -113,6 +113,9 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         loadUrl(mUrl!!)
         webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
+        webview.setFindListener { active, count, done ->
+            mViewModel.innerSearchCount.set("${active + 1}/$count")
+        }
     }
 
     override fun initViewModelEvents() = mViewModel.run {
@@ -127,6 +130,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+
+        innerSearch.observe {
+            findAllAsync(it.get())
+        }
     }
 
     private fun addHistory() {
@@ -178,17 +185,11 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
 
         mBinding.apply {
-//            if (brsInnerSearch.isInflated) {
-//                if (brsInnerSearch.binding?.root?.visibility == View.VISIBLE) {
-//                    return true
-//                }
-//            }
-//
-//            if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
-//                brsInnerSearch.viewStub?.visibility = View.GONE
-//
-//                return true
-//            }
+            if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
+                brsInnerSearch.viewStub?.visibility = View.GONE
+
+                return true
+            }
 
             if (mViewModel.visibleInnerSearch.isVisible()) {
                 mViewModel.visibleInnerSearch.gone()
@@ -235,25 +236,33 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         BrowserViewModel.apply {
             when (cmd) {
                 CMD_HOME,
-                CMD_BACK             -> onBackPressed()
-                CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-                CMD_SUBMENU_FRAGMENT -> subMenu()
-                CMD_SHARE_EVENT      -> shareLink(data.toString())
-                CMD_GOTO_TOP         -> webview.scrollTo(0, 0)
-                CMD_NORMALSCREEN     -> fullscreen(false)
-                CMD_RELOAD           -> webview.reload()
-                CMD_SEARCH_PREV      -> searchPrev()
-                CMD_SEARCH_NEXT      -> searchNext()
+                CMD_BACK              -> onBackPressed()
+                CMD_SEARCH_FRAGMENT   -> viewController.searchFragment()
+                CMD_SUBMENU_FRAGMENT  -> subMenu()
+                CMD_SHARE_EVENT       -> shareLink(data.toString())
+                CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
+                CMD_NORMALSCREEN      -> fullscreen(false)
+                CMD_RELOAD            -> webview.reload()
+                CMD_INNER_SEARCH_PREV -> searchPrev()
+                CMD_INNER_SEARCH_NEXT -> searchNext()
             }
         }
     }
 
     private fun searchPrev() {
+        try {
+            webview.findNext(false)
+        } catch (e: Exception) {
 
+        }
     }
 
     private fun searchNext() {
+        try {
+            webview.findNext(true)
+        } catch (e: Exception) {
 
+        }
     }
 
     private fun subMenu() {
@@ -323,10 +332,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
     private fun searchWithInScreen() {
         // https://code.i-harness.com/en/q/b5bb99
-        mViewModel.run {
-            visibleInnerSearch.visible()
-            findAllAsync(innerSearch.get())
-        }
+        mViewModel.visibleInnerSearch.visible()
     }
 
     private fun findAllAsync(keyword: String?) {

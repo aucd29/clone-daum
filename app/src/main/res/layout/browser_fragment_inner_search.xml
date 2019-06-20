@@ -13,20 +13,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
+            android:visibility="@{model.visibleInnerSearch}"
     >
 
         <EditText
                 android:id="@+id/brs_inner_search"
                 android:layout_width="0dp" android:layout_height="match_parent"
                 android:hint="@string/brs_input_search_keyword"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="15dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/brs_inner_search_prev"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:maxLines="1"
-                android:imeOptions="actionSearch"
+                android:imeOptions="actionSearch|actionDone"
                 android:text="@={model.innerSearch}"
+                android:background="@android:color/transparent"
+        />
+        <!--android:onTextChanged="@{(s, st, b, c) -> model.innerSearch()}"-->
+
+        <TextView
+                android:id="@+id/brs_inner_search_count"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                tools:text="1/10"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/brs_inner_search_prev"
+                android:layout_marginEnd="10dp"
+                android:text="@{model.innerSearchCount}"
         />
 
         <TextView
@@ -36,11 +51,12 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/brs_inner_search_next"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="@string/fa_angle_down"
-                tools:text="@string/fa_angle_down"
+                android:text="@string/fa_angle_up"
+                tools:text="@string/fa_angle_up"
                 android:padding="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:onClick="@{() -> model.command(model.CMD_INNER_SEARCH_PREV)}"
         />
 
         <TextView
@@ -50,11 +66,12 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:text="@string/fa_angle_up"
-                tools:text="@string/fa_angle_up"
+                android:text="@string/fa_angle_down"
+                tools:text="@string/fa_angle_down"
                 android:padding="10dp"
                 android:layout_marginEnd="5dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:onClick="@{() -> model.command(model.CMD_INNER_SEARCH_NEXT)}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

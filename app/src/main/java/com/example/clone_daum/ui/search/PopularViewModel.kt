@@ -7,9 +7,7 @@ import androidx.databinding.ObservableInt
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
-import brigitte.ICommandEventAware
 import brigitte.RecyclerViewModel
-import brigitte.arch.SingleLiveEvent
 import brigitte.jsonParse
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

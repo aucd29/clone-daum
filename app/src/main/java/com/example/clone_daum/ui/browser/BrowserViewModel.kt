@@ -35,8 +35,8 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_NORMALSCREEN     = "normalscreen"
         const val CMD_RELOAD           = "reload"
 
-        const val CMD_SEARCH_PREV      = "inner-search-prev"
-        const val CMD_SEARCH_NEXT      = "inner-search-next"
+        const val CMD_INNER_SEARCH_PREV = "inner-search-prev"
+        const val CMD_INNER_SEARCH_NEXT = "inner-search-next"
     }
 
     override val webviewEvent = ObservableField<WebViewEvent>()
@@ -53,10 +53,11 @@ class BrowserViewModel @Inject constructor(app: Application
     val enableForward       = ObservableBoolean(false)
     val isFullscreen        = ObservableBoolean(false)
 
-    val brsUrlBarAni    = ObservableField<AnimParams>()
-    val brsAreaAni      = ObservableField<AnimParams>()
-    val brsGoTop        = ObservableField<AnimParams>()
-    val innerSearch     = ObservableField<String>()
+    val brsUrlBarAni     = ObservableField<AnimParams>()
+    val brsAreaAni       = ObservableField<AnimParams>()
+    val brsGoTop         = ObservableField<AnimParams>()
+    val innerSearch      = ObservableField<String>()
+    val innerSearchCount = ObservableField<String>()
 
 
     fun init(disposable: CompositeDisposable) {

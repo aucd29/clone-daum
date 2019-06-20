@@ -43,7 +43,6 @@ class SearchViewModel @Inject constructor(app: Application
 
     private lateinit var mDisposable: CompositeDisposable
 
-    override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
 
     val searchKeyword            = ObservableField<String>()
