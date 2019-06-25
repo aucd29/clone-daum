@@ -39,9 +39,6 @@ class Config @Inject constructor(val context: Context) {
     val USER_AGENT: String
     val ACTION_BAR_HEIGHT: Float
     val SCREEN = Point()
-//    val STATUS_BAR_HEIGHT: Int
-//    val NAVIGATION_BAR_HEIGHT: Int
-
     var HAS_PERMISSION_GPS = false
     var DEFAULT_LOCATION   = "서울"
     val SEARCH_ICON: Int
@@ -72,30 +69,6 @@ class Config @Inject constructor(val context: Context) {
         //
         val windowManager = context.systemService<WindowManager>()
         windowManager?.defaultDisplay?.getSize(SCREEN)
-
-//        //
-//        // STATUS_BAR_HEIGHT
-//        //
-//        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-//        STATUS_BAR_HEIGHT = if (resourceId > 0) {
-//            context.resources.getDimensionPixelSize(resourceId)
-//        } else 0
-
-//        //
-//        // https://stackoverflow.com/questions/29398929/how-get-height-of-the-status-bar-and-soft-key-buttons-bar
-//        // android api level 28 에서는 navigation bar 를 hide 시키고 ios 와 같이 drag 로 이벤트를 전달할 수 있음
-//        // https://developer.android.com/training/system-ui/navigation
-//        //
-//        NAVIGATION_BAR_HEIGHT = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            val metrics = DisplayMetrics()
-//            windowManager?.defaultDisplay?.getMetrics(metrics)
-//            val usableHeight = metrics.heightPixels
-//
-//            windowManager?.defaultDisplay?.getRealMetrics(metrics)
-//            val realHeight = metrics.heightPixels
-//
-//            if (realHeight > usableHeight) realHeight - usableHeight else 0
-//        } else 0
 
         //
         // PERMISSION
