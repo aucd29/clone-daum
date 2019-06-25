@@ -33,9 +33,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="@{model.visibleSplash}"
-                android:translationY="@{model.translationY}"
                 android:clickable="true"
-                app:bindLayoutHeight="@{model.viewHeight}"
                 />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
