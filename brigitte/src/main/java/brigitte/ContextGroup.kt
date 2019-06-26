@@ -135,6 +135,8 @@ inline fun Context.stringId(resid: String) =
 /** sdcard 경로 반환 */
 inline fun Context.sdPath() = Environment.getExternalStorageDirectory().absolutePath
 
+inline fun Context.dcim() = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+
 /**
  * clipboard 데이터를 읽어온다.
  */

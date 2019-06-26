@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import android.view.View
+import android.widget.SeekBar
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class BrowserViewModel @Inject constructor(app: Application
     , private var mUrlHistoryDao: UrlHistoryDao
     , private val mZzimDao: ZzimDao
-) : CommandEventViewModel(app), IWebViewEventAware {
+) : CommandEventViewModel(app), IWebViewEventAware, ISeekBarProgressChanged {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
@@ -37,6 +38,8 @@ class BrowserViewModel @Inject constructor(app: Application
 
         const val CMD_INNER_SEARCH_PREV = "inner-search-prev"
         const val CMD_INNER_SEARCH_NEXT = "inner-search-next"
+
+        const val SPF_FONT_SIZE        = "spf-text-size"
     }
 
     override val webviewEvent = ObservableField<WebViewEvent>()
@@ -58,6 +61,11 @@ class BrowserViewModel @Inject constructor(app: Application
     val brsGoTop         = ObservableField<AnimParams>()
     val innerSearch      = ObservableField<String>()
     val innerSearchCount = ObservableField<String>()
+
+    // fontsize
+
+    val brsFontSizeProgress = ObservableInt(prefs().getInt(SPF_FONT_SIZE, 50))
+    val visibleBrsFontSize  = ObservableInt(View.GONE)
 
 
     fun init(disposable: CompositeDisposable) {
@@ -165,5 +173,20 @@ class BrowserViewModel @Inject constructor(app: Application
                 errorLog(it, mLog)
                 snackbar(it)
             }))
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ISeekBarProgressChanged
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CHANGED FONT SIZE : $value")
+        }
+
+        brsFontSizeProgress.set(value)
+        prefs().edit { putInt(SPF_FONT_SIZE, value) }
     }
 }

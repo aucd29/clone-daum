@@ -3,6 +3,7 @@ package brigitte
 
 import android.os.Looper
 import android.view.View
+import android.widget.SeekBar
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -35,5 +36,4 @@ inline fun validateMainThread() {
         throw IllegalStateException("Must be called from the main thread.")
     }
 }
-
 

@@ -62,8 +62,9 @@
                     android:maxWidth="@dimen/brs_url_max_w"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{model.urlString}"
                     android:textColor="@android:color/black"
+                    android:paddingEnd="5dp"
+                    android:text="@{model.urlString}"
             />
 
             <ImageView
@@ -133,9 +134,9 @@
 
         <ProgressBar
                 android:id="@+id/brs_progress"
-                android:layout_width="match_parent" android:layout_height="3dp"
-                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent" android:layout_height="2dp"
                 android:max="100"
+                style="?android:attr/progressBarStyleHorizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/brs_url_bar"
@@ -189,6 +190,20 @@
                 android:text="@string/fa_external_link_alt"
                 android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
                 android:onClick="@{() -> model.command(model.CMD_NORMALSCREEN)}"
+        />
+
+        <SeekBar
+                android:id="@+id/brs_font_size"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/brs_bottom_layout"
+                android:progress="@{model.brsFontSizeProgress}"
+                android:visibility="@{model.visibleBrsFontSize}"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:max="200"
+                android:onProgressChanged="@{model::onProgressChanged}"
         />
 
         <!-- bottom buttons -->

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
@@ -12,7 +13,8 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import com.google.android.material.snackbar.Snackbar
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -188,17 +190,24 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
             if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
                 brsInnerSearch.viewStub?.visibility = View.GONE
 
-                return true
+                return@apply
             }
 
-            if (mViewModel.visibleInnerSearch.isVisible()) {
-                mViewModel.visibleInnerSearch.gone()
+            with (mViewModel) {
+                if (visibleInnerSearch.isVisible()) {
+                    visibleInnerSearch.gone()
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("${mViewModel.visibleInnerSearch.get()}")
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("${visibleInnerSearch.get()}")
+                    }
+
+                    return@apply
                 }
 
-                return true
+                if (visibleBrsFontSize.isVisible()) {
+                    visibleBrsFontSize.visibleToggle()
+                    return@apply
+                }
             }
 
             if (webview.canGoBack()) {
@@ -348,11 +357,45 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun capture() {
-        webview.capture()
+        runtimePermissions(PermissionParams(requireActivity(),
+            arrayListOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            { _, r ->
+               if (r) {
+                   mDisposable.add(webview.capture(CaptureParams(
+                       "CLONE-DAUM_Screenshot-${System.currentTimeMillis()}.png"))
+                       .subscribe { res ->
+                           if (res.first) {
+                               toast("캡쳐 성공 : ${res.second?.absolutePath}")
+                           } else {
+                               toast("캡쳐 실패")
+                           }
+                       })
+               }
+            }))
     }
 
     private fun resizeText() {
-
+        // FIXME 아직 코드 완성이 안되서 일단 주석 처리 
+//
+//        mViewModel.apply {
+//            visibleBrsFontSize.visible()
+//            brsFontSizeProgress.observe {
+//                val size = it.get()
+//                val textsize = if (size < 50) {
+//                    WebSettings.TextSize.SMALLEST
+//                } else if (size < 100) {
+//                    WebSettings.TextSize.SMALLER
+//                } else if (size < 150) {
+//                    WebSettings.TextSize.NORMAL
+//                } else if (size < 200) {
+//                    WebSettings.TextSize.LARGER
+//                } else {
+//                    WebSettings.TextSize.LARGEST
+//                }
+//
+//                webview.settings.textSize = textsize
+//            }
+//        }
     }
 
     private fun addIconFromLauncher() {

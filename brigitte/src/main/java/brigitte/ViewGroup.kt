@@ -1,6 +1,9 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
@@ -8,6 +11,13 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.lang.Exception
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 6. <p/>
@@ -90,3 +100,79 @@ inline fun View.pxToDp(v: Int) = (v / context.displayDensity()).toInt()
 // https://stackoverflow.com/questions/29664993/how-to-convert-dp-px-sp-among-each-other-especially-dp-and-sp
 inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
     TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics).toInt()
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// CAPTURE
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+data class CaptureParams(
+    val fileName: String,
+    val listener: ((Boolean, String) -> Unit)? = null,
+    val path: String? = null,
+    val quality: Int = 90,
+    val waterMark: Bitmap? = null
+)
+
+inline fun View.capture(params: CaptureParams) = with(params) {
+    val PATH_SCREENSHOTS = "Screenshots"
+    var buffer: Bitmap? = null
+    var canvas: Canvas? = null
+
+    Single.just(this)
+        .subscribeOn(AndroidSchedulers.mainThread())
+        .map {
+            try {
+                clearFocus()
+                setPressed(false)
+                invalidate()
+
+                buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                buffer?.let {
+                    canvas = Canvas(it)
+                    draw(canvas)
+                }
+
+                true
+            } catch (e: IOException) {
+                false
+            }
+        }
+        .subscribeOn(Schedulers.io())
+        .map {
+            if (!it) {
+                return@map false to null
+            }
+
+            if (waterMark != null) {
+                val offsetx = width - waterMark.getWidth()
+                val offsety = height - waterMark.getHeight()
+
+                canvas?.drawBitmap(waterMark, offsetx.toFloat(), offsety.toFloat(), Paint())
+            }
+
+            // FIXME 29 버전에는 scoped storage 때문에 문제 존재 가능
+            val savedPath = File(path?.let { File(it) } ?: context.dcim(),
+                PATH_SCREENSHOTS)
+            if (!savedPath.exists()) {
+                savedPath.mkdirs()
+            }
+
+            try {
+                val bmpfp = File(savedPath, fileName)
+                FileOutputStream(bmpfp).use {
+                    buffer?.compress(Bitmap.CompressFormat.PNG, params.quality, it)
+                }
+
+                true to bmpfp
+            } catch (e: Exception) {
+                false to null
+            } finally {
+                buffer?.recycle()
+            }
+        }
+        .observeOn(AndroidSchedulers.mainThread())
+}
+
+
