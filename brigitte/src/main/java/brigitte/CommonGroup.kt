@@ -36,9 +36,4 @@ inline fun validateMainThread() {
     }
 }
 
-inline fun ObservableInt.gone() = set(View.GONE)
-inline fun ObservableInt.visible() = set(View.VISIBLE)
-inline fun ObservableInt.isVisible() = get() == View.VISIBLE
-inline fun ObservableInt.visibleToggle() = set(if (get() == View.VISIBLE) View.GONE else View.VISIBLE)
-inline fun ObservableField<String>.reset() = set("")
 

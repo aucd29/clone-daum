@@ -348,7 +348,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun capture() {
-
+        webview.capture()
     }
 
     private fun resizeText() {
