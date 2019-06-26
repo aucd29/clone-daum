@@ -65,7 +65,7 @@ class RealtimeIssueTabAdapter constructor(fm: FragmentManager
 //
 //    init {
 //        // RealtimeIssueViewModel 를 MainFragment 와 공유
-//        mViewModelScope = SCOPE_ACTIVITY
+//        mViewModelScope = BaseFragment.SCOPE_ACTIVITY
 //    }
 //
 //    @Inject lateinit var preConfig: PreloadConfig

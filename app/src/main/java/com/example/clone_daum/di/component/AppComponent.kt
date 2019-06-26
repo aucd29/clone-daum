@@ -1,10 +1,9 @@
 package com.example.clone_daum.di.component
 
 import android.app.Application
+import brigitte.di.dagger.module.AppModule
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.di.module.*
-import com.example.clone_daum.di.module.common.AppModule
-import brigitte.di.module.ViewModelFactoryModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule

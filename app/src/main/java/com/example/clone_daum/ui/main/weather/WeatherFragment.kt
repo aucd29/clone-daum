@@ -9,6 +9,7 @@ import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerBottomSheetDialogFragment
+import brigitte.BaseFragment
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -36,7 +37,7 @@ class WeatherFragment
 
     init {
         // WeatherViewModel 를 MainFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
+        mViewModelScope = BaseFragment.SCOPE_ACTIVITY
     }
 
     @Inject lateinit var config: Config

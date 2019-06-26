@@ -1,14 +1,16 @@
 package brigitte
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import brigitte.di.module.DaggerViewModelFactory
-import com.google.android.material.snackbar.Snackbar
+import brigitte.di.dagger.module.DaggerViewModelFactory
+import dagger.android.AndroidInjection
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasFragmentInjector
+import dagger.android.support.*
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -18,7 +20,7 @@ import javax.inject.Inject
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// BaseDaggerRuleActivity
+// BaseDaggerActivity
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,114 +30,33 @@ private const val LAYOUT          = "layout"         // 레이아웃
 /**
  * dagger 를 기본적으로 이용하면서 MVVM 아키텍처를 가지는 Activity
  */
-abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
-    : BaseActivity<T>() {
-
-    /** 전역 CompositeDisposable */
-    @Inject lateinit var mDisposable: CompositeDisposable
+abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel>
+    : BaseActivity<T, M>(), HasFragmentInjector, HasSupportFragmentInjector {
 
     /** ViewModel 을 inject 하기 위한 Factory */
+    @Inject lateinit var mDp: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
-
-    /** onCreate 에서 inject 한 view model */
-    protected lateinit var mViewModel: M
-
-    /** setContentView 를 하기 위한 layout 이름 */
-    protected var mLayoutName = generateLayoutName()
+    @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
 
     /**
      * view model 처리, 기본 이벤트 처리를 위한 aware 와 view binding, view model 을 호출 한다.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
+
         super.onCreate(savedInstanceState)
-
-        mViewModel = ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
-
-        bindViewModel()
-
-        dialogAware()
-        commandEventAware()
-
-        initViewBinding()
-        initViewModelEvents()
     }
 
-    /**
-     * activity class 이름에 해당하는 layout 리소스 아이디를 반환 한다.
-     */
-    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
+    override fun initDisposable() = mDp // 다른 방법 없나?
+    override fun initViewModel() =
+        ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 
-    /**
-     * ViewModel 클래스 명을 얻는다.
-     */
-    private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
+    override fun supportFragmentInjector() =
+        supportFragmentInjector
 
-    protected open fun viewModelMethodName() = SET_VIEW_MODEL
-
-    /**
-     * viewModel 을 ViewDataBinding 에 설정 한다.
-     */
-    protected open fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
-    }
-
-    /**
-     * 앱 종료 시 CompositeDisposable 를 clear 한다.
-     */
-    override fun onDestroy() {
-        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
-        mDisposable.dispose()
-
-        super.onDestroy()
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * view model 에 등록되어 있는 dialog live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
-     */
-    protected open fun dialogAware() = mViewModel.run {
-        if (this is IDialogAware) {
-            observeDialog(dialogEvent, mDisposable)
-        }
-    }
-
-    /**
-     * view model 에 등록되어 있는 command live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
-     */
-    protected fun commandEventAware() = mViewModel.run {
-        if (this is ICommandEventAware) {
-            observe(commandEvent) {
-                when (it.first) {
-                    ICommandEventAware.CMD_FINISH   -> commandFinish()
-                    ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
-                    ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
-
-                    else -> onCommandEvent(it.first, it.second)
-                }
-            }
-        }
-    }
-
-    protected open fun commandFinish() = finish()
-    protected open fun commandToast(message: String) = toast(message)
-    protected open fun commandSnackbar(message: String) =
-        snackbar(mBinding.root, message).show()
-
-    protected open fun onCommandEvent(cmd: String, data: Any) { }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ABSTRACT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    abstract fun initViewBinding()
-    abstract fun initViewModelEvents()
+    override fun fragmentInjector() =
+        frameworkFragmentInjector
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -145,256 +66,68 @@ abstract class BaseDaggerRuleActivity<T: ViewDataBinding, M: ViewModel>
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
-    : BaseFragment<T>() {
-
-    companion object {
-        const val SCOPE_ACTIVITY = 0
-        const val SCOPE_FRAGMENT = 1
-    }
+    : BaseFragment<T, M>(), HasSupportFragmentInjector {
 
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
+    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
-    protected lateinit var mViewModel: M
-    protected lateinit var mDisposable: CompositeDisposable
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
 
-    protected var mLayoutName     = generateLayoutName()
-    protected var mViewModelScope = SCOPE_FRAGMENT
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mDisposable = CompositeDisposable()
-        mViewModel  = viewModelProvider()
-
-        if (layoutId() == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
+        super.onAttach(context)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        dialogAware()
-        commandEventAware()
-
-        initViewBinding()
-        initViewModelEvents()
-    }
-
-    override fun onDestroyView() {
-        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
-        mDisposable.dispose()
-
-        super.onDestroyView()
-    }
-
-    override fun layoutId() =
-        resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
-
-    protected open fun viewModelProvider() = when (mViewModelScope) {
-        SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
-        else -> ViewModelProviders.of(this.activity!!, mViewModelFactory)
+    override fun initViewModel() = when (mViewModelScope) {
+        BaseFragment.SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
+        else -> ViewModelProviders.of(requireActivity(), mViewModelFactory)
     }.get(viewModelClass())
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
-    protected open fun viewModelMethodName() = SET_VIEW_MODEL
-
-    override fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    protected open fun dialogAware() = mViewModel.run {
-        if (this is IDialogAware) {
-            observeDialog(dialogEvent, mDisposable)
-        }
-    }
-
-    protected fun commandEventAware() = mViewModel.run {
-        if (this is ICommandEventAware) {
-            observe(commandEvent) {
-                when (it.first) {
-                    ICommandEventAware.CMD_FINISH   -> commandFinish(it.second as Boolean)
-                    ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
-                    ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
-
-                    else -> onCommandEvent(it.first, it.second)
-                }
-            }
-        }
-    }
-
-    protected open fun commandFinish(animate: Boolean) = finish(animate)
-    protected open fun commandToast(message: String) = toast(message)
-    protected open fun commandSnackbar(message: String) =
-        snackbar(mBinding.root, message, Snackbar.LENGTH_SHORT).show()
-
-    protected open fun onCommandEvent(cmd: String, data: Any) { }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ABSTRACT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    abstract fun initViewBinding()
-    abstract fun initViewModelEvents()
+    override fun supportFragmentInjector() = childFragmentInjector
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// BaseDaggerFragmentDialog
+// BaseDaggerDialogFragment
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
-    : BaseDialogFragment<T>() {
+    : BaseDialogFragment<T, M>(), HasSupportFragmentInjector {
 
-    companion object {
-        const val SCOPE_ACTIVITY = 0
-        const val SCOPE_FRAGMENT = 1
-    }
-
-    lateinit var mDisposable: CompositeDisposable
+    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
-    protected lateinit var mViewModel: M
 
-    protected var mLayoutName     = generateLayoutName()
-    protected var mViewModelScope = SCOPE_FRAGMENT
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mDisposable = CompositeDisposable()
-        mViewModel  = viewModelProvider()
-
-        if (layoutId() == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
+        super.onAttach(context)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        commandEventAware()
-
-        initViewBinding()
-        initViewModelEvents()
-    }
-
-    override fun layoutId() =
-        resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
-
-    protected open fun viewModelProvider() = when (mViewModelScope) {
-        SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
-        else -> ViewModelProviders.of(this.activity!!, mViewModelFactory)
+    override fun initViewModel() = when (mViewModelScope) {
+        BaseFragment.SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
+        else -> ViewModelProviders.of(requireActivity(), mViewModelFactory)
     }.get(viewModelClass())
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
-    protected open fun viewModelMethodName() = SET_VIEW_MODEL
-
-    override fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
-    }
-
-    override fun onDestroyView() {
-        // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
-        mDisposable.dispose()
-
-        super.onDestroyView()
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    protected fun commandEventAware() = mViewModel.run {
-        if (this is ICommandEventAware) {
-            observe(commandEvent) {
-                when (it.first) {
-                    ICommandEventAware.CMD_FINISH -> dismiss()
-
-                    else -> onCommandEvent(it.first, it.second)
-                }
-            }
-        }
-    }
-
-    protected open fun onCommandEvent(cmd: String, data: Any) { }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ABSTRACT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    abstract fun initViewBinding()
-    abstract fun initViewModelEvents()
+    override fun supportFragmentInjector() =
+        childFragmentInjector
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// BaseRuleBottomSheetDialogFragment
+// BaseDaggerBottomSheetDialogFragment
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
-    : BaseBottomSheetDialogFragment<T>() {
+    : BaseBottomSheetDialogFragment<T, M>(), HasSupportFragmentInjector {
 
-    companion object {
-        const val SCOPE_ACTIVITY = 0
-        const val SCOPE_FRAGMENT = 1
-    }
-
-    lateinit var mDisposable: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
-    protected lateinit var mViewModel: M
+    @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
-    protected var mLayoutName = generateLayoutName()
-    protected var mViewModelScope = SCOPE_FRAGMENT
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mDisposable = CompositeDisposable()
-        mViewModel  = viewModelProvider()
-
-        if (layoutId() == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        commandEventAware()
-
-        initViewBinding()
-        initViewModelEvents()
-    }
-
-    protected open fun viewModelProvider() = when (mViewModelScope) {
-        SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
-        else           -> ViewModelProviders.of(this.activity!!, mViewModelFactory)
-    }.get(viewModelClass())
-
-    override fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
-
-    private fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
-    protected open fun viewModelMethodName() = SET_VIEW_MODEL
-
-    override fun bindViewModel() {
-        Reflect.method(mBinding, viewModelMethodName(), Reflect.Params(viewModelClass(), mViewModel))
+        super.onAttach(context)
     }
 
     override fun onDestroyView() {
@@ -404,32 +137,11 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         super.onDestroyView()
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
+    override fun initViewModel() = when (mViewModelScope) {
+        BaseFragment.SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
+        else -> ViewModelProviders.of(requireActivity(), mViewModelFactory)
+    }.get(viewModelClass())
 
-    protected fun commandEventAware() = mViewModel.run {
-        if (this is ICommandEventAware) {
-            observe(commandEvent) {
-                when (it.first) {
-                    ICommandEventAware.CMD_FINISH -> dismiss()
-
-                    else -> onCommandEvent(it.first, it.second)
-                }
-            }
-        }
-    }
-
-    protected open fun onCommandEvent(cmd: String, data: Any) { }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ABSTRACT
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    abstract fun initViewBinding()
-    abstract fun initViewModelEvents()
+    override fun supportFragmentInjector() =
+        childFragmentInjector
 }

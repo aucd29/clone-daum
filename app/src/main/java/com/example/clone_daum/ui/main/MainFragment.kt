@@ -14,7 +14,7 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import brigitte.di.module.injectOfActivity
+import brigitte.di.dagger.module.injectOfActivity
 import com.google.android.material.tabs.TabLayout
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
+        mViewModelScope = BaseFragment.SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
     @Inject lateinit var viewController: ViewController

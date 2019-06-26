@@ -6,7 +6,7 @@ import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
-import brigitte.di.module.injectOfActivity
+import brigitte.di.dagger.module.injectOfActivity
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

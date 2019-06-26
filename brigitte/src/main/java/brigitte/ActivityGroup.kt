@@ -5,9 +5,13 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Build
 import android.view.View
 import android.view.WindowManager
+import android.webkit.WebView
 import android.widget.Toast
+//import androidx.activity.OnBackPressedCallback
+//import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +25,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import brigitte.arch.SingleLiveEvent
 import org.slf4j.Logger
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /**
@@ -143,6 +149,45 @@ inline fun Activity.fullscreen(fullscreen: Boolean) {
  */
 inline fun Activity.isFullscreen() =
     (window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN
+
+//inline fun AppCompatActivity.backPressedCallback(crossinline f: () -> Boolean) = with(onBackPressedDispatcher) {
+//    addCallback(this@backPressedCallback, object: OnBackPressedCallback(true) {
+//        override fun handleOnBackPressed() {
+//            isEnabled = f()
+//        }
+//    })
+//}
+
+inline fun Activity.exceptionCatcher(noinline callback: (String) -> Unit) {
+    // setting exception
+    val handler = Thread.getDefaultUncaughtExceptionHandler()
+    Thread.setDefaultUncaughtExceptionHandler { t, e ->
+        val os = ByteArrayOutputStream()
+        val s  = PrintStream(os)
+        e.printStackTrace(s)
+        s.flush()
+
+        callback.invoke("ERROR: $os")
+
+        if (handler != null) {
+            handler.uncaughtException(t, e)
+        } else {
+            callback.invoke("ERROR: EXCEPTION HANDLER == null")
+
+            android.os.Process.killProcess(android.os.Process.myPid())
+        }
+    }
+}
+
+fun Activity.chromeInspector(log: ((String) -> Unit)? = null) {
+    if (BuildConfig.DEBUG) {
+        // enabled chrome inspector
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            log?.invoke("ENABLED CHROME INSPECTOR")
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 //

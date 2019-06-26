@@ -1,8 +1,8 @@
 package com.example.clone_daum.di.module
 
 import androidx.lifecycle.ViewModel
+import brigitte.di.dagger.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
-import brigitte.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel

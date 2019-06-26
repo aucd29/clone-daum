@@ -1,7 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
-import android.content.Context
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity

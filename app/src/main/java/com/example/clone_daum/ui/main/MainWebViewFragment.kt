@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
-import brigitte.di.module.injectOfActivity
+import brigitte.di.dagger.module.injectOfActivity
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import dagger.android.ContributesAndroidInjector

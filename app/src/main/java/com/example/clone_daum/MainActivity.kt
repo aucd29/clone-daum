@@ -9,13 +9,14 @@ import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import brigitte.*
+import com.example.clone_daum.model.local.BrowserSubMenu
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import javax.inject.Inject
 
-class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
+class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
@@ -23,7 +24,9 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
     @Inject lateinit var viewController: ViewController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        exceptionCatcher()
+        exceptionCatcher { mLog.error("ERROR: $it") }
+        chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
+
         setTheme(R.style.AppTheme)
 
         super.onCreate(savedInstanceState)
@@ -33,7 +36,6 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         }
 
         initCookieManager()
-        chromeInspector()
 
         if (savedInstanceState == null) {
             viewController.mainFragment()
@@ -65,40 +67,6 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         observe(closeSplashEvent) {
             visibleSplash.set(View.GONE)
             mBinding.root.removeView(mBinding.splash)
-        }
-    }
-
-    private fun chromeInspector() {
-        if (BuildConfig.DEBUG) {
-            // enabled chrome inspector
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("ENABLED CHROME INSPECTOR")
-                }
-
-                WebView.setWebContentsDebuggingEnabled(true)
-            }
-        }
-    }
-
-    private fun exceptionCatcher() {
-        // setting exception
-        val handler = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { t, e ->
-            val os = ByteArrayOutputStream()
-            val s  = PrintStream(os)
-            e.printStackTrace(s)
-            s.flush()
-
-            mLog.error("ERROR: $os")
-
-            if (handler != null) {
-                handler.uncaughtException(t, e)
-            } else {
-                mLog.error("ERROR: EXCEPTION HANDLER == null")
-
-                android.os.Process.killProcess(android.os.Process.myPid())
-            }
         }
     }
 }

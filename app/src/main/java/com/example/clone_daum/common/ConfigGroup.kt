@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Point
 import android.os.Build
-import android.util.DisplayMetrics
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.R
 import com.example.clone_daum.model.DbRepository
@@ -27,7 +26,6 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import android.util.Log
 import android.view.*
 
 /**

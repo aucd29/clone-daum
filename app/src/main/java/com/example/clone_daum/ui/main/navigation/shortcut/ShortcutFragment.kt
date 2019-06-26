@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 import com.example.clone_daum.databinding.ShortcutFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
-import brigitte.di.module.injectOf
+import brigitte.di.dagger.module.injectOf
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 

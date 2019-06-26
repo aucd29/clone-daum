@@ -49,9 +49,12 @@ dependencies {
     //
 
     implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.recyclerview:recyclerview:$androidx"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.constraintlayout:constraintlayout:$constraint"
+//    implementation "androidx.navigation:navigation-fragment:$nav_version" // For Kotlin use navigation-fragment-ktx
+//    implementation "androidx.navigation:navigation-ui:$nav_version" // For Kotlin use navigation-ui-ktx
 
     // material
     implementation "com.google.android.material:material:$androidx"
@@ -62,6 +65,13 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger2"
     kapt "com.google.dagger:dagger-compiler:$dagger2"
     kapt "com.google.dagger:dagger-android-processor:2.16"  // 애는 버전이 낮음
+
+    // Koin for Android
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-ktor:$koin_version"
+
 
     //
     // OPEN LIBS

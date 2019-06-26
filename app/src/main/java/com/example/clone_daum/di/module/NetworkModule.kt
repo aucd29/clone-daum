@@ -1,6 +1,6 @@
 package com.example.clone_daum.di.module
 
-import brigitte.di.module.OkhttpModule
+import brigitte.di.dagger.module.OkhttpModule
 import dagger.Module
 import dagger.Provides
 import okhttp3.logging.HttpLoggingInterceptor
