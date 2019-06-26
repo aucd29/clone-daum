@@ -375,7 +375,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun resizeText() {
-        // FIXME 아직 코드 완성이 안되서 일단 주석 처리 
+        // FIXME 아직 코드 완성이 안되서 일단 주석 처리
 //
 //        mViewModel.apply {
 //            visibleBrsFontSize.visible()

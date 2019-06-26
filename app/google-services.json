@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "189551815107",
+    "firebase_url": "https://clone-daum.firebaseio.com",
+    "project_id": "clone-daum",
+    "storage_bucket": "clone-daum.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189551815107:android:dab57a279c11bc39",
+        "android_client_info": {
+          "package_name": "com.example.clone_daum"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189551815107-13o1nl7qgsha7ff9k6sftmbasan36907.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDA9OYqsByjqeYSHBy6C5qCgp5E44Qc0Sk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
