@@ -14,7 +14,7 @@ import dagger.Provides
 class ChipModule {
     @Provides
     fun provideChipsLayoutManager(context: Context): ChipsLayoutManager {
-        val manager = ChipsLayoutManager.newBuilder(context)
+        return ChipsLayoutManager.newBuilder(context)
             .setChildGravity(Gravity.TOP)
             .setScrollingEnabled(false)
             .setMaxViewsInRow(3)
@@ -28,7 +28,5 @@ class ChipModule {
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .withLastRow(true)
             .build()
-
-        return manager
     }
 }

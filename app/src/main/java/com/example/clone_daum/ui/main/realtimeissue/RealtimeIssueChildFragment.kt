@@ -42,8 +42,8 @@ class RealtimeIssueChildFragment
             }
 
             // main 에서 load 한 데이터를 읽어다가 출력
-            mRealtimeIssueViewModel.issueList(it)?.let {
-                mViewModel.initRealtimeIssueAdapter(it)
+            mRealtimeIssueViewModel.issueList(it)?.let { list ->
+                mViewModel.initRealtimeIssueAdapter(list)
             }
         }
     }

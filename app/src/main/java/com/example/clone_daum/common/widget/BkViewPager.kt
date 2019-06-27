@@ -52,7 +52,7 @@ class BkViewPager: ViewPager {
             it.measure(widthMeasureSpec, heightMeasureSpec)
 
             super.onMeasure(widthMeasureSpec,
-                MeasureSpec.makeMeasureSpec(it.getMeasuredHeight(), MeasureSpec.EXACTLY))
+                MeasureSpec.makeMeasureSpec(it.measuredHeight, MeasureSpec.EXACTLY))
         }
     }
 }

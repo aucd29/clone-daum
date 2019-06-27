@@ -33,6 +33,7 @@
                     android:padding="15dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
             />
 
             <TextView

@@ -22,8 +22,6 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
     , val frequentlySiteDao: FrequentlySiteDao)
     : RecyclerViewModel<FrequentlySite>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(FrequentlySiteViewModel::class.java)
-
         const val DEFAULT_TITLE = "사이트이동"
     }
 

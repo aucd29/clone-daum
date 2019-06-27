@@ -38,7 +38,7 @@
                     android:onClick="@{() -> model.command(model.CMD_BACK)}"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <ImageView
                     android:id="@+id/brs_ssl_icon"
@@ -49,6 +49,7 @@
                     android:layout_marginStart="@dimen/brs_ssl_mgn_s"
                     android:src="@{model.sslIconResId}"
                     android:visibility="@{model.visibleSslIcon}"
+                    tools:ignore="ContentDescription"
             />
 
             <TextView
@@ -76,7 +77,7 @@
                     android:layout_marginEnd="@dimen/brs_reload_mgn_e"
                     android:onClick="@{() -> model.eventReloadBrowser(model.urlString)}"
                     android:background="?selectableItemBackgroundBorderless"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <TextView
                     android:id="@+id/brs_stack"
@@ -224,7 +225,7 @@
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_chevron_left_black_24dp"
                     android:onClick="@{() -> model.command(model.CMD_BACK)}"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <ImageButton
                     android:id="@+id/brs_bottom_forward"
@@ -232,20 +233,20 @@
                     android:src="@drawable/selector_chevron_right_24dp"
                     android:onClick="@{() -> model.webviewEvent(WebViewEvent.FORWARD)}"
                     android:enabled="@{model.enableForward}"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <ImageView
                     android:id="@+id/brs_bottom_home"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_home_black_24dp"
                     android:onClick="@{() -> model.finish()}"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <ImageView
                     android:id="@+id/brs_bottom_favorite"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_favorite_border_black_24dp"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <!--android:onClick="@{() -> model.addZzim(model.urlString)}"-->
 
@@ -254,6 +255,7 @@
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_search_black_24dp"
                     android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAGMENT)}"
+                    tools:ignore="ContentDescription"
             />
 
             <ImageView
@@ -261,6 +263,7 @@
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_share_black_24dp"
                     android:onClick="@{() -> model.command(model.CMD_SHARE_EVENT)}"
+                    tools:ignore="ContentDescription"
             />
 
             <ImageView
@@ -268,6 +271,7 @@
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_menu_black_24dp"
                     android:onClick="@{() -> model.command(model.CMD_SUBMENU_FRAGMENT)}"
+                    tools:ignore="ContentDescription"
             />
 
         </LinearLayout>

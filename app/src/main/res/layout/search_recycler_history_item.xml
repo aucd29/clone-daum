@@ -46,6 +46,7 @@
                 android:layout_marginEnd="@dimen/search_item_del_mgn_e"
                 android:padding="@dimen/search_item_del_pad"
                 android:onClick="@{() -> model.eventDeleteHistory(item)}"
+                tools:ignore="ContentDescription"
         />
 
         <View

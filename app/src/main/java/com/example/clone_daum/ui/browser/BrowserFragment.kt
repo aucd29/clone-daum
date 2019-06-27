@@ -115,7 +115,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         loadUrl(mUrl!!)
         webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
-        webview.setFindListener { active, count, done ->
+        webview.setFindListener { active, count, _ ->
             mViewModel.innerSearchCount.set("${active + 1}/$count")
         }
     }
@@ -329,7 +329,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun showSystemBrowser() {
-        confirm(R.string.brs_using_base_brs, R.string.common_notify, listener = { res, dlg ->
+        confirm(R.string.brs_using_base_brs, R.string.common_notify, listener = { res, _ ->
             if (res) {
                 startActivity(Intent(Intent.ACTION_VIEW).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -62,7 +62,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                     mLog.debug("FAVORITE MODIFY COUNT : ${it.size} ${it.hashCode()}")
                 }
 
-                visibleEmpty.set(if (it.size > 0) View.GONE else View.VISIBLE)
+                visibleEmpty.set(if (it.isNotEmpty()) View.GONE else View.VISIBLE)
                 items.set(it)
 
                 notify?.invoke()
@@ -84,8 +84,8 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                     mLog.debug("SWAP INDEX $from -> $to")
                 }
 
-                val fromData = it.get(from)
-                val toData   = it.get(to)
+                val fromData = it[from]
+                val toData   = it[to]
 
                 fromData.swapDate(toData)
 
@@ -96,9 +96,9 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
                         if (mLog.isDebugEnabled) {
                             mLog.debug("UPDATED DATE")
                         }
-                    }, {
-                        errorLog(it)
-                        snackbar(it)
+                    }, { e ->
+                        errorLog(e)
+                        snackbar(e)
                     }))
             }
             // 디비 수정

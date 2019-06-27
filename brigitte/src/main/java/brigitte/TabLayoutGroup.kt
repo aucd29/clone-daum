@@ -8,5 +8,5 @@ import com.google.android.material.tabs.TabLayout
  */
 
 inline val TabLayout.tabs: List<TabLayout.Tab?>
-    get() = (0..tabCount - 1).map { getTabAt(it) }
+    get() = (0 until tabCount).map { getTabAt(it) }
 

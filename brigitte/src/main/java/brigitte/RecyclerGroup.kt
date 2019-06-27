@@ -103,7 +103,8 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
  * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
-class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
+class RecyclerAdapter<T: IRecyclerDiff>(
+    private val mLayouts: Array<String>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)
@@ -155,7 +156,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
     var isScrollToPosition = true
     var isNotifySetChanged = false
 
-    constructor(layoutId: String) : this(arrayOf(layoutId)) { }
+    constructor(layoutId: String) : this(arrayOf(layoutId))
 
     /**
      * 전달 받은 layout ids 와 IRecyclerItem 을 통해 화면에 출력해야할 layout 를 찾고
@@ -163,17 +164,17 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerHolder {
         val context = parent.context
-        val layoutId = context.resources.getIdentifier(mLayouts.get(viewType), "layout", context.packageName)
+        val layoutId = context.resources.getIdentifier(mLayouts[viewType], "layout", context.packageName)
         val view = LayoutInflater.from(context).inflate(layoutId, parent, false)
 
         if (mLog.isTraceEnabled) {
-            mLog.trace("LAYOUT ID : ${mLayouts.get(viewType)} (${layoutId})")
+            mLog.trace("LAYOUT ID : ${mLayouts[viewType]} ($layoutId)")
         }
 
-        val classPath = bindingClassName(context, mLayouts.get(viewType))
+        val classPath = bindingClassName(context, mLayouts[viewType])
 
-        if (mLog.isTraceEnabled()) {
-            mLog.trace("BINDING CLASS ${classPath}")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("BINDING CLASS $classPath")
         }
 
         val bindingClass = Class.forName(classPath)
@@ -192,7 +193,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
-        items.let { it.get(position).let { item ->
+        items.let { it[position].let { item ->
             when (item) {
                 is IRecyclerPosition -> item.position = position
             }
@@ -221,8 +222,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(val mLayouts: Array<String>
      * 특정 위치의 item 타입을 반환 한다.
      */
     override fun getItemViewType(position: Int): Int {
-        val item = items.get(position)
-        when (item) {
+        when (val item = items.get(position)) {
             is IRecyclerItem -> return item.type
         }
 
@@ -357,7 +357,7 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
     /**
      * adapter 에 사용될 layout 을 설정한다.
      *
-     * @param id 문자열 형태의 layout 이름
+     * @param ids 문자열 형태의 layout 이름
      */
     fun initAdapter(vararg ids: String) {
         val adapter = RecyclerAdapter<T>(ids.toList().toTypedArray())
@@ -404,8 +404,8 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
 
     inner class ItemMovedCallback(val mItemMovedListener:((fromPos: Int, toPos: Int) -> Unit)? = null)
         : ItemTouchHelper.Callback() {
-        var mLongPressDrag = false
-        var mSwipeDrag     = false
+        private var mLongPressDrag = false
+        private var mSwipeDrag     = false
 
 //        private var dragFrom = -1
 //        private var dragTo   = -1

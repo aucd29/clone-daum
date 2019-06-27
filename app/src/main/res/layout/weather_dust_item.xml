@@ -28,8 +28,8 @@ bindding adapter 를 이용하면 될듯
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_android_black_14dp"
+                tools:ignore="ContentDescription"
         />
-
 
         <TextView
                 android:id="@+id/description"

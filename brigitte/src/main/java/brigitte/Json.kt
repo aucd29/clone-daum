@@ -32,7 +32,7 @@ object Json {
         }
     }
 
-    fun stringify(obj: Any) = mapper.writeValueAsString(obj)
+    fun stringify(obj: Any): String = mapper.writeValueAsString(obj)
 }
 
 // to object

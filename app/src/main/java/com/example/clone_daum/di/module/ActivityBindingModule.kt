@@ -1,5 +1,6 @@
 package com.example.clone_daum.di.module
 
+import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.MainActivity
 import com.example.clone_daum.ui.ViewController
 import dagger.Binds
@@ -28,6 +29,6 @@ abstract class ActivityBindingModule {
 @Module
 class MainActivityModule {
     @Provides
-    fun provideFragmentManager(activity: MainActivity) =
+    fun provideFragmentManager(activity: MainActivity): FragmentManager =
         activity.supportFragmentManager
 }

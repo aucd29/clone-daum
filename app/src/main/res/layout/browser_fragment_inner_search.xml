@@ -29,6 +29,7 @@
                 android:imeOptions="actionSearch|actionDone"
                 android:text="@={model.innerSearch}"
                 android:background="@android:color/transparent"
+                android:inputType="text"
         />
         <!--android:onTextChanged="@{(s, st, b, c) -> model.innerSearch()}"-->
 

@@ -38,6 +38,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="@dimen/search_item_suggest_mgn_e"
                 android:padding="@dimen/search_item_suggest_pad"
+                tools:ignore="ContentDescription"
         />
         <!--android:onClick="@{() -> model.eventSearchSuggest(item.keyword)}"-->
 

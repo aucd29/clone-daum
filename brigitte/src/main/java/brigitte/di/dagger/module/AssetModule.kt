@@ -15,5 +15,5 @@ import javax.inject.Singleton
 class AssetModule {
     @Singleton
     @Provides
-    fun provideAssetManager(context: Context) = context.assets
+    fun provideAssetManager(context: Context) = context.assets!!
 }

@@ -33,6 +33,7 @@
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
             />
 
             <TextView
@@ -85,6 +86,7 @@
                 android:inputType="text"
                 android:text="@={model.name}"
                 android:onTextChanged="@{model::onTextChanged}"
+                tools:ignore="LabelFor"
         />
 
         <ImageView
@@ -98,6 +100,7 @@
                 android:src="@drawable/ic_clear_black_24dp"
                 android:background="@android:color/transparent"
                 android:onClick="@{() -> model.command(model.CMD_NAME_RESET)}"
+                tools:ignore="ContentDescription"
         />
 
         <View
@@ -135,6 +138,7 @@
                 android:inputType="text"
                 android:text="@={model.url}"
                 android:onTextChanged="@{model::onTextChanged}"
+                tools:ignore="LabelFor"
         />
 
         <ImageView
@@ -148,6 +152,7 @@
                 android:paddingEnd="15dp"
                 android:background="@android:color/transparent"
                 android:onClick="@{() -> model.command(model.CMD_ADDRESS_RESET)}"
+                tools:ignore="ContentDescription"
         />
 
         <View
@@ -209,6 +214,7 @@
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
                     android:background="@android:color/transparent"
+                    tools:ignore="ContentDescription"
             />
 
             <View

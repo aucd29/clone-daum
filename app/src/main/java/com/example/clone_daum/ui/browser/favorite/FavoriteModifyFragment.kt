@@ -26,7 +26,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     override fun initViewBinding() {
         mBinding.apply {
             favoriteModifyBar.fadeColorResource(android.R.color.white,
-                com.example.clone_daum.R.color.colorAccent)
+                R.color.colorAccent)
         }
     }
 
@@ -93,12 +93,12 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
     }
 
     private fun moveFavoriteFolder() {
-        val fav = mViewModel.selectedList.get(0)
+        val fav = mViewModel.selectedList[0]
         viewController.folderFragment(childFragmentManager, fav.folderId, R.id.favorite_modify_container)
     }
 
     private fun modifyFavorite() {
-        val fav = mViewModel.selectedList.get(0)
+        val fav = mViewModel.selectedList[0]
         when (fav.favType) {
             MyFavorite.T_FOLDER  -> modifyFavoriteFolderName(fav)
             MyFavorite.T_DEFAULT -> modifyFavoriteLink(fav)
@@ -132,7 +132,7 @@ class FavoriteModifyFragment: BaseDaggerFragment<FavoriteModifyFragmentBinding, 
             mLog.debug("CHANGE FOLDER ${fav.name} ($pos)")
         }
 
-        val modifyFav = mViewModel.selectedList.get(0)
+        val modifyFav = mViewModel.selectedList[0]
         modifyFav.folderId = fav._id
         // FIXME fav.folderId = if (name == string(R.string.folder_favorite)) "" else name
 

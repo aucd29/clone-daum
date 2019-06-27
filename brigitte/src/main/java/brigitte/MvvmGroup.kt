@@ -39,16 +39,16 @@ private const val LAYOUT          = "layout"         // 레이아웃
 /**
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
  */
-inline fun AndroidViewModel.string(@StringRes resid: Int) =
+inline fun AndroidViewModel.string(@StringRes resid: Int): String =
     app.getString(resid)
 
-inline fun AndroidViewModel.stringArray(@ArrayRes resid: Int) =
+inline fun AndroidViewModel.stringArray(@ArrayRes resid: Int): Array<String> =
     app.resources.getStringArray(resid)
 
-inline fun AndroidViewModel.intArray(@ArrayRes resid: Int) =
+inline fun AndroidViewModel.intArray(@ArrayRes resid: Int): IntArray =
     app.resources.getIntArray(resid)
 
-inline fun AndroidViewModel.requireContext() =
+inline fun AndroidViewModel.requireContext(): Context =
     if (app == null) {
         throw IllegalStateException("AndroidViewModel $this not attached to a context.")
     } else {
@@ -58,7 +58,7 @@ inline fun AndroidViewModel.requireContext() =
 /**
  * android view model 에서 쉽게 문자열을 가져올 수 있도록 wrapping 함
  */
-inline fun AndroidViewModel.string(resid: String) = app.string(resid)
+inline fun AndroidViewModel.string(resid: String): String = app.string(resid)
 
 inline val AndroidViewModel.app : Application
         get() = getApplication()
@@ -289,7 +289,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     /**
      * view model 에 등록되어 있는 command live event 의 값에 변화를 감지하여 이벤트를 발생 시킨다.
      */
-    protected fun commandEventAware() = mViewModel.run {
+    open protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
             observe(commandEvent) {
                 when (it.first) {
@@ -405,7 +405,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
         }
     }
 
-    protected fun commandEventAware() = mViewModel.run {
+    open protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
             observe(commandEvent) {
                 when (it.first) {
@@ -490,7 +490,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel>
 
     protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
-    protected fun bindViewModel() {
+    open protected fun bindViewModel() {
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
     }
 
@@ -506,7 +506,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel>
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    protected fun commandEventAware() = mViewModel.run {
+    open protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
             observe(commandEvent) {
                 when (it.first) {
@@ -585,7 +585,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
 
     protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
-    protected fun bindViewModel() {
+    open protected fun bindViewModel() {
 //        mBinding.setVariable(BR.setModel, mViewModel)
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
     }
@@ -644,7 +644,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    protected fun commandEventAware() = mViewModel.run {
+    open protected fun commandEventAware() = mViewModel.run {
         if (this is ICommandEventAware) {
             observe(commandEvent) {
                 when (it.first) {

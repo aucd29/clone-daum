@@ -33,6 +33,7 @@
                     android:src="@drawable/ic_arrow_back_black_24dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
             />
 
             <TextView

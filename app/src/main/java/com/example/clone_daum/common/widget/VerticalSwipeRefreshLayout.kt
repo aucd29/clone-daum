@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import org.slf4j.LoggerFactory
+import kotlin.math.abs
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 26. <p/>
@@ -14,18 +14,17 @@ import org.slf4j.LoggerFactory
  * https://stackoverflow.com/questions/34136178/swiperefreshlayout-blocking-horizontally-scrolled-recyclerview
  */
 
-class VerticalSwipeRefreshLayout: SwipeRefreshLayout {
+class VerticalSwipeRefreshLayout(context: Context, attrs: AttributeSet) : SwipeRefreshLayout(context, attrs) {
     private var touchSlop: Int
     private var prevX: Float = 0f
     private var decliend: Boolean = false
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    init {
         this.initLayout()
-
-        touchSlop = ViewConfiguration.get(context).getScaledTouchSlop()
+        touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
-    fun initLayout() {
+    open fun initLayout() {
 
     }
 
@@ -38,7 +37,7 @@ class VerticalSwipeRefreshLayout: SwipeRefreshLayout {
             }
             MotionEvent.ACTION_MOVE -> {
                 val evX = ev.x
-                val xDiff = Math.abs(evX - prevX)
+                val xDiff = abs(evX - prevX)
 
                 if (decliend || xDiff > touchSlop) {
                     decliend = true

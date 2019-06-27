@@ -21,10 +21,10 @@ fun File.totalLength(): Long {
     var total: Long = 0
     if (isDirectory) {
         listFiles().forEach {
-            if (it.isDirectory) {
-                total += it.totalLength()
+            total += if (it.isDirectory) {
+                it.totalLength()
             } else {
-                total += it.length()
+                it.length()
             }
         }
     } else {
@@ -60,7 +60,7 @@ fun File.copy(target: File, listener:FileListener? = null) {
                     target.mkdirs()
                 }
 
-                if (log.isTraceEnabled()) {
+                if (log.isTraceEnabled) {
                     log.trace("${it.absolutePath} -> ${target.absolutePath}/${it.name}")
                 }
 
@@ -74,7 +74,7 @@ fun File.copy(target: File, listener:FileListener? = null) {
             target.mkdirs()
         }
 
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled) {
             log.trace("${this.absolutePath} -> ${target.absolutePath}/${this.name}")
         }
 
@@ -193,9 +193,9 @@ abstract class FileListener {
     private val log = LoggerFactory.getLogger(FileListener::class.java)
 
     companion object {
-        val DONE = 1
-        val NOT_FOUND = -1
-        val CANCELED  = -2
+        const val DONE = 1
+        const val NOT_FOUND = -1
+        const val CANCELED  = -2
     }
 
     var cancel = false
@@ -211,7 +211,7 @@ abstract class FileListener {
     }
 
     fun trace() {
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled) {
             log.trace("$percent% (${current.toFileSizeString()} / ${total.toFileSizeString()})")
         }
     }

@@ -75,8 +75,8 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
 
     private fun fileOpen() {
         startActivityForResult(Intent().apply {
-            setType("image/*")
-            setAction(Intent.ACTION_GET_CONTENT)
+            type = "image/*"
+            action = Intent.ACTION_GET_CONTENT
             addCategory(Intent.CATEGORY_OPENABLE)
             putExtra(Intent.EXTRA_LOCAL_ONLY, true)
         }, REQ_FILE_OPEN)
@@ -96,20 +96,14 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
     }
 
     private fun parseBarcode(intent: Intent?): BarcodeResult? {
-        val uri = intent?.data
-        if (uri == null) {
-            return null
-        }
+        val uri = intent?.data ?: return null
 
         return context?.contentResolver?.openInputStream(uri)?.use {
-            val bmp = BitmapFactory.decodeStream(it)
-            if (bmp == null) {
-                return null
-            }
+            val bmp = BitmapFactory.decodeStream(it) ?: return null
 
             val width = bmp.width
             val height = bmp.height
-            val pixels: IntArray = IntArray(width * height)
+            val pixels = IntArray(width * height)
 
             bmp.getPixels(pixels, 0, width, 0, 0, width, height)
             bmp.recycle()

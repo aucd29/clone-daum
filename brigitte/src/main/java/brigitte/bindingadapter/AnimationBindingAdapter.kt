@@ -125,7 +125,7 @@ object AnimationBindingAdapter {
 
     private fun objectAnim(view: View, anim: ObjectAnimator, params: AnimParams) {
         params.apply {
-            anim.setDuration(duration)
+            anim.duration = duration
             interpolator?.let { anim.setInterpolator(it) }
             startDelay?.let   { anim.setStartDelay(it) }
 

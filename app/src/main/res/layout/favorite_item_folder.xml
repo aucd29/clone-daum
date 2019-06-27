@@ -30,7 +30,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:text="@{model.firstWord(item.name)}"
                 android:background="@drawable/ic_work_black_24dp"
-        />
+                tools:ignore="SmallSp"/>
 
         <TextView
                 android:id="@+id/text"
@@ -54,7 +54,7 @@
                 tools:text=">"
                 android:padding="10dp"
                 android:text=">"
-        />
+                tools:ignore="HardcodedText"/>
 
         <View
                 style="@style/line1dp"

@@ -97,7 +97,7 @@ inline fun FragmentActivity.observeDialog(event: SingleLiveEvent<DialogParam>, d
  */
 inline fun Activity.generateLayoutName(): String {
     val name = javaClass.simpleName
-    var layoutName = name.get(0).toLowerCase().toString()
+    var layoutName = name[0].toLowerCase().toString()
 
     name.substring(1, name.length).forEach {
         layoutName += if (it.isUpperCase()) {
@@ -267,16 +267,16 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
 /**
  * 앱 종료를 위해 다시 한번 backkey 를 선택하라는 문구를 동작 시키기 위한 클래스
  */
-open class BackPressedManager(var mActivity: AppCompatActivity, var view: View? = null) {
+open class BackPressedManager(private var mActivity: AppCompatActivity, var view: View? = null) {
     companion object {
-        val delay = 2000
+        const val DELAY = 2000
     }
 
     protected var mToast: Toast? = null
     protected var mSnackbar: Snackbar? = null
     protected var mPressedTime: Long = 0
 
-    fun time() = mPressedTime + delay
+    private fun time() = mPressedTime + DELAY
 
     fun onBackPressed(): Boolean {
         if (mActivity.supportFragmentManager.backStackEntryCount > 0) {

@@ -14,7 +14,7 @@ object TabLayoutBindingAdapter {
     private val mLog = LoggerFactory.getLogger(TabLayoutBindingAdapter::class.java)
 
     @JvmStatic
-    @BindingAdapter(*arrayOf("bindSetupWithViewPager", "bindTabLoaded"), requireAll = false)
+    @BindingAdapter("bindSetupWithViewPager", "bindTabLoaded", requireAll = false)
     fun bindSetupWithViewPager(tab: TabLayout, viewpager: ViewPager?, tabLoadedCallback: (() -> Unit)? = null) {
         viewpager?.let {
             if (mLog.isDebugEnabled) {

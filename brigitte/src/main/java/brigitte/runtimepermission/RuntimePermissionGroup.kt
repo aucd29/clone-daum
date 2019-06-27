@@ -41,7 +41,7 @@ object RuntimePermission {
         var i = 0
 
         while (i < permissions.size) {
-            val permission = permissions.get(i++)
+            val permission = permissions[i++]
             if (!checkSelfPermission(context, permission)) {
                 result = false
                 break
@@ -110,7 +110,7 @@ data class PermissionParams(
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class PermissionFragment : Fragment() {
+open class PermissionFragment : Fragment() {
     companion object {
         private val mLog = LoggerFactory.getLogger(PermissionFragment::class.java)
 
@@ -140,7 +140,7 @@ class PermissionFragment : Fragment() {
         var i = 0
 
         while (i < grantResults.size) {
-            val it = grantResults.get(i++)
+            val it = grantResults[i++]
             if (it == PackageManager.PERMISSION_DENIED) {
                 grantRes = false
                 break
@@ -189,7 +189,7 @@ class PermissionFragment : Fragment() {
             , listener   = { result, dlg ->
                 if (result) {
                     startActivityForResult(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        setData(Uri.parse(("package:${mParams.activity.packageName}")))
+                        data = Uri.parse(("package:${mParams.activity.packageName}"))
                     }, REQ_SETTING_EVENT)
                 }
 

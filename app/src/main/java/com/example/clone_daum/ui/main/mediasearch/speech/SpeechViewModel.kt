@@ -20,7 +20,7 @@ class SpeechViewModel @Inject constructor(app: Application)
     : CommandEventViewModel(app) {
 
     val bgScale      = ObservableField<AnimParams>()
-    val messageResId = ObservableField<Int>(R.string.speech_pls_speak_search_keyword)
-    val speechResult = ObservableField<String>("")
-    val kakao        = ObservableField<Spanned>("Powered by <b>Kakao</b>".html())
+    val messageResId = ObservableField(R.string.speech_pls_speak_search_keyword)
+    val speechResult = ObservableField("")
+    val kakao        = ObservableField("Powered by <b>Kakao</b>".html())
 }

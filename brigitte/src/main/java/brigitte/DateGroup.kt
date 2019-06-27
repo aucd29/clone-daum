@@ -12,5 +12,4 @@ import java.util.*
 /**
  * unix timestamp 를 전달 받은 포맷에 받게 날짜로 변환 한다.
  */
-fun Long.toDate(format: String)
-        = SimpleDateFormat(format, Locale.getDefault()).format(this)
+fun Long.toDate(format: String): String = SimpleDateFormat(format, Locale.getDefault()).format(this)

@@ -15,14 +15,12 @@ import androidx.fragment.app.Fragment
  */
 
 inline fun Activity.popupMenu(@MenuRes resid: Int, anchor: View, noinline listener: ((MenuItem) -> Boolean)? = null): PopupMenu {
-    val popup = PopupMenu(this, anchor).apply {
-        menuInflater.inflate(resid, this.menu)
+    return PopupMenu(this, anchor).apply {
+        menuInflater.inflate(resid, menu)
 
         listener?.let { lsr -> setOnMenuItemClickListener { lsr.invoke(it) } }
         show()
     }
-
-    return popup
 }
 
 inline fun Fragment.popupMenu(@MenuRes resid: Int, anchor: View, noinline listener: ((MenuItem) -> Boolean)? = null) =

@@ -50,7 +50,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:bindTranslateY="@{model.overshootTransY}"
                     android:translationY="-400dp"
-            >
+                    tools:ignore="DisableBaselineAlignment">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
@@ -67,6 +67,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
                     <TextView
                             android:id="@+id/search_voice_text"
@@ -96,6 +97,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
                     <TextView
                             android:id="@+id/search_music_text"
@@ -125,6 +127,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
                     <TextView
                             android:id="@+id/search_flower_text"
@@ -154,6 +157,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
                     <TextView
                             android:id="@+id/search_code_text"
@@ -230,6 +234,7 @@
                 app:layout_constraintTop_toTopOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
                 android:layout_marginStart="@dimen/main_search_logo_pad_se"
+                tools:ignore="ContentDescription"
         />
 
         <ImageView
@@ -242,6 +247,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
                 android:padding="@dimen/main_search_extend_pad"
                 android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
+                tools:ignore="ContentDescription"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

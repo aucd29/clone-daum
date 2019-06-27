@@ -68,7 +68,7 @@
                             android:layout_height="wrap_content"
                             android:background="@android:color/white"
                             android:clickable="true"
-                    >
+                            android:focusable="true">
 
                         <!-- SEARCH TEXT -->
 
@@ -98,6 +98,7 @@
                                 android:paddingStart="@dimen/main_search_logo_pad_se"
                                 android:paddingEnd="@dimen/main_search_logo_pad_se"
                                 android:onClick="@{() -> model.eventGotoNews()}"
+                                tools:ignore="ContentDescription"
                         />
 
                         <!-- MEDIA SEARCH ICON -->
@@ -111,6 +112,7 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:padding="@dimen/main_search_extend_pad"
                                 android:onClick="@{() -> model.command(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
+                                tools:ignore="ContentDescription"
                         />
 
                         <!-- REALTIME ISSUE -->
@@ -182,6 +184,7 @@
                                 app:bindRotation="@{realtimeIssueModel.tabMenuRotation}"
                                 android:clickable="@{realtimeIssueModel.enableClick}"
                                 android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
+                                tools:ignore="ContentDescription"
                         />
 
                         <View
@@ -271,6 +274,7 @@
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
                             android:onClick="@{() -> model.command(model.CMD_NAVIGATION_FRAGMENT)}"
+                            tools:ignore="ContentDescription"
                     />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -308,6 +312,7 @@
                 android:onClick="@{() -> model.webviewBack()}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="ContentDescription"
         />
     </com.example.clone_daum.common.widget.BkConstraintLayout>
 </layout>

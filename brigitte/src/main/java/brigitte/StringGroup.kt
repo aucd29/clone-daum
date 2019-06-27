@@ -39,6 +39,6 @@ inline fun String.encodeBase64(): String = Base64.encodeToString(this.toByteArra
  */
 inline fun String.decodeBase64(): String = String(Base64.decode(this, Base64.DEFAULT))
 
-inline fun String.urldecode() = URLDecoder.decode(this, "UTF-8")
+inline fun String.urldecode(): String = URLDecoder.decode(this, "UTF-8")
 
-inline fun String.urlencode() = URLEncoder.encode(this, "UTF-8")
+inline fun String.urlencode(): String = URLEncoder.encode(this, "UTF-8")

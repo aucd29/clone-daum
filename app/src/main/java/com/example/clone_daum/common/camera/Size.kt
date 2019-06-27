@@ -66,7 +66,7 @@ class Size constructor(val width: Int, val height: Int) : Comparable<Size> {
     }
 
     override fun toString(): String {
-        return "${width}x${height}"
+        return "${width}x$height"
     }
 
     override fun equals(other: Any?): Boolean {

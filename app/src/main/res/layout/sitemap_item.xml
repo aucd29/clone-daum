@@ -19,6 +19,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:bindImage="@{item.icon}"
                 android:layout_marginTop="5dp"
+                tools:ignore="ContentDescription"
         />
 
         <TextView
@@ -46,7 +47,7 @@
                 android:textColor="@android:color/black"
                 android:background="@drawable/shape_shortcut_app_background"
                 android:visibility="@{item.isApp ? View.VISIBLE : View.GONE}"
-        />
+                tools:ignore="SmallSp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

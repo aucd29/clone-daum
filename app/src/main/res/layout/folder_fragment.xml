@@ -31,6 +31,7 @@
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
             />
 
             <TextView

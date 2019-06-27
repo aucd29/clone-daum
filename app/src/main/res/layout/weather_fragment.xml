@@ -53,6 +53,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     android:background="?selectableItemBackgroundBorderless"
                     android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
             />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -89,6 +90,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="@dimen/weather_refresh_location_icon"
                         android:visibility="@{model.visibleProgress ? View.GONE : View.VISIBLE}"
+                        tools:ignore="ContentDescription"
                 />
 
                 <ProgressBar
@@ -114,6 +116,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/weather_current_location"
                     android:layout_marginTop="@dimen/weather_large_icon_mgn_t"
                     android:layout_marginStart="@dimen/weather_large_icon_mgn_s"
+                    tools:ignore="ContentDescription"
             />
 
             <TextView
@@ -179,19 +182,19 @@
             />
 
             <View
-                    android:id="@+id/weather_dumy_line"
+                    android:id="@+id/weather_dummy_line"
                     style="@style/line1dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/weather_current_temperature_description"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="@dimen/weather_dumy_line_mgn_t"
+                    android:layout_marginTop="@dimen/weather_dummy_line_mgn_t"
             />
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/weather_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/weather_dumy_line"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_dummy_line"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/weather_recycler_mgn_t"
@@ -201,12 +204,12 @@
             />
 
             <View
-                    android:id="@+id/weather_dumy_line2"
+                    android:id="@+id/weather_dummy_line2"
                     style="@style/line1dp"
                     app:layout_constraintTop_toBottomOf="@+id/weather_recycler"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="@dimen/weather_dumy_line_mgn_t"
+                    android:layout_marginTop="@dimen/weather_dummy_line_mgn_t"
             />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

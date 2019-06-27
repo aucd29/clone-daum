@@ -26,8 +26,6 @@ class BarcodeViewModel @Inject constructor(application: Application)
     // http://www.barcode-generator.org/
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BarcodeViewModel::class.java)
-
         const val CMD_FILE_OPEN  = "file-open"
         const val CMD_INPUT_CODE = "input-code"
     }

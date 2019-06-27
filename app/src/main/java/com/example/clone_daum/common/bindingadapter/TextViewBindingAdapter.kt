@@ -1,5 +1,6 @@
 package com.example.clone_daum.common.bindingadapter
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.widget.TextView
@@ -19,7 +20,7 @@ object TextViewBindingAdapter {
 
     // 이건 common 으로 이동 해야 할 듯
     @JvmStatic
-    @BindingAdapter(*["bindUrlToChar"])
+    @BindingAdapter("bindUrlToChar")
     fun bindUrlToChar(view: TextView, url: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("URL : $url")
@@ -28,8 +29,9 @@ object TextViewBindingAdapter {
         urlToCharAndBackground(view, url)
     }
 
+    @SuppressLint("SetTextI18n")
     @JvmStatic
-    @BindingAdapter(*["bindUrlToText", "bindIsMoveUrl"])
+    @BindingAdapter("bindUrlToText", "bindIsMoveUrl")
     fun bindIsMoveUrl(view: TextView, url: String, data: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("URL : $url, DATA : $data")
@@ -54,8 +56,8 @@ object TextViewBindingAdapter {
         var tmpUrl = url.replace("^(http|https)://".toRegex(), "")
         tmpUrl = tmpUrl.substringBefore("/")
         val splited = tmpUrl.split(".")
-        val char = splited.get(splited.size - 2).substring(0, 1).toUpperCase()
-        val domain = char.toCharArray().get(0).toInt()
+        val char = splited[splited.size - 2].substring(0, 1).toUpperCase()
+        val domain = char.toCharArray()[0].toInt()
 
         if (mLog.isTraceEnabled) {
             mLog.trace("CHAR : $char, MOD : ${domain % 2}")

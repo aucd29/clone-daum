@@ -186,7 +186,7 @@ class CameraManager constructor(val mContext: Context) {
         }
 
         val previewSize = getPreviewSizes(params)
-        if (previewSize.size == 0) {
+        if (previewSize.isEmpty()) {
             mRequestedPreviewSize = null
         } else {
             mRequestedPreviewSize = displayConfig.getBestPreviewSize(previewSize, isCameraRotated())
@@ -235,7 +235,7 @@ class CameraManager constructor(val mContext: Context) {
         }
 
         val previewSizes = getPreviewSizes(params)
-        if (previewSizes.size == 0) {
+        if (previewSizes.isEmpty()) {
             mRequestedPreviewSize = null
         } else {
             mRequestedPreviewSize = displayConfig.getBestPreviewSize(previewSizes, isCameraRotated())
@@ -305,7 +305,7 @@ class CameraManager constructor(val mContext: Context) {
             }
 
             try {
-                setDesiredParameters(true);
+                setDesiredParameters(true)
             } catch (e2: java.lang.Exception) {
                 if (mLog.isDebugEnabled) {
                     e2.printStackTrace()
@@ -372,7 +372,7 @@ class CameraManager constructor(val mContext: Context) {
         val params = mCamera?.parameters ?: return false
 
         return params.flashMode.run {
-             (Camera.Parameters.FLASH_MODE_ON.equals(this@run) ||
+             (Camera.Parameters.FLASH_MODE_ON == this@run ||
                     Camera.Parameters.FLASH_MODE_TORCH.equals(this@run))
         }
     }

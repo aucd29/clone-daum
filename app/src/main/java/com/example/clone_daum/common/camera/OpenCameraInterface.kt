@@ -13,7 +13,7 @@ object OpenCameraInterface {
     /**
      * For [.open], means no preference for which camera to open.
      */
-    val NO_REQUESTED_CAMERA = -1
+    const val NO_REQUESTED_CAMERA = -1
 
     fun getCameraId(requestedId: Int): Int {
         val numCameras = Camera.getNumberOfCameras()

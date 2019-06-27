@@ -16,9 +16,9 @@ import java.lang.RuntimeException
 
 const val K_SHARED_PREFERECE = "burke.prefs"
 
-inline fun Context.prefs()  = getSharedPreferences(K_SHARED_PREFERECE, Context.MODE_PRIVATE)
-inline fun Fragment.prefs() = requireContext().prefs()
-inline fun AndroidViewModel.prefs() = getApplication<Application>().prefs()
+inline fun Context.prefs(): SharedPreferences = getSharedPreferences(K_SHARED_PREFERECE, Context.MODE_PRIVATE)
+inline fun Fragment.prefs(): SharedPreferences = requireContext().prefs()
+inline fun AndroidViewModel.prefs(): SharedPreferences = getApplication<Application>().prefs()
 
 
 // set : prefs().edit { putBoolean(K_RECENT_SEARCH, showSearchRecyclerLayout) }
@@ -41,16 +41,16 @@ inline fun AndroidViewModel.prefs(commit: Boolean = true, action: SharedPreferen
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-inline fun SharedPreferences.Editor.string(key: String, value: String?) =
+inline fun SharedPreferences.Editor.string(key: String, value: String?): SharedPreferences.Editor =
         putString(key, value)
 
-inline fun SharedPreferences.Editor.encodeString(key: String, value: String?) =
+inline fun SharedPreferences.Editor.encodeString(key: String, value: String?): SharedPreferences.Editor =
         putString(key, value?.encodeBase64())
 
-inline fun SharedPreferences.decodeString(key: String, defaultValue: String? = null) =
+inline fun SharedPreferences.decodeString(key: String, defaultValue: String? = null): String? =
         getString(key, defaultValue)?.decodeBase64()
 
-inline fun SharedPreferences.string(key: String, defaultValue: String? = null) =
+inline fun SharedPreferences.string(key: String, defaultValue: String? = null): String? =
         getString(key, defaultValue)
 
 ////////////////////////////////////////////////////////////////////////////////////

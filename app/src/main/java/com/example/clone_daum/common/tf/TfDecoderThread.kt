@@ -75,9 +75,9 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     private fun requestNextPreview() {
         mCameraInstance.let {
             if (it.isOpen) {
-                it.requestPreview {
+                it.requestPreview { src ->
                     if (mRunning) {
-                        mHandler.obtainMessage(TfConst.DECODE_DECODING, it).sendToTarget()
+                        mHandler.obtainMessage(TfConst.DECODE_DECODING, src).sendToTarget()
                     }
                 }
             }

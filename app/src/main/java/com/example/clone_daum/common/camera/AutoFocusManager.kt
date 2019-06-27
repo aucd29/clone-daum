@@ -13,7 +13,7 @@ class AutoFocusManager(private val camera: Camera, settings: CameraSettings) {
     companion object {
         private val mLog = LoggerFactory.getLogger(AutoFocusManager::class.java)
 
-        private val AUTO_FOCUS_INTERVAL_MS = 2000L
+        private const val AUTO_FOCUS_INTERVAL_MS = 2000L
         private val FOCUS_MODES_CALLING_AF: MutableCollection<String>
 
         init {

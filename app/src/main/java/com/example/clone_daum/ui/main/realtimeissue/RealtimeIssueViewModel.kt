@@ -73,7 +73,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
                 visibleProgress.set(View.GONE)
 
                 mRealtimeIssueList = it
-                mAllIssueList      = it.get(0).second
+                mAllIssueList      = it[0].second
 
                 enableClick.set(true)
                 command(CMD_LOADED_ISSUE)
@@ -99,7 +99,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         }
 
         val issue = main.substring(f, e)
-            .replace("(\n|\t)".toRegex(), "")
+            .replace("(\n\t)".toRegex(), "")
             .replace("  ", "")
 
         val realtimeIssueList: List<RealtimeIssueType> = issue.jsonParse()
@@ -137,13 +137,13 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
         mAllIssueList?.let { list ->
             val index = mRealtimeCount % list.size
-            val issue = list.get(index)
+            val issue = list[index]
 
             currentIssue.set(issue)
 
             disposableInterval.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
                 val index = mRealtimeCount % list.size
-                val issue = list.get(index)
+                val issue = list[index]
 
                 currentIssue.set(issue)
                 ++mRealtimeCount
@@ -164,7 +164,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     }
 
     fun titleConvert(issue: RealtimeIssue?): String {
-        return issue?.run { "${index} ${text}" } ?: ""
+        return issue?.run { "$index $text" } ?: ""
     }
 
     fun typeConvert(issue: RealtimeIssue?): Spanned {

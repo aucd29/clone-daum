@@ -25,6 +25,6 @@ class RxLocationModule {
     }
 
     @Provides
-    fun provideLocationRequest() =
+    fun provideLocationRequest(): LocationRequest =
         LocationRequest.create().apply { priority = LOCATION_PRIORITY }
 }

@@ -18,23 +18,18 @@ import org.slf4j.LoggerFactory
  */
 
 class InfiniteViewPager : ViewPager {
-    constructor(context: Context): super(context) {
-
-    }
-
-    constructor(context: Context, attr: AttributeSet): super(context, attr) {
-
-    }
+    constructor(context: Context): super(context)
+    constructor(context: Context, attr: AttributeSet): super(context, attr)
 
     override fun setAdapter(adapter: PagerAdapter?) {
         super.setAdapter(adapter)
 
-        setCurrentItem(0)
+        currentItem = 0
     }
 
-    override fun setCurrentItem(item: Int) {
-        super.setCurrentItem(item, false)
-    }
+//    override fun setCurrentItem(item: Int) {
+//        super.setCurrentItem(item, false)
+//    }
 
     override fun setCurrentItem(item: Int, smoothScroll: Boolean) {
         adapter?.let {

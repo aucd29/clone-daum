@@ -96,13 +96,13 @@ class BrowserViewModel @Inject constructor(app: Application
                             if (mLog.isDebugEnabled) {
                                 mLog.debug("ADDED URL HISTORY : $title ($url)")
                             }
-                        }, { errorLog(it, mLog) })
+                        }, { e -> errorLog(e, mLog) })
                 } else {
                     if (mLog.isDebugEnabled) {
                         mLog.debug("EXIST URL HISTORY : $title ($url)")
                     }
                 }
-            }, { errorLog(it, mLog) }))
+            }, { e -> errorLog(e, mLog) }))
     }
 
     fun applyBrsCount(count: Int) {

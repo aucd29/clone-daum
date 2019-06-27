@@ -110,8 +110,8 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
                 .observeOn(Schedulers.io())
                 .map { it.jsonParse<List<BrowserSubMenu>>() }
                 .map {
-                    it.forEach {
-                        it.iconResid = mContext.stringId(it.icon)
+                    it.forEach { f ->
+                        f.iconResid = mContext.stringId(f.icon)
                     }
 
                     it
@@ -130,18 +130,18 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
                 })
 
         mDisposable.add(mDb.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
-            if (it.size == 0) {
+            if (it.isEmpty()) {
                 // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
                 // 기본 값 생성하는 것.
                 mDisposable.add(Observable.just(mAssetManager.open("res/frequently_site.json").readBytes())
                         .observeOn(Schedulers.io())
-                        .map { it.jsonParse<List<FrequentlySite>>() }
-                        .subscribe {
+                        .map { s -> s.jsonParse<List<FrequentlySite>>() }
+                        .subscribe { list ->
                             if (mLog.isDebugEnabled) {
                                 mLog.debug("PARSE OK : frequently_site.json ")
                             }
 
-                            mDb.frequentlySiteDao.insertAll(it).subscribe {
+                            mDb.frequentlySiteDao.insertAll(list).subscribe {
                                 if (mLog.isDebugEnabled) {
                                     mLog.debug("INSERTED FrequentlySite")
                                 }
@@ -156,7 +156,7 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
             .blockingFirst()
     }
 
-    fun daumMain() = mDaum.main().observeOn(Schedulers.io())
+    fun daumMain(): Observable<String> = mDaum.main().observeOn(Schedulers.io())
 
     fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
         mDisposable.add(Observable.just(mAssetManager.open("res/weather_default.json").readBytes())

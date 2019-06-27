@@ -23,8 +23,8 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
     companion object {
         private val mLog = LoggerFactory.getLogger(MusicFragment::class.java)
 
-        private val V_SCALE          = 1.2F
-        private val V_SCALE_DURATION = 500L
+        private const val V_SCALE          = 1.2F
+        private const val V_SCALE_DURATION = 500L
     }
 
     @Inject lateinit var viewController: ViewController
@@ -41,7 +41,7 @@ class MusicFragment: BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
             return
         }
 
-        if (!(context?.isNetworkConntected() ?: false)) {
+        if (context?.isNetworkConntected() != true) {
             alert(R.string.error_network, listener = { _, _ -> finish() })
             return
         }

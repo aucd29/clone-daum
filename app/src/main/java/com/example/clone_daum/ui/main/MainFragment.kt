@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main
 
+import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
+import kotlin.math.abs
 
 
 // 어라라.. 머지가 잘못되었나? 왜 검색 영역에서 스크롤이 되는것이냐? ㄷ ㄷ ㄷ [aucd29][2019. 4. 17.]
@@ -31,7 +33,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     }
 
     init {
-        mViewModelScope = BaseFragment.SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
+        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
     @Inject lateinit var viewController: ViewController
@@ -112,24 +114,26 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
                 when (it.action) {
                     MotionEvent.ACTION_UP -> {
-                        val result = if (y < 0 && y >= mid) {
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("MAGNETIC EFFECT SCROLL UP : $y")
+                        val result = when (y) {
+                            in mid..-1 -> {
+                                if (mLog.isDebugEnabled) {
+                                    mLog.debug("MAGNETIC EFFECT SCROLL UP : $y")
+                                }
+
+                                searchBar.setExpanded(true, true)
+
+                                true
                             }
+                            in (max + 1) until mid -> {
+                                if (mLog.isDebugEnabled) {
+                                    mLog.debug("MAGNETIC EFFECT SCROLL DOWN : $y")
+                                }
 
-                            searchBar.setExpanded(true, true)
+                                searchBar.setExpanded(false, true)
 
-                            true
-                        } else if (y < mid && y > max) {
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("MAGNETIC EFFECT SCROLL DOWN : $y")
+                                true
                             }
-
-                            searchBar.setExpanded(false, true)
-
-                            true
-                        } else {
-                            false
+                            else -> false
                         }
 
                         if (mLog.isTraceEnabled) {
@@ -175,8 +179,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
             // -_ - 이러한 구조를 가져가는게
             // 딱히 득이 될건 없어 보이는데 흠; 전국적으로 헤더 만큼에 패킷 낭비가...
             appbarOffsetChangedLive.set { appbar, offset ->
-                val maxScroll    = appbar.getTotalScrollRange()
-                val percentage = Math.abs(offset).toFloat() / maxScroll.toFloat()
+                val maxScroll    = appbar.totalScrollRange
+                val percentage = abs(offset).toFloat() / maxScroll.toFloat()
 
                 if (mLog.isTraceEnabled) {
                     mLog.trace("APP BAR (ALPHA) : $percentage")
@@ -197,6 +201,7 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun customRealtimeIssueTab() {
         mBinding.realtimeIssueTab.apply {
             addOnTabSelectedListener(mRealtimeTabSelectedListener)
@@ -211,9 +216,9 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
                     tab.customView = custom
                 }
 
-                mBinding.realtimeIssueTab.tabs[0]?.customView?.let {
-                    if (it is TextView) {
-                        it.setTypeface(it.typeface, Typeface.BOLD)
+                mBinding.realtimeIssueTab.tabs[0]?.customView?.let { v ->
+                    if (v is TextView) {
+                        v.setTypeface(v.typeface, Typeface.BOLD)
                     }
                 }
             }

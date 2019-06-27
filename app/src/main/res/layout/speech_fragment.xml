@@ -37,6 +37,7 @@
                 android:src="@drawable/ic_mic_white_60dp"
                 android:padding="@dimen/speech_icon_pad"
                 android:background="@drawable/shape_media_search_circle_1"
+                tools:ignore="ContentDescription"
         />
 
         <ImageView
@@ -48,6 +49,7 @@
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="@{() -> model.finish()}"
+                tools:ignore="ContentDescription"
         />
 
         <TextView

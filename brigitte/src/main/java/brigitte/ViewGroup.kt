@@ -32,11 +32,11 @@ inline fun View.globalLayoutListener(crossinline f: () -> Boolean) = with (viewT
     addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
         override fun onGlobalLayout() {
             if (f()) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    viewTreeObserver.removeOnGlobalLayoutListener(this)
-                } else {
+//                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+//                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                } else {
                     viewTreeObserver.removeGlobalOnLayoutListener(this)
-                }
+//                }
             }
         }
     })
@@ -115,7 +115,7 @@ data class CaptureParams(
     val waterMark: Bitmap? = null
 )
 
-inline fun View.capture(params: CaptureParams) = with(params) {
+inline fun View.capture(params: CaptureParams): Single<Pair<Boolean, File?>> = with(params) {
     val PATH_SCREENSHOTS = "Screenshots"
     var buffer: Bitmap? = null
     var canvas: Canvas? = null
@@ -125,7 +125,7 @@ inline fun View.capture(params: CaptureParams) = with(params) {
         .map {
             try {
                 clearFocus()
-                setPressed(false)
+                isPressed = false
                 invalidate()
 
                 buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -146,8 +146,8 @@ inline fun View.capture(params: CaptureParams) = with(params) {
             }
 
             if (waterMark != null) {
-                val offsetx = width - waterMark.getWidth()
-                val offsety = height - waterMark.getHeight()
+                val offsetx = width - waterMark.width
+                val offsety = height - waterMark.height
 
                 canvas?.drawBitmap(waterMark, offsetx.toFloat(), offsety.toFloat(), Paint())
             }
