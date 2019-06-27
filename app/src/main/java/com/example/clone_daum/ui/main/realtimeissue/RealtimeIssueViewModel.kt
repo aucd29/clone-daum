@@ -172,7 +172,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             when (type) {
                 "+" -> "<font color='red'>↑</font> $value"
                 "-" -> "<font color='blue'>↓</font> $value"
-                else -> "<font color='red'>NEW</font> $value"
+                else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
     }
