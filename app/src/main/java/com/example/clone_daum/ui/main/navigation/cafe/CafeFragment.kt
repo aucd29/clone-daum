@@ -1,15 +1,13 @@
 package com.example.clone_daum.ui.main.navigation.cafe
 
-import android.os.Bundle
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.CafeFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import brigitte.BaseDaggerFragment
 import brigitte.dataBinding
-import brigitte.di.module.injectOf
+import brigitte.di.dagger.module.injectOf
 import brigitte.lpmm
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 /**

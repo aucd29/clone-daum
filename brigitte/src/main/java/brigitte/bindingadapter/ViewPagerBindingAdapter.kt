@@ -28,7 +28,7 @@ object ViewPagerBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter(*arrayOf("bindPagerAdapter", "bindViewPagerLoaded"), requireAll = false)
+    @BindingAdapter("bindPagerAdapter", "bindViewPagerLoaded", requireAll = false)
     fun bindAdapter(viewpager: ViewPager, adapter: PagerAdapter?, viewPagerLoadedCallback: (() -> Unit)? = null) {
         adapter?.let {
             if (mLog.isDebugEnabled) {

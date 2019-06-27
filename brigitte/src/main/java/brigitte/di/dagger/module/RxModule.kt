@@ -1,4 +1,4 @@
-package brigitte.di.module
+package brigitte.di.dagger.module
 
 import dagger.Module
 import dagger.Provides

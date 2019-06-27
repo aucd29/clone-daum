@@ -1,4 +1,4 @@
-package com.example.clone_daum.di.module.common
+package brigitte.di.dagger.module
 
 import android.content.Context
 import android.content.res.AssetManager
@@ -15,5 +15,5 @@ import javax.inject.Singleton
 class AssetModule {
     @Singleton
     @Provides
-    fun provideAssetManager(context: Context) = context.assets
+    fun provideAssetManager(context: Context) = context.assets!!
 }

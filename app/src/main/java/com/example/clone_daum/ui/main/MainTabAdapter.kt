@@ -25,7 +25,7 @@ class MainTabAdapter constructor(fm: FragmentManager
     }
 
     override fun getItem(position: Int): Fragment {
-        val frgmt = MainWebviewFragment().apply {
+        return MainWebviewFragment().apply {
             arguments = Bundle().apply {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("TAB URL ($position)")
@@ -33,8 +33,6 @@ class MainTabAdapter constructor(fm: FragmentManager
                 putInt(K_POSITION, position)
             }
         }
-
-        return frgmt
     }
 
     override fun getPageTitle(position: Int) = title(position)

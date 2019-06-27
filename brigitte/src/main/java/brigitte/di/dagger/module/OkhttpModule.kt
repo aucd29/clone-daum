@@ -1,4 +1,4 @@
-package brigitte.di.module
+package brigitte.di.dagger.module
 
 import brigitte.Json
 import dagger.Module
@@ -34,35 +34,34 @@ class OkhttpModule {
 
     @Provides
     @Singleton
-    fun provideLoggingInterceptor(logger: Logger) =
+    fun provideLoggingInterceptor(logger: Logger): HttpLoggingInterceptor =
         HttpLoggingInterceptor(HttpLoggingInterceptor.Logger {
             if (logger.isDebugEnabled) {
                 logger.debug(it)
             }
         })
 
-
     @Provides
     @Singleton
-    fun provideRxJava2CallAdapterFactory() =
+    fun provideRxJava2CallAdapterFactory(): RxJava2CallAdapterFactory =
         RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
 
     @Provides
     @Singleton
-    fun provideJacksonConverterFactory() =
+    fun provideJacksonConverterFactory(): JacksonConverterFactory =
         JacksonConverterFactory.create(Json.mapper)
 
     // https://stackoverflow.com/questions/36523972/how-to-get-string-response-from-retrofit2
     @Provides
     @Singleton
-    fun provideScalarsConverterFactory() =
+    fun provideScalarsConverterFactory(): ScalarsConverterFactory =
         ScalarsConverterFactory.create()
 
     @Provides
     fun provideRetrofit(rxAdapter: RxJava2CallAdapterFactory,
                         jacksonFactory: JacksonConverterFactory,
                         scalarsConverterFactory: ScalarsConverterFactory,
-                        okhttpclient: OkHttpClient) =
+                        okhttpclient: OkHttpClient): Retrofit.Builder =
         Retrofit.Builder()
             .addCallAdapterFactory(rxAdapter)
             .addConverterFactory(scalarsConverterFactory)

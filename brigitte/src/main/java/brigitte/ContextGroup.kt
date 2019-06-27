@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import java.io.File
 import java.util.concurrent.Executors
 
 /**
@@ -112,9 +113,9 @@ inline fun Context.forceHideKeyboard(window: Window?) {
 /**
  * 문자열 데이터를 얻는다.
  */
-inline fun Context.string(@StringRes resid: Int) = getString(resid)
-inline fun Context.stringArray(@ArrayRes resid: Int) = resources.getStringArray(resid)
-inline fun Context.intArray(@ArrayRes resid: Int) = resources.getIntArray(resid)
+inline fun Context.string(@StringRes resid: Int): String = getString(resid)
+inline fun Context.stringArray(@ArrayRes resid: Int): Array<String> = resources.getStringArray(resid)
+inline fun Context.intArray(@ArrayRes resid: Int): IntArray = resources.getIntArray(resid)
 
 /**
  * 문자열 데이터를 얻는다.
@@ -133,7 +134,9 @@ inline fun Context.stringId(resid: String) =
 ////////////////////////////////////////////////////////////////////////////////////
 
 /** sdcard 경로 반환 */
-inline fun Context.sdPath() = Environment.getExternalStorageDirectory().absolutePath
+inline fun Context.sdPath(): String = Environment.getExternalStorageDirectory().absolutePath
+
+inline fun Context.dcim(): File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
 
 /**
  * clipboard 데이터를 읽어온다.

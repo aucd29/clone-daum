@@ -44,7 +44,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:padding="@dimen/barcode_back_icon_pad"
                 android:onClick="@{() -> model.finish()}"
-        />
+                tools:ignore="ContentDescription"
+                />
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/barcode_bottom_area"
@@ -64,7 +65,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="@dimen/barcode_back_icon_pad"
                     android:onClick="@{() -> model.command(model.CMD_FILE_OPEN)}"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <TextView
                     android:id="@+id/barcode_insert_code"
@@ -94,7 +95,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-        />
+                tools:ignore="ContentDescription"/>
 
         <TextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -116,7 +117,7 @@
                 android:layout_marginTop="@dimen/barcode_finder_pad"
                 android:layout_marginStart="@dimen/barcode_finder_pad"
                 android:rotation="135"
-        />
+                tools:ignore="ContentDescription"/>
 
         <!-- r t -->
         <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -126,7 +127,7 @@
                    android:layout_marginTop="@dimen/barcode_finder_pad"
                    android:layout_marginEnd="@dimen/barcode_finder_pad"
                    android:rotation="-135"
-        />
+                   tools:ignore="ContentDescription"/>
 
         <!-- l b -->
         <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -136,7 +137,7 @@
                    android:layout_marginStart="@dimen/barcode_finder_pad"
                    android:layout_marginBottom="@dimen/barcode_finder_pad"
                    android:rotation="45"
-        />
+                   tools:ignore="ContentDescription"/>
 
         <!-- r b -->
         <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -146,7 +147,7 @@
                    android:layout_marginEnd="@dimen/barcode_finder_pad"
                    android:layout_marginBottom="@dimen/barcode_finder_pad"
                    android:rotation="-45"
-        />
+                   tools:ignore="ContentDescription"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

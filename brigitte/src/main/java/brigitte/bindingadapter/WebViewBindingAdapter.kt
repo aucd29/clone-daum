@@ -19,7 +19,7 @@ object WebViewBindingAdapter {
 
         event?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("bindWebViewEvent : ${it}")
+                mLog.debug("bindWebViewEvent : $it")
             }
 
             when (it) {

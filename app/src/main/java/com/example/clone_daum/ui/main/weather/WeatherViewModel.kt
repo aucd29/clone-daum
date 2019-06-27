@@ -11,9 +11,7 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Weather
 import com.example.clone_daum.model.remote.WeatherDetail
-import brigitte.ICommandEventAware
 import brigitte.RecyclerViewModel
-import brigitte.arch.SingleLiveEvent
 import com.patloew.rxlocation.RxLocation
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -27,10 +25,10 @@ import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
 class WeatherViewModel @Inject constructor(application: Application
-    , val config: Config
-    , val preConfig: PreloadConfig
-    , val disposable: CompositeDisposable
-    , val rxLocation: RxLocation
+                                           , val config: Config
+                                           , val preConfig: PreloadConfig
+                                           , val disposable: CompositeDisposable
+                                           , private val rxLocation: RxLocation
 ) : RecyclerViewModel<WeatherDetail>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(WeatherViewModel::class.java)
@@ -40,8 +38,8 @@ class WeatherViewModel @Inject constructor(application: Application
         const val CMD_CHECK_PERMISSION_AND_LOAD_GPS = "check-permission-and-load-gps"
     }
 
-    val currentLocation  = ObservableField<String>(config.DEFAULT_LOCATION)
-    val thoroughfare     = ObservableField<String>(config.DEFAULT_LOCATION)
+    val currentLocation  = ObservableField(config.DEFAULT_LOCATION)
+    val thoroughfare     = ObservableField(config.DEFAULT_LOCATION)
     val weather          = ObservableField<Weather>()
     val gridCount        = ObservableInt(3)
 

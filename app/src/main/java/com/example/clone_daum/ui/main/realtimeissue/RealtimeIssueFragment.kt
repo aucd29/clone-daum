@@ -49,7 +49,7 @@ class RealtimeIssueTabAdapter constructor(fm: FragmentManager
 
     // 이슈 검색어 단어는 삭제하고 타이틀을 생성한다.
     override fun getPageTitle(position: Int) =
-        mRealtimeIssue.get(position).first
+        mRealtimeIssue[position].first
 
     override fun getCount() = mRealtimeIssue.size
 }
@@ -65,7 +65,7 @@ class RealtimeIssueTabAdapter constructor(fm: FragmentManager
 //
 //    init {
 //        // RealtimeIssueViewModel 를 MainFragment 와 공유
-//        mViewModelScope = SCOPE_ACTIVITY
+//        mViewModelScope = BaseFragment.SCOPE_ACTIVITY
 //    }
 //
 //    @Inject lateinit var preConfig: PreloadConfig

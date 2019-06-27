@@ -1,9 +1,10 @@
 package com.example.clone_daum.di.module
 
-import brigitte.di.module.OkhttpModule
+import brigitte.di.dagger.module.OkhttpModule
 import dagger.Module
 import dagger.Provides
 import okhttp3.logging.HttpLoggingInterceptor
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 
@@ -19,7 +20,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLogger() =
+    fun provideLogger(): Logger =
         LoggerFactory.getLogger(LOG_CLASS)
 
     @Provides

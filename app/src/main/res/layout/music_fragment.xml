@@ -53,6 +53,7 @@
                 android:src="@drawable/ic_music_note_white_60dp"
                 android:padding="20dp"
                 android:background="@drawable/shape_media_search_circle_1"
+                tools:ignore="ContentDescription"
         />
 
         <ImageView
@@ -64,6 +65,7 @@
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:onClick="@{() -> model.finish()}"
+                tools:ignore="ContentDescription"
         />
 
         <TextView
@@ -77,7 +79,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.5"
                 android:text="OPEN API 찾는 중"
-        />
+                tools:ignore="HardcodedText"/>
         <!--android:text="@{model.messageResId}"-->
 
 

@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package brigitte.di.module
+package brigitte.di.dagger.module
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

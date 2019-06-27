@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
@@ -12,7 +13,8 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import com.google.android.material.snackbar.Snackbar
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -113,6 +115,9 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         loadUrl(mUrl!!)
         webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
+        webview.setFindListener { active, count, _ ->
+            mViewModel.innerSearchCount.set("${active + 1}/$count")
+        }
     }
 
     override fun initViewModelEvents() = mViewModel.run {
@@ -127,6 +132,10 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+
+        innerSearch.observe {
+            findAllAsync(it.get())
+        }
     }
 
     private fun addHistory() {
@@ -178,26 +187,27 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
 
         mBinding.apply {
-//            if (brsInnerSearch.isInflated) {
-//                if (brsInnerSearch.binding?.root?.visibility == View.VISIBLE) {
-//                    return true
-//                }
-//            }
-//
-//            if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
-//                brsInnerSearch.viewStub?.visibility = View.GONE
-//
-//                return true
-//            }
+            if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
+                brsInnerSearch.viewStub?.visibility = View.GONE
 
-            if (mViewModel.visibleInnerSearch.isVisible()) {
-                mViewModel.visibleInnerSearch.gone()
+                return@apply
+            }
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("${mViewModel.visibleInnerSearch.get()}")
+            with (mViewModel) {
+                if (visibleInnerSearch.isVisible()) {
+                    visibleInnerSearch.gone()
+
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("${visibleInnerSearch.get()}")
+                    }
+
+                    return@apply
                 }
 
-                return true
+                if (visibleBrsFontSize.isVisible()) {
+                    visibleBrsFontSize.visibleToggle()
+                    return@apply
+                }
             }
 
             if (webview.canGoBack()) {
@@ -235,25 +245,33 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         BrowserViewModel.apply {
             when (cmd) {
                 CMD_HOME,
-                CMD_BACK             -> onBackPressed()
-                CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-                CMD_SUBMENU_FRAGMENT -> subMenu()
-                CMD_SHARE_EVENT      -> shareLink(data.toString())
-                CMD_GOTO_TOP         -> webview.scrollTo(0, 0)
-                CMD_NORMALSCREEN     -> fullscreen(false)
-                CMD_RELOAD           -> webview.reload()
-                CMD_SEARCH_PREV      -> searchPrev()
-                CMD_SEARCH_NEXT      -> searchNext()
+                CMD_BACK              -> onBackPressed()
+                CMD_SEARCH_FRAGMENT   -> viewController.searchFragment()
+                CMD_SUBMENU_FRAGMENT  -> subMenu()
+                CMD_SHARE_EVENT       -> shareLink(data.toString())
+                CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
+                CMD_NORMALSCREEN      -> fullscreen(false)
+                CMD_RELOAD            -> webview.reload()
+                CMD_INNER_SEARCH_PREV -> searchPrev()
+                CMD_INNER_SEARCH_NEXT -> searchNext()
             }
         }
     }
 
     private fun searchPrev() {
+        try {
+            webview.findNext(false)
+        } catch (e: Exception) {
 
+        }
     }
 
     private fun searchNext() {
+        try {
+            webview.findNext(true)
+        } catch (e: Exception) {
 
+        }
     }
 
     private fun subMenu() {
@@ -311,7 +329,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun showSystemBrowser() {
-        confirm(R.string.brs_using_base_brs, R.string.common_notify, listener = { res, dlg ->
+        confirm(R.string.brs_using_base_brs, R.string.common_notify, listener = { res, _ ->
             if (res) {
                 startActivity(Intent(Intent.ACTION_VIEW).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -326,12 +344,58 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         mViewModel.visibleInnerSearch.visible()
     }
 
-    private fun capture() {
+    private fun findAllAsync(keyword: String?) {
+        try {
+            webview.findAllAsync(keyword)
+        } catch (e: Exception) {
+            webview.findAll(keyword)
 
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun capture() {
+        runtimePermissions(PermissionParams(requireActivity(),
+            arrayListOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            { _, r ->
+               if (r) {
+                   mDisposable.add(webview.capture(CaptureParams(
+                       "CLONE-DAUM_Screenshot-${System.currentTimeMillis()}.png"))
+                       .subscribe { res ->
+                           if (res.first) {
+                               toast("캡쳐 성공 : ${res.second?.absolutePath}")
+                           } else {
+                               toast("캡쳐 실패")
+                           }
+                       })
+               }
+            }))
     }
 
     private fun resizeText() {
-
+        // FIXME 아직 코드 완성이 안되서 일단 주석 처리
+//
+//        mViewModel.apply {
+//            visibleBrsFontSize.visible()
+//            brsFontSizeProgress.observe {
+//                val size = it.get()
+//                val textsize = if (size < 50) {
+//                    WebSettings.TextSize.SMALLEST
+//                } else if (size < 100) {
+//                    WebSettings.TextSize.SMALLER
+//                } else if (size < 150) {
+//                    WebSettings.TextSize.NORMAL
+//                } else if (size < 200) {
+//                    WebSettings.TextSize.LARGER
+//                } else {
+//                    WebSettings.TextSize.LARGEST
+//                }
+//
+//                webview.settings.textSize = textsize
+//            }
+//        }
     }
 
     private fun addIconFromLauncher() {

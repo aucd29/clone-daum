@@ -3,6 +3,7 @@ package brigitte
 
 import org.slf4j.LoggerFactory
 import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -68,7 +69,7 @@ object Reflect {
     inline fun <reified T> create(classes: List<Class<out T>>?, params: Params? = null): List<T> {
         val list: ArrayList<T> = arrayListOf()
 
-        classes?.forEach {
+        classes?.forEach { _ ->
             list.add(create(params))
         }
 
@@ -78,7 +79,7 @@ object Reflect {
     inline fun <reified K, reified T> create(classes: Map<K, Class<out T>>?, params: Params? = null): Map<K, T> {
         val map: HashMap<K, T> = hashMapOf()
 
-        classes?.forEach { (k, v) -> map.put(k, create(params)) }
+        classes?.forEach { (k, _) -> map[k] = create(params) }
 
         return map
     }
@@ -104,7 +105,7 @@ object Reflect {
         }
     }
 
-    inline fun classType(obj: Any, index: Int) =
+    inline fun classType(obj: Any, index: Int): Type =
         (obj.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[index]
 
     data class Params(val argTypes: List<Class<out Any>>? = null, val argv : List<Any>? = null) {

@@ -54,7 +54,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
                 val newHeight = height + 20.dpToPx(requireContext())
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("MEDIA SEARCH HEIGHT : ${height} -> ${newHeight}")
+                    mLog.debug("MEDIA SEARCH HEIGHT : $height -> $newHeight")
                 }
 
                 layoutHeight(newHeight)

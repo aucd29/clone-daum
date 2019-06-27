@@ -3,6 +3,7 @@ package brigitte
 
 import android.os.Looper
 import android.view.View
+import android.widget.SeekBar
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -35,10 +36,4 @@ inline fun validateMainThread() {
         throw IllegalStateException("Must be called from the main thread.")
     }
 }
-
-inline fun ObservableInt.gone() = set(View.GONE)
-inline fun ObservableInt.visible() = set(View.VISIBLE)
-inline fun ObservableInt.isVisible() = get() == View.VISIBLE
-inline fun ObservableInt.visibleToggle() = set(if (get() == View.VISIBLE) View.GONE else View.VISIBLE)
-inline fun ObservableField<String>.reset() = set("")
 

@@ -1,11 +1,11 @@
 package com.example.clone_daum.di.module
 
-import com.example.clone_daum.di.module.common.AssetModule
+import brigitte.di.dagger.module.AssetModule
+import brigitte.di.dagger.module.RxModule
+import brigitte.di.dagger.module.ViewModelFactoryModule
 import com.example.clone_daum.model.remote.DaumService
-import brigitte.di.module.RxModule
 import com.example.clone_daum.model.remote.DaumSuggestService
 import com.example.clone_daum.model.remote.GithubService
-import brigitte.di.module.ViewModelFactoryModule
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -26,9 +26,9 @@ import javax.inject.Singleton
 ])
 class DaumModule {
     companion object {
-        val GITHUB_BASE_URL       = "https://raw.githubusercontent.com/"
-        val DAUM_BASE_URL         = "https://m.daum.net/"
-        val DAUM_SUGGEST_BASE_URL = "https://msuggest.search.daum.net/"
+        const val GITHUB_BASE_URL       = "https://raw.githubusercontent.com/"
+        const val DAUM_BASE_URL         = "https://m.daum.net/"
+        const val DAUM_SUGGEST_BASE_URL = "https://msuggest.search.daum.net/"
     }
 
     // 다수개의 retrofit 을 이용해야 하므로 Retrofit.Builder 를 전달 받은 후
@@ -36,19 +36,19 @@ class DaumModule {
 
     @Singleton
     @Provides
-    fun provideGithubService(retrofitBuilder: Retrofit.Builder) =
+    fun provideGithubService(retrofitBuilder: Retrofit.Builder): GithubService =
         retrofitBuilder.baseUrl(GITHUB_BASE_URL).build()
             .create(GithubService::class.java)
 
     @Singleton
     @Provides
-    fun provideDaumService(retrofitBuilder: Retrofit.Builder) =
+    fun provideDaumService(retrofitBuilder: Retrofit.Builder): DaumService =
         retrofitBuilder.baseUrl(DAUM_BASE_URL).build()
             .create(DaumService::class.java)
 
     @Singleton
     @Provides
-    fun provideDaumSuggestService(retrofitBuilder: Retrofit.Builder) =
+    fun provideDaumSuggestService(retrofitBuilder: Retrofit.Builder): DaumSuggestService =
         retrofitBuilder.baseUrl(DAUM_SUGGEST_BASE_URL).build()
             .create(DaumSuggestService::class.java)
 }

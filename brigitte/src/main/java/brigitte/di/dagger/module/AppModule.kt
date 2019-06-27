@@ -1,11 +1,9 @@
-package com.example.clone_daum.di.module.common
+package brigitte.di.dagger.module
 
 import android.app.Application
 import android.content.Context
-import android.preference.PreferenceManager
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import javax.inject.Singleton
 
 /**

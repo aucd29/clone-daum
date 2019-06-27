@@ -70,11 +70,11 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
                 dateCal.clear()
 
-                it.forEach { dateCal.process(it) }
+                it.forEach { f -> dateCal.process(f) }
                 val newList = arrayListOf<UrlHistory>()
                 (DateCalculator.K_TODAY..DateCalculator.K_OTHER).forEach {
-                    dateCal.mapData.get(it)?.let { list ->
-                        val dateFormat    = dateCal.dateFormatString(it)?.let { it } ?: ""
+                    dateCal.mapData[it]?.let { list ->
+                        val dateFormat    = dateCal.dateFormatString(it)?.let { dts -> dts } ?: ""
                         val title = String.format(historyLabels[it], dateFormat)
 
                         if (mLog.isDebugEnabled) {
@@ -89,7 +89,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
                 }
 
                 // 0번째 아이템은 화면에 보이도록
-                newList.get(0).toggle(newList)
+                newList[0].toggle(newList)
 
                 newList
             }

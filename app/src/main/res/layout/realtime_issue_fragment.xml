@@ -84,6 +84,7 @@
                         android:background="?selectableItemBackgroundBorderless"
                         android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
                         app:bindRotation="@{model.tabMenuRotation}"
+                        tools:ignore="ContentDescription"
                 />
 
                 <com.example.clone_daum.common.widget.BkViewPager
@@ -142,6 +143,7 @@
                 app:layout_constraintTop_toTopOf="@+id/realtime_issue_search"
                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_search"
                 android:layout_marginStart="@dimen/main_search_logo_pad_se"
+                tools:ignore="ContentDescription"
         />
 
         <ImageView
@@ -154,6 +156,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_search"
                 android:padding="@dimen/main_search_extend_pad"
                 android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
+                tools:ignore="ContentDescription"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

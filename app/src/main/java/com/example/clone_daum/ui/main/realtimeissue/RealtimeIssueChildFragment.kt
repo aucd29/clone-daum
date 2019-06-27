@@ -4,7 +4,7 @@ import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
-import brigitte.di.module.injectOfActivity
+import brigitte.di.dagger.module.injectOfActivity
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -42,8 +42,8 @@ class RealtimeIssueChildFragment
             }
 
             // main 에서 load 한 데이터를 읽어다가 출력
-            mRealtimeIssueViewModel.issueList(it)?.let {
-                mViewModel.initRealtimeIssueAdapter(it)
+            mRealtimeIssueViewModel.issueList(it)?.let { list ->
+                mViewModel.initRealtimeIssueAdapter(list)
             }
         }
     }

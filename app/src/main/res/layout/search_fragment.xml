@@ -41,7 +41,7 @@
                 android:imeOptions="actionSearch"
                 app:bindEditorAction="@{model.editorAction}"
                 android:onTextChanged="@{model::onTextChanged}"
-        />
+                android:inputType="text"/>
 
         <ImageView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -51,6 +51,7 @@
                 android:src="@{model.searchIconResId}"
                 android:padding="@dimen/main_search_extend_pad"
                 android:onClick="@{() -> model.eventSearch(model.searchKeyword)}"
+                tools:ignore="ContentDescription"
         />
 
         <!-- search history & hit keywords -->
@@ -183,7 +184,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="@dimen/search_bottom_close_mgn_s"
                         android:visibility="@{model.visibleSearchRecycler}"
-                />
+                        tools:ignore="HardcodedText"/>
 
                 <TextView
                         android:layout_width="wrap_content"

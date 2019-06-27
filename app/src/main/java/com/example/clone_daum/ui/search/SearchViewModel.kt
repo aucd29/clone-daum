@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.search
 
 import android.app.Application
 import android.view.View
-import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.recyclerview.widget.RecyclerView
@@ -43,7 +42,6 @@ class SearchViewModel @Inject constructor(app: Application
 
     private lateinit var mDisposable: CompositeDisposable
 
-    override val commandEvent    = SingleLiveEvent<Pair<String, Any>>()
     override val dialogEvent     = SingleLiveEvent<DialogParam>()
 
     val searchKeyword            = ObservableField<String>()
@@ -77,7 +75,7 @@ class SearchViewModel @Inject constructor(app: Application
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 items.set(it)
-                visibleSearchRecycler(it.size > 0)
+                visibleSearchRecycler(it.isNotEmpty())
             }, ::errorLog))
     }
 
@@ -94,9 +92,9 @@ class SearchViewModel @Inject constructor(app: Application
                     }
 
                     searchKeyword.set("")
-                }, {
-                    errorLog(it)
-                    snackbar(it)
+                }, { e ->
+                    errorLog(e)
+                    snackbar(e)
                 }))
 
             command(CMD_BRS_SEARCH, it)
@@ -118,7 +116,7 @@ class SearchViewModel @Inject constructor(app: Application
 
         prefs().edit { putBoolean(K_RECENT_SEARCH, prefSearchRecycler) }
 
-        visibleSearchRecycler(items.get()!!.size > 0)
+        visibleSearchRecycler(items.get()!!.isNotEmpty())
     }
 
     private fun visibleSearchRecycler(res: Boolean) {

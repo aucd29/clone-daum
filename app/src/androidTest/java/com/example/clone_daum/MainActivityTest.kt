@@ -254,23 +254,23 @@ class MainActivityTest {
         )
         appCompatImageView2.perform(click())
 
-        val constraintLayout3 = onView(
-            allOf(
-                withId(R.id.weather_layout),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.search_area),
-                        childAtPosition(
-                            withId(R.id.toolbar_layout),
-                            0
-                        )
-                    ),
-                    7
-                ),
-                isDisplayed()
-            )
-        )
-        constraintLayout3.perform(click())
+//        val constraintLayout3 = onView(
+//            allOf(
+//                withId(R.id.weather_layout),
+//                childAtPosition(
+//                    allOf(
+//                        withId(R.id.search_area),
+//                        childAtPosition(
+//                            withId(R.id.toolbar_layout),
+//                            0
+//                        )
+//                    ),
+//                    7
+//                ),
+//                isDisplayed()
+//            )
+//        )
+//        constraintLayout3.perform(click())
 
         val constraintLayout4 = onView(
             allOf(

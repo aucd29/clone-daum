@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
-import brigitte.di.module.injectOfActivity
+import brigitte.di.dagger.module.injectOfActivity
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import dagger.android.ContributesAndroidInjector
@@ -135,7 +135,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
         mMainViewModel.apply {
             // appbar 이동 시 webview 도 동일하게 이동 시킴
             observe(appbarOffsetLive) {
-                if (mLog.isTraceEnabled()) {
+                if (mLog.isTraceEnabled) {
                     mLog.trace("WEBVIEW TRANSLATION Y : $it")
                 }
 
@@ -168,7 +168,7 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                         val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
 
                         if (pos == it.toInt()) {
-                            preConfig.tabLabelList.get(pos).url.let {
+                            preConfig.tabLabelList[pos].url.let {
                                 if (mLog.isDebugEnabled) {
                                     mLog.debug("TAB CHANGED ($pos) : $it")
                                 }

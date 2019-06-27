@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Point
 import android.os.Build
-import android.util.DisplayMetrics
-import android.view.WindowManager
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.R
 import com.example.clone_daum.model.DbRepository
@@ -28,6 +26,7 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import android.view.*
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 15. <p/>
@@ -38,9 +37,6 @@ class Config @Inject constructor(val context: Context) {
     val USER_AGENT: String
     val ACTION_BAR_HEIGHT: Float
     val SCREEN = Point()
-    val STATUS_BAR_HEIGHT: Int
-    val SOFT_BUTTON_BAR_HEIGHT: Int
-
     var HAS_PERMISSION_GPS = false
     var DEFAULT_LOCATION   = "서울"
     val SEARCH_ICON: Int
@@ -71,31 +67,6 @@ class Config @Inject constructor(val context: Context) {
         //
         val windowManager = context.systemService<WindowManager>()
         windowManager?.defaultDisplay?.getSize(SCREEN)
-
-        //
-        // STATUS_BAR_HEIGHT
-        //
-        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        STATUS_BAR_HEIGHT = if (resourceId > 0) {
-            context.resources.getDimensionPixelSize(resourceId)
-        } else 0
-
-        //
-        // https://stackoverflow.com/questions/29398929/how-get-height-of-the-status-bar-and-soft-key-buttons-bar
-        //
-        SOFT_BUTTON_BAR_HEIGHT = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val metrics = DisplayMetrics()
-            windowManager?.defaultDisplay?.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-
-            windowManager?.defaultDisplay?.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-
-            if (realHeight > usableHeight)
-                 realHeight - usableHeight;
-            else
-                0
-        } else 0
 
         //
         // PERMISSION
@@ -139,8 +110,8 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
                 .observeOn(Schedulers.io())
                 .map { it.jsonParse<List<BrowserSubMenu>>() }
                 .map {
-                    it.forEach {
-                        it.iconResid = mContext.stringId(it.icon)
+                    it.forEach { f ->
+                        f.iconResid = mContext.stringId(f.icon)
                     }
 
                     it
@@ -159,18 +130,18 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
                 })
 
         mDisposable.add(mDb.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
-            if (it.size == 0) {
+            if (it.isEmpty()) {
                 // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
                 // 기본 값 생성하는 것.
                 mDisposable.add(Observable.just(mAssetManager.open("res/frequently_site.json").readBytes())
                         .observeOn(Schedulers.io())
-                        .map { it.jsonParse<List<FrequentlySite>>() }
-                        .subscribe {
+                        .map { s -> s.jsonParse<List<FrequentlySite>>() }
+                        .subscribe { list ->
                             if (mLog.isDebugEnabled) {
                                 mLog.debug("PARSE OK : frequently_site.json ")
                             }
 
-                            mDb.frequentlySiteDao.insertAll(it).subscribe {
+                            mDb.frequentlySiteDao.insertAll(list).subscribe {
                                 if (mLog.isDebugEnabled) {
                                     mLog.debug("INSERTED FrequentlySite")
                                 }
@@ -185,7 +156,7 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
             .blockingFirst()
     }
 
-    fun daumMain() = mDaum.main().observeOn(Schedulers.io())
+    fun daumMain(): Observable<String> = mDaum.main().observeOn(Schedulers.io())
 
     fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
         mDisposable.add(Observable.just(mAssetManager.open("res/weather_default.json").readBytes())

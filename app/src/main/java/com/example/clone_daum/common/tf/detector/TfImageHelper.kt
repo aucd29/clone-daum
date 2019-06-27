@@ -1,8 +1,11 @@
-package com.example.smartlenskotlin.tf.detector
+package com.example.clone_daum.common.tf.detector
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.media.Image
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 12. <p/>
@@ -45,6 +48,7 @@ object TfImageHelper {
     fun imageToBitmap(image: Image, bitmap: Bitmap) {
         val imageWidth = image.width
         val imageHeight = image.height
+
 
         val argb = IntArray(imageWidth * imageHeight)
         val planes = image.planes
@@ -111,7 +115,7 @@ object TfImageHelper {
 
         // Account for the already applied rotation, if any, and then determine how
         // much scaling is needed for each axis.
-        val transpose = (Math.abs(applyRotation) + 90) % 180 == 0
+        val transpose = (abs(applyRotation) + 90) % 180 == 0
 
         val inWidth = if (transpose) srcHeight else srcWidth
         val inHeight = if (transpose) srcWidth else srcHeight
@@ -124,7 +128,7 @@ object TfImageHelper {
             if (maintainAspectRatio) {
                 // Scale by minimum factor so that dst is filled completely while
                 // maintaining the aspect ratio. Some image may fall off the edge.
-                val scaleFactor = Math.max(scaleFactorX, scaleFactorY)
+                val scaleFactor = max(scaleFactorX, scaleFactorY)
                 matrix.postScale(scaleFactor, scaleFactor)
             } else {
                 // Scale exactly to fill dst from src.
@@ -169,7 +173,7 @@ object TfImageHelper {
 
     private fun convertByteToInt(arr: ByteArray?, pos: Int): Int {
         return arr?.let {
-            it.get(pos).toInt() and 0xFF
+            it[pos].toInt() and 0xFF
         } ?: 0
     }
 
@@ -188,9 +192,9 @@ object TfImageHelper {
         var nG = 1192 * nY - 833 * nV - 400 * nU
         var nB = 1192 * nY + 2066 * nU
 
-        nR = Math.min(kMaxChannelValue, Math.max(0, nR))
-        nG = Math.min(kMaxChannelValue, Math.max(0, nG))
-        nB = Math.min(kMaxChannelValue, Math.max(0, nB))
+        nR = min(kMaxChannelValue, max(0, nR))
+        nG = min(kMaxChannelValue, max(0, nG))
+        nB = min(kMaxChannelValue, max(0, nB))
 
         nR = nR shr 10 and 0xff
         nG = nG shr 10 and 0xff

@@ -5,9 +5,13 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Build
 import android.view.View
 import android.view.WindowManager
+import android.webkit.WebView
 import android.widget.Toast
+//import androidx.activity.OnBackPressedCallback
+//import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +25,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import brigitte.arch.SingleLiveEvent
 import org.slf4j.Logger
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 import java.util.concurrent.TimeUnit
 
 /**
@@ -91,7 +97,7 @@ inline fun FragmentActivity.observeDialog(event: SingleLiveEvent<DialogParam>, d
  */
 inline fun Activity.generateLayoutName(): String {
     val name = javaClass.simpleName
-    var layoutName = name.get(0).toLowerCase().toString()
+    var layoutName = name[0].toLowerCase().toString()
 
     name.substring(1, name.length).forEach {
         layoutName += if (it.isUpperCase()) {
@@ -143,6 +149,45 @@ inline fun Activity.fullscreen(fullscreen: Boolean) {
  */
 inline fun Activity.isFullscreen() =
     (window.attributes.flags and WindowManager.LayoutParams.FLAG_FULLSCREEN) == WindowManager.LayoutParams.FLAG_FULLSCREEN
+
+//inline fun AppCompatActivity.backPressedCallback(crossinline f: () -> Boolean) = with(onBackPressedDispatcher) {
+//    addCallback(this@backPressedCallback, object: OnBackPressedCallback(true) {
+//        override fun handleOnBackPressed() {
+//            isEnabled = f()
+//        }
+//    })
+//}
+
+inline fun Activity.exceptionCatcher(noinline callback: (String) -> Unit) {
+    // setting exception
+    val handler = Thread.getDefaultUncaughtExceptionHandler()
+    Thread.setDefaultUncaughtExceptionHandler { t, e ->
+        val os = ByteArrayOutputStream()
+        val s  = PrintStream(os)
+        e.printStackTrace(s)
+        s.flush()
+
+        callback.invoke("ERROR: $os")
+
+        if (handler != null) {
+            handler.uncaughtException(t, e)
+        } else {
+            callback.invoke("ERROR: EXCEPTION HANDLER == null")
+
+            android.os.Process.killProcess(android.os.Process.myPid())
+        }
+    }
+}
+
+fun Activity.chromeInspector(log: ((String) -> Unit)? = null) {
+    if (BuildConfig.DEBUG) {
+        // enabled chrome inspector
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            log?.invoke("ENABLED CHROME INSPECTOR")
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -222,16 +267,16 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
 /**
  * 앱 종료를 위해 다시 한번 backkey 를 선택하라는 문구를 동작 시키기 위한 클래스
  */
-open class BackPressedManager(var mActivity: AppCompatActivity, var view: View? = null) {
+open class BackPressedManager(private var mActivity: AppCompatActivity, var view: View? = null) {
     companion object {
-        val delay = 2000
+        const val DELAY = 2000
     }
 
     protected var mToast: Toast? = null
     protected var mSnackbar: Snackbar? = null
     protected var mPressedTime: Long = 0
 
-    fun time() = mPressedTime + delay
+    private fun time() = mPressedTime + DELAY
 
     fun onBackPressed(): Boolean {
         if (mActivity.supportFragmentManager.backStackEntryCount > 0) {

@@ -13,11 +13,7 @@ object AppBarBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindOffsetChangedListener")
     fun bindOffsetChangedListener(appbar: AppBarLayout, callback: (AppBarLayout, Int) -> Unit) {
-        appbar.addOnOffsetChangedListener(object: AppBarLayout.OnOffsetChangedListener{
-            override fun onOffsetChanged(p0: AppBarLayout, p1: Int) {
-                callback(p0, p1)
-            }
-        })
+        appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { p0, p1 -> callback(p0, p1) })
     }
 
     // https://stackoverflow.com/questions/34108501/how-to-disable-scrolling-of-appbarlayout-in-coordinatorlayout

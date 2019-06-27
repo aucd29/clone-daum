@@ -3,8 +3,8 @@ package com.example.clone_daum.common.tf
 import android.content.Context
 import android.graphics.Bitmap
 import com.example.clone_daum.common.camera.SourceData
+import com.example.clone_daum.common.tf.detector.TfRecognition
 import com.example.clone_daum.common.tf.mobile.TfMobileDetector
-import com.example.smartlenskotlin.tf.detector.TfRecognition
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 20. <p/>

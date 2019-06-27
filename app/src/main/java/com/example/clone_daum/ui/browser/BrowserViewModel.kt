@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import android.view.View
+import android.widget.SeekBar
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class BrowserViewModel @Inject constructor(app: Application
     , private var mUrlHistoryDao: UrlHistoryDao
     , private val mZzimDao: ZzimDao
-) : CommandEventViewModel(app), IWebViewEventAware {
+) : CommandEventViewModel(app), IWebViewEventAware, ISeekBarProgressChanged {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
@@ -35,8 +36,10 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_NORMALSCREEN     = "normalscreen"
         const val CMD_RELOAD           = "reload"
 
-        const val CMD_SEARCH_PREV      = "inner-search-prev"
-        const val CMD_SEARCH_NEXT      = "inner-search-next"
+        const val CMD_INNER_SEARCH_PREV = "inner-search-prev"
+        const val CMD_INNER_SEARCH_NEXT = "inner-search-next"
+
+        const val SPF_FONT_SIZE        = "spf-text-size"
     }
 
     override val webviewEvent = ObservableField<WebViewEvent>()
@@ -53,10 +56,16 @@ class BrowserViewModel @Inject constructor(app: Application
     val enableForward       = ObservableBoolean(false)
     val isFullscreen        = ObservableBoolean(false)
 
-    val brsUrlBarAni    = ObservableField<AnimParams>()
-    val brsAreaAni      = ObservableField<AnimParams>()
-    val brsGoTop        = ObservableField<AnimParams>()
-    val innerSearch     = ObservableField<String>()
+    val brsUrlBarAni     = ObservableField<AnimParams>()
+    val brsAreaAni       = ObservableField<AnimParams>()
+    val brsGoTop         = ObservableField<AnimParams>()
+    val innerSearch      = ObservableField<String>()
+    val innerSearchCount = ObservableField<String>()
+
+    // fontsize
+
+    val brsFontSizeProgress = ObservableInt(prefs().getInt(SPF_FONT_SIZE, 50))
+    val visibleBrsFontSize  = ObservableInt(View.GONE)
 
 
     fun init(disposable: CompositeDisposable) {
@@ -87,13 +96,13 @@ class BrowserViewModel @Inject constructor(app: Application
                             if (mLog.isDebugEnabled) {
                                 mLog.debug("ADDED URL HISTORY : $title ($url)")
                             }
-                        }, { errorLog(it, mLog) })
+                        }, { e -> errorLog(e, mLog) })
                 } else {
                     if (mLog.isDebugEnabled) {
                         mLog.debug("EXIST URL HISTORY : $title ($url)")
                     }
                 }
-            }, { errorLog(it, mLog) }))
+            }, { e -> errorLog(e, mLog) }))
     }
 
     fun applyBrsCount(count: Int) {
@@ -164,5 +173,20 @@ class BrowserViewModel @Inject constructor(app: Application
                 errorLog(it, mLog)
                 snackbar(it)
             }))
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ISeekBarProgressChanged
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CHANGED FONT SIZE : $value")
+        }
+
+        brsFontSizeProgress.set(value)
+        prefs().edit { putInt(SPF_FONT_SIZE, value) }
     }
 }

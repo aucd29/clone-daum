@@ -69,7 +69,7 @@ class FolderViewModel @Inject constructor(application: Application
                     for (item in it) {
                         if (item._id == mCurrentFolderId) {
                             selectedPosition = pos
-                            break;
+                            break
                         }
 
                         ++pos
@@ -123,7 +123,7 @@ class FolderViewModel @Inject constructor(application: Application
             }))
     }
 
-    fun currentFolder() = selectedPosition to items.get()!!.get(selectedPosition)
+    fun currentFolder() = selectedPosition to items.get()!![selectedPosition]
 
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)

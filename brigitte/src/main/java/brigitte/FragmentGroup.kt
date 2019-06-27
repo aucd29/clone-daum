@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Gravity
@@ -33,7 +34,7 @@ inline fun Fragment.dpToPx(v: Int) = dpToPx(v.toFloat()).toInt()
 inline fun Fragment.pxToDp(v: Int) = pxToDp(v.toFloat()).toInt()
 
 /** 문자열 리소스에 해당하는 문자열을 반환 */
-inline fun Fragment.string(@StringRes resid: Int) = requireContext().string(resid)
+inline fun Fragment.string(@StringRes resid: Int): String = requireContext().string(resid)
 inline fun Fragment.stringArray(@ArrayRes resid: Int) = requireContext().stringArray(resid)
 inline fun Fragment.intArray(@ArrayRes resid: Int) = requireContext().intArray(resid)
 
@@ -268,7 +269,7 @@ inline fun FragmentManager.showDialog(frgmt: DialogFragment, name: String) {
  * 모든 Fragment 를 pop 한다.
  */
 inline fun FragmentManager.popAll() {
-    (0..count - 1).map { popBackStack(it, FragmentManager.POP_BACK_STACK_INCLUSIVE) }
+    (0 until count).map { popBackStack(it, FragmentManager.POP_BACK_STACK_INCLUSIVE) }
 }
 
 /**
@@ -295,7 +296,7 @@ data class FragmentParams(
  */
 inline fun Fragment.generateLayoutName(): String {
     val name = javaClass.simpleName
-    var layoutName = name.get(0).toLowerCase().toString()
+    var layoutName = name[0].toLowerCase().toString()
 
     name.substring(1, name.length).forEach {
         layoutName += if (it.isUpperCase()) {
@@ -311,6 +312,7 @@ inline fun Fragment.generateLayoutName(): String {
 /**
  * generateLayoutName 로 얻은 layout xml 이 없을 경우 화면에 경고 문구를 출력하기 위해 view 를 생성해서 전달 한다.
  */
+@SuppressLint("SetTextI18n")
 inline fun Fragment.generateEmptyLayout(name: String): LinearLayout {
     val view = LinearLayout(activity)
     view.lpmm()
@@ -318,7 +320,7 @@ inline fun Fragment.generateEmptyLayout(name: String): LinearLayout {
 
     val text = TextView(activity)
     text.gravityCenter()
-    text.text = "FILE NOT FOUND (${name})"
+    text.text = "FILE NOT FOUND ($name)"
     view.addView(text)
 
     return view

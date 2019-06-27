@@ -38,7 +38,7 @@ class FavoriteProcessViewModel @Inject constructor(app: Application
 
     val name      = ObservableField<String>()
     val url       = ObservableField<String>()
-    val folder    = ObservableField<String>(string(R.string.folder_favorite))
+    val folder    = ObservableField(string(R.string.folder_favorite))
     val enabledOk = ObservableBoolean(true)
     var folderId  = 0
 

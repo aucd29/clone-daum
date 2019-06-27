@@ -31,7 +31,7 @@
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
                 app:bindUrlToChar="@{item.url}"
-        />
+                tools:ignore="SmallSp"/>
 
         <TextView
                 android:id="@+id/text"

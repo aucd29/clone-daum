@@ -14,7 +14,7 @@ import io.github.inflationx.viewpump.ViewPump
 @Module
 class CalligraphyModule {
     @Provides
-    fun provideViewPump() =
+    fun provideViewPump(): ViewPump =
         ViewPump.builder().addInterceptor(CalligraphyInterceptor(
                 CalligraphyConfig.Builder().setFontAttrId(R.attr.fontPath).build())).build()
 }

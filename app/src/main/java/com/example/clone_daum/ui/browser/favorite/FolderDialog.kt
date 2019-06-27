@@ -49,7 +49,7 @@ object FolderDialog {
                         // 이미 동일 명의 폴더가 존재하면 경고 문구를 표기하고 버튼을 비활성화 시켜야 한다.
                         ok.isEnabled = !it
                         has_folder_name.visibility = if (it) View.VISIBLE else View.INVISIBLE
-                    }, if (favorite == null) -1 else favorite._id)
+                    }, favorite?._id ?: -1)
                 }
             })
             folder_name.showKeyboard()

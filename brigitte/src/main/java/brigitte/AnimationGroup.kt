@@ -19,7 +19,7 @@ typealias AniListener = (Boolean, Animator?) -> Unit
 /**
  * view 의 높이 값을 변경 한다.
  *
- * @param 변경할 높이
+ * @param height 변경할 높이
  * @param aniListener animation 진행 상황을 알리는 listener
  * @param duration animation 진행 시간 (기본 값 : 600)
  */

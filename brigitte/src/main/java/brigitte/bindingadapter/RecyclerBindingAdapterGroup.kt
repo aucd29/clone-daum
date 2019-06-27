@@ -21,7 +21,7 @@ object RecyclerBindingAdapter {
     private val mLog = LoggerFactory.getLogger(RecyclerBindingAdapter::class.java)
 
     @JvmStatic
-    @BindingAdapter(*["bindAdapter", "bindItems"])
+    @BindingAdapter("bindAdapter", "bindItems")
     fun <T: IRecyclerDiff> bindAdapter(recycler: RecyclerView, adapter: RecyclerAdapter<T>?,
                                        items: List<T>?) {
         if (adapter == null || items == null) {
@@ -30,7 +30,7 @@ object RecyclerBindingAdapter {
 
         var myadapter: RecyclerAdapter<T>? = null
 
-        adapter?.let {
+        adapter.let {
             if (recycler.adapter == null) {
                 myadapter = it
                 recycler.adapter = myadapter
@@ -40,16 +40,18 @@ object RecyclerBindingAdapter {
         }
 
         if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ADAPTER (${myadapter}, ${items?.hashCode()}), ITEM COUNT (${items?.count()})")
+            mLog.debug("BIND ADAPTER ($myadapter, ${items.run { hashCode() }}), ITEM COUNT (${items.count()})")
         }
 
-        items?.let {
-            myadapter?.setItems(recycler, it as ArrayList<T>)
+        items.let {
+            if (it is ArrayList<T>) {
+                myadapter?.setItems(recycler, it)
+            }
         }
     }
 
     @JvmStatic
-    @BindingAdapter(*["bindItemTouchHelper"])
+    @BindingAdapter("bindItemTouchHelper")
     fun bindDragCallback(recycler: RecyclerView, helper: ItemTouchHelper?) {
         helper?.let {
             if (mLog.isDebugEnabled) {
@@ -61,7 +63,7 @@ object RecyclerBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter(*["bindHorDecoration", "bindVerDecoration"])
+    @BindingAdapter("bindHorDecoration", "bindVerDecoration")
     fun bindDecorator(recycler: RecyclerView, horDrawable: Int, verDrawable: Int) {
         //https://stackoverflow.com/questions/31242812/how-can-a-divider-line-be-added-in-an-android-recyclerview
         if (mLog.isDebugEnabled) {

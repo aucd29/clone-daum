@@ -7,9 +7,7 @@ import androidx.databinding.ObservableInt
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
-import brigitte.ICommandEventAware
 import brigitte.RecyclerViewModel
-import brigitte.arch.SingleLiveEvent
 import brigitte.jsonParse
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -75,12 +73,12 @@ class PopularViewModel @Inject constructor(app: Application)
     private fun selectPopularList() {
         mPopularList?.let {
             val pos = System.currentTimeMillis() % it.items.size
-            val chooseItem = it.items.get(pos.toInt()).item
+            val chooseItem = it.items[pos.toInt()].item
             if (mLog.isDebugEnabled) {
                 mLog.debug("SELECTED LIST $pos, SIZE : ${chooseItem.size}")
-                var keywords: String = ""
-                chooseItem.forEach {
-                    keywords += it.keyword + ", "
+                var keywords = ""
+                chooseItem.forEach { f ->
+                    keywords += f.keyword + ", "
                 }
 
                 mLog.debug(keywords)

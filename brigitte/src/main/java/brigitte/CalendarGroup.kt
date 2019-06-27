@@ -91,7 +91,7 @@ inline fun Calendar.lastTimeToday(): Calendar {
 inline fun Calendar.isLow(time: Long) = timeInMillis <= time
 inline fun Calendar.isHigh(time: Long) = timeInMillis > time
 
-inline fun Long.toDateString() = Calendar.getInstance().run {
+inline fun Long.toDateString(): String = Calendar.getInstance().run {
     timeInMillis = this@toDateString
     defaultDateFormat.format(time)
 }
@@ -151,17 +151,13 @@ class DateCalculator<T : IDateCalculator> {
     fun clear() = mapData.clear()
 
     fun process(date: T) {
-        addData(if (isToday(date)) {
-            K_TODAY
-        } else if (isYesterday(date)) {
-            K_YESTERDAY
-        } else if (isWeek(date)) {
-            K_WEEK
-        } else if (isMonth(date)) {
-            K_MONTH
-        } else {
-            K_OTHER
-        }, date)
+        addData(when {
+                isToday(date)     -> K_TODAY
+                isYesterday(date) -> K_YESTERDAY
+                isWeek(date)      -> K_WEEK
+                isMonth(date)     -> K_MONTH
+                else              -> K_OTHER
+            }, date)
     }
 
     private fun initToday() {
@@ -173,7 +169,7 @@ class DateCalculator<T : IDateCalculator> {
     }
 
     private inline fun addData(type: Int, date:T) {
-        var list = mapData.get(type)
+        var list = mapData[type]
         if (list == null) {
             list = arrayListOf()
             mapData.put(type, list)
