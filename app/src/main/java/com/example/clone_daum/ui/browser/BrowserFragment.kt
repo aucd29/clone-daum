@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
@@ -127,14 +126,16 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         init(mDisposable)
         applyUrl(mUrl!!)
-
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
-
         innerSearch.observe {
             findAllAsync(it.get())
+        }
+
+        observe(brsFontSizeLive) {
+            webview.settings.textZoom = it + BrowserViewModel.V_DEFAULT_TEXT_SIZE
         }
     }
 
@@ -375,27 +376,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun resizeText() {
-        // FIXME 아직 코드 완성이 안되서 일단 주석 처리
-//
-//        mViewModel.apply {
-//            visibleBrsFontSize.visible()
-//            brsFontSizeProgress.observe {
-//                val size = it.get()
-//                val textsize = if (size < 50) {
-//                    WebSettings.TextSize.SMALLEST
-//                } else if (size < 100) {
-//                    WebSettings.TextSize.SMALLER
-//                } else if (size < 150) {
-//                    WebSettings.TextSize.NORMAL
-//                } else if (size < 200) {
-//                    WebSettings.TextSize.LARGER
-//                } else {
-//                    WebSettings.TextSize.LARGEST
-//                }
-//
-//                webview.settings.textSize = textsize
-//            }
-//        }
+        mViewModel.visibleBrsFontSize.visible()
     }
 
     private fun addIconFromLauncher() {

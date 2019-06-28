@@ -65,10 +65,9 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     fun load(html: String) {
         disposableInterval.add(Observable.just(html)
-            .observeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe ({
                 visibleProgress.set(View.GONE)
 
@@ -91,7 +90,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         val f = main.indexOf(fText) + fText.length
         val e = main.indexOf(eText, f)
 
-        val issueList: ArrayList<Pair<String, List<RealtimeIssue>>> = arrayListOf()
+        val issueList = arrayListOf<Pair<String, List<RealtimeIssue>>>()
         if (f == fText.length || e == -1) {
             mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
 
