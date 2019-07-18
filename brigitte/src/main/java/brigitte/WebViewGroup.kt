@@ -21,7 +21,7 @@ import java.lang.Exception
 inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     settings.apply {
         textZoom                         = 100
-        cacheMode                        = WebSettings.LOAD_NO_CACHE
+//        cacheMode                        = WebSettings.LOAD_NO_CACHE
         javaScriptEnabled                = true
         domStorageEnabled                = true
         allowFileAccessFromFileURLs      = true

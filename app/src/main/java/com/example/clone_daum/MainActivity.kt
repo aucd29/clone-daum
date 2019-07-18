@@ -1,19 +1,14 @@
 package com.example.clone_daum
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.webkit.WebView
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import brigitte.*
-import com.example.clone_daum.model.local.BrowserSubMenu
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import org.slf4j.LoggerFactory
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {

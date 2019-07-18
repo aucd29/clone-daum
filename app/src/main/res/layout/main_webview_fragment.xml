@@ -24,6 +24,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+            <!--<org.xwalk.core.XWalkView-->
+                    <!--android:id="@+id/webview"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="#000000"-->
+            <!--/>-->
+
             <WebView
                     android:id="@+id/webview"
                     android:layout_width="match_parent"

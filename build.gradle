@@ -6,6 +6,7 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+//        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
     }
     dependencies {
         // 버전을 높이면 빌드가 안된다. (3.3.2 일단 고정)
@@ -36,6 +37,7 @@ allprojects {
         // NEXUS FROM KAKAO
         maven { url 'http://devrepo.kakao.com:8088/nexus/content/groups/public/' }
         maven { url 'https://maven.fabric.io/public' }
+//        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
     }
 }
 
