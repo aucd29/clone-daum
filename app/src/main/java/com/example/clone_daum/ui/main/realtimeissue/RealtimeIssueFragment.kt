@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 9. <p/>
@@ -33,9 +34,12 @@ import javax.inject.Inject
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class RealtimeIssueTabAdapter constructor(fm: FragmentManager
-    , val mRealtimeIssue: List<Pair<String, List<RealtimeIssue>>>
+class RealtimeIssueTabAdapter @Inject constructor(
+    @param:Named("child_fragment_manager") fm: FragmentManager
 ) : FragmentStatePagerAdapter(fm) {
+    var issueList: List<Pair<String, List<RealtimeIssue>>>? = null
+
+//    @Inject lateinit var childFragment: dagger.Lazy<RealtimeIssueChildFragment>
 
     override fun getItem(position: Int): Fragment {
         val frgmt  = RealtimeIssueChildFragment()
@@ -49,9 +53,9 @@ class RealtimeIssueTabAdapter constructor(fm: FragmentManager
 
     // 이슈 검색어 단어는 삭제하고 타이틀을 생성한다.
     override fun getPageTitle(position: Int) =
-        mRealtimeIssue[position].first
+        issueList?.get(position)?.first ?: "ERROR"
 
-    override fun getCount() = mRealtimeIssue.size
+    override fun getCount() = issueList?.size ?: 0
 }
 
 //class RealtimeIssueFragment

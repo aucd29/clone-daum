@@ -7,6 +7,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.databinding.BindingAdapter
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
@@ -21,12 +24,16 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import javax.inject.Named
 import kotlin.math.abs
 
 
 // 어라라.. 머지가 잘못되었나? 왜 검색 영역에서 스크롤이 되는것이냐? ㄷ ㄷ ㄷ [aucd29][2019. 4. 17.]
 
-class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
+class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     , TabLayout.OnTabSelectedListener, OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
@@ -39,6 +46,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var mainTabAdapter: MainTabAdapter
+    @Inject lateinit var realtimeIssueTabAdapter: dagger.Lazy<RealtimeIssueTabAdapter>
 
     private lateinit var mRealtimeIssueViewModel : RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
@@ -172,7 +181,8 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     override fun initViewModelEvents() {
         mViewModel.apply {
             // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
-            tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig.tabLabelList))
+//            tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig))
+            tabAdapter.set(mainTabAdapter)
             viewpager.set(mBinding.viewpager)
 
             // n 사도 그렇지만 k 사도 search 쪽을 view 로 가려서 하는 데
@@ -340,7 +350,11 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
 
     private fun changeRealtimeIssueTab() {
         mRealtimeIssueViewModel.apply {
-            tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
+//            tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
+            val adapter = realtimeIssueTabAdapter.get()
+            adapter.issueList = mRealtimeIssueList
+
+            tabAdapter.set(adapter)
         }
     }
 
@@ -408,6 +422,22 @@ class MainFragment : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
     abstract class Module {
         @dagger.android.ContributesAndroidInjector
         abstract fun contributeInjector(): MainFragment
+
+//        @Binds
+//        abstract fun bindMainTabAdapter(adapter: MainTabAdapter): FragmentStatePagerAdapter
+//
+//        @Binds
+//        abstract fun bindRealtimeIssueTabAdapter(adapter: RealtimeIssueTabAdapter): FragmentStatePagerAdapter
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            @Named("child_fragment_manager")
+            fun provideChildFragments(fragment: MainFragment): FragmentManager {
+                return fragment.childFragmentManager
+            }
+        }
     }
 }
 

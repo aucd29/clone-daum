@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
-class FavoriteProcessFragment
+class FavoriteProcessFragment @Inject constructor()
     : BaseDaggerFragment<FavoriteProcessFragmentBinding, FavoriteProcessViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteProcessFragment::class.java)

@@ -18,7 +18,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 16. <p/>
  */
 
-class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
+class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
     , OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)

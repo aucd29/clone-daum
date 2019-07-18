@@ -5,12 +5,13 @@ import brigitte.BaseDaggerFragment
 import brigitte.hideKeyboard
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 23. <p/>
  */
 
-class BarcodeInputFragment: BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
+class BarcodeInputFragment @Inject constructor() : BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
     override fun initViewBinding() {
     }
 

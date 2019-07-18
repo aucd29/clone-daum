@@ -11,7 +11,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
  */
 
-class ShortcutFragment: BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
+class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
     private lateinit var mSitemapViewModel : SitemapViewModel
     private lateinit var mFrequentlySiteModel : FrequentlySiteViewModel
 

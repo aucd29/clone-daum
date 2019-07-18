@@ -21,7 +21,7 @@ import com.google.zxing.common.HybridBinarizer
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
  */
 
-class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>()
+class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>()
     , BarcodeCallback {
     companion object {
         private val mLog = LoggerFactory.getLogger(BarcodeFragment::class.java)

@@ -28,8 +28,6 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
 class ViewController @Inject constructor(private val manager: FragmentManager) {
-    // 나만의 룰을 만들었더니만 navigation editor 나와버림 =_ = ㅋ
-
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
 
@@ -38,14 +36,36 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
         const val FAVORITE_CONTAINER = R.id.favorite_container
     }
 
+    // 나만의 룰을 만들었더니만 navigation editor 나와버림 =_ = ㅋ
+
+    @Inject lateinit var mMainFragment: dagger.Lazy<MainFragment>
+    @Inject lateinit var mMediaSearchFragment: dagger.Lazy<MediaSearchFragment>
+    @Inject lateinit var mSpeechFragment: dagger.Lazy<SpeechFragment>
+    @Inject lateinit var mMusicFragment: dagger.Lazy<MusicFragment>
+    @Inject lateinit var mFlowerFragment: dagger.Lazy<FlowerFragment>
+    @Inject lateinit var mBarcodeFragment: dagger.Lazy<BarcodeFragment>
+    @Inject lateinit var mBarcodeInputFragment: dagger.Lazy<BarcodeInputFragment>
+    @Inject lateinit var mNavigationFragment: dagger.Lazy<NavigationFragment>
+    @Inject lateinit var mCafeFragment: dagger.Lazy<CafeFragment>
+    @Inject lateinit var mMailFragment: dagger.Lazy<MailFragment>
+    @Inject lateinit var mShortcutFragment: dagger.Lazy<ShortcutFragment>
+    @Inject lateinit var mSearchFragment: dagger.Lazy<SearchFragment>
+    @Inject lateinit var mBrowserFragment: dagger.Lazy<BrowserFragment>
+    //    @Inject lateinit var mBrowserSubmenuFragment: dagger.Lazy<BrowserSubmenuFragment>
+    @Inject lateinit var mFavoriteFragment: dagger.Lazy<FavoriteFragment>
+    @Inject lateinit var mFavoriteModifyFragment: dagger.Lazy<FavoriteModifyFragment>
+    @Inject lateinit var mFavoriteFolderFragment: dagger.Lazy<FavoriteFolderFragment>
+    @Inject lateinit var mFavoriteProcessFragment: dagger.Lazy<FavoriteProcessFragment>
+    @Inject lateinit var mFolderFragment: dagger.Lazy<FolderFragment>
+    @Inject lateinit var mUrlHistoryFragment: dagger.Lazy<UrlHistoryFragment>
+
     fun mainFragment() {
         if (mLog.isInfoEnabled) {
             mLog.info("MAIN FRAGMENT")
         }
 
-        manager.show<MainFragment>(FragmentParams(CONTAINER
-            , commit = FragmentCommit.NOW
-            , backStack = false))
+        manager.showBy(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
+            fragment  = mMainFragment.get(), backStack = false))
     }
 
     fun mediaSearchFragment() {
@@ -53,7 +73,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("MEDIA SEARCH FRAGMENT")
         }
 
-        manager.show<MediaSearchFragment>(FragmentParams(CONTAINER))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mMediaSearchFragment.get()))
     }
 
     fun speechFragment() {
@@ -61,8 +82,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("SPEECH FRAGMENT")
         }
 
-        manager.show<SpeechFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mSpeechFragment.get(), anim = FragmentAnim.RIGHT))
     }
 
     fun musicFragment() {
@@ -70,8 +91,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("MUSIC FRAGMENT")
         }
 
-        manager.show<MusicFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mMusicFragment.get(), anim = FragmentAnim.RIGHT))
     }
 
     fun flowerFragment() {
@@ -79,8 +100,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("FLOWER FRAGMENT")
         }
 
-        manager.show<FlowerFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mFlowerFragment.get(), anim = FragmentAnim.RIGHT))
     }
 
     fun barcodeFragment() {
@@ -88,8 +109,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("BARCODE FRAGMENT")
         }
 
-        manager.show<BarcodeFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mBarcodeFragment.get(), anim = FragmentAnim.RIGHT))
     }
 
     fun barcodeInputFragment() {
@@ -97,8 +118,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("BARCODE INPUT FRAGMENT")
         }
 
-        manager.show<BarcodeInputFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mBarcodeInputFragment.get(), anim = FragmentAnim.RIGHT))
     }
 
     fun navigationFragment() {
@@ -106,7 +127,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("NAVIGATION FRAGMENT")
         }
 
-        manager.show<NavigationFragment>(FragmentParams(CONTAINER))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mNavigationFragment.get()))
     }
 
     fun cafeFragment(child: FragmentManager) {
@@ -114,8 +136,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("CAFE FRAGMENT")
         }
 
-        child.show<CafeFragment>(FragmentParams(NAV_TAB_CONTAINER
-            , add = false))
+        child.showBy(FragmentParams(NAV_TAB_CONTAINER,
+            fragment = mCafeFragment.get(), add = false))
     }
 
     fun mailFragment(child: FragmentManager) {
@@ -123,8 +145,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("MAIL FRAGMENT")
         }
 
-        child.show<MailFragment>(FragmentParams(NAV_TAB_CONTAINER
-            , add = false))
+        child.showBy(FragmentParams(NAV_TAB_CONTAINER,
+            fragment = mMailFragment.get(), add = false))
     }
 
     fun shortcutFragment(child: FragmentManager, add: Boolean = false) {
@@ -132,8 +154,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("SHORTCUT FRAGMENT")
         }
 
-        child.show<ShortcutFragment>(FragmentParams(NAV_TAB_CONTAINER
-            , add = add))
+        child.showBy(FragmentParams(NAV_TAB_CONTAINER,
+            fragment = mShortcutFragment.get(), add = add))
     }
 
     fun searchFragment() {
@@ -141,8 +163,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("SEARCH FRAGMENT")
         }
 
-        manager.show<SearchFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.ALPHA))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mSearchFragment.get(), anim = FragmentAnim.ALPHA))
     }
 
     fun browserFragment(url: String?) {
@@ -156,9 +178,9 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             return
         }
 
-        manager.show<BrowserFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.ALPHA
-            , bundle = Bundle().apply {
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mBrowserFragment.get(), anim = FragmentAnim.ALPHA,
+            bundle = Bundle().apply {
                 putString(BrowserFragment.K_URL, url)
             }))
     }
@@ -176,8 +198,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("FAVORITE FRAGMENT")
         }
 
-        manager.show<FavoriteFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mFavoriteFragment.get(), anim = FragmentAnim.RIGHT))
     }
 
     fun favoriteModifyFragment(folderId: Int = 0) {
@@ -185,8 +207,8 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("FAVORITE MODIFY FRAGMENT ($folderId)")
         }
 
-        manager.show<FavoriteModifyFragment>(FragmentParams(CONTAINER
-            , bundle = Bundle().apply {
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mFavoriteModifyFragment.get(), bundle = Bundle().apply {
                 putInt(FavoriteModifyFragment.K_FOLDER, folderId)
             }))
     }
@@ -196,9 +218,9 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("FAVORITE FOLDER FRAGMENT ($folderId)")
         }
 
-        manager.show<FavoriteFolderFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT
-            , bundle = Bundle().apply {
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mFavoriteFolderFragment.get(), anim = FragmentAnim.RIGHT,
+            bundle = Bundle().apply {
                 putInt(FavoriteFolderFragment.K_FOLDER, folderId)
             }))
     }
@@ -208,9 +230,9 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("FAVORITE PROCESS(ADD) FRAGMENT")
         }
 
-        manager.show<FavoriteProcessFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT
-            , bundle = Bundle().apply {
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mFavoriteProcessFragment.get(), anim = FragmentAnim.RIGHT,
+            bundle = Bundle().apply {
                 putString(FavoriteProcessFragment.K_TITLE, title)
                 putString(FavoriteProcessFragment.K_URL, url)
             }))
@@ -222,9 +244,9 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
         }
 
         // add fragment 로 ui 를 대신해 봄
-        manager.show<FavoriteProcessFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT
-            , bundle = Bundle().apply {
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mFavoriteProcessFragment.get(), anim = FragmentAnim.RIGHT,
+            bundle = Bundle().apply {
                 putSerializable(FavoriteProcessFragment.K_MODIFY, favorite)
             }))
     }
@@ -234,9 +256,9 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("FOLDER FRAGMENT ($currentFolderId)")
         }
 
-        child.show<FolderFragment>(FragmentParams(container
-            , anim = FragmentAnim.RIGHT
-            , bundle = Bundle().apply {
+        child.showBy(FragmentParams(container,
+            fragment = mFolderFragment.get(), anim = FragmentAnim.RIGHT,
+            bundle = Bundle().apply {
                 putInt(FolderFragment.K_CURRENT_FOLDER, currentFolderId)
             }))
     }
@@ -246,8 +268,7 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
             mLog.info("URL HISTORY FRAGMENT")
         }
 
-        manager.show<UrlHistoryFragment>(FragmentParams(CONTAINER
-            , anim = FragmentAnim.RIGHT))
+        manager.showBy(FragmentParams(CONTAINER,
+            fragment = mUrlHistoryFragment.get(), anim = FragmentAnim.RIGHT))
     }
-
 }

@@ -15,8 +15,9 @@ import javax.inject.Singleton
 
 @Module(includes = [])
 abstract class ActivityBindingModule {
-    @ContributesAndroidInjector(modules = [FragmentModule::class
-        , MainActivityModule::class
+    @ContributesAndroidInjector(modules = [
+        FragmentModule::class,
+        MainActivityModule::class
     ])
     abstract fun contributeMainActivity(): MainActivity
 

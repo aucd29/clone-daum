@@ -22,7 +22,8 @@ data class SearchHistory (
     @Ignore override var type: Int = SearchRecyclerType.T_HISTORY
 
     override fun itemSame(item: IRecyclerDiff): Boolean =
-        _id == (item as SearchHistory)._id
+        if (item is SearchHistory) _id == item._id
+        else false
 
     override fun contentsSame(item: IRecyclerDiff)=
         this._id == (item as SearchHistory)._id

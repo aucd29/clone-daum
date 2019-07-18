@@ -16,7 +16,7 @@ import com.example.clone_daum.ui.ViewController
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 20. <p/>
  */
 
-class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
+class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
     , OnBackPressedListener, DrawerLayout.DrawerListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)

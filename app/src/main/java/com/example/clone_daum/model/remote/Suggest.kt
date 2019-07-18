@@ -20,7 +20,8 @@ data class SuggestItem (
 ) : ISearchRecyclerData {
 
     override fun itemSame(item: IRecyclerDiff): Boolean  =
-        this == (item as SuggestItem)
+        if (item is SuggestItem) this == item
+        else false
 
     override fun contentsSame(item: IRecyclerDiff): Boolean {
         val nitem = item as SuggestItem

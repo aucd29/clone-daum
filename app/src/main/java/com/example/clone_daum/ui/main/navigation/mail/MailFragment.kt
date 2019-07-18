@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
  */
 
-class MailFragment: BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
+class MailFragment @Inject constructor() : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
     private lateinit var mLoginViewModel: NavigationLoginViewModel
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 

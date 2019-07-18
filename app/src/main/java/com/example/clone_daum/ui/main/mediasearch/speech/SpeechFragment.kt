@@ -14,6 +14,7 @@ import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 18. <p/>
@@ -22,7 +23,7 @@ import java.util.*
  *  - https://developers.kakao.com/docs/android/speech
  *  - https://developers.kakao.com/docs/android/getting-started#%ED%82%A4%ED%95%B4%EC%8B%9C-%EB%93%B1%EB%A1%9D
  */
-class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
+class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
     , OnBackPressedListener, SpeechRecognizeListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(SpeechFragment::class.java)

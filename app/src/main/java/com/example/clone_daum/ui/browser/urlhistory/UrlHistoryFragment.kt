@@ -12,7 +12,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 10. <p/>
  */
 
-class UrlHistoryFragment : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHistoryViewModel>()
+class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHistoryViewModel>()
     , OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
