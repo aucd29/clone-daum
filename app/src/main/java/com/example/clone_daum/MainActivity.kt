@@ -24,9 +24,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     @Inject lateinit var viewController: ViewController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        exceptionCatcher { mLog.error("ERROR: $it") }
         chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
-
+        exceptionCatcher { mLog.error("ERROR: $it") }
         setTheme(R.style.AppTheme)
 
         super.onCreate(savedInstanceState)

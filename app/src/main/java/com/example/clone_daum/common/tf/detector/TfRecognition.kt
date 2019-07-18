@@ -28,7 +28,12 @@ data class TfRecognition(
      */
     var location: RectF?
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean {
+        val newItem = item as TfRecognition
+        return id == newItem.id
+    }
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as TfRecognition
 //        return id == newItem.id && title == newItem.title
         return title == newItem.title

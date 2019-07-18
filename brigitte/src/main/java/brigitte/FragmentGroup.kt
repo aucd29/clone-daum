@@ -50,6 +50,8 @@ inline val FragmentManager.count: Int
 inline fun <reified T: Fragment> FragmentManager.find() =
     findFragmentByTag(T::class.java.name) as T?
 
+inline fun <reified F: Fragment> Fragment.find() =
+    fragmentManager?.find<F>()
 
 /**
  * 다이얼로그를 띄우기 위한 옵저버 로 view model 에 선언되어 있는 single live event 의 값의 변화를 인지 하여 dialog 을 띄운다.
@@ -183,15 +185,28 @@ object FragmentCommit {
         get() = "notallow"
 }
 
+inline fun FragmentManager.showBy(params: FragmentParams) {
+    val frgmt = params.fragment
+    if (frgmt != null && frgmt.isVisible) {
+        // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
+        return
+    }
+
+    frgmt?.let { internalShow(it, params) }
+}
+
 inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams) {
-    val frgmt: Fragment
     val existFrgmt = findFragmentByTag(T::class.java.name)
     if (existFrgmt != null && existFrgmt.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
         return
     }
 
-    frgmt = T::class.java.newInstance() as Fragment
+    val frgmt =  T::class.java.newInstance() as Fragment
+    internalShow(frgmt, params)
+}
+
+inline fun FragmentManager.internalShow(frgmt: Fragment, params: FragmentParams) {
     val transaction = beginTransaction()
 
     params.apply {
@@ -278,6 +293,8 @@ inline fun FragmentManager.popAll() {
 data class FragmentParams(
     /** add 또는 replace 에 대상이 되는 view 의 id */
     @IdRes val containerId: Int,
+    /** dagger 나 직접 instance 를 이용시 fragment 객체 */
+    val fragment: Fragment? = null,
     /** true 면 add 시키고 false 면 replace 한다. add 면 기존에 Fragment 를 나두고 추가 시키고 replace 면 기존에 걸 교체 한다.  */
     val add: Boolean = true,
     /** 트렌젝션 시 화면에 나타나야할 animation 종류 */

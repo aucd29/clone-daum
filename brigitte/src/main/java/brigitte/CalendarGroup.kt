@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
+import android.annotation.SuppressLint
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -95,6 +96,12 @@ inline fun Long.toDateString(): String = Calendar.getInstance().run {
     timeInMillis = this@toDateString
     defaultDateFormat.format(time)
 }
+
+//https://stackoverflow.com/questions/20238280/date-in-to-utc-format-java
+//https://stackoverflow.com/questions/6993365/convert-string-date-into-timestamp-in-android
+@SuppressLint("SimpleDateFormat")
+inline fun String.toUnixTime(format: String) =
+    SimpleDateFormat(format).parse(this).time
 
 ////////////////////////////////////////////////////////////////////////////////////
 //

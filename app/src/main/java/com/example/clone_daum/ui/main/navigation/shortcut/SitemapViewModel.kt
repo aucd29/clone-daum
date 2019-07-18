@@ -8,6 +8,7 @@ import brigitte.RecyclerViewModel
 import brigitte.app
 import brigitte.arch.SingleLiveEvent
 import brigitte.launchApp
+import com.example.clone_daum.R
 import javax.inject.Inject
 
 /**
@@ -22,7 +23,7 @@ class SitemapViewModel @Inject constructor(app: Application
     val brsOpenEvent = SingleLiveEvent<String>()
 
     init {
-        initAdapter("sitemap_item")
+        initAdapter(R.layout.sitemap_item)
         items.set(preConfig.naviSitemapList)
     }
 

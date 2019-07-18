@@ -11,7 +11,3 @@ import brigitte.IRecyclerItem
 
 // SearchHistory, SuggestItem 에서 사용
 interface ISearchRecyclerData : IRecyclerDiff, IRecyclerItem
-
-//interface IBrowserRecyclerData : IRecyclerDiff, IRecyclerItem
-
-//interface IWeatherRecyclerData : IRecyclerDiff, IRecyclerItem

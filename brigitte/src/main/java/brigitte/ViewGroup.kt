@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -100,6 +101,24 @@ inline fun View.pxToDp(v: Int) = (v / context.displayDensity()).toInt()
 // https://stackoverflow.com/questions/29664993/how-to-convert-dp-px-sp-among-each-other-especially-dp-and-sp
 inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
     TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics).toInt()
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// ScrollChangeListener
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+// https://stackoverflow.com/questions/39894792/recyclerview-scrolllistener-inside-nestedscrollview
+class ScrollChangeListener(val callback: (Int, Int, Boolean) -> Unit): NestedScrollView.OnScrollChangeListener {
+    override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+        callback.invoke(scrollX, scrollY, v?.run {
+            val res = scrollY == (getChildAt(0).measuredHeight - measuredHeight)
+            res
+        } ?: false)
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 //

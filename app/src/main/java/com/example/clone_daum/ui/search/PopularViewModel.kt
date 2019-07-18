@@ -9,6 +9,7 @@ import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
 import brigitte.RecyclerViewModel
 import brigitte.jsonParse
+import com.example.clone_daum.R
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -66,7 +67,7 @@ class PopularViewModel @Inject constructor(app: Application)
 
     fun init() {
         // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
-        initAdapter("search_recycler_popular_item")
+        initAdapter(R.layout.search_recycler_popular_item)
         selectPopularList()
     }
 

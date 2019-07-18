@@ -21,7 +21,11 @@ data class SearchHistory (
 ) : ISearchRecyclerData {
     @Ignore override var type: Int = SearchRecyclerType.T_HISTORY
 
-    override fun compare(item: IRecyclerDiff)= this._id == (item as SearchHistory)._id
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as SearchHistory)._id
+
+    override fun contentsSame(item: IRecyclerDiff)=
+        this._id == (item as SearchHistory)._id
 }
 
 @Entity(tableName = "zzim")
@@ -34,7 +38,11 @@ data class Zzim (
     val tags: String = "",
     val locked: Boolean = false
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff) = this._id == (item as Zzim)._id
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        _id == (item as Zzim)._id
+
+    override fun contentsSame(item: IRecyclerDiff) =
+        this._id == (item as Zzim)._id
 }
 
 @Entity(tableName = "urlHistory")
@@ -44,19 +52,23 @@ data class UrlHistory (
     val date: Long?,
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0
-) : IRecyclerDiff, IRecyclerItem, IDateCalculator, IRecyclerExpandable<UrlHistory> {
+) : IDateCalculator, IRecyclerExpandable<UrlHistory> {
     companion object {
         const val T_HISTORY   = 0
         const val T_SEPERATOR = 1
     }
 
     @Ignore override var type           = T_HISTORY
-    @Ignore override var toggle         = ObservableBoolean(false)
+    @Ignore override var status         = ObservableBoolean(false)
     @Ignore override var timeInMillis   = date?.let { it } ?: 0
     @Ignore override var childList: List<UrlHistory> = arrayListOf()
     @Ignore val check = ObservableBoolean(false)
 
-    override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as UrlHistory)._id
+
+    override fun contentsSame(item: IRecyclerDiff)=
+        this._id == (item as UrlHistory)._id
 }
 
 @Entity(tableName = "myFavorite")
@@ -87,7 +99,11 @@ data class MyFavorite (
     @Ignore override var type: Int = favType
     @Ignore override var position: Int = 0
 
-    override fun compare(item: IRecyclerDiff) = this._id == (item as MyFavorite)._id
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as MyFavorite)._id
+
+    override fun contentsSame(item: IRecyclerDiff) =
+        this._id == (item as MyFavorite)._id
 
     fun swapDate(fav: MyFavorite) {
         val tmp = date
@@ -104,6 +120,9 @@ data class FrequentlySite(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff)=
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as FrequentlySite)._id
+
+    override fun contentsSame(item: IRecyclerDiff)=
         this.url == (item as FrequentlySite).url
 }

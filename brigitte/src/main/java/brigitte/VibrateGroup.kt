@@ -22,6 +22,12 @@ inline fun Context.vibrate(milliseconds: Long = 300) {
     }
 }
 
+/**
+    0 : Start without a delay
+    400 : Vibrate for 400 milliseconds
+    200 : Pause for 200 milliseconds
+    400 : Vibrate for 400 milliseconds
+ */
 inline fun Context.vibrate(pattern: LongArray, repeat: Int) {
     systemService<Vibrator>()?.let {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {

@@ -123,11 +123,41 @@ object AnimationBindingAdapter {
         objectAnim(view, anim, params)
     }
 
+    @JvmStatic
+    @BindingAdapter("bindToLargeAlpha")
+    fun bindToLargeAlpha(view: View, params: ToLargeAlphaAnimParams?) {
+        params?.apply {
+            val anim = view.animate()
+                .scaleX(value)
+                .scaleY(value)
+                .alpha(0f)
+                .withEndAction {
+                    endListener?.invoke(view, null)
+
+                    view.apply {
+                        scaleX = 1f
+                        scaleY = 1f
+                        alpha  = 1f
+
+                        if (transX > 0) { translationX = 0f }
+                        if (transY > 0) { translationY = 0f }
+                    }
+                }
+
+            interpolator?.let { anim.setInterpolator(it) }
+
+            if (transX > 0) { anim.translationX(transX) }
+            if (transY > 0) { anim.translationY(transY) }
+
+            anim.start()
+        }
+    }
+
     private fun objectAnim(view: View, anim: ObjectAnimator, params: AnimParams) {
         params.apply {
             anim.duration = duration
-            interpolator?.let { anim.setInterpolator(it) }
-            startDelay?.let   { anim.setStartDelay(it) }
+            interpolator?.let { anim.interpolator = it }
+            startDelay?.let   { anim.startDelay = it }
 
             if (reverse != null) {
                 anim.repeatMode = ValueAnimator.REVERSE
@@ -166,4 +196,14 @@ data class AnimParams(
     var reverse        : ((Animator?) -> Unit)? = null,
     var repeatCount    : Int = 1,
     val objAniCallback : ((ObjectAnimator) -> Unit)? = null
+)
+
+data class ToLargeAlphaAnimParams(
+    val value : Float,
+    val transX : Float = 0f,
+    val transY : Float = 0f,
+    val duration: Long = 300,
+    val endListener : ((View, Animator?) -> Unit)? = null,
+    val interpolator : Interpolator? = null,
+    val startDelay : Long? = null
 )

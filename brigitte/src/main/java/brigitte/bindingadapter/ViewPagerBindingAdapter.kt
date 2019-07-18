@@ -1,9 +1,10 @@
 package brigitte.bindingadapter
 
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import brigitte.widget.BannerPagerAdapter
+import brigitte.widget.IBannerItem
 import org.slf4j.LoggerFactory
 
 /**
@@ -41,11 +42,58 @@ object ViewPagerBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("bindBannerAdapter", "bindBannerItems", requireAll = false)
+    fun <T: IBannerItem> bindBannerItems(viewpager: ViewPager, adapter: BannerPagerAdapter<T>?, items: List<T>?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindBannerItems ${items?.size}")
+        }
+
+        try {
+            var myadapter: BannerPagerAdapter<T>? = null
+            adapter?.let {
+                if (viewpager.adapter == null) {
+                    myadapter = it
+                    viewpager.adapter = myadapter
+                } else {
+                    myadapter = viewpager.adapter as BannerPagerAdapter<T>
+                }
+            }
+
+            items?.let {
+                myadapter?.setBannerItems(items)
+            }
+        } catch (e: Exception) {
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+
+            mLog.error("ERROR: ${e.message}")
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("bindPageChangeListener")
-    fun bindPageChangeListener(viewpager: ViewPager, listener: ViewPager.OnPageChangeListener) {
+    fun bindPageChangeListener(viewpager: ViewPager, listener: ViewPager.OnPageChangeListener?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindPageChangeListener")
         }
-        viewpager.addOnPageChangeListener(listener)
+
+        listener?.let { viewpager.addOnPageChangeListener(it) }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindPageChangeCallback")
+    fun bindPageChangeCallback(viewpager: ViewPager, callback: ((Int) -> Unit)?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindPageChangeListener")
+        }
+
+        callback?.let {
+            viewpager.addOnPageChangeListener(object: ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    it.invoke(position)
+                }
+            })
+        }
     }
 }

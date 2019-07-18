@@ -24,7 +24,10 @@ data class WeatherDetail(
 ) : IRecyclerDiff, IRecyclerItem {
     override var type: Int = weatherType
 
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as WeatherDetail)
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as WeatherDetail
         return weatherType == newItem.weatherType && icon == newItem.icon && value == newItem.value
     }

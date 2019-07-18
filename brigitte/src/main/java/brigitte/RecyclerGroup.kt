@@ -1,23 +1,16 @@
 package brigitte
 
 import android.app.Application
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
+import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ListUpdateCallback
-import androidx.recyclerview.widget.RecyclerView
-import brigitte.arch.SingleLiveEvent
-import org.slf4j.Logger
+import androidx.recyclerview.widget.*
 import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.collections.ArrayList
@@ -40,7 +33,8 @@ import kotlin.collections.ArrayList
 
 /** item 비교 인터페이스 */
 interface IRecyclerDiff {
-    fun compare(item: IRecyclerDiff): Boolean
+    fun itemSame(item: IRecyclerDiff): Boolean
+    fun contentsSame(item: IRecyclerDiff): Boolean
 }
 
 /** Item 타입 비교 인터페이스 */
@@ -53,14 +47,19 @@ interface IRecyclerPosition {
     var position: Int
 }
 
-interface IRecyclerExpandable<T> {
-    var toggle: ObservableBoolean
+/** 아이템 확장 관련 인터페이스 */
+interface IRecyclerExpandable<T>: IRecyclerItem, IRecyclerDiff {
+    var status: ObservableBoolean
     var childList: List<T>
 
-    fun toggle(list: List<T>, adapter: RecyclerView.Adapter<*>? = null) {
+    /**
+     * @param list 확장할 아이템 정보
+     * @param adapter 확장 대상의 adapter
+     */
+    fun toggle(list: List<T>?, adapter: RecyclerView.Adapter<*>?) {
         var i = 0
         if (list is ArrayList) {
-            if (!this.toggle.get()) {
+            if (!this.status.get()) {
                 i = findIndex(list)
 
                 list.addAll(i, childList)
@@ -75,7 +74,7 @@ interface IRecyclerExpandable<T> {
             }
         }
 
-        this.toggle.set(!toggle.get())
+        this.status.set(!status.get())
     }
 
     private fun findIndex(list: List<T>): Int {
@@ -104,7 +103,7 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
  * 한다.
  */
 class RecyclerAdapter<T: IRecyclerDiff>(
-    private val mLayouts: Array<String>
+    private val mLayouts: Array<Int>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)
@@ -112,30 +111,32 @@ class RecyclerAdapter<T: IRecyclerDiff>(
         private const val METHOD_NAME_VIEW_MODEL = "setModel"
         private const val METHOD_NAME_ITEM       = "setItem"
         private const val METHOD_NAME_BIND       = "bind"
+        private const val CLASS_DATA_BINDING     = ".databinding."
+        private const val CLASS_BINDING          = "Binding"
 
-        fun bindingClassName(context: Context, layoutId: String): String {
-            var classPath = context.packageName
-            classPath += ".databinding."
-            classPath += Character.toUpperCase(layoutId[0])
-
-            var i = 1
-            while (i < layoutId.length) {
-                var c = layoutId[i]
-
-                if (c == '_') {
-                    c = layoutId[++i]
-                    classPath += Character.toUpperCase(c)
-                } else {
-                    classPath += c
-                }
-
-                ++i
-            }
-
-            classPath += "Binding"
-
-            return classPath
-        }
+//        fun bindingClassName(context: Context, layoutId: String): String {
+//            var classPath = context.packageName
+//            classPath += CLASS_DATA_BINDING
+//            classPath += Character.toUpperCase(layoutId[0])
+//
+//            var i = 1
+//            while (i < layoutId.length) {
+//                var c = layoutId[i]
+//
+//                if (c == '_') {
+//                    c = layoutId[++i]
+//                    classPath += Character.toUpperCase(c)
+//                } else {
+//                    classPath += c
+//                }
+//
+//                ++i
+//            }
+//
+//            classPath += CLASS_BINDING
+//
+//            return classPath
+//        }
 
         fun invokeMethod(binding: ViewDataBinding, methodName: String, argType: Class<*>, argValue: Any, log: Boolean) {
             try {
@@ -156,31 +157,19 @@ class RecyclerAdapter<T: IRecyclerDiff>(
     var isScrollToPosition = true
     var isNotifySetChanged = false
 
-    constructor(layoutId: String) : this(arrayOf(layoutId))
+    constructor(layoutId: Int) : this(arrayOf(layoutId))
 
     /**
      * 전달 받은 layout ids 와 IRecyclerItem 을 통해 화면에 출력해야할 layout 를 찾고
      * 해당 layout 의 RecyclerHolder 를 생성 한다.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerHolder {
-        val context = parent.context
-        val layoutId = context.resources.getIdentifier(mLayouts[viewType], "layout", context.packageName)
-        val view = LayoutInflater.from(context).inflate(layoutId, parent, false)
+        val layoutId = mLayouts[viewType]
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater,
+            layoutId, parent, false)
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("LAYOUT ID : ${mLayouts[viewType]} ($layoutId)")
-        }
-
-        val classPath = bindingClassName(context, mLayouts[viewType])
-
-        if (mLog.isTraceEnabled) {
-            mLog.trace("BINDING CLASS $classPath")
-        }
-
-        val bindingClass = Class.forName(classPath)
-        val method = bindingClass.getDeclaredMethod(METHOD_NAME_BIND, *arrayOf(View::class.java))
-        val binding = method.invoke(null, *arrayOf(view)) as ViewDataBinding
-        val vh = RecyclerHolder(view)
+        val vh = RecyclerHolder(binding.root)
         vh.mBinding = binding
 
         return vh
@@ -193,13 +182,13 @@ class RecyclerAdapter<T: IRecyclerDiff>(
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
         viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
-        items.let { it[position].let { item ->
+        items[position].let { item ->
             when (item) {
                 is IRecyclerPosition -> item.position = position
             }
 
             invokeMethod(holder.mBinding, METHOD_NAME_ITEM, item.javaClass, item, true)
-        } }
+        }
 
         holder.mBinding.executePendingBindings()
         viewHolderCallback?.invoke(holder, position)
@@ -252,34 +241,49 @@ class RecyclerAdapter<T: IRecyclerDiff>(
      * 일단 arrayList 로 하는데 이런 구조라면 linked list 가 더 적합할 듯 한 ?
      * ----
      */
-    fun setItems(recycler: RecyclerView, newItems: ArrayList<T>) {
+    fun setItems(recycler: RecyclerView, list: ArrayList<T>) {
         if (items.size == 0 || isNotifySetChanged) {
-            items = newItems
+            items = list
             notifyDataSetChanged()
 
             return
         }
 
         val oldItems = items
-        val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
-            override fun getOldListSize() = oldItems.size
-            override fun getNewListSize() = newItems.size
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                oldItems[oldItemPosition] == newItems[newItemPosition]
+        val newItems = if (oldItems.hashCode() == list.hashCode()) { ArrayList(list) } else { list }
 
+        // FIXME 이곳의 구현 방식이 일반적이지 않다라고 들었고 관련 내용을 다시 찾아봄
+        //
+        // https://blog.kmshack.kr/RecyclerView-DiffUtil%EB%A1%9C-%EC%84%B1%EB%8A%A5-%ED%96%A5%EC%83%81%ED%95%98%EA%B8%B0/
+        val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
+            // 이전 목록 개수 반환
+            override fun getOldListSize() = oldItems.size
+            // 새로운 목록 개수 반환
+            override fun getNewListSize() = newItems.size
+
+            // 두 객체가 같은 항목인지 여부 결정 (레퍼런스 비교가 아님) 이번에 얻은 지식 중 === 이 있음 레퍼런스 비교시 === 으로 비교할 수 있음
+            // 인터넷상으로는 객체 자체를 비교하는것과 객체 내부에 id 를 따로 생성해서 비교하는것 이렇게 크게 2가지 형태로
+            // 구현되고 있으며 diff util 이 알려지기전 일부 샘플에 객체를 비교하던것에서
+            // 현재는 id 를 비교하고 있는게 많다. 그렇다면 IRecyclerDIff 에 id 를 추가해서 해당 값을
+            // 비교 하는 형태로 진행할 수도 있다.
+            // https://qiita.com/kubode/items/92c1190a6421ba055cc0
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                oldItems[oldItemPosition].itemSame(newItems[newItemPosition])
+
+            // 두 항목의 데이터가 같은지 비교 (이곳에서 데이터 비교를 위해 IRecycerDiff 인터페이스 이용)
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 val oldItem = oldItems[oldItemPosition]
                 val newItem = newItems[newItemPosition]
 
-                return oldItem.compare(newItem)
+                return oldItem.contentsSame(newItem)
             }
 
             // https://medium.com/mindorks/diffutils-improving-performance-of-recyclerview-102b254a9e4a
+            // areItemsTheSame 이 true 인데, areContentsTheSame 이 false 이면 변경 내용에 대한 페이로드를 가져옴
 //            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
 //                return super.getChangePayload(oldItemPosition, newItemPosition)
 //            }
         })
-
 
         if (mLog.isDebugEnabled) {
             mLog.debug("OLD ${oldItems.hashCode()}")
@@ -343,12 +347,13 @@ class RecyclerAdapter<T: IRecyclerDiff>(
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
 open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
-    : AndroidViewModel(app), ICommandEventAware {
+    : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
     }
 
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
+    protected var mThreshold   = 1
+    protected var mDataLoading = false
 
     val items           = ObservableField<List<T>>()
     val adapter         = ObservableField<RecyclerAdapter<T>>()
@@ -359,7 +364,7 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
      *
      * @param ids 문자열 형태의 layout 이름
      */
-    fun initAdapter(vararg ids: String) {
+    fun initAdapter(vararg ids: Int) {
         val adapter = RecyclerAdapter<T>(ids.toList().toTypedArray())
         adapter.viewModel = this
 
@@ -374,7 +379,7 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
         itemTouchHelper.set(ItemTouchHelper(callback))
 
         bindingCallback?.let {
-            adapter.get()?.viewHolderCallback = { holder, pos ->
+            adapter.get()?.viewHolderCallback = { holder, _ ->
                 it.invoke(holder.mBinding)?.setOnTouchListener { v, ev ->
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         itemTouchHelper.get()?.startDrag(holder)
@@ -386,15 +391,7 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
         }
     }
 
-    fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
-    fun toast(@StringRes resid: Int) = toast(string(resid))
-    fun errorLog(e: Throwable) {
-        if (mLog.isDebugEnabled) {
-            e.printStackTrace()
-        }
-
-        mLog.error("ERROR: ${e.message}")
-    }
+    fun errorLog(e: Throwable) = errorLog(e, mLog)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -465,6 +462,26 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
 //            dragTo   = -1
 //        }
     }
+
+    fun isNextLoad(lastVisiblePos: Int): Boolean {
+        if (lastVisiblePos == -1) return false
+
+        return items.get()?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("LAST VISIBLE POS ${lastVisiblePos}\nLAST ITEM POS ${it.size}")
+            }
+
+            !mDataLoading && it.size - lastVisiblePos <= mThreshold
+        } ?: false
+    }
+}
+
+open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>>(app: Application)
+    : RecyclerViewModel<T>(app) {
+
+    fun toggle(item: T) {
+        item.toggle(items.get(), adapter.get())
+    }
 }
 
 inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
@@ -477,3 +494,61 @@ inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
     }
 }
 
+class InfiniteScrollListener(val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
+    companion object {
+        private val mLog = LoggerFactory.getLogger(InfiniteScrollListener::class.java)
+    }
+
+    lateinit var recycler: RecyclerView
+
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        super.onScrollStateChanged(recyclerView, newState)
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SCROLL STATE : $newState")
+        }
+
+    }
+
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        super.onScrolled(recyclerView, dx, dy)
+
+        val manager = recycler.layoutManager
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SCROLLED : $dy")
+        }
+
+        if (dy <= 0) {
+            return ;
+        }
+
+        val lastVisibleItemPosition = if (manager is LinearLayoutManager) {
+            manager.findLastVisibleItemPosition()
+        } else if (manager is StaggeredGridLayoutManager) {
+            val positions = manager.findLastVisibleItemPositions(null)
+            var position = positions[0]
+            for (i in 1 until positions.size) {
+                if (position < positions[i]) {
+                    position = positions[i]
+                }
+            }
+
+            position
+        } else { -1 }
+
+        callback.invoke(lastVisibleItemPosition)
+    }
+}
+
+inline fun StaggeredGridLayoutManager.findLastVisibleItemPosition(): Int {
+    val positions = findLastVisibleItemPositions(null)
+    var position = positions[0]
+    for (i in 1 until positions.size) {
+        if (position < positions[i]) {
+            position = positions[i]
+        }
+    }
+
+    return position
+}

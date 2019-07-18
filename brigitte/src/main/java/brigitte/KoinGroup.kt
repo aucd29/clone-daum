@@ -53,7 +53,6 @@ private const val LAYOUT         = "layout"         // 레이아웃
 
 abstract class BaseKoinActivity<T: ViewDataBinding, M: ViewModel>
     : BaseActivity<T, M>() {
-    override fun initDisposable() = get<CompositeDisposable>()
     override fun initViewModel() = getViewModel(viewModelClass().kotlin)
 }
 

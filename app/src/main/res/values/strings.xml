@@ -93,6 +93,9 @@
     <string name="brs_copied_url">URL 이 클립보드에 복사됨</string>
     <string name="brs_using_base_brs">기본 브라우저로 열면 로그인 및 위치 정보는 유지 안됨</string>
     <string name="brs_input_search_keyword">검색어 입력</string>
+    <string name="brs_add_shortcut_to_home">홈 화면에 바로기가 추가</string>
+    <string name="brs_added_link">@string/favorite_added_link</string>
+
 
     <!--favorite -->
 

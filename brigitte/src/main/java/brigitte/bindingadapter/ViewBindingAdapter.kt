@@ -1,6 +1,8 @@
 package brigitte.bindingadapter
 
+import android.net.Uri
 import android.view.View
+import android.widget.VideoView
 import androidx.databinding.BindingAdapter
 import brigitte.layoutHeight
 import brigitte.layoutWidth
@@ -31,5 +33,15 @@ object ViewBindingAdapter {
         }
 
         view.layoutWidth(width)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindVideoUrl")
+    fun bindVideoUrl(view: VideoView, url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND VIDEO URL : $url")
+        }
+
+        view.setVideoURI(Uri.parse(url))
     }
 }

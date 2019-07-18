@@ -65,7 +65,7 @@ class SearchViewModel @Inject constructor(app: Application
             true
         }
 
-        initAdapter("search_recycler_history_item", "search_recycler_suggest_item")
+        initAdapter(R.layout.search_recycler_history_item, R.layout.search_recycler_suggest_item)
         reloadHistoryData()
     }
 

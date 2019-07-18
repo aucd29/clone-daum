@@ -39,7 +39,6 @@ class MainApp : MultiDexApplication(), HasActivityInjector {
         }
 
         // https://stackoverflow.com/questions/45677769/how-to-fix-inputmethodmanager-leaks-in-android
-        // inputmethodmanager 닉은 는 버그임 -_ -; 괜히 신경썻네
         refWatcher = LeakCanary.install(this)
 
         DaggerAppComponent.builder()

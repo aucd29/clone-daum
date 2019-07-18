@@ -10,14 +10,15 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.WebView
 import android.widget.Toast
-//import androidx.activity.OnBackPressedCallback
-//import androidx.activity.OnBackPressedDispatcher
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -34,6 +35,19 @@ import java.util.concurrent.TimeUnit
  *
  * Activity 관련 된 extension 모음
  */
+
+//https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
+inline fun Activity.changeStatusBarColorRes(@ColorRes color: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.statusBarColor = ContextCompat.getColor(this, color)
+    }
+}
+
+inline fun Activity.changeStatusBarColor(@ColorInt color: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.statusBarColor = color
+    }
+}
 
 /**
  * snackbar 호출

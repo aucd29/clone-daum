@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.search
 
-import androidx.recyclerview.widget.DefaultItemAnimator
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding

@@ -9,7 +9,10 @@ import brigitte.IRecyclerDiff
 data class PopularKeyword (val keyword: String
     , val url: String
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as PopularKeyword)
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as PopularKeyword
         return keyword == newItem.keyword && url == newItem.url
     }

@@ -130,13 +130,11 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
-        innerSearch.observe {
-            findAllAsync(it.get())
-        }
+        innerSearch.observe { findAllAsync(it.get()) }
 
-        observe(brsFontSizeLive) {
-            webview.settings.textZoom = it + BrowserViewModel.V_DEFAULT_TEXT_SIZE
-        }
+        // livedata 로 observe
+        observe(brsFontSizeLive) { webview.settings.textZoom =
+            it + BrowserViewModel.V_DEFAULT_TEXT_SIZE }
     }
 
     private fun addHistory() {
@@ -286,7 +284,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 "화면 내 검색"  -> searchWithInScreen()
                 "화면 캡쳐"     -> capture()
                 "글자 크기"     -> resizeText()
-                "홈 화면에 추가" -> addIconFromLauncher()
+                "홈 화면에 추가" -> addIconToHomeLauncher()
                 "전체화면 보기"  -> fullscreen(true)
                 "앱설정"       -> appSetting()
             }
@@ -379,8 +377,17 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         mViewModel.visibleBrsFontSize.visible()
     }
 
-    private fun addIconFromLauncher() {
-
+    private fun addIconToHomeLauncher() {
+        // 커스텀 넣기가 귀차니즘... =_ =
+        dialog(DialogParam(messageId = R.string.brs_add_shortcut_to_home,
+            negativeId = android.R.string.cancel,
+            listener = { r, d ->
+                if (r) {
+                    shortcut(ShortcutParams(webview.url, R.mipmap.ic_launcher,
+                            webview.title, webview.title))
+                    snackbar(webview, R.string.brs_added_link)
+                }
+            }))
     }
 
     private fun fullscreen(fullscreen: Boolean) {

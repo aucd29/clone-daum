@@ -34,10 +34,10 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel>
     : BaseActivity<T, M>(), HasFragmentInjector, HasSupportFragmentInjector {
 
     /** ViewModel 을 inject 하기 위한 Factory */
-    @Inject lateinit var mDp: CompositeDisposable
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
     @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
+    @Inject lateinit var globalDisposable: CompositeDisposable
 
     /**
      * view model 처리, 기본 이벤트 처리를 위한 aware 와 view binding, view model 을 호출 한다.
@@ -48,7 +48,12 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel>
         super.onCreate(savedInstanceState)
     }
 
-    override fun initDisposable() = mDp // 다른 방법 없나?
+    override fun onDestroy() {
+        globalDisposable.clear()
+
+        super.onDestroy()
+    }
+
     override fun initViewModel() =
         ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 

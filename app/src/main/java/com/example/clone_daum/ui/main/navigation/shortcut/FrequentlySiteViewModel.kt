@@ -32,7 +32,7 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
 
     fun init(disposable: CompositeDisposable) {
         mDisposable = disposable
-        initAdapter("frequently_item")
+        initAdapter(R.layout.frequently_item)
 
         mDisposable.add(frequentlySiteDao.select().subscribe {
             // 마지막 아이템에 기본 값을 추가 함

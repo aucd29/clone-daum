@@ -15,11 +15,14 @@ data class Suggest (
 
 // recycler 에 사용하기 위해 랩핑
 data class SuggestItem (
-    val keyword: String, val rawKeyword: String
-) : ISearchRecyclerData {
+    val keyword: String, val rawKeyword: String,
     override var type: Int = SearchRecyclerType.T_SUGGEST
+) : ISearchRecyclerData {
 
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as SuggestItem)
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val nitem = item as SuggestItem
         return keyword == nitem.keyword
     }

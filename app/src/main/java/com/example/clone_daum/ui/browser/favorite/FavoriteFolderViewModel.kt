@@ -9,6 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
@@ -30,7 +31,7 @@ class FavoriteFolderViewModel @Inject constructor(application: Application
         mDisposable = dp
 
         // folder 형태의 index 값이 0
-        initAdapter("favorite_item_from_folder", "favorite_item_from_folder")
+        initAdapter(R.layout.favorite_item_from_folder, R.layout.favorite_item_from_folder)
         mDisposable.add(mFavoriteDao.selectByFolderIdFlowable(folderId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

@@ -21,6 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    
     packagingOptions {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/license.txt'
@@ -147,5 +148,5 @@ dependencies {
     implementation project(path: ':dingbat')
 }
 
-// fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..
+// fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..
 apply plugin: 'com.google.gms.google-services'

@@ -1,15 +1,22 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte.bindingadapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import brigitte.GlideApp
 import brigitte.R
+import brigitte.dpToPx
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -53,13 +60,14 @@ object GlideBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("bindImage")
-    fun glideImage(view: ImageView, path: String) {
+    @BindingAdapter("bindImage", "bindImageThumbnail", "bindImageWidth", "bindImageHeight",
+        "bindRoundedCorners", requireAll = false)
+    fun glideImage(view: ImageView, path: String, thumbnail: String?, x: Int?, y: Int?, roundedCorners: Int?) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("BIND IMAGE : $path")
+            mLog.debug("BIND IMAGE : $path\nTHUMBNAIL : $thumbnail")
         }
 
-        view.glide(path)
+        view.glide(path, thumbnail, x, y, roundedCorners)
     }
 }
 
@@ -81,23 +89,53 @@ inline fun ImageView.fitxy() {
     scaleType = ImageView.ScaleType.FIT_XY
 }
 
-inline fun ImageView.glide(path: String) {
+@SuppressLint("CheckResult")
+inline fun ImageView.glide(path: String, thumbnail: String?, x: Int?, y: Int?, roundedCorners: Int?) {
     fitxy()
+
+    val progress = CircularProgressDrawable(context)
+    progress.apply {
+        strokeWidth     = 3f.dpToPx(context)
+        centerRadius    = 20f.dpToPx(context)
+        alpha = 50
+        setColorSchemeColors(0xffffffff.toInt())
+
+        start()
+    }
 
     val glide = GlideApp.with(context)
     if (path.startsWith("http")) {
-        glide.load(path)
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
-            .placeholder(R.drawable.ic_autorenew_black_24dp)
-            .into(this)
+        val request = glide.load(path)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .placeholder(progress)
+            .error(R.drawable.ic_error_outline_black_24dp)
+            .transition(DrawableTransitionOptions.withCrossFade())
+
+        thumbnail?.let { request.thumbnail(Glide.with(context).load(it)) }
+
+        // https://github.com/wasabeef/glide-transformations
+//        roundedCorners?.let { request.transform(CenterCrop(), RoundedCorners(it))}
+
+        if (x != null && y != null && x > 0 && y > 0) {
+            request.override(x, y)
+        }
+
+        request.into(this)
 
         return
     }
 
     val fp = File(path)
     if (fp.isVideo(context)) {
-        glide.asBitmap().load(Uri.fromFile(fp)).into(this)
+        glide.asBitmap().load(Uri.fromFile(fp))
+            .into(this)
     } else {
-        glide.load(fp).into(this)
+        val request = glide.load(fp)
+            .transition(DrawableTransitionOptions.withCrossFade())
+
+        // 로컬 파일을 이럴 필요는 없나?
+//        thumbnail?.let { request.thumbnail(Glide.with(context).load(it)) }
+
+        request.into(this)
     }
 }

@@ -3,10 +3,9 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.app.Application
 import android.text.Spanned
 import com.example.clone_daum.model.remote.RealtimeIssue
-import brigitte.ICommandEventAware
 import brigitte.RecyclerViewModel
-import brigitte.arch.SingleLiveEvent
 import brigitte.html
+import com.example.clone_daum.R
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -27,7 +26,7 @@ class RealtimeIssueChildViewModel @Inject constructor(app: Application
             mLog.debug("INIT REALTIME RECYCLER ADAPTER")
         }
 
-        initAdapter("realtime_issue_child_item")
+        initAdapter(R.layout.realtime_issue_child_item)
         items.set(list)
     }
 

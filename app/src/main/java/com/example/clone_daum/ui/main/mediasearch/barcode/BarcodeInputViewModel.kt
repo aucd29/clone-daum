@@ -20,7 +20,6 @@ class BarcodeInputViewModel @Inject constructor(application: Application)
 
         const val CMD_CLEAR_EDIT    = "clear-edt"
         const val CMD_HIDE_KEYBOARD = "hide-keyboard"
-//        const val CMD_BARCODE       = "barcode"
     }
 
     override val dialogEvent  = SingleLiveEvent<DialogParam>()

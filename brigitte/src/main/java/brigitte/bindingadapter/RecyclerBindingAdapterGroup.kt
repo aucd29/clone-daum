@@ -5,11 +5,9 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import brigitte.IRecyclerDiff
+import brigitte.InfiniteScrollListener
 import brigitte.RecyclerAdapter
 import org.slf4j.LoggerFactory
 
@@ -77,10 +75,30 @@ object RecyclerBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("bindGridLayoutManager")
+    fun bindGridLayoutManager(recycler: RecyclerView, spancount: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND GRID LAYOUT: SPAN COUNT($spancount)")
+        }
+
+        recycler.layoutManager = GridLayoutManager(recycler.context, spancount)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindStaggeredVerticalGridLayoutManager")
+    fun bindStaggeredGridLayoutManager(recycler: RecyclerView, spancount: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND STAGGERED GRID LAYOUT: SPAN COUNT($spancount)")
+        }
+
+        recycler.layoutManager = StaggeredGridLayoutManager(spancount, StaggeredGridLayoutManager.VERTICAL)
+    }
+
+    @JvmStatic
     @BindingAdapter("bindLockedGridLayoutManager")
     fun bindLockedGridLayoutManager(recycler: RecyclerView, spancount: Int) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("BIND GRID LAYOUT: SPAN COUNT($spancount)")
+            mLog.debug("BIND LOCKED GRID LAYOUT: SPAN COUNT($spancount)")
         }
 
         recycler.layoutManager = object: GridLayoutManager(recycler.context, spancount) {
@@ -118,6 +136,19 @@ object RecyclerBindingAdapter {
         }
 
         recycler.smoothScrollToPosition(position)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindInfiniteScrollListener")
+    fun bindInfiniteScrollListener(recycler: RecyclerView, listener: InfiniteScrollListener?) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND INFINITE SCROLL LISTENER")
+        }
+
+        listener?.let {
+            it.recycler = recycler
+            recycler.addOnScrollListener(it)
+        }
     }
 }
 

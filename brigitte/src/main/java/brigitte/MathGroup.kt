@@ -3,6 +3,7 @@ package brigitte
 
 import android.content.Context
 import android.util.TypedValue
+import java.text.NumberFormat
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -18,6 +19,9 @@ inline fun Int.dpToPx(context: Context) = (this * context.displayDensity()).toIn
 inline fun Int.pxToDp(context: Context) = (this / context.displayDensity()).toInt()
 inline fun Int.spToPx(context: Context) = TypedValue.applyDimension(
     TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics).toInt()
+
+inline fun Int.numberFormat() = NumberFormat.getNumberInstance().format(this)
+inline fun Long.numberFormat() = NumberFormat.getNumberInstance().format(this)
 
 
 const val UNIT_STRING: String = " KMGTPE"

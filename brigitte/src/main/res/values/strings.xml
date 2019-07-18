@@ -6,4 +6,6 @@
     <string name="permission_title">권한 추가</string>
     <string name="permission_message">"앱을 올바르게 실행하기 위해서는 권한 추가가 필요 합니다."</string>
     <string name="permission_set">설정</string>
+
+    <string name="network_invalid_connectivity">네트워크 연결을 확인해보세요</string>
 </resources>

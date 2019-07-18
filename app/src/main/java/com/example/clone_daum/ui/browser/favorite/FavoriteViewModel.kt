@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
@@ -37,7 +38,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     fun init(dp: CompositeDisposable) {
         this.mDisposable = dp
 
-        initAdapter("favorite_item_folder", "favorite_item")
+        initAdapter(R.layout.favorite_item_folder, R.layout.favorite_item)
         adapter.get()?.run { isScrollToPosition = false }
     }
 
