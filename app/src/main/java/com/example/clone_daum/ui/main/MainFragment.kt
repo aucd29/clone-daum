@@ -181,7 +181,6 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
     override fun initViewModelEvents() {
         mViewModel.apply {
             // fixme main tab adapter 이건 고민 해봐야 될 듯 -_-;
-//            tabAdapter.set(MainTabAdapter(childFragmentManager, preConfig))
             tabAdapter.set(mainTabAdapter)
             viewpager.set(mBinding.viewpager)
 
@@ -350,7 +349,6 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
 
     private fun changeRealtimeIssueTab() {
         mRealtimeIssueViewModel.apply {
-//            tabAdapter.set(RealtimeIssueTabAdapter(childFragmentManager, mRealtimeIssueList!!))
             val adapter = realtimeIssueTabAdapter.get()
             adapter.issueList = mRealtimeIssueList
 
@@ -422,12 +420,6 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
     abstract class Module {
         @dagger.android.ContributesAndroidInjector
         abstract fun contributeInjector(): MainFragment
-
-//        @Binds
-//        abstract fun bindMainTabAdapter(adapter: MainTabAdapter): FragmentStatePagerAdapter
-//
-//        @Binds
-//        abstract fun bindRealtimeIssueTabAdapter(adapter: RealtimeIssueTabAdapter): FragmentStatePagerAdapter
 
         @dagger.Module
         companion object {

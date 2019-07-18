@@ -57,8 +57,7 @@ class Config @Inject constructor(val context: Context) {
         // ACTION BAR
         //
 
-        val ta = context.theme.obtainStyledAttributes(
-            intArrayOf(android.R.attr.actionBarSize))
+        val ta = context.theme.obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
         ACTION_BAR_HEIGHT =  ta.getDimension(0, 0f)
         ta.recycle()
 
@@ -107,33 +106,38 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
 
     init {
         mDisposable.add(Observable.just(mAssetManager.open("res/brs_submenu.json").readBytes())
-                .observeOn(Schedulers.io())
-                .map { it.jsonParse<List<BrowserSubMenu>>() }
-                .map {
-                    it.forEach { f ->
-                        f.iconResid = mContext.stringId(f.icon)
-                    }
-
-                    it
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .map { it.jsonParse<List<BrowserSubMenu>>() }
+            .map {
+                it.forEach { f ->
+                    f.iconResid = mContext.stringId(f.icon)
                 }
-                .subscribe { brsSubMenuList = it })
+
+                it
+            }
+            .subscribe { brsSubMenuList = it })
 
         mDisposable.add(Observable.just(mAssetManager.open("res/navi_sitemap.json").readBytes())
-                .observeOn(Schedulers.io())
-                .map { it.jsonParse<List<Sitemap>>() }
-                .subscribe {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("PARSE OK : navi_sitemap.json")
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .map { it.jsonParse<List<Sitemap>>() }
+            .subscribe {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("PARSE OK : navi_sitemap.json")
+                }
 
-                    naviSitemapList = it
-                })
+                naviSitemapList = it
+            })
 
-        mDisposable.add(mDb.frequentlySiteDao.select().subscribeOn(Schedulers.io()).subscribe {
-            if (it.isEmpty()) {
-                // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
-                // 기본 값 생성하는 것.
-                mDisposable.add(Observable.just(mAssetManager.open("res/frequently_site.json").readBytes())
+        mDisposable.add(mDb.frequentlySiteDao.select()
+            .subscribeOn(Schedulers.io())
+            .subscribe {
+                if (it.isEmpty()) {
+                    // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
+                    // 기본 값 생성하는 것.
+                    mDisposable.add(Observable.just(mAssetManager.open("res/frequently_site.json").readBytes())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
                         .map { s -> s.jsonParse<List<FrequentlySite>>() }
                         .subscribe { list ->
@@ -147,10 +151,11 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
                                 }
                             }
                         })
-            }
-        })
+                 }
+            })
 
         tabLabelList = Observable.just(mAssetManager.open("res/tab.json").readBytes())
+            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
             .blockingFirst()
@@ -160,6 +165,7 @@ class PreloadConfig @Inject constructor(private val mDaum: DaumService
 
     fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
         mDisposable.add(Observable.just(mAssetManager.open("res/weather_default.json").readBytes())
+            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<WeatherDetail>>() }
             .observeOn(AndroidSchedulers.mainThread())
