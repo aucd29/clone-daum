@@ -2,6 +2,7 @@ package com.example.clone_daum.di.module
 
 import android.content.Context
 import android.view.Gravity
+import androidx.databinding.ObservableField
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import dagger.Module
 import dagger.Provides
@@ -13,8 +14,8 @@ import dagger.Provides
 @Module
 class ChipModule {
     @Provides
-    fun provideChipsLayoutManager(context: Context): ChipsLayoutManager {
-        return ChipsLayoutManager.newBuilder(context)
+    fun provideChipsLayoutManager(context: Context): ObservableField<ChipsLayoutManager> {
+        return ObservableField(ChipsLayoutManager.newBuilder(context)
             .setChildGravity(Gravity.TOP)
             .setScrollingEnabled(false)
             .setMaxViewsInRow(3)
@@ -27,6 +28,6 @@ class ChipModule {
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .withLastRow(true)
-            .build()
+            .build())
     }
 }

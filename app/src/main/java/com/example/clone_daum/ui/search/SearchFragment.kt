@@ -20,7 +20,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     }
 
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var layoutManager: ChipsLayoutManager
+//    @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var viewController: ViewController
 
     private lateinit var mPopularViewModel: PopularViewModel
@@ -44,7 +44,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
         mViewModel.init(mDisposable)
         mPopularViewModel.apply {
             init()
-            chipLayoutManager.set(layoutManager)
+//            chipLayoutManager.set(layoutManager)
 
             observe(commandEvent) {
                 mViewModel.command(it.first, it.second)

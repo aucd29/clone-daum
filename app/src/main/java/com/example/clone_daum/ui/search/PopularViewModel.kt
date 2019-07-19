@@ -21,8 +21,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 11. <p/>
  */
 
-class PopularViewModel @Inject constructor(app: Application)
-    : RecyclerViewModel<PopularKeyword>(app) {
+class PopularViewModel @Inject constructor(app: Application
+    , val chipLayoutManager: ObservableField<ChipsLayoutManager>
+) : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
 
@@ -32,8 +33,8 @@ class PopularViewModel @Inject constructor(app: Application)
     private var mPopularList: PopularSearchedWord? = null
     private lateinit var mDisposable: CompositeDisposable
 
-    val visiblePopular    = ObservableInt(View.GONE)
-    val chipLayoutManager = ObservableField<ChipsLayoutManager>()
+    val visiblePopular = ObservableInt(View.GONE)
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -50,9 +51,10 @@ class PopularViewModel @Inject constructor(app: Application)
             }
 
             mDisposable.add(Observable.just(html)
+                .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(::parsePopular)
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     mPopularList = it
                 }, ::errorLog))
