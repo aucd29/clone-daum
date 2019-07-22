@@ -114,6 +114,15 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
         }
     }
 
+    override fun onDestroyView() {
+        mViewModel.apply {
+            dimmingBgAlpha.set(null)
+            containerTransY.set(null)
+        }
+
+        super.onDestroyView()
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // OnBackPressedListener
@@ -146,28 +155,28 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
                 CMD_SEARCH_SPEECH  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { req, res -> if (res) { viewController.speechFragment() } }
+                        , { _, res -> if (res) { viewController.speechFragment() } }
                         , REQ_RECORD_SPEECH))
                 }
 
                 CMD_SEARCH_MUSIC   -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { req, res -> if (res) { viewController.musicFragment() } }
+                        , { _, res -> if (res) { viewController.musicFragment() } }
                         , REQ_RECORD_MUSIC))
                 }
 
                 CMD_SEARCH_FLOWER  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { req, res -> if (res) { viewController.flowerFragment() } }
+                        , { _, res -> if (res) { viewController.flowerFragment() } }
                         , REQ_FLOWER))
                 }
 
                 CMD_SEARCH_BARCODE -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { req, res -> if (res) { viewController.barcodeFragment() } }
+                        , { _, res -> if (res) { viewController.barcodeFragment() } }
                         , REQ_BARCODE))
                 }
             }

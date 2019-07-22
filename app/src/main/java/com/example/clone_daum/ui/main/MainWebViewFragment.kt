@@ -89,7 +89,6 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
                     }
                 }
 
-                // 이 값이 구 버전에서는 제대로 안들어왔음 =_ =
                 if (position == MainViewModel.INDEX_NEWS) {
                     mSplashViewModel.closeSplash()
                 }
