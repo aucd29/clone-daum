@@ -7,6 +7,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import com.example.clone_daum.ui.ViewController
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
@@ -15,6 +16,7 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.log
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 18. <p/>
@@ -31,6 +33,8 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
         private const val V_SCALE          = 1.2F
         private const val V_SCALE_DURATION = 500L
     }
+
+    @Inject lateinit var viewController: ViewController
 
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
@@ -50,7 +54,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
             return
         }
 
-        initClient()
+        initSpeechClient()
     }
 
     override fun initViewModelEvents() {
@@ -60,7 +64,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
         keepScreen(false)
         endAnimation()
         stopRecording()
-        resetClient()
+        resetSpeechClient()
 
         super.onDestroyView()
     }
@@ -128,7 +132,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
 //        그 후 SpeechRecognizerClient.Builder를 통하여 다음과 같이 SpeechRecognizerClient를 생성합니다.
     // https://developers.kakao.com/docs/android/speech#시작하기
 
-    private fun initClient() {
+    private fun initSpeechClient() {
         // SpeechRecognizerManager 의 appContext 에서 memory leak 존재 ..
         if (!SpeechRecognizerManager.getInstance().isInitialized) {
             SpeechRecognizerManager.getInstance().initializeLibrary(context)
@@ -142,7 +146,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
         mRecognizer?.setSpeechRecognizeListener(this)
     }
 
-    private fun resetClient() {
+    private fun resetSpeechClient() {
         if (SpeechRecognizerManager.getInstance().isInitialized) {
             SpeechRecognizerManager.getInstance().finalizeLibrary()
         }
@@ -192,6 +196,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
         if (mLog.isDebugEnabled) {
             mLog.debug("SPEECH FINISHED")
         }
+//        mViewModel.messageResId.set(R.string.speech_processing)
     }
 
     override fun onBeginningOfSpeech() {
@@ -205,7 +210,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
             mLog.debug("SPEECH END")
         }
 
-        activity?.runOnUiThread {
+        uiThread {
             endAnimation()
             mViewModel.speechResult.set("")
         }
@@ -227,11 +232,10 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
 
     override fun onPartialResult(partialResult: String?) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH PARTIAL RESULT")
-            mLog.debug("$partialResult")
+            mLog.debug("SPEECH PARTIAL RESULT : $partialResult")
         }
 
-        activity?.runOnUiThread {
+        uiThread {
             partialResult?.let { mViewModel.speechResult.set(it) }
         }
     }
@@ -249,17 +253,24 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
             mLog.debug("RESULT = $results")
         }
 
-        activity?.runOnUiThread {
-            mRecognizer?.cancelRecording()
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CANCEL RECORDING")
+        }
 
+        ioThread { mRecognizer?.cancelRecording() }
+
+        uiThread {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("OPEN BRS")
+            }
             val data = results?.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS)
-
             data?.let {
-                var resultList = ""
-                it.forEach { str -> resultList += "$str\n" }
-
-                mViewModel.speechResult.set(resultList)
-            } ?: mViewModel.messageResId.set(R.string.speech_no_result)
+                finish()
+                viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
+            } ?: run {
+                mViewModel.messageResId.set(R.string.speech_no_result)
+                postDelayed { finish() }
+            }
         }
     }
 
@@ -270,7 +281,7 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
     override fun onError(errorCode: Int, errorMsg: String?) {
         mLog.error("ERROR: $errorCode $errorMsg")
 
-        activity?.runOnUiThread(::endAnimation)
+        uiThread(::endAnimation)
 
         mViewModel.messageResId.apply {
             val error = when (errorCode) {

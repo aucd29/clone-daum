@@ -28,6 +28,7 @@
     <!-- speech -->
     <string name="speech_pls_speak_search_keyword">검색어를 말해주세요</string>
     <string name="speech_listening">듣고있삼</string>
+    <string name="speech_processing">처리 중..</string>
     <string name="speech_no_result">알아먹을수 없삼</string>
     <string name="speech_error_client">내 폰에선 잘됬는데 안되네?</string>
     <string name="speech_error_audio">MIC 가 이상함</string>

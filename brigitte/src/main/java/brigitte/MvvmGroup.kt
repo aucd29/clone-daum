@@ -233,6 +233,14 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
     }
 
+    protected fun uiThread(callback: () -> Unit) {
+        requireActivity().runOnUiThread(callback)
+    }
+
+    protected fun postDelayed(delay: Long = 1000L, callback: () -> Unit) {
+        mBinding.root.postDelayed(callback, delay)
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ABSTRACT
