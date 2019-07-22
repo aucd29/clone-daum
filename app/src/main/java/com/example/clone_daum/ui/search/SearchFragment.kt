@@ -20,17 +20,12 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     }
 
     @Inject lateinit var preConfig: PreloadConfig
-//    @Inject lateinit var layoutManager: ChipsLayoutManager
+    @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var viewController: ViewController
 
     private lateinit var mPopularViewModel: PopularViewModel
 
     override fun initViewBinding() {
-//        mBinding.searchRecycler.itemAnimator.apply {
-//            if (this is DefaultItemAnimator) {
-//                supportsChangeAnimations = false
-//            }
-//        }
     }
 
     override fun bindViewModel() {
@@ -38,17 +33,15 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
 
         mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment)
         mBinding.popularmodel = mPopularViewModel
+
+        mCommandEventModels.add(mPopularViewModel)
     }
 
     override fun initViewModelEvents() {
         mViewModel.init(mDisposable)
         mPopularViewModel.apply {
             init()
-//            chipLayoutManager.set(layoutManager)
-
-            observe(commandEvent) {
-                mViewModel.command(it.first, it.second)
-            }
+            chipLayoutManager.set(layoutManager)
         }
     }
 
@@ -68,11 +61,11 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
 //        mViewModel.finish()
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())
-            PopularViewModel.CMD_BRS_SEARCH -> showBrowser(data.toString())
+            PopularViewModel.CMD_BRS_SEARCH -> daumSearch(data.toString())
         }
     }
 
-    private fun showBrowser(url: String)  {
+    private fun daumSearch(url: String)  {
         if (mLog.isDebugEnabled) {
             mLog.debug("SHOW BROWSER !!!!!")
         }

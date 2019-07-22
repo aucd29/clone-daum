@@ -14,8 +14,8 @@ import dagger.Provides
 @Module
 class ChipModule {
     @Provides
-    fun provideChipsLayoutManager(context: Context): ObservableField<ChipsLayoutManager> {
-        return ObservableField(ChipsLayoutManager.newBuilder(context)
+    fun provideChipsLayoutManager(context: Context): ChipsLayoutManager {
+        return ChipsLayoutManager.newBuilder(context)
             .setChildGravity(Gravity.TOP)
             .setScrollingEnabled(false)
             .setMaxViewsInRow(3)
@@ -28,6 +28,6 @@ class ChipModule {
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .withLastRow(true)
-            .build())
+            .build()
     }
 }

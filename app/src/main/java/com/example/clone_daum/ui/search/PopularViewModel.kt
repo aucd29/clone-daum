@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 
 class PopularViewModel @Inject constructor(app: Application
-    , val chipLayoutManager: ObservableField<ChipsLayoutManager>
+    , layoutManager: ChipsLayoutManager
 ) : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
@@ -33,8 +33,8 @@ class PopularViewModel @Inject constructor(app: Application
     private var mPopularList: PopularSearchedWord? = null
     private lateinit var mDisposable: CompositeDisposable
 
-    val visiblePopular = ObservableInt(View.GONE)
-
+    val visiblePopular    = ObservableInt(View.GONE)
+    val chipLayoutManager = ObservableField<ChipsLayoutManager>(layoutManager)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
