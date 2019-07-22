@@ -102,7 +102,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = dataBindingView(resources.getIdentifier(mLayoutName, LAYOUT, packageName))
+        mBinding = dataBindingView(layoutId())
 
         initBackPressed()
         bindViewModel()
@@ -115,11 +115,15 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
         initViewModelEvents()
     }
 
+    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    @LayoutRes
+    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
+
     override fun onBackPressed() {
         // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
         // h/w backkey 를 처리한 것으로 본다.
-        val frgmt = supportFragmentManager.current
-        if (frgmt != null && frgmt is OnBackPressedListener && frgmt.onBackPressed()) {
+        val fragment = supportFragmentManager.current
+        if (fragment != null && fragment is OnBackPressedListener && fragment.onBackPressed()) {
             return
         }
 
@@ -196,7 +200,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutId = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+        val layoutId = layoutId()
         if (layoutId == 0) {
             return generateEmptyLayout(mLayoutName)
         }
@@ -208,6 +212,10 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
 
         return mBinding.root
     }
+
+    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    @LayoutRes
+    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -233,14 +241,6 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
     }
 
-    protected fun uiThread(callback: () -> Unit) {
-        requireActivity().runOnUiThread(callback)
-    }
-
-    protected fun postDelayed(delay: Long = 1000L, callback: () -> Unit) {
-        mBinding.root.postDelayed(callback, delay)
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ABSTRACT
@@ -261,8 +261,6 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
-
-    override fun commandFinish(animate: Boolean) = finish(animate)
 }
 
 
@@ -284,7 +282,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layoutId = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+        val layoutId = layoutId()
         if (layoutId == 0) {
             return generateEmptyLayout(mLayoutName)
         }
@@ -296,6 +294,10 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel>
 
         return mBinding.root
     }
+
+    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    @LayoutRes
+    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -363,7 +365,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
     protected var mViewModelScope = BaseFragment.SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutId = resources.getIdentifier(mLayoutName, LAYOUT, activity?.packageName)
+        val layoutId = layoutId()
         if (layoutId == 0) {
             return generateEmptyLayout(mLayoutName)
         }
@@ -376,6 +378,10 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
 
         return mBinding.root
     }
+
+    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    @LayoutRes
+    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -504,7 +510,7 @@ interface BaseEventAware {
             if (vm is ICommandEventAware) {
                 observe(vm.commandEvent) {
                     when (it.first) {
-                        ICommandEventAware.CMD_FINISH   -> commandFinish(it.second as Boolean)
+                        ICommandEventAware.CMD_FINISH   -> commandFinish()
                         ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
                         ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
 
@@ -516,7 +522,7 @@ interface BaseEventAware {
     }
 
     fun onCommandEvent(cmd: String, data: Any) { }
-    fun commandFinish(animate: Boolean) = activity().finish()
+    fun commandFinish() = activity().finish()
     fun commandToast(message: String) = activity().toast(message)
     fun commandSnackbar(message: String) =
         activity().snackbar(rootView(), message).show()

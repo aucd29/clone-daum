@@ -186,31 +186,31 @@ object FragmentCommit {
 }
 
 inline fun FragmentManager.showBy(params: FragmentParams) {
-    val frgmt = params.fragment
-    if (frgmt != null && frgmt.isVisible) {
+    val fragment = params.fragment
+    if (fragment != null && fragment.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
         return
     }
 
-    frgmt?.let { internalShow(it, params) }
+    fragment?.let { internalShow(it, params) }
 }
 
 inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams) {
-    val existFrgmt = findFragmentByTag(T::class.java.name)
-    if (existFrgmt != null && existFrgmt.isVisible) {
+    val existFragment = findFragmentByTag(T::class.java.name)
+    if (existFragment != null && existFragment.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
         return
     }
 
-    val frgmt =  T::class.java.newInstance() as Fragment
-    internalShow(frgmt, params)
+    val fragment =  T::class.java.newInstance() as Fragment
+    internalShow(fragment, params)
 }
 
-inline fun FragmentManager.internalShow(frgmt: Fragment, params: FragmentParams) {
+inline fun FragmentManager.internalShow(fragment: Fragment, params: FragmentParams) {
     val transaction = beginTransaction()
 
     params.apply {
-        bundle?.let { frgmt.arguments = it }
+        bundle?.let { fragment.arguments = it }
 
         transaction.apply {
             anim?.let {
@@ -229,15 +229,15 @@ inline fun FragmentManager.internalShow(frgmt: Fragment, params: FragmentParams)
                 }
             }
 
-            // findFragmentByTag 를 위해 frgmt.javaClass.name 를 등록
+            // findFragmentByTag 를 위해 fragment.javaClass.name 를 등록
             if (add) {
-                add(containerId, frgmt, frgmt.javaClass.name)
+                add(containerId, fragment, fragment.javaClass.name)
             } else {
-                replace(containerId, frgmt, frgmt.javaClass.name)
+                replace(containerId, fragment, fragment.javaClass.name)
             }
 
             if (backStack) {
-                addToBackStack(frgmt.javaClass.name)
+                addToBackStack(fragment.javaClass.name)
             }
 
             commit?.let {

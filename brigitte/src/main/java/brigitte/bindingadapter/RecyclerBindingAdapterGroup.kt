@@ -161,9 +161,6 @@ inline fun RecyclerView.decorator(@DrawableRes drawable: Int, type: Int = Divide
     }
 }
 
-
-
-//
 //inline fun ImageView.picasso(@DrawableRes resid: Int, @DrawableRes holder: Int = R.drawable.ic_autorenew_black_24dp) =
 //    Picasso.get().load(resid).into(this)
 //

@@ -58,17 +58,19 @@
                     app:layout_constraintStart_toEndOf="@+id/brs_ssl_icon"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/reload_icon"
                     tools:text="urlinfoasdfasdfassafdsaf dfasdfasdfa sdfasdaf"
                     android:layout_marginStart="@dimen/brs_url_mgn_s"
                     android:maxWidth="@dimen/brs_url_max_w"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textColor="@android:color/black"
-                    android:paddingEnd="5dp"
+                    android:paddingEnd="10dp"
                     android:text="@{model.urlString}"
             />
 
             <ImageView
+                    android:id="@+id/reload_icon"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/brs_stack"

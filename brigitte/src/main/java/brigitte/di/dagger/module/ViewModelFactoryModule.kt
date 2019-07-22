@@ -38,11 +38,11 @@ class DaggerViewModelFactory @Inject constructor(
 inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOfActivity(activity: FragmentActivity) =
     ViewModelProviders.of(activity, this).get(T::class.java)
 
-inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOfActivity(frgmt: Fragment) =
-    ViewModelProviders.of(frgmt.activity!!, this).get(T::class.java)
+inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOfActivity(fragment: Fragment) =
+    ViewModelProviders.of(fragment.activity!!, this).get(T::class.java)
 
-inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOf(frgmt: Fragment) =
-    ViewModelProviders.of(frgmt, this).get(T::class.java)
+inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOf(fragment: Fragment) =
+    ViewModelProviders.of(fragment, this).get(T::class.java)
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @MapKey

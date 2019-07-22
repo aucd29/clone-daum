@@ -5,6 +5,8 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import brigitte.widget.BannerPagerAdapter
 import brigitte.widget.IBannerItem
+import brigitte.widget.IBannerPagerAdapter
+import brigitte.widget.InfinitePagerAdapter
 import org.slf4j.LoggerFactory
 
 /**
@@ -43,24 +45,43 @@ object ViewPagerBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindBannerAdapter", "bindBannerItems", requireAll = false)
-    fun <T: IBannerItem> bindBannerItems(viewpager: ViewPager, adapter: BannerPagerAdapter<T>?, items: List<T>?) {
+    fun <T: IBannerItem> bindBannerItems(viewpager: ViewPager, adapter: IBannerPagerAdapter?, items: List<T>?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindBannerItems ${items?.size}")
         }
 
         try {
-            var myadapter: BannerPagerAdapter<T>? = null
+            var myadapter: IBannerPagerAdapter? = null
             adapter?.let {
                 if (viewpager.adapter == null) {
-                    myadapter = it
-                    viewpager.adapter = myadapter
-                } else {
-                    myadapter = viewpager.adapter as BannerPagerAdapter<T>
-                }
-            }
+                    when (it) {
+                        is BannerPagerAdapter<*> -> {
+                            items?.let { list -> it.setBannerItems(list as List<Nothing>) }
 
-            items?.let {
-                myadapter?.setBannerItems(items)
+                            myadapter         = it
+                            viewpager.adapter = it
+                        }
+                        is InfinitePagerAdapter -> {
+                            items?.let { list -> it.setBannerItems(list as List<Nothing>) }
+
+                            myadapter         = it
+                            viewpager.adapter = it
+                        }
+                        else -> {}
+                    }
+                } else {
+                    myadapter = viewpager.adapter as IBannerPagerAdapter
+
+                    items?.let { list ->
+                        myadapter?.let {
+                            if (it is BannerPagerAdapter<*>) {
+                                it.setBannerItems(list as List<Nothing>)
+                            } else if (it is InfinitePagerAdapter) {
+                                it.setBannerItems(list as List<*>)
+                            }
+                        }
+                    }
+                }
             }
         } catch (e: Exception) {
             if (mLog.isDebugEnabled) {
