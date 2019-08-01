@@ -25,8 +25,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchViewModel @Inject constructor(app: Application
-    , val config: Config
+class SearchViewModel @Inject constructor(
+    app: Application,
+    val config: Config
 ) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
@@ -71,8 +72,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun reloadHistoryData() {
         mDisposable.add(searchDao.search()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOnIoAndObserveOnMain()
             .subscribe({
                 items.set(it)
                 visibleSearchRecycler(it.isNotEmpty())
@@ -84,8 +84,7 @@ class SearchViewModel @Inject constructor(app: Application
             mDisposable.add(searchDao.insert(SearchHistory(
                 keyword = it,
                 date    = System.currentTimeMillis()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOnIoAndObserveOnMain()
                 .subscribe({
                     if (mLog.isDebugEnabled) {
                         mLog.debug("INSERTED DATA $it")
@@ -141,7 +140,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun eventDeleteHistory(item: SearchHistory) {
         mDisposable.add(searchDao.delete(item)
-            .subscribeOn(Schedulers.io())
+            .subscribeOnIo()
             .subscribe ({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("DELETED : $item")
@@ -156,7 +155,7 @@ class SearchViewModel @Inject constructor(app: Application
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
             , listener = { res, _ -> if (res) {
                 mDisposable.add(Completable.fromAction { searchDao.deleteAll() }
-                    .subscribeOn(Schedulers.io())
+                    .subscribeOnIo()
                     .subscribe ({
                         if (mLog.isDebugEnabled) {
                             mLog.debug("DELETE ALL")
@@ -169,7 +168,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun suggest(keyword: String) {
         mDisposable.add(daum.suggest(keyword)
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOnMain()
             .subscribe ({
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 

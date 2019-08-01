@@ -145,7 +145,7 @@ inline fun WebView.free() {
     }
 }
 
-data class WebViewSettingParams (
+data class WebViewSettingParams @JvmOverloads constructor (
     val urlLoading      : ((WebView?, String?) -> Unit)? = null,
     val pageFinished    : ((String?) -> Unit)? = null,
     val pageStarted     : ((String?) -> Unit)? = null,

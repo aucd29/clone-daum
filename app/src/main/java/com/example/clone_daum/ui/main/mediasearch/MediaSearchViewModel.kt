@@ -12,8 +12,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 16. <p/>
  */
 
-class MediaSearchViewModel @Inject constructor(application: Application
-    , val config: Config
+class MediaSearchViewModel @Inject constructor(
+    application: Application,
+    val config: Config
 ) : CommandEventViewModel(application) {
     companion object {
         const val CMD_ANIM_FINISH    = "anim-finish"

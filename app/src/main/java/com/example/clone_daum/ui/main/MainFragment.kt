@@ -7,9 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.ViewController
@@ -24,8 +22,6 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
-import dagger.Binds
-import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 import kotlin.math.abs
@@ -33,8 +29,10 @@ import kotlin.math.abs
 
 // 어라라.. 머지가 잘못되었나? 왜 검색 영역에서 스크롤이 되는것이냐? ㄷ ㄷ ㄷ [aucd29][2019. 4. 17.]
 
-class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBinding, MainViewModel>()
-    , TabLayout.OnTabSelectedListener, OnBackPressedListener {
+class MainFragment @Inject constructor(
+) : BaseDaggerFragment<MainFragmentBinding, MainViewModel>(),
+    TabLayout.OnTabSelectedListener,
+    OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
     }
@@ -61,26 +59,24 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
         }
     }
 
+    override fun layoutId() = R.layout.main_fragment
+
     override fun bindViewModel() {
         super.bindViewModel()
 
-        initRealtimeIssueViewModel()
-        initPopularViewModel()
+        mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this)
+        mPopularViewModel       = mViewModelFactory.injectOfActivity(this)
+        
+        mBinding.realtimeIssueModel = mRealtimeIssueViewModel
 
         mDisposable.add(preConfig.daumMain()
+            .observeOnIo()
             .subscribe({ html ->
                 mRealtimeIssueViewModel.load(html)
                 mPopularViewModel.load(html, mDisposable)
             }, { errorLog(it, mLog) }))
-    }
 
-    private fun initRealtimeIssueViewModel() {
-        mRealtimeIssueViewModel     = mViewModelFactory.injectOfActivity(this)
-        mBinding.realtimeIssueModel = mRealtimeIssueViewModel
-    }
-
-    private fun initPopularViewModel() {
-        mPopularViewModel = mViewModelFactory.injectOfActivity(this)
+        addCommandEventModels(mRealtimeIssueViewModel)
     }
 
     override fun initViewBinding() {
@@ -203,8 +199,6 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
         }
 
         mRealtimeIssueViewModel.apply {
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
-
             viewpager.set(mBinding.realtimeIssueViewpager)
             viewPagerLoaded.set { customRealtimeIssueTab() }
         }
@@ -310,6 +304,7 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
                 visibleDetail.set(View.VISIBLE)
 
                 tabAlpha.set(AnimParams(1f, duration = RealtimeIssueViewModel.ANIM_DURATION))
+                backgroundAlpha.set(AnimParams(1f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 bgAlpha.set(tabAlpha.get())
                 tabMenuRotation.set(AnimParams(180f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 containerTransY.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
@@ -324,14 +319,13 @@ class MainFragment @Inject constructor() : BaseDaggerFragment<MainFragmentBindin
                 mBinding.realtimeIssueArea.layoutHeight(changeTabHeight)
             } else {
                 tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION
-                    , endListener = { v, anim ->
-                        if (v.id == mBinding.realtimeIssueTab.id) {
-                            visibleDetail.set(View.GONE)
-                            mBinding.realtimeIssueArea.layoutHeight(1f)
+                    , endListener = { anim ->
+                        visibleDetail.set(View.GONE)
+                        mBinding.realtimeIssueArea.layoutHeight(1f)
 
-                            visibleCallback?.invoke()
-                        }
+                        visibleCallback?.invoke()
                     }))
+                backgroundAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
                 val height = mBinding.realtimeIssueViewpager.height * -1f

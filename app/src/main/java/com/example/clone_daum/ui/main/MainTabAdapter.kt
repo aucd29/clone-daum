@@ -19,6 +19,7 @@ import javax.inject.Named
 
 // https://medium.com/@naturalwarren/dagger-kotlin-3b03c8dd6e9b
 // https://stackoverflow.com/questions/48442623/dagger-2-constructor-injection-in-kotlin-with-named-arguments
+
 class MainTabAdapter @Inject constructor(
     @param:Named("child_fragment_manager") fm: FragmentManager,
     private val mPreConfig: PreloadConfig
@@ -31,7 +32,7 @@ class MainTabAdapter @Inject constructor(
     }
 
     override fun getItem(position: Int): Fragment {
-        // 이건 어떻게 inject 해야할지 모르겠네
+        // 이건 어떻게 inject 해야할지 모르겠네?
         return MainWebviewFragment().apply {
             arguments = Bundle().apply {
                 if (mLog.isDebugEnabled) {

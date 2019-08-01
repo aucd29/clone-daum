@@ -15,9 +15,10 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 2. <p/>
  */
 
-class SitemapViewModel @Inject constructor(app: Application
-    , val preConfig: PreloadConfig)
-    : RecyclerViewModel<Sitemap>(app) {
+class SitemapViewModel @Inject constructor(
+    app: Application,
+    val preConfig: PreloadConfig
+) : RecyclerViewModel<Sitemap>(app) {
 
     val gridCount    = ObservableInt(5)
     val brsOpenEvent = SingleLiveEvent<String>()

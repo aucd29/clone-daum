@@ -60,18 +60,56 @@ object RecyclerBindingAdapter {
         }
     }
 
+    /**
+     *  <?xml version="1.0" encoding="utf-8"?>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="rectangle">
+        <size android:height="1dp" />
+        <solid android:color="#ff992900" />
+        </shape>
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+        <size
+        android:width="1dp"
+        android:height="1dp" />
+
+        <solid android:color="@color/dark_gray" />
+    </shape>
+     */
     @JvmStatic
-    @BindingAdapter("bindHorDecoration", "bindVerDecoration")
-    fun bindDecorator(recycler: RecyclerView, horDrawable: Int, verDrawable: Int) {
+    @BindingAdapter("bindHorDecoration", "bindVerDecoration", requireAll = false)
+    fun bindDecoration(recycler: RecyclerView, horDrawable: Int? = null, verDrawable: Int? = null) {
         //https://stackoverflow.com/questions/31242812/how-can-a-divider-line-be-added-in-an-android-recyclerview
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND DECORATION: hor($horDrawable), ver($verDrawable)")
         }
 
         recycler.apply {
-            decorator(horDrawable)
-            decorator(verDrawable, DividerItemDecoration.VERTICAL)
+            horDrawable?.let { decorator(it) }
+            verDrawable?.let { decorator(it, DividerItemDecoration.VERTICAL) }
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindItemDecoration")
+    fun bindItemDecoration(recycler: RecyclerView, decoration: RecyclerView.ItemDecoration? = null) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND ITEM DECORATION")
+        }
+
+        decoration?.let { recycler.addItemDecoration(it) }
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindItemDecorations")
+    fun bindItemDecorations(recycler: RecyclerView, decorations: Array<RecyclerView.ItemDecoration>? = null) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND ITEM DECORATION")
+        }
+
+        decorations?.let { it.forEach { recycler.addItemDecoration(it) } }
     }
 
     @JvmStatic

@@ -1,13 +1,11 @@
 package brigitte.bindingadapter
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.view.View
-import android.view.animation.Animation
 import android.view.animation.Interpolator
-import android.view.animation.RotateAnimation
 import androidx.databinding.BindingAdapter
 import org.slf4j.LoggerFactory
 
@@ -20,27 +18,66 @@ import org.slf4j.LoggerFactory
 object AnimationBindingAdapter {
     private val mLog = LoggerFactory.getLogger(AnimationBindingAdapter::class.java)
 
-    private const val K_TRANSLATION_Y = "translationY"
-    private const val K_TRANSLATION_X = "translationX"
-    private const val K_ALPHA         = "alpha"
-    private const val K_SCALE_X       = "scaleX"
-    private const val K_SCALE_Y       = "scaleY"
-    private const val K_ROTATION      = "rotation"
+    const val K_TRANSLATION_X = "translationX"
+    const val K_TRANSLATION_Y = "translationY"
+    const val K_ALPHA         = "alpha"
+    const val K_SCALE_X       = "scaleX"
+    const val K_SCALE_Y       = "scaleY"
+    const val K_ROTATION      = "rotation"
 
     @JvmStatic
-    @BindingAdapter("bindTranslateY")
-    fun bindTranslateY(view: View, params: AnimParams?) {
+    @BindingAdapter("bindAnimatorSet")
+    fun bindObjectAnim(view: View, params: AnimatorSetParams?) {
         if (params == null) {
             return
         }
 
-        val anim = if (params.initValue == null) {
-            ObjectAnimator.ofFloat(view, K_TRANSLATION_Y, params.value)
-        } else {
-            ObjectAnimator.ofFloat(view, K_TRANSLATION_Y, params.initValue, params.value)
+        val animSet = AnimatorSet()
+        params.callback?.invoke(animSet)
+
+        val paramMap = params.animMap
+        val animList = arrayListOf<Animator>()
+
+        for ((k, param) in paramMap) {
+            val animator = if (param.initValue == null) {
+                ObjectAnimator.ofFloat(view, k, param.value)
+            } else {
+                ObjectAnimator.ofFloat(view, k, param.initValue, param.value)
+            }
+
+            animator.repeatCount = param.repeatCount
+            animator.repeatMode  = param.repeatMode
+
+            animList.add(animator)
         }
 
-        objectAnim(view, anim, params)
+        if (animList.size == 0) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("ANIMATOR SET == 0")
+            }
+            return
+        }
+
+        params.apply {
+            animSet.duration = duration
+            interpolator?.let { animSet.interpolator = it }
+            startDelay?.let { animSet.startDelay = it }
+
+            animSet.playTogether(animList)
+
+            if (endListener != null) {
+                animSet.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animator: Animator?) {}
+                    override fun onAnimationCancel(animator: Animator?) {}
+                    override fun onAnimationRepeat(animator: Animator?) {}
+                    override fun onAnimationEnd(animator: Animator?) {
+                        endListener?.invoke(animator)
+                    }
+                })
+            }
+
+            animSet.start()
+        }
     }
 
     @JvmStatic
@@ -48,6 +85,10 @@ object AnimationBindingAdapter {
     fun bindTranslateX(view: View, params: AnimParams?) {
         if (params == null) {
             return
+        }
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ANIMATION $K_TRANSLATION_X")
         }
 
         val anim = if (params.initValue == null) {
@@ -60,10 +101,34 @@ object AnimationBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("bindTranslateY")
+    fun bindTranslateY(view: View, params: AnimParams?) {
+        if (params == null) {
+            return
+        }
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ANIMATION $K_TRANSLATION_Y")
+        }
+
+        val anim = if (params.initValue == null) {
+            ObjectAnimator.ofFloat(view, K_TRANSLATION_Y, params.value)
+        } else {
+            ObjectAnimator.ofFloat(view, K_TRANSLATION_Y, params.initValue, params.value)
+        }
+
+        objectAnim(view, anim, params)
+    }
+
+    @JvmStatic
     @BindingAdapter("bindAlpha")
     fun bindAlpha(view: View, params: AnimParams?) {
         if (params == null) {
             return
+        }
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ANIMATION $K_ALPHA")
         }
 
         val anim = if (params.initValue == null) {
@@ -82,6 +147,10 @@ object AnimationBindingAdapter {
             return
         }
 
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ANIMATION $K_SCALE_X")
+        }
+
         val anim = if (params.initValue == null) {
             ObjectAnimator.ofFloat(view, K_SCALE_X, params.value)
         } else {
@@ -98,6 +167,10 @@ object AnimationBindingAdapter {
             return
         }
 
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ANIMATION $K_SCALE_Y")
+        }
+
         val anim = if (params.initValue == null) {
             ObjectAnimator.ofFloat(view, K_SCALE_Y, params.value)
         } else {
@@ -112,6 +185,10 @@ object AnimationBindingAdapter {
     fun bindRotation(view: View, params: AnimParams?) {
         if (params == null) {
             return
+        }
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ANIMATION $K_ROTATION")
         }
 
         val anim = if (params.initValue == null) {
@@ -132,7 +209,7 @@ object AnimationBindingAdapter {
                 .scaleY(value)
                 .alpha(0f)
                 .withEndAction {
-                    endListener?.invoke(view, null)
+                    endListener?.invoke(null)
 
                     view.apply {
                         scaleX = 1f
@@ -172,7 +249,7 @@ object AnimationBindingAdapter {
                         reverse?.invoke(animator)
                     }
                     override fun onAnimationEnd(animator: Animator?) {
-                        endListener?.invoke(view, animator)
+                        endListener?.invoke(animator)
                     }
                 })
             }
@@ -186,11 +263,27 @@ object AnimationBindingAdapter {
     }
 }
 
+data class AnimatorSetParams(
+    var animMap        : Map<String, AnimatorParams>,
+    var duration       : Long = 300,
+    var endListener    : ((Animator?) -> Unit)? = null,
+    var interpolator   : Interpolator? = null,
+    var startDelay     : Long? = null,
+    var callback       : ((AnimatorSet?) -> Unit)? = null
+)
+
+data class AnimatorParams(
+    var value          : Float,
+    val initValue      : Float? = null,
+    var repeatCount    : Int = 1,
+    var repeatMode     : Int = ValueAnimator.RESTART
+)
+
 data class AnimParams(
     var value          : Float,
     val initValue      : Float? = null,
     var duration       : Long = 300,
-    var endListener    : ((View, Animator?) -> Unit)? = null,
+    var endListener    : ((Animator?) -> Unit)? = null,
     var interpolator   : Interpolator? = null,
     var startDelay     : Long? = null,
     var reverse        : ((Animator?) -> Unit)? = null,
@@ -203,7 +296,7 @@ data class ToLargeAlphaAnimParams(
     val transX : Float = 0f,
     val transY : Float = 0f,
     val duration: Long = 300,
-    val endListener : ((View, Animator?) -> Unit)? = null,
+    val endListener : ((Animator?) -> Unit)? = null,
     val interpolator : Interpolator? = null,
     val startDelay : Long? = null
 )

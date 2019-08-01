@@ -11,10 +11,8 @@ import javax.inject.Singleton
 
 @Module
 class RxModule {
-    private val mComposite = CompositeDisposable()
-
     @Singleton
     @Provides
     fun provideCompositeDisposable()
-            = mComposite
+            = CompositeDisposable()
 }

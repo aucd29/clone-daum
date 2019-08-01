@@ -8,6 +8,7 @@ import android.animation.ValueAnimator
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
 import org.slf4j.LoggerFactory
 
 /**

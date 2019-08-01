@@ -1,8 +1,10 @@
 package brigitte.widget.viewpager
 
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -21,19 +23,19 @@ import java.lang.reflect.Field
  * https://github.com/antonyt/InfiniteViewPager/blob/master/library/src/main/java/com/antonyt/infiniteviewpager/InfiniteViewPager.java
  */
 
-class ViewPagerScroller: Scroller {
-    var myDuration = 1500
-
-    constructor(context: Context): super(context)
-    constructor(context: Context, interpolator: Interpolator): super(context, interpolator)
-    constructor(context: Context, interpolator: Interpolator, flywheel: Boolean) : super(context, interpolator, flywheel)
+class ViewPagerScroller @JvmOverloads constructor(
+    context: Context,
+    interpolator: Interpolator? = null,
+    flywheel: Boolean = context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.HONEYCOMB
+) : Scroller(context, interpolator, flywheel) {
+    var mDuration = 1500
 
     override fun startScroll(startX: Int, startY: Int, dx: Int, dy: Int) {
-        super.startScroll(startX, startY, dx, dy, myDuration)
+        super.startScroll(startX, startY, dx, dy, mDuration)
     }
 
     override fun startScroll(startX: Int, startY: Int, dx: Int, dy: Int, duration: Int) {
-        super.startScroll(startX, startY, dx, dy, myDuration)
+        super.startScroll(startX, startY, dx, dy, mDuration)
     }
 }
 
@@ -48,27 +50,71 @@ fun ViewPager.setViewPagerScroller(scroller: ViewPagerScroller) {
     }
 }
 
-class InfiniteViewPager : WrapContentViewPager {
+class InfiniteViewPager @JvmOverloads constructor(
+    context: Context,
+    attr: AttributeSet? = null
+) : WrapContentViewPager(context, attr) {
     companion object {
         private val mLog = LoggerFactory.getLogger(InfiniteViewPager::class.java)
+
+        const val H_START_SCROLL  = 0
+
+        const val DIRECTION_START = 0
+        const val DIRECTION_END   = 1
     }
 
-    constructor(context: Context): super(context)
-    constructor(context: Context, attr: AttributeSet): super(context, attr)
-
-    private var mActionDown = false
-    private var mAutoScrollDelay: Long = 0L
-    private var mHandler = Handler(Looper.getMainLooper())
-    private var mScrollRunnable: Runnable? = null
+    private var mScrollDelay: Long = 0L
     private var mPageChangeListener: SimpleOnPageChangeListener? = null
+    private var mScroller = ViewPagerScroller(context)
+    private var mIsScroll = false
 
-    override fun initLayout() {
-        setViewPagerScroller(ViewPagerScroller(context))
+    var duration: Int
+        get() = mScroller.mDuration
+        set(value) {
+            mScroller = ViewPagerScroller(context).apply { mDuration = value }
+            setViewPagerScroller(mScroller)
+        }
+
+    var direction: Int = DIRECTION_START
+        get() = field
+        set(value) {
+            field = value
+        }
+
+    init {
+        setViewPagerScroller(mScroller)
+        initPageChangeListener()
     }
+
+    // HANDLER
+
+    private val mHandler = Handler(Looper.getMainLooper(), ProcessHandler());
+    private inner class ProcessHandler : Handler.Callback {
+        override fun handleMessage(msg: Message): Boolean {
+            when (msg.what) {
+                H_START_SCROLL -> {
+                    if (direction == DIRECTION_START) showNextView() else showPreviewView()
+                }
+                else -> {}
+            }
+
+            return true
+        }
+    }
+
+    private fun sendMessage(type: Int, delay: Long, any: Any? = null)  = mHandler.run {
+        sendMessageDelayed(obtainMessage().apply {
+            what = type
+            obj  = any
+        }, delay)
+    }
+
+    private fun removeMessages(type: Int) = mHandler.removeMessages(type)
+
+    // HANDLER END
 
     override fun setAdapter(adapter: PagerAdapter?) {
         super.setAdapter(adapter)
-
         setCurrentItem(0)
     }
 
@@ -85,6 +131,19 @@ class InfiniteViewPager : WrapContentViewPager {
         arrowScroll(View.FOCUS_LEFT)
     }
 
+    fun startScroll(delay: Long) {
+        removeMessages(H_START_SCROLL)
+
+        mIsScroll    = true
+        mScrollDelay = delay
+        sendMessage(H_START_SCROLL, delay)
+    }
+
+    fun stopScroll() {
+        mIsScroll = false
+        removeMessages(H_START_SCROLL)
+    }
+
     override fun setCurrentItem(item: Int, smoothScroll: Boolean) {
         adapter?.let {
             if (it.count == 0) {
@@ -98,8 +157,8 @@ class InfiniteViewPager : WrapContentViewPager {
                 item % it.count
             }
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("NEW ITEM : $newItem")
+            if (mLog.isTraceEnabled) {
+                mLog.trace("NEW ITEM : $newItem")
             }
 
             super.setCurrentItem(newItem, smoothScroll)
@@ -116,59 +175,33 @@ class InfiniteViewPager : WrapContentViewPager {
         } ?: 0
     }
 
-    fun runAutoScroll(delay: Long) {
-        mAutoScrollDelay = delay
-
-        if (mAutoScrollDelay == 0L) {
-            mPageChangeListener?.let { removeOnPageChangeListener(it) }
-            mPageChangeListener = null
-        } else {
-            if (mPageChangeListener == null) {
-                mPageChangeListener = object: SimpleOnPageChangeListener() {
-                    override fun onPageSelected(position: Int) {
-                        if (mActionDown) {
-                            mActionDown = false
-                            return
-                        }
-
-                        doAutoScroll()
+    private fun initPageChangeListener() {
+        if (mPageChangeListener == null) {
+            mPageChangeListener = object: SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    if (mLog.isTraceEnabled) {
+                        mLog.trace("PAGE SELECTED : $position")
                     }
+
+                    if (!mIsScroll) {
+                        return
+                    }
+
+                    startScroll(mScrollDelay)
                 }
-
-                mPageChangeListener?.let { addOnPageChangeListener(it) }
             }
-        }
 
-        doAutoScroll()
-    }
+            if (mLog.isDebugEnabled) {
+                mLog.debug("ADD PAGE LISTENER $mPageChangeListener")
+            }
 
-    @Synchronized
-    private fun doAutoScroll() {
-        freeRunnable()
-
-        if (mAutoScrollDelay == 0L) {
-            return
-        }
-
-        mScrollRunnable = Runnable { showNextView() }
-        mHandler.postDelayed(mScrollRunnable, mAutoScrollDelay)
-    }
-
-    fun stopAutoScroll() = freeRunnable()
-
-    @Synchronized
-    private fun freeRunnable() {
-        mScrollRunnable?.let {
-            mHandler.removeCallbacks(it)
-            mScrollRunnable = null
+            mPageChangeListener?.let { addOnPageChangeListener(it) }
         }
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         when (ev?.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mActionDown = true
-            }
+            MotionEvent.ACTION_DOWN -> stopScroll()
         }
 
         return super.onInterceptTouchEvent(ev)
@@ -176,11 +209,7 @@ class InfiniteViewPager : WrapContentViewPager {
 
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         when (ev?.action) {
-            MotionEvent.ACTION_UP -> {
-                if (mScrollRunnable == null) {
-                    doAutoScroll()
-                }
-            }
+            MotionEvent.ACTION_UP -> startScroll(mScrollDelay)
         }
 
         return super.onTouchEvent(ev)

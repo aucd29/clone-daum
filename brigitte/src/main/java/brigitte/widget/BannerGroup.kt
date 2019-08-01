@@ -124,8 +124,8 @@ class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdap
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val virtualPos = position % realCount
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INSTANTIATE ITEM : $virtualPos ($position)")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("INSTANTIATE ITEM : $virtualPos ($position)")
         }
 
         return mAdapter.instantiateItem(container, virtualPos)
@@ -134,8 +134,8 @@ class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdap
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
         val virtualPos = position % realCount
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("DESTORY ITEM : $virtualPos ($position)")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("DESTROY ITEM : $virtualPos ($position)")
         }
 
         mAdapter.destroyItem(container, virtualPos, obj)

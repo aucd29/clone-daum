@@ -3,10 +3,9 @@ package com.example.clone_daum.ui.main
 import android.view.View
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.ViewModel
-import com.example.clone_daum.common.Config
 import brigitte.arch.SingleLiveEvent
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
+import brigitte.observeOnMain
+import brigitte.singleTimer
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
@@ -17,18 +16,18 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 14. <p/>
  */
 
-class SplashViewModel @Inject constructor(val config: Config
+class SplashViewModel @Inject constructor(
 ) : ViewModel() {
     companion object {
         private val mLog = LoggerFactory.getLogger(SplashViewModel::class.java)
 
-        private const val SPLASH_TIMEOUT = 10L
+        private const val SPLASH_TIMEOUT = 7000L
     }
 
     private val mDisposable = CompositeDisposable()
     private var mState      = true
 
-    val visibleSplash    = ObservableInt(View.VISIBLE)
+    val splash           = ObservableInt(View.VISIBLE)
     val closeSplashEvent = SingleLiveEvent<Void>()
 
     init {
@@ -36,12 +35,11 @@ class SplashViewModel @Inject constructor(val config: Config
         // 여지껏 커스텀 뷰를 만들어서 재활용한 적이 별로 없다.. -_ -;
 
         // 로딩 완료가 안뜨는 경우가 존재할 수 있으니 이를 보안하기 위한 타이머 추가
-        mDisposable.add(Observable.timer(SPLASH_TIMEOUT, TimeUnit.SECONDS)
-            .take(1)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
+        mDisposable.add(singleTimer(SPLASH_TIMEOUT)
+            .observeOnMain()
+            .subscribe { _ ->
                 if (mLog.isInfoEnabled && mState) {
-                    mLog.info("SPLASH TIMEOUT ($SPLASH_TIMEOUT SECOND)")
+                    mLog.info("SPLASH TIMEOUT ($SPLASH_TIMEOUT MILLISECONDS)")
                 }
 
                 closeSplash()

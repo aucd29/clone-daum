@@ -10,8 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ArrayRes
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -37,6 +39,8 @@ inline fun Fragment.pxToDp(v: Int) = pxToDp(v.toFloat()).toInt()
 inline fun Fragment.string(@StringRes resid: Int): String = requireContext().string(resid)
 inline fun Fragment.stringArray(@ArrayRes resid: Int) = requireContext().stringArray(resid)
 inline fun Fragment.intArray(@ArrayRes resid: Int) = requireContext().intArray(resid)
+inline fun Fragment.color(@ColorRes resid: Int) =
+    ContextCompat.getColor(requireContext(), resid)
 
 /** 현재 화면에 위치하는 Fragment 를 반환 */
 inline val FragmentManager.current: Fragment?

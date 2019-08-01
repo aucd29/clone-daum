@@ -18,8 +18,9 @@ import com.example.clone_daum.R
 import java.util.*
 
 
-class MainViewModel @Inject constructor(val app: Application
-    , val config: Config
+class MainViewModel @Inject constructor(
+    app: Application,
+    val config: Config
 ) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)

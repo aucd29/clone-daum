@@ -9,7 +9,7 @@ import androidx.viewpager.widget.PagerAdapter
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-03 <p/>
  */
 
-abstract class BasePagerAdapter: PagerAdapter() {
+abstract class BasePagerAdapter @JvmOverloads constructor () : PagerAdapter() {
     override fun isViewFromObject(view: View, obj: Any): Boolean {
         return view == obj
     }

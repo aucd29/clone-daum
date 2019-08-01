@@ -37,7 +37,7 @@
                     android:background="#52000000"
                     android:alpha="0"
                     android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
-                    app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
+                    app:bindAlpha="@{realtimeIssueModel.backgroundAlpha}"
                     android:visibility="@{realtimeIssueModel.visibleDetail}"
             />
 

@@ -26,14 +26,15 @@
                 android:id="@+id/splash"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/splash_background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:visibility="@{model.visibleSplash}"
+                android:background="@drawable/splash_background"
                 android:clickable="true"
-                android:focusable="true"/>
+                android:focusable="true"
+                android:visibility="@{model.splash}"
+        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

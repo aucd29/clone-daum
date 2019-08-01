@@ -27,8 +27,9 @@ import javax.inject.Inject
  * ApiHub.class 에 RealTimeIssueService 가 존재하는데 보이질 않네 그려
  */
 
-class RealtimeIssueViewModel @Inject constructor(app: Application
-    , val preConfig: PreloadConfig
+class RealtimeIssueViewModel @Inject constructor(
+    app: Application,
+    val preConfig: PreloadConfig
 ) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
@@ -58,6 +59,8 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     val tabMenuRotation = ObservableField<AnimParams>()
     val tabAlpha        = ObservableField<AnimParams>()
     val bgAlpha         = ObservableField<AnimParams>()
+    val backgroundAlpha = ObservableField<AnimParams>()
+
 
     val visibleDetail   = ObservableInt(View.GONE)
     val viewPagerLoaded = ObservableField<(() -> Unit)?>()
@@ -65,9 +68,9 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     fun load(html: String) {
         disposableInterval.add(Observable.just(html)
-            .subscribeOn(Schedulers.io())
+            .subscribeOnIoAndObserveOnIo()
             .map (::parseRealtimeIssue)
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOnMain()
             .subscribe ({
                 visibleProgress.set(View.GONE)
 
@@ -166,13 +169,11 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         return issue?.run { "$index $text" } ?: ""
     }
 
-    fun typeConvert(issue: RealtimeIssue?): Spanned {
-        return issue?.run {
+    fun typeConvert(issue: RealtimeIssue?) = issue?.run {
             when (type) {
                 "+" -> "<font color='red'>↑</font> $value"
                 "-" -> "<font color='blue'>↓</font> $value"
                 else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
-    }
 }

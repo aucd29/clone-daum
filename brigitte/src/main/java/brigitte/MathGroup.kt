@@ -64,7 +64,7 @@ inline fun Double.toFileSizeString(): String {
     return String.format("%.1f %cB", size / 1024f, UNIT_STRING[u])
 }
 
-class NumberUnit(private var maxSize: Long, convertMaxSize: (Int) -> Unit) {
+class NumberUnit @JvmOverloads constructor (private var maxSize: Long, convertMaxSize: (Int) -> Unit) {
     private var mUnitCount: Int = 0
     private val mUnitChar: Char
     private val mMaxString: String

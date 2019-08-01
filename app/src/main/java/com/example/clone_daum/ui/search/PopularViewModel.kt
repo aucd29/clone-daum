@@ -9,6 +9,7 @@ import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
 import brigitte.RecyclerViewModel
 import brigitte.jsonParse
+import brigitte.subscribeOnIoAndObserveOnIo
 import com.example.clone_daum.R
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,8 +22,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 11. <p/>
  */
 
-class PopularViewModel @Inject constructor(app: Application
-    , layoutManager: ChipsLayoutManager
+class PopularViewModel @Inject constructor(
+    app: Application,
+    layoutManager: ChipsLayoutManager
 ) : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
@@ -34,7 +36,7 @@ class PopularViewModel @Inject constructor(app: Application
     private lateinit var mDisposable: CompositeDisposable
 
     val visiblePopular    = ObservableInt(View.GONE)
-    val chipLayoutManager = ObservableField<ChipsLayoutManager>(layoutManager)
+    val chipLayoutManager = ObservableField(layoutManager)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -51,8 +53,7 @@ class PopularViewModel @Inject constructor(app: Application
             }
 
             mDisposable.add(Observable.just(html)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+                .subscribeOnIoAndObserveOnIo()
                 .map(::parsePopular)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

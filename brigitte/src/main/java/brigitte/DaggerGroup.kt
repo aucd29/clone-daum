@@ -30,7 +30,7 @@ private const val LAYOUT          = "layout"         // 레이아웃
 /**
  * dagger 를 기본적으로 이용하면서 MVVM 아키텍처를 가지는 Activity
  */
-abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel>
+abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : BaseActivity<T, M>(), HasFragmentInjector, HasSupportFragmentInjector {
 
     /** ViewModel 을 inject 하기 위한 Factory */
@@ -70,7 +70,7 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel>
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
+abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : BaseFragment<T, M>(), HasSupportFragmentInjector {
 
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
@@ -96,7 +96,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
+abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : BaseDialogFragment<T, M>(), HasSupportFragmentInjector {
 
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -123,7 +123,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel>
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel>
+abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : BaseBottomSheetDialogFragment<T, M>(), HasSupportFragmentInjector {
 
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory

@@ -25,7 +25,7 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
-        private const val TIMEOUT_RELOAD_ICO = 4L
+        private const val TIMEOUT_RELOAD_ICO = 4000L
     }
 
     @Inject lateinit var config: Config
@@ -107,10 +107,9 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
             // 해당 brs 에만 작용하기 위해서 수정
             webview.reload()
 
-            mTimerDisposable.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                .take(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+            mTimerDisposable.add(singleTimer(TIMEOUT_RELOAD_ICO)
+                .observeOnMain()
+                .subscribe { _ ->
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXPLODE RELOAD ICO TIMER")
                     }

@@ -18,8 +18,9 @@ import com.example.clone_daum.R
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
-class FavoriteViewModel @Inject constructor(application: Application
-    , private val mFavoriteDao: MyFavoriteDao
+class FavoriteViewModel @Inject constructor(
+    application: Application,
+    private val mFavoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(application), IDialogAware, IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
@@ -44,9 +45,9 @@ class FavoriteViewModel @Inject constructor(application: Application
 
     fun initItems() {
         mDisposable.clear()
+
         mDisposable.add(mFavoriteDao.selectShowAllFlowable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOnIoAndObserveOnMain()
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FAVORITE COUNT : ${it.size} ${it.hashCode()}")
@@ -62,8 +63,7 @@ class FavoriteViewModel @Inject constructor(application: Application
     fun initItemsByFolder() {
         mDisposable.clear()
         mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOnIoAndObserveOnMain()
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FAVORITE BY FOLDER NAME COUNT : ${it.size}")
@@ -78,7 +78,7 @@ class FavoriteViewModel @Inject constructor(application: Application
 
     fun insertFolder(folderName: String) {
         mDisposable.add(mFavoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
-            .subscribeOn(Schedulers.io())
+            .subscribeOnIo()
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("INSERTED FOLDER: $folderName")

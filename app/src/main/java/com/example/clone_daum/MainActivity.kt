@@ -2,7 +2,6 @@ package com.example.clone_daum
 
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
@@ -36,6 +35,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         }
     }
 
+    // 내부적으로 클래스 명을 참조하긴 하지만
+    // 리소스가 사용되고 있는지 확인이 필요하다라는 의견이 있었음
+    override fun layoutId() = R.layout.main_activity
+
     override fun attachBaseContext(newBase: Context) {
         // https://github.com/InflationX/Calligraphy
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -54,12 +57,11 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         observe(closeSplashEvent) {
-            visibleSplash.set(View.GONE)
+            splash.gone()
             mBinding.root.removeView(mBinding.splash)
         }
     }

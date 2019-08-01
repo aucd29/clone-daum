@@ -27,7 +27,8 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
-            postDelayed({ openDrawer(GravityCompat.END) }, 50)
+            singleTimer(50).observeOnMain().subscribe { _ -> openDrawer(GravityCompat.END) }
+//            postDelayed({ openDrawer(GravityCompat.END) }, 50)
             addDrawerListener(this@NavigationFragment)
         }
 
@@ -91,7 +92,7 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun commandFinish(animate: Boolean) { onBackPressed() }
+    fun commandFinish(animate: Boolean) { onBackPressed() }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

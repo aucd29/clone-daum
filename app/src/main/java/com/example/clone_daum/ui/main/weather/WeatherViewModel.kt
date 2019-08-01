@@ -24,11 +24,12 @@ import javax.inject.Inject
  */
 
 @SuppressLint("MissingPermission")
-class WeatherViewModel @Inject constructor(application: Application,
-   val config: Config,
-   val preConfig: PreloadConfig,
-   val disposable: CompositeDisposable,
-   private val rxLocation: RxLocation
+class WeatherViewModel @Inject constructor(
+    application: Application,
+    val config: Config,
+    val preConfig: PreloadConfig,
+    val disposable: CompositeDisposable,
+    private val rxLocation: RxLocation
 ) : RecyclerViewModel<WeatherDetail>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(WeatherViewModel::class.java)

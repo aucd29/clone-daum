@@ -18,7 +18,7 @@ import java.net.URLEncoder
  * 문자열을 Spanned 형태 문자열로 반환한다.
  */
 @Suppress("DEPRECATION")
-inline fun String.html(): Spanned {
+inline fun String.html(): Spanned? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
     } else {

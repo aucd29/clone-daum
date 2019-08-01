@@ -3,6 +3,8 @@ package com.example.clone_daum.ui.main.mediasearch.speech
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.os.Handler
+import androidx.core.os.HandlerCompat.postDelayed
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
@@ -13,8 +15,12 @@ import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.log
 
@@ -25,7 +31,8 @@ import kotlin.math.log
  *  - https://developers.kakao.com/docs/android/speech
  *  - https://developers.kakao.com/docs/android/getting-started#%ED%82%A4%ED%95%B4%EC%8B%9C-%EB%93%B1%EB%A1%9D
  */
-class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
+class SpeechFragment @Inject constructor(
+) : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
     , OnBackPressedListener, SpeechRecognizeListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(SpeechFragment::class.java)
@@ -210,10 +217,12 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
             mLog.debug("SPEECH END")
         }
 
-        uiThread {
-            endAnimation()
-            mViewModel.speechResult.set("")
-        }
+        mDisposable.add(Single.just(null)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                endAnimation()
+                mViewModel.speechResult.set("")
+            }, { errorLog(it, mLog) }))
     }
 
     override fun onAudioLevel(audioLevel: Float) {
@@ -235,9 +244,12 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
             mLog.debug("SPEECH PARTIAL RESULT : $partialResult")
         }
 
-        uiThread {
-            partialResult?.let { mViewModel.speechResult.set(it) }
-        }
+        mDisposable.add(Single.just(partialResult)
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { !it.isEmpty() }
+            .subscribe({
+                mViewModel.speechResult.set(it)
+            }, { errorLog(it, mLog) }))
     }
 
 //    onResults는 음성 입력이 종료된 것으로 판단하거나 stopRecording()을 호출한 후에 서버에 질의하는
@@ -257,21 +269,37 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
             mLog.debug("CANCEL RECORDING")
         }
 
-        ioThread { mRecognizer?.cancelRecording() }
+        mDisposable.add(Single.just(mRecognizer)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .map {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("OPEN BRS")
+                }
 
-        uiThread {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("OPEN BRS")
+                it.cancelRecording()
+
+                results?.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS) ?: null
             }
-            val data = results?.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS)
-            data?.let {
-                finish()
-                viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
-            } ?: run {
-                mViewModel.messageResId.set(R.string.speech_no_result)
-                postDelayed { finish() }
-            }
-        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ data ->
+                data?.let {
+                    finish()
+                    viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
+                } ?: let {
+                    mViewModel.messageResId.set(R.string.speech_no_result)
+                    finish()
+
+                    mBinding.root.postDelayed({
+                        finish()
+                    }, 100)
+                }
+            }, { errorLog(it, mLog) }))
+
+
+//        ioThread { mRecognizer?.cancelRecording() }
+
+
     }
 
 //    결과를 얻기 위한 callback 말고도 다양한 callback 메서드가 존재합니다.
@@ -281,7 +309,15 @@ class SpeechFragment @Inject constructor() : BaseDaggerFragment<SpeechFragmentBi
     override fun onError(errorCode: Int, errorMsg: String?) {
         mLog.error("ERROR: $errorCode $errorMsg")
 
-        uiThread(::endAnimation)
+        mDisposable.add(Single.just(null)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                endAnimation()
+            }, {
+                errorLog(it, mLog)
+            }))
+
+//        uiThread(::endAnimation)
 
         mViewModel.messageResId.apply {
             val error = when (errorCode) {

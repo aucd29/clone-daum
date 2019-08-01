@@ -48,7 +48,7 @@ interface IRecyclerPosition {
 }
 
 /** 아이템 확장 관련 인터페이스 */
-interface IRecyclerExpandable<T>: IRecyclerItem, IRecyclerDiff {
+interface IRecyclerExpandable<T> : IRecyclerItem, IRecyclerDiff {
     var status: ObservableBoolean
     var childList: List<T>
 
@@ -94,7 +94,7 @@ interface IRecyclerExpandable<T>: IRecyclerItem, IRecyclerDiff {
 }
 
 /** view holder */
-class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class RecyclerHolder @JvmOverloads constructor (itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var mBinding: ViewDataBinding
 }
 
@@ -102,7 +102,7 @@ class RecyclerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
  * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
-class RecyclerAdapter<T: IRecyclerDiff>(
+class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
     private val mLayouts: Array<Int>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
@@ -346,7 +346,7 @@ class RecyclerAdapter<T: IRecyclerDiff>(
 /**
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
-open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
+open class RecyclerViewModel<T: IRecyclerDiff> @JvmOverloads constructor (app: Application)
     : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
@@ -468,7 +468,11 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
 
         return items.get()?.let {
             if (mLog.isDebugEnabled) {
-                mLog.debug("LAST VISIBLE POS ${lastVisiblePos}\nLAST ITEM POS ${it.size}")
+                mLog.debug("DataLoading : $mDataLoading")
+                mLog.debug("list.size : ${it.size}")
+                mLog.debug("lastVisiblePos : $lastVisiblePos")
+                mLog.debug("mThreshold : $mThreshold")
+                mLog.debug("${it.size - lastVisiblePos <= mThreshold}")
             }
 
             !mDataLoading && it.size - lastVisiblePos <= mThreshold
@@ -476,7 +480,7 @@ open class RecyclerViewModel<T: IRecyclerDiff>(app: Application)
     }
 }
 
-open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>>(app: Application)
+open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>> @JvmOverloads constructor (app: Application)
     : RecyclerViewModel<T>(app) {
 
     fun toggle(item: T) {
@@ -494,7 +498,7 @@ inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
     }
 }
 
-class InfiniteScrollListener(val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
+class InfiniteScrollListener @JvmOverloads constructor (val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
     companion object {
         private val mLog = LoggerFactory.getLogger(InfiniteScrollListener::class.java)
     }
