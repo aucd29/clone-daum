@@ -21,11 +21,15 @@ import javax.inject.Inject
 
 // 기존 앱의 경우 좌우 swipe 만 진행하면 scroll y 값을 초기화 해버리던데.. -_ -? 이게 맞나?? 싶은데?
 // 메모리 때문에 tab 은 초기화 하긴 해야 되고.. 그럼 y pos 값을 저장해두었다고 offset 해야 되나? 싶은 ?
-class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewFragmentBinding, MainWebViewViewModel>() {
+class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewFragmentBinding, MainViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
         private const val TIMEOUT_RELOAD_ICO = 4000L
+    }
+
+    init {
+        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 공유
     }
 
     @Inject lateinit var config: Config
@@ -33,15 +37,13 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
     @Inject lateinit var viewController: ViewController
 
     private lateinit var mSplashViewModel: SplashViewModel
-    private lateinit var mMainViewModel: MainViewModel
 
     private var mTimerDisposable = CompositeDisposable()
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mSplashViewModel = mViewModelFactory.injectOfActivity(this)
-        mMainViewModel   = mViewModelFactory.injectOfActivity(this)
+        mSplashViewModel = inject(requireActivity())
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -130,7 +132,7 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
     }
 
     override fun initViewModelEvents() {
-        mMainViewModel.apply {
+        mViewModel.apply {
             // appbar 이동 시 webview 도 동일하게 이동 시킴
             observe(appbarOffsetLive) {
                 if (mLog.isTraceEnabled) {
@@ -154,13 +156,6 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
             }
 
             observe(currentTabPositionLive) {
-//                // current pos 에 web 만 load url 을 하도록 수정
-//                mBinding.webview.apply {
-//                    if (url.isNullOrEmpty()) {
-//                        loadUrl(mUrl)
-//                    }
-//                }
-
                 mBinding.webview.apply {
                     if (url.isNullOrEmpty()) {
                         val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)

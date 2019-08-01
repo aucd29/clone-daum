@@ -16,6 +16,8 @@ inline fun ObservableInt.visible()   = set(View.VISIBLE)
 inline fun ObservableInt.invisible() = set(View.INVISIBLE)
 inline fun ObservableInt.gone() = set(View.GONE)
 inline fun ObservableInt.isVisible() = get() == View.VISIBLE
+inline fun ObservableInt.isGone() = get() == View.GONE
+inline fun ObservableInt.isInvisible() = get() == View.INVISIBLE
 inline fun ObservableInt.visibleToggle() = set(if (get() == View.VISIBLE) View.GONE else View.VISIBLE)
 
 inline fun ObservableField<String>.reset() = set("")

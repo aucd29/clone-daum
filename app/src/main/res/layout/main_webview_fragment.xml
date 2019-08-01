@@ -5,7 +5,6 @@
 
     <data>
         <!--<variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>-->
-        <variable name="model" type="com.example.clone_daum.ui.main.MainWebViewViewModel" />
     </data>
 
     <com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout
@@ -14,10 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
     >
-        <!-- 제대로 동작하지 않아 수정 -->
-        <!--app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"-->
-        <!--app:bindSwipeRefreshingFalse="@{model.swipeRefreshingFalse}"-->
-        <!--app:bindSwipeIsRefreshing="@{model.swipeIsRefreshing}"-->
 
         <androidx.core.widget.NestedScrollView
                 android:id="@+id/scrollview"
@@ -35,7 +30,6 @@
                     android:id="@+id/webview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bindWebViewEvent="@{model.webviewEvent}"
             />
 
         </androidx.core.widget.NestedScrollView>

@@ -7,7 +7,6 @@ import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
-import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputViewModel

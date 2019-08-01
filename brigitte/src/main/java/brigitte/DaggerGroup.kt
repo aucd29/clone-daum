@@ -1,12 +1,15 @@
 package brigitte
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import brigitte.di.dagger.module.DaggerViewModelFactory
+import brigitte.di.dagger.module.injectOf
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasFragmentInjector
@@ -57,6 +60,9 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverload
     override fun initViewModel() =
         ViewModelProviders.of(this, mViewModelFactory).get(viewModelClass())
 
+    protected inline fun <reified T : ViewModel> inject()=
+        ViewModelProviders.of(this, mViewModelFactory).get(T::class.java)
+
     override fun supportFragmentInjector() =
         supportFragmentInjector
 
@@ -78,14 +84,17 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
-
         super.onAttach(context)
     }
 
     override fun initViewModel() = when (mViewModelScope) {
-        BaseFragment.SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
+        SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
         else -> ViewModelProviders.of(requireActivity(), mViewModelFactory)
     }.get(viewModelClass())
+
+    protected inline fun <reified T : ViewModel> inject(activity: FragmentActivity? = null) = activity?.run {
+        ViewModelProviders.of(this@run, mViewModelFactory).get(T::class.java)
+    } ?: ViewModelProviders.of(this, mViewModelFactory).get(T::class.java)
 
     override fun supportFragmentInjector() = childFragmentInjector
 }
@@ -112,6 +121,10 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOv
         BaseFragment.SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
         else -> ViewModelProviders.of(requireActivity(), mViewModelFactory)
     }.get(viewModelClass())
+
+    protected inline fun <reified T : ViewModel> inject(activity: FragmentActivity? = null) = activity?.run {
+        ViewModelProviders.of(this@run, mViewModelFactory).get(T::class.java)
+    } ?: ViewModelProviders.of(this, mViewModelFactory).get(T::class.java)
 
     override fun supportFragmentInjector() =
         childFragmentInjector
@@ -146,6 +159,10 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         BaseFragment.SCOPE_FRAGMENT -> ViewModelProviders.of(this, mViewModelFactory)
         else -> ViewModelProviders.of(requireActivity(), mViewModelFactory)
     }.get(viewModelClass())
+
+    protected inline fun <reified T : ViewModel> inject(activity: FragmentActivity? = null) = activity?.run {
+        ViewModelProviders.of(this@run, mViewModelFactory).get(T::class.java)
+    } ?: ViewModelProviders.of(this, mViewModelFactory).get(T::class.java)
 
     override fun supportFragmentInjector() =
         childFragmentInjector
