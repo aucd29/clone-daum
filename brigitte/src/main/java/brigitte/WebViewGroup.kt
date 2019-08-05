@@ -2,6 +2,7 @@
 package brigitte
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.net.http.SslError
 import android.os.Build
@@ -55,12 +56,27 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
         private val mLog = LoggerFactory.getLogger(WebView::class.java)
         var redirectFlag = false
 
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+        override fun shouldOverrideUrlLoading(view: WebView?, loadingUrl: String?): Boolean {
             if (mLog.isDebugEnabled) {
-                mLog.debug("OVERRIDE URL LOADING : $url")
+                mLog.debug("URL LOADING #1($this) : $loadingUrl")
             }
 
-            urlLoading?.invoke(view, url) ?: view?.loadUrl(url)
+            urlLoading?.invoke(view, loadingUrl) ?: view?.loadUrl(loadingUrl)
+            redirectFlag = true
+
+            return true
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("URL LOADING #2($this, $view) : ${request?.url.toString()}")
+            }
+
+            request?.let { r ->
+                urlLoading?.invoke(view, r.url.toString()) ?: view?.loadUrl(r.url.toString())
+            }
+
             redirectFlag = true
 
             return true

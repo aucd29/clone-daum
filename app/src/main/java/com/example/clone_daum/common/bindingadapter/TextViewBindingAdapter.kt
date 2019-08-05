@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory
 object TextViewBindingAdapter {
     private val mLog = LoggerFactory.getLogger(TextViewBindingAdapter::class.java)
 
-
     // 이건 common 으로 이동 해야 할 듯
     @JvmStatic
     @BindingAdapter("bindUrlToChar")

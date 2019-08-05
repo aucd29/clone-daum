@@ -1,10 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -89,6 +86,14 @@ inline fun View.displayXY(): IntArray {
 
 inline fun TextView.gravityCenter() {
     gravity = Gravity.CENTER
+}
+
+inline fun TextView.bold() {
+    setTypeface(typeface, Typeface.BOLD)
+}
+
+inline fun TextView.normal() {
+    setTypeface(typeface, Typeface.NORMAL)
 }
 
 inline fun View.showKeyboard(flags: Int = InputMethodManager.SHOW_IMPLICIT) {

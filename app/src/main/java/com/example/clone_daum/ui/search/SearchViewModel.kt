@@ -72,7 +72,8 @@ class SearchViewModel @Inject constructor(
 
     fun reloadHistoryData() {
         mDisposable.add(searchDao.search()
-            .subscribeOnIoAndObserveOnMain()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 items.set(it)
                 visibleSearchRecycler(it.isNotEmpty())
@@ -84,7 +85,8 @@ class SearchViewModel @Inject constructor(
             mDisposable.add(searchDao.insert(SearchHistory(
                 keyword = it,
                 date    = System.currentTimeMillis()))
-                .subscribeOnIoAndObserveOnMain()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (mLog.isDebugEnabled) {
                         mLog.debug("INSERTED DATA $it")
@@ -140,7 +142,7 @@ class SearchViewModel @Inject constructor(
 
     fun eventDeleteHistory(item: SearchHistory) {
         mDisposable.add(searchDao.delete(item)
-            .subscribeOnIo()
+            .subscribeOn(Schedulers.io())
             .subscribe ({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("DELETED : $item")
@@ -155,7 +157,7 @@ class SearchViewModel @Inject constructor(
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
             , listener = { res, _ -> if (res) {
                 mDisposable.add(Completable.fromAction { searchDao.deleteAll() }
-                    .subscribeOnIo()
+                    .subscribeOn(Schedulers.io())
                     .subscribe ({
                         if (mLog.isDebugEnabled) {
                             mLog.debug("DELETE ALL")
@@ -168,8 +170,7 @@ class SearchViewModel @Inject constructor(
 
     fun suggest(keyword: String) {
         mDisposable.add(daum.suggest(keyword)
-            .observeOnMain()
-            .subscribe ({
+            .map {
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
@@ -182,7 +183,11 @@ class SearchViewModel @Inject constructor(
                     suggestList.add(SuggestItem(newkey, key))
                 }
 
-                items.set(suggestList.toList())
+                suggestList
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({
+                items.set(it.toList())
             }, {
                 errorLog(it)
                 snackbar(it)

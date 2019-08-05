@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 class FrequentlySiteViewModel @Inject constructor(
     app: Application,
-    val disposable: CompositeDisposable,
     val frequentlySiteDao: FrequentlySiteDao
 ) : RecyclerViewModel<FrequentlySite>(app) {
     companion object {

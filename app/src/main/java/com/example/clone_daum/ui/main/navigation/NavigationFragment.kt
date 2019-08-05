@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.ViewController
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 20. <p/>
@@ -27,7 +28,12 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
-            singleTimer(50).observeOnMain().subscribe { _ -> openDrawer(GravityCompat.END) }
+            singleTimer(50)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { _ ->
+                    openDrawer(GravityCompat.END)
+                }
+
 //            postDelayed({ openDrawer(GravityCompat.END) }, 50)
             addDrawerListener(this@NavigationFragment)
         }

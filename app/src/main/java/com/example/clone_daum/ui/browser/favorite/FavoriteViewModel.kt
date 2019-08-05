@@ -47,7 +47,8 @@ class FavoriteViewModel @Inject constructor(
         mDisposable.clear()
 
         mDisposable.add(mFavoriteDao.selectShowAllFlowable()
-            .subscribeOnIoAndObserveOnMain()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FAVORITE COUNT : ${it.size} ${it.hashCode()}")
@@ -63,7 +64,8 @@ class FavoriteViewModel @Inject constructor(
     fun initItemsByFolder() {
         mDisposable.clear()
         mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
-            .subscribeOnIoAndObserveOnMain()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("FAVORITE BY FOLDER NAME COUNT : ${it.size}")
@@ -78,7 +80,7 @@ class FavoriteViewModel @Inject constructor(
 
     fun insertFolder(folderName: String) {
         mDisposable.add(mFavoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
-            .subscribeOnIo()
+            .subscribeOn(Schedulers.io())
             .subscribe({
                 if (mLog.isDebugEnabled) {
                     mLog.debug("INSERTED FOLDER: $folderName")

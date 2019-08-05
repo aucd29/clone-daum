@@ -9,7 +9,6 @@ import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
 import brigitte.RecyclerViewModel
 import brigitte.jsonParse
-import brigitte.subscribeOnIoAndObserveOnIo
 import com.example.clone_daum.R
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -53,7 +52,7 @@ class PopularViewModel @Inject constructor(
             }
 
             mDisposable.add(Observable.just(html)
-                .subscribeOnIoAndObserveOnIo()
+                .subscribeOn(Schedulers.io())
                 .map(::parsePopular)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

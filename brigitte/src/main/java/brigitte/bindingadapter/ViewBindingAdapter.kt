@@ -44,4 +44,25 @@ object ViewBindingAdapter {
 
         view.setVideoURI(Uri.parse(url))
     }
+
+    @JvmStatic
+    @BindingAdapter("bindAlphaValue")
+    fun bindVideoUrl(view: View, alpha: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND ALPHA VALUE : $alpha")
+        }
+
+        view.alpha = alpha
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindTranslationYValue")
+    fun bindTranslationYValue(view: View, transY: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND TRANSLATION Y VALUE : $transY")
+        }
+
+        view.translationY = transY
+    }
+
 }

@@ -34,7 +34,7 @@ class ConfigTest {
     }
 
     @Test
-    fun userAgent() {
+    fun testUserAgent() {
         val release = Build.VERSION.RELEASE
         val country = Locale.getDefault().country
         val language= Locale.getDefault().language
@@ -47,12 +47,12 @@ class ConfigTest {
     }
 
     @Test
-    fun actionBarHeight() {
+    fun testActionBarHeight() {
         assertEquals(config.ACTION_BAR_HEIGHT, app.actionBarSize())
     }
 
     @Test
-    fun gpsPermission() {
+    fun testGpsPermission() {
         assertTrue(config.HAS_PERMISSION_GPS)
     }
 
@@ -65,9 +65,6 @@ class ConfigTest {
     companion object {
         private val mLog = LoggerFactory.getLogger(ConfigTest::class.java)
     }
-//
-//    @get:Rule
-//    var instantExecutorRule = InstantTaskExecutorRule()
 
     private fun initMock() {
         MockitoAnnotations.initMocks(this)

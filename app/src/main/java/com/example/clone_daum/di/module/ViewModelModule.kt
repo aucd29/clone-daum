@@ -52,11 +52,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MainWebViewViewModel::class)
-    abstract fun bindMainWebViewViewModel(vm: MainWebViewViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(RealtimeIssueViewModel::class)
     abstract fun bindRealtimeIssueViewModel(vm: RealtimeIssueViewModel): ViewModel
 

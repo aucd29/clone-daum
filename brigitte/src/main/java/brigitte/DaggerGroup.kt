@@ -84,6 +84,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
+
         super.onAttach(context)
     }
 

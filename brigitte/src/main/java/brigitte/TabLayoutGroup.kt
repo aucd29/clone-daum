@@ -17,7 +17,9 @@ inline val TabLayout.tabs: List<TabLayout.Tab?>
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class TabSelectedCallback @JvmOverloads constructor (val callback: ((TabLayout.Tab?) -> Unit)? = null): TabLayout.OnTabSelectedListener {
+class TabSelectedCallback @JvmOverloads constructor (
+    val callback: ((TabLayout.Tab?) -> Unit)? = null
+): TabLayout.OnTabSelectedListener {
     override fun onTabReselected(p0: TabLayout.Tab?) { }
     override fun onTabUnselected(p0: TabLayout.Tab?) { }
     override fun onTabSelected(p0: TabLayout.Tab?) {

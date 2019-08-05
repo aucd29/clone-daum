@@ -2,11 +2,13 @@ package com.example.clone_daum
 
 import android.content.Context
 import android.os.Bundle
+import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import brigitte.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -60,9 +62,20 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        observe(closeSplashEvent) {
-            splash.gone()
+        observe(closeEvent) {
+            viewSplash.gone()
+
             mBinding.root.removeView(mBinding.splash)
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TEST
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    // https://github.com/chiuki/espresso-samples/tree/master/idling-resource-okhttp
+    @VisibleForTesting
+    @Inject lateinit var okhttp: OkHttpClient
 }

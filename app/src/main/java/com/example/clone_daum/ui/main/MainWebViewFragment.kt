@@ -1,6 +1,13 @@
 package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.graphics.Bitmap
+import android.os.Build
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
@@ -41,16 +48,127 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
     private var mTimerDisposable = CompositeDisposable()
 
     override fun bindViewModel() {
-        super.bindViewModel()
-
+//        super.bindViewModel()
         mSplashViewModel = inject(requireActivity())
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT WEBVIEW SETTING")
-        }
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("INIT WEBVIEW SETTING")
+//        }
+//
+//        webview.settings.apply {
+//            textZoom = 100
+//            javaScriptEnabled                = true
+//            domStorageEnabled                = true
+//            allowFileAccessFromFileURLs      = true
+//            allowUniversalAccessFromFileURLs = true
+//
+//            setAppCacheEnabled(true)
+//            setNeedInitialFocus(false)
+//
+//            userAgentString = config.USER_AGENT
+//        }
+//
+//        webview.webViewClient = object : WebViewClient() {
+//            private val mLog = LoggerFactory.getLogger(WebView::class.java)
+//            var redirectFlag = false
+//
+//            override fun shouldOverrideUrlLoading(view: WebView?, loadingUrl: String?): Boolean {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("URL LOADING #1($this) : $loadingUrl")
+//                }
+//
+//                internalShouldOverrideUrlLoading(view, loadingUrl)
+//                redirectFlag = true
+//
+//                return true
+//            }
+//
+//            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("URL LOADING #2($this, $view) : ${request?.url.toString()}")
+//                }
+//
+//                request?.let { r -> internalShouldOverrideUrlLoading(view, r.url.toString()) }
+//                redirectFlag = true
+//
+//                return super.shouldOverrideUrlLoading(view, request)
+//            }
+//
+//            private fun internalShouldOverrideUrlLoading(view: WebView?, loadingUrl: String?) {
+//                view?.loadUrl(loadingUrl)
+//            }
+//
+//            // https://stackoverflow.com/questions/3149216/how-to-listen-for-a-webview-finishing-loading-a-url
+//            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+//                super.onPageStarted(view, url, favicon)
+//
+//                if (!redirectFlag) {
+//                    if (mLog.isInfoEnabled) {
+//                        mLog.info("PAGE STARTED : $url")
+//                    }
+//
+////                    view?.let { canGoForward?.invoke(it.canGoForward()) }
+////                    pageStarted?.invoke(url)
+//                }
+//
+//                redirectFlag = false
+//            }
+//
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                super.onPageFinished(view, url)
+//
+//                // 어래 수정한다고 했는데 callback 이 2번 나가서 다시 수정 =_ = [aucd29][2019. 4. 17.]
+//                if (!redirectFlag) {
+//                    if (mLog.isInfoEnabled) {
+//                        mLog.info("PAGE FINISHED")
+//                    }
+//
+//                    val position = arguments?.getInt(MainTabAdapter.K_POSITION)
+//
+//                    swipeRefresh.apply {
+//                        if (isRefreshing) {
+//                            isRefreshing = false     // hide refresh icon
+//
+//                            mTimerDisposable.let {
+//                                if (mLog.isDebugEnabled) {
+//                                    mLog.debug("DISPOSABLE COUNT : ${it.size()}")
+//                                }
+//
+//                                it.clear()
+//                            }
+//
+//                            if (mLog.isDebugEnabled) {
+//                                mLog.debug("HIDE REFRESH ICON")
+//                            }
+//                        }
+//                    }
+//
+//                    if (position == MainViewModel.INDEX_NEWS) {
+//                        mSplashViewModel.closeSplash()
+//                    }
+//
+//                    syncCookie()
+//                }
+//            }
+//
+////            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+////                super.onReceivedError(view, errorCode, description, failingUrl)
+////
+////                receivedError?.invoke(failingUrl)
+////
+////                view?.let { canGoForward?.invoke(it.canGoForward()) }
+////            }
+////
+////            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+////                //super.onReceivedSslError(view, handler, error)
+////                // http://theeye.pe.kr/archives/2721
+////                sslError?.invoke(handler)
+////            }
+//        }
 
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
@@ -62,10 +180,6 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
 
                         viewController.browserFragment(it)
                     } else {
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("URL LOADING : $url")
-                        }
-
                         // uri 를 redirect 시키는 이유가 뭘까나?
                         webview.loadUrl(url)
                     }
@@ -110,7 +224,7 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
             webview.reload()
 
             mTimerDisposable.add(singleTimer(TIMEOUT_RELOAD_ICO)
-                .observeOnMain()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { _ ->
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXPLODE RELOAD ICO TIMER")
@@ -129,6 +243,10 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
 //        }
 //
 //        Unit
+    }
+
+    private fun initWebViewSetting() {
+
     }
 
     override fun initViewModelEvents() {
@@ -155,20 +273,17 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
                     it.toInt(), (it * 1.3f).toInt())
             }
 
-            observe(currentTabPositionLive) {
-                mBinding.webview.apply {
-                    if (url.isNullOrEmpty()) {
-                        val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
+            observe(tabChangedLive) { tab ->
+                val tabPosition = tab?.position ?: -1
+                val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
 
-                        if (pos == it.toInt()) {
-                            preConfig.tabLabelList[pos].url.let {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("TAB CHANGED ($pos) : $it")
-                                }
-
-                                loadUrl(it)
-                            }
+                if (pos == tabPosition) {
+                    preConfig.tabLabelList[pos].url.let {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("LOAD URL ($pos) $it")
                         }
+
+                        mBinding.webview.loadUrl(it)
                     }
                 }
             }

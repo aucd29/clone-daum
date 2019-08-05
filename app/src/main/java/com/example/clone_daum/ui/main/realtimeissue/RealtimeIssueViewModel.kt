@@ -1,18 +1,18 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
-import android.text.Spanned
 import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.viewpager.widget.ViewPager
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 //import com.example.clone_daum.model.remote.RealtimeIssueParser
 import com.example.clone_daum.model.remote.RealtimeIssueType
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -45,34 +45,49 @@ class RealtimeIssueViewModel @Inject constructor(
 
     private var mAllIssueList: List<RealtimeIssue>? = null
     private var mRealtimeCount = 0
+    private val mDisposable = CompositeDisposable()
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
-    val disposableInterval = CompositeDisposable()
 
-    val tabAdapter      = ObservableField<RealtimeIssueTabAdapter>()
-    val viewpager       = ObservableField<ViewPager>()
+    val tabChangedCallback = ObservableField<TabSelectedCallback>()
+    var tabChangedLive     = MutableLiveData<TabLayout.Tab?>()
+
     val currentIssue    = ObservableField<RealtimeIssue>()
-    val visibleProgress = ObservableInt(View.VISIBLE)
+
 
     val containerTransY = ObservableField<AnimParams>()
-    val dimmingBgAlpha  = ObservableField<AnimParams>()
+//    val dimmingBgAlpha  = ObservableField<AnimParams>()
     val tabMenuRotation = ObservableField<AnimParams>()
     val tabAlpha        = ObservableField<AnimParams>()
     val bgAlpha         = ObservableField<AnimParams>()
     val backgroundAlpha = ObservableField<AnimParams>()
 
-
-    val visibleDetail   = ObservableInt(View.GONE)
-    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
+//    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
     val enableClick     = ObservableBoolean(false)
 
+    val layoutTranslationY = ObservableField<Float>()
+
+    val viewProgress      = ObservableInt(View.VISIBLE)
+    val viewRealtimeIssue = ObservableInt(View.GONE)
+
+
+    init {
+        tabChangedCallback.set(TabSelectedCallback {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("CHANGED ISSUE TAB ${it?.position}")
+            }
+
+            tabChangedLive.value = it
+        })
+    }
+
     fun load(html: String) {
-        disposableInterval.add(Observable.just(html)
-            .subscribeOnIoAndObserveOnIo()
+        mDisposable.add(Observable.just(html)
+            .subscribeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
-            .observeOnMain()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({
-                visibleProgress.set(View.GONE)
+                viewProgress.gone()
 
                 mRealtimeIssueList = it
                 mAllIssueList      = it[0].second
@@ -143,15 +158,15 @@ class RealtimeIssueViewModel @Inject constructor(
 
             currentIssue.set(issue)
 
-            disposableInterval.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
-                val index = mRealtimeCount % list.size
+            mDisposable.add(Observable.timer(INTERVAL, TimeUnit.SECONDS).subscribe {
+                val index = (it % list.size).toInt()
                 val issue = list[index]
 
                 currentIssue.set(issue)
-                ++mRealtimeCount
+//                ++mRealtimeCount
 
                 if (mLog.isTraceEnabled) {
-                    mLog.trace("TIMER EXPLODE $mRealtimeCount ${issue.text} ")
+                    mLog.trace("TIMER EXPLODE $it ${issue.text} ")
                 }
             })
         }
@@ -162,7 +177,15 @@ class RealtimeIssueViewModel @Inject constructor(
             mLog.debug("STOP REALTIME ISSUE")
         }
 
-        disposableInterval.clear()
+        mDisposable.clear()
+    }
+
+    fun disposeRealtimeIssue() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DISPOSE REALTIME ISSUE")
+        }
+
+        mDisposable.dispose()
     }
 
     fun titleConvert(issue: RealtimeIssue?): String {
@@ -176,4 +199,12 @@ class RealtimeIssueViewModel @Inject constructor(
                 else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
+
+    fun layoutTranslationY(h: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("REALTIME ISSUE VIEWPAGER TRANSLATON Y : $h")
+        }
+
+        layoutTranslationY.set(h)
+    }
 }

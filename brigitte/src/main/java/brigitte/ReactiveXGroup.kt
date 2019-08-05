@@ -36,87 +36,87 @@ inline fun ViewModel.timer(delay: Long = 300, unit: TimeUnit = TimeUnit.MILLISEC
 
 //
 
-inline fun <T> Single<T>.subscribeOnIo() =
-    subscribeOn(Schedulers.io())
-
-inline fun <T> Single<T>.subscribeOnMain() =
-    subscribeOn(AndroidSchedulers.mainThread())
-
-
-inline fun <T> Observable<T>.subscribeOnIo() =
-    subscribeOn(Schedulers.io())
-
-inline fun <T> Observable<T>.subscribeOnMain() =
-    subscribeOn(AndroidSchedulers.mainThread())
-
-
-inline fun <T> Flowable<T>.subscribeOnIo() =
-    subscribeOn(Schedulers.io())
-
-inline fun <T> Flowable<T>.subscribeOnMain() =
-    subscribeOn(AndroidSchedulers.mainThread())
-
-inline fun Completable.subscribeOnIo() =
-    subscribeOn(Schedulers.io())
-
-inline fun Completable.subscribeOnMain() =
-    subscribeOn(AndroidSchedulers.mainThread())
+//inline fun <T> Single<T>.subscribeOnIo() =
+//    subscribeOn(Schedulers.io())
+//
+//inline fun <T> Single<T>.subscribeOnMain() =
+//    subscribeOn(AndroidSchedulers.mainThread())
+//
+//
+//inline fun <T> Observable<T>.subscribeOnIo() =
+//    subscribeOn(Schedulers.io())
+//
+//inline fun <T> Observable<T>.subscribeOnMain() =
+//    subscribeOn(AndroidSchedulers.mainThread())
+//
+//
+//inline fun <T> Flowable<T>.subscribeOnIo() =
+//    subscribeOn(Schedulers.io())
+//
+//inline fun <T> Flowable<T>.subscribeOnMain() =
+//    subscribeOn(AndroidSchedulers.mainThread())
+//
+//inline fun Completable.subscribeOnIo() =
+//    subscribeOn(Schedulers.io())
+//
+//inline fun Completable.subscribeOnMain() =
+//    subscribeOn(AndroidSchedulers.mainThread())
 
 //
 
-
-inline fun <T> Single<T>.observeOnIo() =
-    observeOn(Schedulers.io())
-
-inline fun <T> Single<T>.observeOnMain() =
-    observeOn(AndroidSchedulers.mainThread())
-
-
-inline fun <T> Observable<T>.observeOnIo() =
-    observeOn(Schedulers.io())
-
-inline fun <T> Observable<T>.observeOnMain() =
-    observeOn(AndroidSchedulers.mainThread())
-
-
-inline fun <T> Flowable<T>.observeOnIo() =
-    observeOn(Schedulers.io())
-
-inline fun <T> Flowable<T>.observeOnMain() =
-    observeOn(AndroidSchedulers.mainThread())
-
-
-inline fun Completable.observeOnIo() =
-    observeOn(Schedulers.io())
-
-inline fun Completable.observeOnMain() =
-    observeOn(AndroidSchedulers.mainThread())
+//
+//inline fun <T> Single<T>.observeOnIo() =
+//    observeOn(Schedulers.io())
+//
+//inline fun <T> Single<T>.observeOnMain() =
+//    observeOn(AndroidSchedulers.mainThread())
+//
+//
+//inline fun <T> Observable<T>.observeOnIo() =
+//    observeOn(Schedulers.io())
+//
+//inline fun <T> Observable<T>.observeOnMain() =
+//    observeOn(AndroidSchedulers.mainThread())
+//
+//
+//inline fun <T> Flowable<T>.observeOnIo() =
+//    observeOn(Schedulers.io())
+//
+//inline fun <T> Flowable<T>.observeOnMain() =
+//    observeOn(AndroidSchedulers.mainThread())
+//
+//
+//inline fun Completable.observeOnIo() =
+//    observeOn(Schedulers.io())
+//
+//inline fun Completable.observeOnMain() =
+//    observeOn(AndroidSchedulers.mainThread())
 
 //
-
-inline fun <T> Single<T>.subscribeOnIoAndObserveOnMain() =
-    subscribeOnIo().observeOnMain()
-
-inline fun <T> Observable<T>.subscribeOnIoAndObserveOnMain() =
-    subscribeOnIo().observeOnMain()
-
-inline fun <T> Flowable<T>.subscribeOnIoAndObserveOnMain() =
-    subscribeOnIo().observeOnMain()
-
-inline fun Completable.subscribeOnIoAndObserveOnMain() =
-    subscribeOnIo().observeOnMain()
-
-inline fun <T> Single<T>.subscribeOnIoAndObserveOnIo() =
-    subscribeOnIo().observeOnIo()
-
-inline fun <T> Observable<T>.subscribeOnIoAndObserveOnIo() =
-    subscribeOnIo().observeOnIo()
-
-inline fun <T> Flowable<T>.subscribeOnIoAndObserveOnIo() =
-    subscribeOnIo().observeOnIo()
-
-inline fun Completable.subscribeOnIoAndObserveOnIo() =
-    subscribeOnIo().observeOnIo()
+//
+//inline fun <T> Single<T>.subscribeOnIoAndObserveOnMain() =
+//    subscribeOnIo().observeOnMain()
+//
+//inline fun <T> Observable<T>.subscribeOnIoAndObserveOnMain() =
+//    subscribeOnIo().observeOnMain()
+//
+//inline fun <T> Flowable<T>.subscribeOnIoAndObserveOnMain() =
+//    subscribeOnIo().observeOnMain()
+//
+//inline fun Completable.subscribeOnIoAndObserveOnMain() =
+//    subscribeOnIo().observeOnMain()
+//
+//inline fun <T> Single<T>.subscribeOnIoAndObserveOnIo() =
+//    subscribeOnIo().observeOnIo()
+//
+//inline fun <T> Observable<T>.subscribeOnIoAndObserveOnIo() =
+//    subscribeOnIo().observeOnIo()
+//
+//inline fun <T> Flowable<T>.subscribeOnIoAndObserveOnIo() =
+//    subscribeOnIo().observeOnIo()
+//
+//inline fun Completable.subscribeOnIoAndObserveOnIo() =
+//    subscribeOnIo().observeOnIo()
 
 //
 //

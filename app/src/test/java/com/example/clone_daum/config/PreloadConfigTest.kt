@@ -14,7 +14,7 @@ import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.*
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.Sitemap
-import com.example.imagebank.util.mockReactiveX
+import com.example.clone_daum.util.mockReactiveX
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
@@ -48,7 +48,7 @@ class PreloadConfigTest {
     }
 
     @Test
-    fun submenu() {
+    fun testSubmenu() {
         if (mLog.isDebugEnabled) {
             mLog.debug("SUBMENU ${config.brsSubMenuList.size}")
         }
@@ -68,7 +68,7 @@ class PreloadConfigTest {
     }
 
     @Test
-    fun sitemap() {
+    fun testSitemap() {
         if (mLog.isDebugEnabled) {
             mLog.debug("SITEMAP ${config.naviSitemapList.size}")
         }
@@ -88,7 +88,7 @@ class PreloadConfigTest {
     }
 
     @Test
-    fun frequently() {
+    fun testFrequently() {
         if (mLog.isDebugEnabled) {
             mLog.debug("FREQUENTLY ${db.frequentlySiteDao().count()}")
         }
@@ -114,7 +114,7 @@ class PreloadConfigTest {
     }
 
     @Test
-    fun tab() {
+    fun testTab() {
         if (mLog.isDebugEnabled) {
             mLog.debug("TAB ${config.tabLabelList.size}")
         }
@@ -156,8 +156,8 @@ class PreloadConfigTest {
         private val mLog = LoggerFactory.getLogger(PreloadConfigTest::class.java)
     }
 
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+//    @get:Rule
+//    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock lateinit var daumService: DaumService
     @Mock lateinit var disposable: CompositeDisposable

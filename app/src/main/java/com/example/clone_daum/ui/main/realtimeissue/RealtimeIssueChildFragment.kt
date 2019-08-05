@@ -28,7 +28,7 @@ class RealtimeIssueChildFragment @Inject constructor()
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this)
+        mRealtimeIssueViewModel = inject(requireActivity())
     }
 
     override fun initViewBinding() {

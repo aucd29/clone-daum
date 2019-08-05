@@ -36,7 +36,7 @@ class MainTabAdapter @Inject constructor(
         return MainWebviewFragment().apply {
             arguments = Bundle().apply {
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("TAB URL ($position)")
+                    mLog.debug("CREATE TAB ($position)")
                 }
                 putInt(K_POSITION, position)
             }

@@ -105,7 +105,7 @@ class PreloadConfig @Inject constructor(
 
     init {
         val submenu = Single.just(mAssetManager.open("res/brs_submenu.json").readBytes())
-            .subscribeOnIoAndObserveOnIo()
+            .subscribeOn(Schedulers.io())
             .map { it.jsonParse<List<BrowserSubMenu>>() }
             .map {
                 it.forEach { f ->
@@ -116,17 +116,17 @@ class PreloadConfig @Inject constructor(
             }
 
         val sitemap = Single.just(mAssetManager.open("res/navi_sitemap.json").readBytes())
-            .subscribeOnIoAndObserveOnIo()
+            .subscribeOn(Schedulers.io())
             .map { it.jsonParse<List<Sitemap>>() }
 
         val tabList = Single.just(mAssetManager.open("res/tab.json").readBytes())
-            .subscribeOnIoAndObserveOnIo()
+            .subscribeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
 
         val frequentlySite = mDb.frequentlySiteDao.select().subscribeOn(Schedulers.io())
 
         val defaultFrequentlySite = Single.just(mAssetManager.open("res/frequently_site.json").readBytes())
-            .subscribeOnIoAndObserveOnIo()
+            .subscribeOn(Schedulers.io())
             .map { s -> s.jsonParse<List<FrequentlySite>>() }
 
         mDisposable.add(submenu.subscribe { it ->
@@ -169,7 +169,7 @@ class PreloadConfig @Inject constructor(
         }
     }
 
-    fun daumMain(): Observable<String> = mDaum.main().observeOn(Schedulers.io())
+    fun daumMain(): Observable<String> = mDaum.main()
 
     fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
         mDisposable.add(Observable.just(mAssetManager.open("res/weather_default.json").readBytes())
