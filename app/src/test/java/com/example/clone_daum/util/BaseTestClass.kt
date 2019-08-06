@@ -77,7 +77,7 @@ inline fun <T> Observer<T>.verifyChanged(cmd: T) {
     verify(this).onChanged(cmd)
 }
 
-inline fun <T> Any.mockReturn(value: T) {
+inline fun <T> T.mockReturn(value: T) {
     `when`(this).thenReturn(value)
 }
 
