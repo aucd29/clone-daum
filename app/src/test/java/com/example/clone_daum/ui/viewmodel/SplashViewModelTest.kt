@@ -1,17 +1,14 @@
 package com.example.clone_daum.ui.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.clone_daum.ui.main.SplashViewModel
+import com.example.clone_daum.util.BaseJUnitViewModelTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.Mockito.*
 
 
 /**
@@ -23,37 +20,22 @@ import org.mockito.Mockito.verifyNoMoreInteractions
  */
 
 @RunWith(JUnit4::class)
-class SplashViewModelTest {
-    lateinit var viewModel: SplashViewModel
-
+class SplashViewModelTest: BaseJUnitViewModelTest<SplashViewModel>() {
     @Before
     @Throws(Exception::class)
     fun setup() {
         initMock()
 
-        viewModel = SplashViewModel()
+        viewmodel = SplashViewModel()
     }
 
     @Test
-    fun testClose() {
-        val observer = Mockito.mock(Observer::class.java) as Observer<Void>
-        viewModel.closeEvent.observeForever(observer)
-        viewModel.closeSplash()
+    fun closeTest() {
+        val observer = mock(Observer::class.java) as Observer<Void>
+        viewmodel.closeEvent.observeForever(observer)
+        viewmodel.closeSplash()
 
         verify(observer).onChanged(null)
         verifyNoMoreInteractions(observer)
-    }
-    
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // MOCK
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
-
-    private fun initMock() {
-        MockitoAnnotations.initMocks(this)
     }
 }

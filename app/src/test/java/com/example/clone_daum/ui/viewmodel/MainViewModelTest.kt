@@ -1,11 +1,9 @@
 package com.example.clone_daum.ui.viewmodel
 
 import android.view.MotionEvent
-import androidx.lifecycle.Observer
-import androidx.test.core.app.ApplicationProvider
-import com.example.clone_daum.MainApp
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.main.MainViewModel
+import com.example.clone_daum.util.*
 import com.google.android.material.tabs.TabLayout
 import junit.framework.TestCase.*
 import org.junit.Before
@@ -13,18 +11,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
-import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-01 <p/>
  */
 @RunWith(RobolectricTestRunner::class)
-class MainViewModelTest {
-    lateinit var viewmodel: MainViewModel
-
+class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
     @Before
     @Throws(Exception::class)
     fun setup() {
@@ -34,104 +27,101 @@ class MainViewModelTest {
     }
 
     @Test
-    fun testTabChanged() {
+    fun tabChangedCallbackTest() {
         val tab = mock(TabLayout.Tab::class.java)
 
         repeat(2) {
-            `when`(tab.position).thenReturn(it)
+            tab.position.mockReturn(it)
 
             viewmodel.apply {
                 tabChangedCallback.get()?.onTabSelected(tab)
-                assertEquals(tabChangedLive.value?.position, it)
+
+                tabChangedLive.value?.position eq it
             }
         }
     }
 
     @Test
-    fun testAppbarHeight() {
+    fun appbarHeightTest() {
         viewmodel.apply {
             val mockAppbarHeight    = 20
             val mockContainerHeight = 10
 
             appbarHeight(mockAppbarHeight, mockContainerHeight)
-            assertEquals(progressViewOffsetLive.value, mockAppbarHeight)
-            assertEquals(appbarHeight, mockAppbarHeight - mockContainerHeight)
+
+           progressViewOffsetLive.value eq mockAppbarHeight
+           appbarHeight eq mockAppbarHeight - mockContainerHeight
         }
     }
 
     @Test
-    fun testAppbarAlpha() {
+    fun appbarAlphaTest() {
         viewmodel.apply {
             appbarAlpha()
 
             appbarChangedListener.get()?.invoke(100, 10)
-            assertEquals(appbarAlpha.get(), 1f-10f/100f)
-            assertEquals(appbarOffsetLive.value, 10)
+            appbarAlpha.get() eq 1f-10f/100f
+            appbarOffsetLive.value eq 10
 
             appbarChangedListener.get()?.invoke(100, 80)
-            assertEquals(appbarAlpha.get(), 1f-80f/100f)
-            assertEquals(appbarOffsetLive.value, 80)
+            appbarAlpha.get() eq 1f-80f/100f
+            appbarOffsetLive.value eq 80
 
             appbarChangedListener.get()?.invoke(100, 100)
-            assertEquals(appbarAlpha.get(), 1f-100f/100f)
-            assertEquals(appbarOffsetLive.value, 100)
+            appbarAlpha.get() eq 1f-100f/100f
+            appbarOffsetLive.value eq 100
         }
     }
 
     @Test
-    fun testGoToNews() {
+    fun gotoNewsTest() {
         viewmodel.apply {
             command(MainViewModel.GOTO_NEWS)
 
-            assertEquals(tabSelector.get(), MainViewModel.INDEX_NEWS)
+            tabSelector.get() eq MainViewModel.INDEX_NEWS
         }
     }
 
     @Test
-    fun testMagneticEffect() {
+    fun mainContainerDispatchTouchEventTest() {
         viewmodel.apply {
             mainContainerDispatchTouchEvent()
-            appbarOffsetLive.value = -49
-            appbarHeight = 100
 
             val motionEvent = mock(MotionEvent::class.java)
-            `when`(motionEvent.action).thenReturn(MotionEvent.ACTION_UP)
+            motionEvent.action.mockReturn(MotionEvent.ACTION_UP)
+            appbarHeight = 100
+
+            appbarOffsetLive.value = -49
             mainContainerTouchEvent.get()?.invoke(motionEvent)
-            assertTrue(appbarMagneticEffectLive.value!!)
+            appbarMagneticEffectLive.value!! eq true
 
             appbarOffsetLive.value = -51
             mainContainerTouchEvent.get()?.invoke(motionEvent)
-            assertFalse(appbarMagneticEffectLive.value!!)
+            appbarMagneticEffectLive.value!! eq false
 
             // 비정상 값
             appbarOffsetLive.value = 50
             mainContainerTouchEvent.get()?.invoke(motionEvent)
-            assertFalse(appbarMagneticEffectLive.value!!)
+            appbarMagneticEffectLive.value!! eq false
         }
     }
 
     @Test
-    fun testCommands() {
+    fun commandTest() {
         viewmodel.apply {
-            val observer = mock(Observer::class.java) as Observer<Pair<String, Any>>
-            commandEvent.observeForever(observer)
+            mockObserver<Pair<String, Any>>(commandEvent).apply {
+                with (MainViewModel) {
+                    verifyChanged(viewmodel,
+                        CMD_SEARCH_FRAGMENT,
+                        CMD_NAVIGATION_FRAGMENT,
+                        CMD_MEDIA_SEARCH_FRAGMENT,
+                        CMD_REALTIME_ISSUE)
+                }
 
-            command(MainViewModel.CMD_SEARCH_FRAGMENT)
-            verify(observer).onChanged(MainViewModel.CMD_SEARCH_FRAGMENT to -1)
+                verifyChanged(viewmodel, MainViewModel.CMD_BRS_OPEN to "http://test.net")
 
-            command(MainViewModel.CMD_NAVIGATION_FRAGMENT)
-            verify(observer).onChanged(MainViewModel.CMD_NAVIGATION_FRAGMENT to -1)
-
-            command(MainViewModel.CMD_MEDIA_SEARCH_FRAGMENT)
-            verify(observer).onChanged(MainViewModel.CMD_MEDIA_SEARCH_FRAGMENT to -1)
-
-            command(MainViewModel.CMD_REALTIME_ISSUE)
-            verify(observer).onChanged(MainViewModel.CMD_REALTIME_ISSUE to -1)
-
-            command(MainViewModel.CMD_BRS_OPEN, "http://test.net")
-            verify(observer).onChanged(MainViewModel.CMD_BRS_OPEN to "http://test.net")
-
-            verifyNoMoreInteractions(observer)
+                verifyNoMoreInteractions(this)
+            }
         }
     }
 
@@ -141,22 +131,12 @@ class MainViewModelTest {
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    companion object {
-        private val mLog = LoggerFactory.getLogger(MainViewModelTest::class.java)
-    }
-
     @Mock lateinit var config: Config
 
-    private fun initMock() {
-        MockitoAnnotations.initMocks(this)
+    override fun initMock() {
+        super.initMock()
 
-        // shadowApp.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        initShadow()
+        shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
     }
-
-
-    // https://stackoverflow.com/questions/13684094/how-can-we-access-context-of-an-application-in-robolectric
-    private val app = ApplicationProvider.getApplicationContext<MainApp>()
-
-    // https://stackoverflow.com/questions/35031301/android-robolectric-unit-test-for-marshmallow-permissionhelper
-    private val shadowApp = Shadows.shadowOf(app)
 }

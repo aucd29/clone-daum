@@ -6,6 +6,8 @@ import brigitte.actionBarSize
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.common.Config
+import com.example.clone_daum.util.BaseRoboTest
+import com.example.clone_daum.util.eq
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
@@ -22,7 +24,7 @@ import java.util.*
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-31 <p/>
  */
 @RunWith(RobolectricTestRunner::class)
-class ConfigTest {
+class ConfigTest: BaseRoboTest() {
     lateinit var config: Config
 
     @Before
@@ -34,7 +36,7 @@ class ConfigTest {
     }
 
     @Test
-    fun testUserAgent() {
+    fun userAgentTest() {
         val release = Build.VERSION.RELEASE
         val country = Locale.getDefault().country
         val language= Locale.getDefault().language
@@ -43,17 +45,17 @@ class ConfigTest {
 
         val USER_AGENT = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
 
-        assertEquals(config.USER_AGENT, USER_AGENT)
+        config.USER_AGENT eq USER_AGENT
     }
 
     @Test
-    fun testActionBarHeight() {
-        assertEquals(config.ACTION_BAR_HEIGHT, app.actionBarSize())
+    fun actionBarHeightTest() {
+        config.ACTION_BAR_HEIGHT eq app.actionBarSize()
     }
 
     @Test
-    fun testGpsPermission() {
-        assertTrue(config.HAS_PERMISSION_GPS)
+    fun gpsPermissionTest() {
+        config.HAS_PERMISSION_GPS eq true
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -62,19 +64,10 @@ class ConfigTest {
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    companion object {
-        private val mLog = LoggerFactory.getLogger(ConfigTest::class.java)
+    override fun initMock() {
+        super.initMock()
+
+        initShadow()
+        shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION)
     }
-
-    private fun initMock() {
-        MockitoAnnotations.initMocks(this)
-
-        shadowApp.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION)
-    }
-
-    // https://stackoverflow.com/questions/13684094/how-can-we-access-context-of-an-application-in-robolectric
-    private val app = ApplicationProvider.getApplicationContext<MainApp>()
-
-    // https://stackoverflow.com/questions/35031301/android-robolectric-unit-test-for-marshmallow-permissionhelper
-    private val shadowApp = Shadows.shadowOf(app)
 }

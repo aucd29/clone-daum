@@ -93,17 +93,6 @@ inline fun mockReactiveX() {
     }
 }
 
-// https://stackoverflow.com/questions/40300469/mock-build-version-with-mockito
-@Throws(Exception::class)
-inline fun setFinalStatic(field: Field, newValue: Any) {
-    field.isAccessible = true
-
-    val modifiersField = Field::class.java.getDeclaredField("modifiers");
-    modifiersField.isAccessible = true;
-    modifiersField.setInt(field, field.getModifiers() and Modifier.FINAL.inv())
-
-    field.set(null, newValue);
-}
 //
 ////https://gist.github.com/dpmedeiros/7f7724fdf13fc5390bb05958448cdcad
 //object AndroidMockUtil {
@@ -137,3 +126,15 @@ inline fun setFinalStatic(field: Field, newValue: Any) {
 //            .postDelayed(any(Runnable::class.java), anyLong())
 //    }
 //}
+
+// https://stackoverflow.com/questions/40300469/mock-build-version-with-mockito
+@Throws(Exception::class)
+inline fun setFinalStatic(field: Field, newValue: Any) {
+    field.isAccessible = true
+
+    val modifiersField = Field::class.java.getDeclaredField("modifiers");
+    modifiersField.isAccessible = true;
+    modifiersField.setInt(field, field.getModifiers() and Modifier.FINAL.inv())
+
+    field.set(null, newValue);
+}

@@ -48,10 +48,10 @@ class BarcodeInputViewModel @Inject constructor(application: Application)
         }
     }
 
-    override fun command(cmd: String) {
+    override fun command(cmd: String, data: Any) {
         when (cmd) {
             CMD_CLEAR_EDIT -> barcodeNumber.set("")
-            else -> super.command(cmd)
+            else -> super.command(cmd, data)
         }
     }
 }
