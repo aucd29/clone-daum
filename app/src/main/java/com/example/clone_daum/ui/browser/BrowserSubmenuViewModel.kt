@@ -5,9 +5,9 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.local.BrowserSubMenu
 import brigitte.*
-import brigitte.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 18. <p/>
@@ -29,7 +29,7 @@ class BrowserSubmenuViewModel @Inject constructor(application: Application
             mLog.debug("ITEM (${config.brsSubMenuList.size})\n${config.brsSubMenuList}")
         }
 
-        initAdapter("browser_submenu_item")
+        initAdapter(R.layout.browser_submenu_item)
         items.set(config.brsSubMenuList)
     }
 }

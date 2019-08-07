@@ -1,18 +1,18 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
-import android.text.Spanned
 import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.viewpager.widget.ViewPager
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 //import com.example.clone_daum.model.remote.RealtimeIssueParser
 import com.example.clone_daum.model.remote.RealtimeIssueType
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -27,8 +27,9 @@ import javax.inject.Inject
  * ApiHub.class 에 RealTimeIssueService 가 존재하는데 보이질 않네 그려
  */
 
-class RealtimeIssueViewModel @Inject constructor(app: Application
-    , val preConfig: PreloadConfig
+class RealtimeIssueViewModel @Inject constructor(
+    app: Application,
+    val preConfig: PreloadConfig
 ) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
@@ -44,33 +45,49 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
     private var mAllIssueList: List<RealtimeIssue>? = null
     private var mRealtimeCount = 0
+    private val mDisposable = CompositeDisposable()
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
-    val disposableInterval = CompositeDisposable()
 
-    val tabAdapter      = ObservableField<RealtimeIssueTabAdapter>()
-    val viewpager       = ObservableField<ViewPager>()
+    val tabChangedCallback = ObservableField<TabSelectedCallback>()
+    var tabChangedLive     = MutableLiveData<TabLayout.Tab?>()
+
     val currentIssue    = ObservableField<RealtimeIssue>()
-    val visibleProgress = ObservableInt(View.VISIBLE)
+
 
     val containerTransY = ObservableField<AnimParams>()
-    val dimmingBgAlpha  = ObservableField<AnimParams>()
+//    val dimmingBgAlpha  = ObservableField<AnimParams>()
     val tabMenuRotation = ObservableField<AnimParams>()
     val tabAlpha        = ObservableField<AnimParams>()
     val bgAlpha         = ObservableField<AnimParams>()
+    val backgroundAlpha = ObservableField<AnimParams>()
 
-    val visibleDetail   = ObservableInt(View.GONE)
-    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
+//    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
     val enableClick     = ObservableBoolean(false)
 
+    val layoutTranslationY = ObservableField<Float>()
+
+    val viewProgress      = ObservableInt(View.VISIBLE)
+    val viewRealtimeIssue = ObservableInt(View.GONE)
+
+
+    init {
+        tabChangedCallback.set(TabSelectedCallback {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("CHANGED ISSUE TAB ${it?.position}")
+            }
+
+            tabChangedLive.value = it
+        })
+    }
+
     fun load(html: String) {
-        disposableInterval.add(Observable.just(html)
-            .observeOn(Schedulers.io())
+        mDisposable.add(Observable.just(html)
+            .subscribeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe ({
-                visibleProgress.set(View.GONE)
+                viewProgress.gone()
 
                 mRealtimeIssueList = it
                 mAllIssueList      = it[0].second
@@ -91,7 +108,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         val f = main.indexOf(fText) + fText.length
         val e = main.indexOf(eText, f)
 
-        val issueList: ArrayList<Pair<String, List<RealtimeIssue>>> = arrayListOf()
+        val issueList = arrayListOf<Pair<String, List<RealtimeIssue>>>()
         if (f == fText.length || e == -1) {
             mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
 
@@ -141,15 +158,15 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
 
             currentIssue.set(issue)
 
-            disposableInterval.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
-                val index = mRealtimeCount % list.size
+            mDisposable.add(Observable.timer(INTERVAL, TimeUnit.SECONDS).subscribe {
+                val index = (it % list.size).toInt()
                 val issue = list[index]
 
                 currentIssue.set(issue)
-                ++mRealtimeCount
+//                ++mRealtimeCount
 
                 if (mLog.isTraceEnabled) {
-                    mLog.trace("TIMER EXPLODE $mRealtimeCount ${issue.text} ")
+                    mLog.trace("TIMER EXPLODE $it ${issue.text} ")
                 }
             })
         }
@@ -160,20 +177,34 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
             mLog.debug("STOP REALTIME ISSUE")
         }
 
-        disposableInterval.clear()
+        mDisposable.clear()
+    }
+
+    fun disposeRealtimeIssue() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DISPOSE REALTIME ISSUE")
+        }
+
+        mDisposable.dispose()
     }
 
     fun titleConvert(issue: RealtimeIssue?): String {
         return issue?.run { "$index $text" } ?: ""
     }
 
-    fun typeConvert(issue: RealtimeIssue?): Spanned {
-        return issue?.run {
+    fun typeConvert(issue: RealtimeIssue?) = issue?.run {
             when (type) {
                 "+" -> "<font color='red'>↑</font> $value"
                 "-" -> "<font color='blue'>↓</font> $value"
-                else -> "<font color='red'>NEW</font> $value"
+                else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
+
+    fun layoutTranslationY(h: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("REALTIME ISSUE VIEWPAGER TRANSLATON Y : $h")
+        }
+
+        layoutTranslationY.set(h)
     }
 }

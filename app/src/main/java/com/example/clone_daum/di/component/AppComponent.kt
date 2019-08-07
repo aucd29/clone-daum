@@ -1,7 +1,7 @@
 package com.example.clone_daum.di.component
 
 import android.app.Application
-import brigitte.di.dagger.module.AppModule
+import brigitte.di.dagger.module.ContextModule
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.di.module.*
 import dagger.BindsInstance
@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class
-    , AppModule::class
+    , ContextModule::class
     , ChipModule::class
     , DaumModule::class
     , ActivityBindingModule::class

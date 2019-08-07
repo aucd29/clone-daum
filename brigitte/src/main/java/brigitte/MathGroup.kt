@@ -3,6 +3,7 @@ package brigitte
 
 import android.content.Context
 import android.util.TypedValue
+import java.text.NumberFormat
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -18,6 +19,9 @@ inline fun Int.dpToPx(context: Context) = (this * context.displayDensity()).toIn
 inline fun Int.pxToDp(context: Context) = (this / context.displayDensity()).toInt()
 inline fun Int.spToPx(context: Context) = TypedValue.applyDimension(
     TypedValue.COMPLEX_UNIT_SP, this.toFloat(), context.resources.displayMetrics).toInt()
+
+inline fun Int.numberFormat() = NumberFormat.getNumberInstance().format(this)
+inline fun Long.numberFormat() = NumberFormat.getNumberInstance().format(this)
 
 
 const val UNIT_STRING: String = " KMGTPE"
@@ -60,7 +64,7 @@ inline fun Double.toFileSizeString(): String {
     return String.format("%.1f %cB", size / 1024f, UNIT_STRING[u])
 }
 
-class NumberUnit(private var maxSize: Long, convertMaxSize: (Int) -> Unit) {
+class NumberUnit @JvmOverloads constructor (private var maxSize: Long, convertMaxSize: (Int) -> Unit) {
     private var mUnitCount: Int = 0
     private val mUnitChar: Char
     private val mMaxString: String

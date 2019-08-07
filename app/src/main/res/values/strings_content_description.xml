@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cd_main_move_to_news_icon">move to news icon</string>
+    <string name="cd_main_media_search_icon">media search icon</string>
+    <string name="cd_main_realtime_issue_icon">realtime issue icon</string>
+    <string name="cd_main_navigation_menu_icon">navigation menu icon</string>
+    <string name="cd_main_back_icon">main back icon</string>
+</resources>

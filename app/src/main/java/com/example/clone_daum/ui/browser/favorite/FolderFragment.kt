@@ -5,13 +5,14 @@ import brigitte.BaseDaggerFragment
 import brigitte.finish
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 8. <p/>
  */
 
 // 화면내 폴더 목록을 보여주고 그중에 하나 선택하게 끔 함
-class FolderFragment
+class FolderFragment @Inject constructor()
     : BaseDaggerFragment<FolderFragmentBinding, FolderViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FolderFragment::class.java)

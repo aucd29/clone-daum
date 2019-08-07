@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
@@ -23,7 +22,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
@@ -127,15 +126,15 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
 
         init(mDisposable)
         applyUrl(mUrl!!)
-
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
+        innerSearch.observe { findAllAsync(it.get()) }
 
-        innerSearch.observe {
-            findAllAsync(it.get())
-        }
+        // livedata 로 observe
+        observe(brsFontSizeLive) { webview.settings.textZoom =
+            it + BrowserViewModel.V_DEFAULT_TEXT_SIZE }
     }
 
     private fun addHistory() {
@@ -285,7 +284,7 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 "화면 내 검색"  -> searchWithInScreen()
                 "화면 캡쳐"     -> capture()
                 "글자 크기"     -> resizeText()
-                "홈 화면에 추가" -> addIconFromLauncher()
+                "홈 화면에 추가" -> addIconToHomeLauncher()
                 "전체화면 보기"  -> fullscreen(true)
                 "앱설정"       -> appSetting()
             }
@@ -375,31 +374,20 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
     }
 
     private fun resizeText() {
-        // FIXME 아직 코드 완성이 안되서 일단 주석 처리
-//
-//        mViewModel.apply {
-//            visibleBrsFontSize.visible()
-//            brsFontSizeProgress.observe {
-//                val size = it.get()
-//                val textsize = if (size < 50) {
-//                    WebSettings.TextSize.SMALLEST
-//                } else if (size < 100) {
-//                    WebSettings.TextSize.SMALLER
-//                } else if (size < 150) {
-//                    WebSettings.TextSize.NORMAL
-//                } else if (size < 200) {
-//                    WebSettings.TextSize.LARGER
-//                } else {
-//                    WebSettings.TextSize.LARGEST
-//                }
-//
-//                webview.settings.textSize = textsize
-//            }
-//        }
+        mViewModel.visibleBrsFontSize.visible()
     }
 
-    private fun addIconFromLauncher() {
-
+    private fun addIconToHomeLauncher() {
+        // 커스텀 넣기가 귀차니즘... =_ =
+        dialog(DialogParam(messageId = R.string.brs_add_shortcut_to_home,
+            negativeId = android.R.string.cancel,
+            listener = { r, d ->
+                if (r) {
+                    shortcut(ShortcutParams(webview.url, R.mipmap.ic_launcher,
+                            webview.title, webview.title))
+                    snackbar(webview, R.string.brs_added_link)
+                }
+            }))
     }
 
     private fun fullscreen(fullscreen: Boolean) {

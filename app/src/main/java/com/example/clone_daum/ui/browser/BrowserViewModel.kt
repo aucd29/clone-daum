@@ -6,6 +6,7 @@ import android.widget.SeekBar
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.*
 import brigitte.*
@@ -40,6 +41,8 @@ class BrowserViewModel @Inject constructor(app: Application
         const val CMD_INNER_SEARCH_NEXT = "inner-search-next"
 
         const val SPF_FONT_SIZE        = "spf-text-size"
+
+        const val V_DEFAULT_TEXT_SIZE  = 50
     }
 
     override val webviewEvent = ObservableField<WebViewEvent>()
@@ -56,17 +59,22 @@ class BrowserViewModel @Inject constructor(app: Application
     val enableForward       = ObservableBoolean(false)
     val isFullscreen        = ObservableBoolean(false)
 
-    val brsUrlBarAni     = ObservableField<AnimParams>()
-    val brsAreaAni       = ObservableField<AnimParams>()
-    val brsGoTop         = ObservableField<AnimParams>()
-    val innerSearch      = ObservableField<String>()
-    val innerSearchCount = ObservableField<String>()
+    val brsUrlBarAni        = ObservableField<AnimParams>()
+    val brsAreaAni          = ObservableField<AnimParams>()
+    val brsGoTop            = ObservableField<AnimParams>()
+    val innerSearch         = ObservableField<String>()
+    val innerSearchCount    = ObservableField<String>()
 
     // fontsize
 
     val brsFontSizeProgress = ObservableInt(prefs().getInt(SPF_FONT_SIZE, 50))
     val visibleBrsFontSize  = ObservableInt(View.GONE)
+    val brsFontSizeText     = ObservableField<String>()
+    val brsFontSizeLive     = MutableLiveData<Int>()
 
+    init {
+        applyWebViewFontSize()
+    }
 
     fun init(disposable: CompositeDisposable) {
         mDisposable = disposable
@@ -175,6 +183,11 @@ class BrowserViewModel @Inject constructor(app: Application
             }))
     }
 
+    private fun applyWebViewFontSize() {
+        brsFontSizeText.set("${prefs().getInt(SPF_FONT_SIZE, 50) + V_DEFAULT_TEXT_SIZE} %")
+        brsFontSizeLive.value = brsFontSizeProgress.get()
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // ISeekBarProgressChanged
@@ -182,11 +195,22 @@ class BrowserViewModel @Inject constructor(app: Application
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CHANGED FONT SIZE : $value")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("CHANGED FONT SIZE : $value")
         }
 
-        brsFontSizeProgress.set(value)
-        prefs().edit { putInt(SPF_FONT_SIZE, value) }
+        // view 에는 realtime 으로 현재 화면을 갱신해야 하고
+        brsFontSizeText.set("${value + V_DEFAULT_TEXT_SIZE} %")
+    }
+
+    override fun onStopTrackingTouch(seekbar: SeekBar) {
+        // 실제 반영은 tracking 이 종료 된 후에 반영한다.
+        val value = seekbar.progress
+        if (mLog.isDebugEnabled) {
+            mLog.debug("STOP TRACKING TOUCH : $value")
+        }
+
+        brsFontSizeLive.value = value
+        prefs().edit(false) { putInt(SPF_FONT_SIZE, value) }
     }
 }

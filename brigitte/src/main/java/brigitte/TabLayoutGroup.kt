@@ -10,3 +10,19 @@ import com.google.android.material.tabs.TabLayout
 inline val TabLayout.tabs: List<TabLayout.Tab?>
     get() = (0 until tabCount).map { getTabAt(it) }
 
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// TabSelectedCallback
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+class TabSelectedCallback @JvmOverloads constructor (
+    val callback: ((TabLayout.Tab?) -> Unit)? = null
+): TabLayout.OnTabSelectedListener {
+    override fun onTabReselected(p0: TabLayout.Tab?) { }
+    override fun onTabUnselected(p0: TabLayout.Tab?) { }
+    override fun onTabSelected(p0: TabLayout.Tab?) {
+        callback?.invoke(p0)
+    }
+}

@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
+import android.graphics.Color
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
@@ -17,7 +18,7 @@ import java.net.URLEncoder
  * 문자열을 Spanned 형태 문자열로 반환한다.
  */
 @Suppress("DEPRECATION")
-inline fun String.html(): Spanned {
+inline fun String.html(): Spanned? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
     } else {
@@ -42,3 +43,5 @@ inline fun String.decodeBase64(): String = String(Base64.decode(this, Base64.DEF
 inline fun String.urldecode(): String = URLDecoder.decode(this, "UTF-8")
 
 inline fun String.urlencode(): String = URLEncoder.encode(this, "UTF-8")
+
+inline fun String.toColor(): Int = Color.parseColor(this)

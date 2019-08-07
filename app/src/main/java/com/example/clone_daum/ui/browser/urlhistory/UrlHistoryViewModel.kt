@@ -45,7 +45,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
 
     fun init(dp: CompositeDisposable) {
         mDisposable = dp
-        initAdapter("url_history_item", "url_history_expandable_item")
+        initAdapter(R.layout.url_history_item, R.layout.url_history_expandable_item)
     }
 
     fun toggleCheckbox(check: ObservableBoolean) {
@@ -89,7 +89,7 @@ class UrlHistoryViewModel @Inject constructor(application: Application
                 }
 
                 // 0번째 아이템은 화면에 보이도록
-                newList[0].toggle(newList)
+                newList[0].toggle(newList, adapter.get())
 
                 newList
             }

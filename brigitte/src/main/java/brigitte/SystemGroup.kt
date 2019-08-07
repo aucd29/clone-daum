@@ -23,7 +23,7 @@ inline fun Context.isNetworkConntected(): Boolean {
             }
         } else {
             for (network in allNetworkInfo) {
-                if (network == NetworkInfo.State.CONNECTED) {
+                if (network.state == NetworkInfo.State.CONNECTED) {
                     return true
                 }
             }

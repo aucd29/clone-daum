@@ -8,15 +8,17 @@
         <import type="android.view.View"/>
 
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
-        <variable name="realtimeIssueModel"
+        <variable name="issueModel"
                   type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
     </data>
 
     <com.example.clone_daum.common.widget.BkConstraintLayout
-            android:id="@+id/root_container"
+            android:id="@+id/main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MainActivity">
+            tools:context=".MainActivity"
+            app:bindDispatchTouchEvent="@{model.mainContainerTouchEvent}"
+    >
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
@@ -24,11 +26,9 @@
         >
 
             <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/viewpager"
+                    android:id="@+id/main_web_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:offscreenPageLimit="@{3}"
-                    app:bindPagerAdapter="@{model.tabAdapter}"
             />
 
             <!-- realtime issue 쪽 배경 용 -->
@@ -37,9 +37,9 @@
                     android:layout_width="match_parent" android:layout_height="match_parent"
                     android:background="#52000000"
                     android:alpha="0"
-                    android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
-                    app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
-                    android:visibility="@{realtimeIssueModel.visibleDetail}"
+                    android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE)}"
+                    app:bindAlpha="@{issueModel.backgroundAlpha}"
+                    android:visibility="@{issueModel.viewRealtimeIssue}"
             />
 
             <!--
@@ -48,13 +48,15 @@
             -->
 
             <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/search_bar"
+                    android:id="@+id/appbar_search"
                     android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:elevation="0dp"
-                    app:bindOffsetChangedListener="@{model.appbarOffsetChangedLive}"
-                    app:bindAppBarDrag="@{model.appbarDrag}">
+                    app:bindOffsetChangedListener="@{model.appbarChangedListener}"
+                    app:bindAppBarDragCallback="@{model.appbarDragCallback}"
+            >
+                <!--app:bindAlpha="@{model.appbarAlpha}"-->
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
                         android:id="@+id/toolbar_layout"
@@ -63,12 +65,13 @@
                         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/search_area"
+                            android:id="@+id/main_search_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@android:color/white"
                             android:clickable="true"
-                            android:focusable="true">
+                            android:focusable="true"
+                    >
 
                         <!-- SEARCH TEXT -->
 
@@ -84,21 +87,21 @@
                                 android:layout_marginEnd="@dimen/main_search_mgn_e"
                                 android:focusable="false"
                                 android:background="@drawable/shape_search_background"
-                                android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAMGNET)}"
+                                android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAGMENT)}"
                         />
 
                         <ImageView
-                                android:id="@+id/search_logo"
+                                android:id="@+id/move_to_news"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
-                                android:src="@drawable/ic_android_black_14dp"
                                 app:layout_constraintStart_toStartOf="@+id/search"
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:paddingStart="@dimen/main_search_logo_pad_se"
                                 android:paddingEnd="@dimen/main_search_logo_pad_se"
-                                android:onClick="@{() -> model.eventGotoNews()}"
-                                tools:ignore="ContentDescription"
+                                android:contentDescription="@string/cd_main_move_to_news_icon"
+                                android:src="@drawable/ic_android_black_14dp"
+                                android:onClick="@{() -> model.command(model.GOTO_NEWS)}"
                         />
 
                         <!-- MEDIA SEARCH ICON -->
@@ -106,30 +109,32 @@
                                 android:id="@+id/search_extend_menu"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@{model.searchIconResId}"
+                                android:src="@{model.idSearchIcon}"
                                 app:layout_constraintTop_toTopOf="@+id/search"
                                 app:layout_constraintEnd_toEndOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/search"
                                 android:padding="@dimen/main_search_extend_pad"
+                                android:contentDescription="@string/cd_main_media_search_icon"
                                 android:onClick="@{() -> model.command(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
-                                tools:ignore="ContentDescription"
                         />
 
                         <!-- REALTIME ISSUE -->
-                        <!-- 디자인 변경 됨 ...  -->
                         <TextView
                                 android:id="@+id/realtime_label"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="@string/main_realtime"
-                                app:layout_constraintStart_toStartOf="@+id/search_logo"
+                                app:layout_constraintStart_toStartOf="@+id/move_to_news"
                                 app:layout_constraintTop_toBottomOf="@+id/search"
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_extend"
                                 android:textColor="#B3B3B3"
+                                android:text="@string/main_realtime"
                         />
 
                         <TextView
                                 android:id="@+id/realtime_issue"
                                 android:layout_width="0dp" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toEndOf="@+id/realtime_label"
+                                app:layout_constraintTop_toBottomOf="@+id/search"
+                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
                                 tools:text="4 내용"
                                 android:maxLines="1"
                                 android:maxWidth="@dimen/main_realtime_issue_max_width"
@@ -137,15 +142,10 @@
                                 android:textColor="@android:color/black"
                                 android:textSize="@dimen/main_realtime_issue_text"
                                 android:padding="@dimen/main_realtime_issue_text_pad"
-                                android:text="@{realtimeIssueModel.titleConvert(realtimeIssueModel.currentIssue)}"
                                 android:layout_marginStart="15dp"
-                                android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, realtimeIssueModel.currentIssue.url)}"
-                                app:layout_constraintStart_toEndOf="@+id/realtime_label"
-                                app:layout_constraintTop_toBottomOf="@+id/search"
-                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
+                                android:text="@{issueModel.titleConvert(issueModel.currentIssue)}"
+                                android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, issueModel.currentIssue.url)}"
                         />
-
-                        <!--android:background="@drawable/selector_button_bgcolor"-->
 
                         <ProgressBar
                                 android:id="@+id/realtime_issue_progress"
@@ -155,7 +155,7 @@
                                 app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
-                                android:visibility="@{realtimeIssueModel.visibleProgress}"
+                                android:visibility="@{issueModel.viewProgress}"
                         />
 
                         <TextView
@@ -166,8 +166,8 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="10dp"
-                                android:text="@{realtimeIssueModel.typeConvert(realtimeIssueModel.currentIssue)}"
                                 tools:text="791"
+                                android:text="@{issueModel.typeConvert(issueModel.currentIssue)}"
                         />
 
                         <!-- REALTIME ISSUE TAB LAYOUT -->
@@ -181,10 +181,11 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
                                 android:layout_marginEnd="14dp"
                                 android:padding="5dp"
-                                app:bindRotation="@{realtimeIssueModel.tabMenuRotation}"
-                                android:clickable="@{realtimeIssueModel.enableClick}"
-                                android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE_FRAGMENT)}"
                                 tools:ignore="ContentDescription"
+                                app:bindRotation="@{issueModel.tabMenuRotation}"
+                                android:contentDescription="@string/cd_main_realtime_issue_icon"
+                                android:clickable="@{issueModel.enableClick}"
+                                android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE)}"
                         />
 
                         <View
@@ -210,10 +211,10 @@
                                 android:requiresFadingEdge="horizontal"
                                 app:tabBackground="@android:color/white"
                                 android:background="@android:color/white"
-                                android:visibility="@{realtimeIssueModel.visibleDetail}"
-                                app:bindSetupWithViewPager="@{realtimeIssueModel.viewpager}"
-                                app:bindAlpha="@{realtimeIssueModel.tabAlpha}"
                                 android:alpha="0"
+                                android:visibility="@{issueModel.viewRealtimeIssue}"
+                                app:bindAlpha="@{issueModel.tabAlpha}"
+                                app:bindTabChanged="@{issueModel.tabChangedCallback}"
                         />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -222,20 +223,19 @@
                 <!-- TAB -->
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/tab_layout"
+                        android:id="@+id/main_web_tab_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_anchor="@+id/toolbar_layout"
                 >
 
-                    <!--android:selectedItemPosition="@={model.gotoNewsEvent}"-->
                     <!--
                     fade edge :
                     https://stackoverflow.com/questions/11538873/making-the-edge-of-the-scrollview-fade-when-scrolling-in-android/16726054
                     -->
                     <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/main_web_tab"
                             style="@style/MyCustomTabLayout"
-                            android:id="@+id/tab"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/main_tab_height"
                             android:layout_gravity="bottom"
@@ -244,20 +244,20 @@
                             app:tabPaddingEnd="5dp"
                             app:tabGravity="fill"
                             app:tabMinWidth="0dp"
-                            app:bindTabSelect="@{model.gotoNewsEvent}"
-                            app:bindSetupWithViewPager="@{model.viewpager}"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tab_menu"
                             android:requiresFadingEdge="horizontal"
                             android:fadingEdgeLength="50dp"
+                            app:bindTabSelect="@{model.tabSelector}"
+                            app:bindTabChanged="@{model.tabChangedCallback}"
                     />
 
                     <View
                             android:id="@+id/tab_underline"
                             style="@style/line1dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tab"
+                            app:layout_constraintTop_toBottomOf="@+id/main_web_tab"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                     />
@@ -273,8 +273,8 @@
                             android:paddingEnd="@dimen/main_tab_menu_pad"
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
+                            android:contentDescription="@string/cd_main_navigation_menu_icon"
                             android:onClick="@{() -> model.command(model.CMD_NAVIGATION_FRAGMENT)}"
-                            tools:ignore="ContentDescription"
                     />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -297,22 +297,22 @@
                     android:id="@+id/realtime_issue_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bindPagerAdapter="@{realtimeIssueModel.tabAdapter}"
-                    app:bindViewPagerLoaded="@{realtimeIssueModel.viewPagerLoaded}"
-                    app:bindTranslateY="@{realtimeIssueModel.containerTransY}"
+                    app:bindTranslationYValue="@{issueModel.layoutTranslationY}"
+                    app:bindTranslateY="@{issueModel.containerTransY}"
             />
+
+            <!--app:bindViewPagerLoaded="@{issueModel.viewPagerLoaded}"-->
         </FrameLayout>
 
         <ImageView
                 android:id="@+id/over_back"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:src="@drawable/ic_backspace_black_24dp"
-                android:visibility="@{model.visibleBack}"
                 android:padding="@dimen/main_over_back_pad"
-                android:onClick="@{() -> model.webviewBack()}"
+                android:contentDescription="@string/cd_main_back_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:ignore="ContentDescription"
+                android:visibility="@{model.viewBack}"
         />
     </com.example.clone_daum.common.widget.BkConstraintLayout>
 </layout>

@@ -17,7 +17,10 @@ data class BrowserSubMenu(
     var iconResid: Int,
     val name: String
 ) : Serializable, IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as BrowserSubMenu)
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val nitem = item as BrowserSubMenu
 
         return this.icon == nitem.icon && this.name == nitem.name

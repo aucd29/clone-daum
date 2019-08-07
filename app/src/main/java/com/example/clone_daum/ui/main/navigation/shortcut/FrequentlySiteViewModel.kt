@@ -17,10 +17,10 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 2. <p/>
  */
 
-class FrequentlySiteViewModel @Inject constructor(app: Application
-    , val disposable: CompositeDisposable
-    , val frequentlySiteDao: FrequentlySiteDao)
-    : RecyclerViewModel<FrequentlySite>(app) {
+class FrequentlySiteViewModel @Inject constructor(
+    app: Application,
+    val frequentlySiteDao: FrequentlySiteDao
+) : RecyclerViewModel<FrequentlySite>(app) {
     companion object {
         const val DEFAULT_TITLE = "사이트이동"
     }
@@ -32,7 +32,7 @@ class FrequentlySiteViewModel @Inject constructor(app: Application
 
     fun init(disposable: CompositeDisposable) {
         mDisposable = disposable
-        initAdapter("frequently_item")
+        initAdapter(R.layout.frequently_item)
 
         mDisposable.add(frequentlySiteDao.select().subscribe {
             // 마지막 아이템에 기본 값을 추가 함

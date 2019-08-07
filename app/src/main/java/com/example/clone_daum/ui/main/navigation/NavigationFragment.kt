@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.ViewController
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 20. <p/>
  */
 
-class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
+class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
     , OnBackPressedListener, DrawerLayout.DrawerListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
@@ -27,7 +28,13 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
-            postDelayed({ openDrawer(GravityCompat.END) }, 50)
+            singleTimer(50)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { _ ->
+                    openDrawer(GravityCompat.END)
+                }
+
+//            postDelayed({ openDrawer(GravityCompat.END) }, 50)
             addDrawerListener(this@NavigationFragment)
         }
 
@@ -91,7 +98,7 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun commandFinish(animate: Boolean) { onBackPressed() }
+    fun commandFinish(animate: Boolean) { onBackPressed() }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

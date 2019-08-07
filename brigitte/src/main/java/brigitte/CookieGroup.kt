@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
  */
 
 inline fun Activity.initCookieManager() {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         CookieSyncManager.createInstance(this)
     }
 
@@ -24,13 +24,14 @@ inline fun Activity.initCookieManager() {
 }
 
 inline fun Activity.startCookieSync() {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         CookieSyncManager.getInstance().startSync()
     }
 }
 
 inline fun Activity.stopCookieSync() {
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+    // 간만에 다시 보는데 버전 분기에 오류가 있어서 수정 ; ; ; [aucd29][2019-07-18]
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         CookieSyncManager.getInstance().stopSync()
     }
 }
@@ -39,6 +40,7 @@ inline fun Activity.syncCookie() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         CookieManager.getInstance().flush()
     } else {
+        // sync 가 내부적으로는 CookieManager.getInstance().flush() 를 호출 한다.
         CookieSyncManager.getInstance().sync()
     }
 }

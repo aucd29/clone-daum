@@ -3,17 +3,26 @@ package com.example.clone_daum.ui.main.mediasearch.speech
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.os.Handler
+import androidx.core.os.HandlerCompat.postDelayed
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import com.example.clone_daum.ui.ViewController
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import kotlin.math.log
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 18. <p/>
@@ -22,7 +31,8 @@ import java.util.*
  *  - https://developers.kakao.com/docs/android/speech
  *  - https://developers.kakao.com/docs/android/getting-started#%ED%82%A4%ED%95%B4%EC%8B%9C-%EB%93%B1%EB%A1%9D
  */
-class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
+class SpeechFragment @Inject constructor(
+) : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
     , OnBackPressedListener, SpeechRecognizeListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(SpeechFragment::class.java)
@@ -30,6 +40,8 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         private const val V_SCALE          = 1.2F
         private const val V_SCALE_DURATION = 500L
     }
+
+    @Inject lateinit var viewController: ViewController
 
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
@@ -49,7 +61,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
             return
         }
 
-        initClient()
+        initSpeechClient()
     }
 
     override fun initViewModelEvents() {
@@ -59,7 +71,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         keepScreen(false)
         endAnimation()
         stopRecording()
-        resetClient()
+        resetSpeechClient()
 
         super.onDestroyView()
     }
@@ -127,7 +139,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
 //        그 후 SpeechRecognizerClient.Builder를 통하여 다음과 같이 SpeechRecognizerClient를 생성합니다.
     // https://developers.kakao.com/docs/android/speech#시작하기
 
-    private fun initClient() {
+    private fun initSpeechClient() {
         // SpeechRecognizerManager 의 appContext 에서 memory leak 존재 ..
         if (!SpeechRecognizerManager.getInstance().isInitialized) {
             SpeechRecognizerManager.getInstance().initializeLibrary(context)
@@ -141,7 +153,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         mRecognizer?.setSpeechRecognizeListener(this)
     }
 
-    private fun resetClient() {
+    private fun resetSpeechClient() {
         if (SpeechRecognizerManager.getInstance().isInitialized) {
             SpeechRecognizerManager.getInstance().finalizeLibrary()
         }
@@ -191,6 +203,7 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
         if (mLog.isDebugEnabled) {
             mLog.debug("SPEECH FINISHED")
         }
+//        mViewModel.messageResId.set(R.string.speech_processing)
     }
 
     override fun onBeginningOfSpeech() {
@@ -204,10 +217,12 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
             mLog.debug("SPEECH END")
         }
 
-        activity?.runOnUiThread {
-            endAnimation()
-            mViewModel.speechResult.set("")
-        }
+        mDisposable.add(Single.just(null)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                endAnimation()
+                mViewModel.speechResult.set("")
+            }, { errorLog(it, mLog) }))
     }
 
     override fun onAudioLevel(audioLevel: Float) {
@@ -226,13 +241,15 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
 
     override fun onPartialResult(partialResult: String?) {
         if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH PARTIAL RESULT")
-            mLog.debug("$partialResult")
+            mLog.debug("SPEECH PARTIAL RESULT : $partialResult")
         }
 
-        activity?.runOnUiThread {
-            partialResult?.let { mViewModel.speechResult.set(it) }
-        }
+        mDisposable.add(Single.just(partialResult)
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { !it.isEmpty() }
+            .subscribe({
+                mViewModel.speechResult.set(it)
+            }, { errorLog(it, mLog) }))
     }
 
 //    onResults는 음성 입력이 종료된 것으로 판단하거나 stopRecording()을 호출한 후에 서버에 질의하는
@@ -248,18 +265,41 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
             mLog.debug("RESULT = $results")
         }
 
-        activity?.runOnUiThread {
-            mRecognizer?.cancelRecording()
-
-            val data = results?.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS)
-
-            data?.let {
-                var resultList = ""
-                it.forEach { str -> resultList += "$str\n" }
-
-                mViewModel.speechResult.set(resultList)
-            } ?: mViewModel.messageResId.set(R.string.speech_no_result)
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CANCEL RECORDING")
         }
+
+        mDisposable.add(Single.just(mRecognizer)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .map {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("OPEN BRS")
+                }
+
+                it.cancelRecording()
+
+                results?.getStringArrayList(SpeechRecognizerClient.KEY_RECOGNITION_RESULTS) ?: null
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ data ->
+                data?.let {
+                    finish()
+                    viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
+                } ?: let {
+                    mViewModel.messageResId.set(R.string.speech_no_result)
+                    finish()
+
+                    mBinding.root.postDelayed({
+                        finish()
+                    }, 100)
+                }
+            }, { errorLog(it, mLog) }))
+
+
+//        ioThread { mRecognizer?.cancelRecording() }
+
+
     }
 
 //    결과를 얻기 위한 callback 말고도 다양한 callback 메서드가 존재합니다.
@@ -269,7 +309,15 @@ class SpeechFragment: BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>
     override fun onError(errorCode: Int, errorMsg: String?) {
         mLog.error("ERROR: $errorCode $errorMsg")
 
-        activity?.runOnUiThread(::endAnimation)
+        mDisposable.add(Single.just(null)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                endAnimation()
+            }, {
+                errorLog(it, mLog)
+            }))
+
+//        uiThread(::endAnimation)
 
         mViewModel.messageResId.apply {
             val error = when (errorCode) {

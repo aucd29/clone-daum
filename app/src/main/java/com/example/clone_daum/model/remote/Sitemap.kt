@@ -12,6 +12,9 @@ data class Sitemap(
     val url:   String,
     val isApp: Boolean
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff) =
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as Sitemap)
+
+    override fun contentsSame(item: IRecyclerDiff) =
         name == (item as Sitemap).name
 }

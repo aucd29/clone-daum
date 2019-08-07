@@ -41,7 +41,10 @@ data class RealtimeIssue (
     val type: String,
     val value: String
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as RealtimeIssue)
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as RealtimeIssue
         return url == newItem.url && text == newItem.text
     }

@@ -76,7 +76,7 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
         mDisposable = dp
         mFolderId   = folderId
 
-        initAdapter("favorite_modify_item_folder", "favorite_modify_item")
+        initAdapter(R.layout.favorite_modify_item_folder, R.layout.favorite_modify_item)
         initItems(folderId)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {

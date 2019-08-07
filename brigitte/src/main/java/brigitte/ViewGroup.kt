@@ -1,16 +1,15 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.os.Build
+import android.graphics.*
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -63,7 +62,6 @@ inline fun View.layoutWidth(width: Int) {
     layoutParams = lp
 }
 
-
 inline fun View.layoutWidth(width: Float) {
     val lp = layoutParams
     lp.width = width.toInt()
@@ -71,8 +69,31 @@ inline fun View.layoutWidth(width: Float) {
     layoutParams = lp
 }
 
+inline fun View.rawXY(root: ViewGroup): Rect {
+    val rect = Rect()
+    getDrawingRect(rect)
+    root.offsetDescendantRectToMyCoords(this, rect)
+
+    return rect
+}
+
+inline fun View.displayXY(): IntArray {
+    val raw = IntArray(2)
+    getLocationInWindow(raw)
+
+    return raw
+}
+
 inline fun TextView.gravityCenter() {
     gravity = Gravity.CENTER
+}
+
+inline fun TextView.bold() {
+    setTypeface(typeface, Typeface.BOLD)
+}
+
+inline fun TextView.normal() {
+    setTypeface(typeface, Typeface.NORMAL)
 }
 
 inline fun View.showKeyboard(flags: Int = InputMethodManager.SHOW_IMPLICIT) {
@@ -101,13 +122,33 @@ inline fun View.pxToDp(v: Int) = (v / context.displayDensity()).toInt()
 inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
     TypedValue.COMPLEX_UNIT_SP, v.toFloat(), context.resources.displayMetrics).toInt()
 
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// ScrollChangeListener
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+// https://stackoverflow.com/questions/39894792/recyclerview-scrolllistener-inside-nestedscrollview
+class ScrollChangeListener @JvmOverloads constructor (
+    val callback: (Int, Int, Boolean) -> Unit
+) : NestedScrollView.OnScrollChangeListener {
+    override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
+        callback.invoke(scrollX, scrollY, v?.run {
+            val res = scrollY == (getChildAt(0).measuredHeight - measuredHeight)
+            res
+        } ?: false)
+    }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////
 //
 // CAPTURE
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-data class CaptureParams(
+data class CaptureParams @JvmOverloads constructor (
     val fileName: String,
     val listener: ((Boolean, String) -> Unit)? = null,
     val path: String? = null,

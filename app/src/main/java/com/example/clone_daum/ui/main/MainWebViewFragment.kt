@@ -1,6 +1,13 @@
 package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.graphics.Bitmap
+import android.os.Build
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
@@ -21,11 +28,15 @@ import javax.inject.Inject
 
 // 기존 앱의 경우 좌우 swipe 만 진행하면 scroll y 값을 초기화 해버리던데.. -_ -? 이게 맞나?? 싶은데?
 // 메모리 때문에 tab 은 초기화 하긴 해야 되고.. 그럼 y pos 값을 저장해두었다고 offset 해야 되나? 싶은 ?
-class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWebViewViewModel>() {
+class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewFragmentBinding, MainViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
-        private const val TIMEOUT_RELOAD_ICO = 4L
+        private const val TIMEOUT_RELOAD_ICO = 4000L
+    }
+
+    init {
+        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 공유
     }
 
     @Inject lateinit var config: Config
@@ -33,22 +44,131 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
     @Inject lateinit var viewController: ViewController
 
     private lateinit var mSplashViewModel: SplashViewModel
-    private lateinit var mMainViewModel: MainViewModel
 
     private var mTimerDisposable = CompositeDisposable()
 
     override fun bindViewModel() {
-        super.bindViewModel()
-
-        mSplashViewModel = mViewModelFactory.injectOfActivity(this)
-        mMainViewModel   = mViewModelFactory.injectOfActivity(this)
+//        super.bindViewModel()
+        mSplashViewModel = inject(requireActivity())
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT WEBVIEW SETTING")
-        }
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("INIT WEBVIEW SETTING")
+//        }
+//
+//        webview.settings.apply {
+//            textZoom = 100
+//            javaScriptEnabled                = true
+//            domStorageEnabled                = true
+//            allowFileAccessFromFileURLs      = true
+//            allowUniversalAccessFromFileURLs = true
+//
+//            setAppCacheEnabled(true)
+//            setNeedInitialFocus(false)
+//
+//            userAgentString = config.USER_AGENT
+//        }
+//
+//        webview.webViewClient = object : WebViewClient() {
+//            private val mLog = LoggerFactory.getLogger(WebView::class.java)
+//            var redirectFlag = false
+//
+//            override fun shouldOverrideUrlLoading(view: WebView?, loadingUrl: String?): Boolean {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("URL LOADING #1($this) : $loadingUrl")
+//                }
+//
+//                internalShouldOverrideUrlLoading(view, loadingUrl)
+//                redirectFlag = true
+//
+//                return true
+//            }
+//
+//            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+//                if (mLog.isDebugEnabled) {
+//                    mLog.debug("URL LOADING #2($this, $view) : ${request?.url.toString()}")
+//                }
+//
+//                request?.let { r -> internalShouldOverrideUrlLoading(view, r.url.toString()) }
+//                redirectFlag = true
+//
+//                return super.shouldOverrideUrlLoading(view, request)
+//            }
+//
+//            private fun internalShouldOverrideUrlLoading(view: WebView?, loadingUrl: String?) {
+//                view?.loadUrl(loadingUrl)
+//            }
+//
+//            // https://stackoverflow.com/questions/3149216/how-to-listen-for-a-webview-finishing-loading-a-url
+//            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+//                super.onPageStarted(view, url, favicon)
+//
+//                if (!redirectFlag) {
+//                    if (mLog.isInfoEnabled) {
+//                        mLog.info("PAGE STARTED : $url")
+//                    }
+//
+////                    view?.let { canGoForward?.invoke(it.canGoForward()) }
+////                    pageStarted?.invoke(url)
+//                }
+//
+//                redirectFlag = false
+//            }
+//
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                super.onPageFinished(view, url)
+//
+//                // 어래 수정한다고 했는데 callback 이 2번 나가서 다시 수정 =_ = [aucd29][2019. 4. 17.]
+//                if (!redirectFlag) {
+//                    if (mLog.isInfoEnabled) {
+//                        mLog.info("PAGE FINISHED")
+//                    }
+//
+//                    val position = arguments?.getInt(MainTabAdapter.K_POSITION)
+//
+//                    swipeRefresh.apply {
+//                        if (isRefreshing) {
+//                            isRefreshing = false     // hide refresh icon
+//
+//                            mTimerDisposable.let {
+//                                if (mLog.isDebugEnabled) {
+//                                    mLog.debug("DISPOSABLE COUNT : ${it.size()}")
+//                                }
+//
+//                                it.clear()
+//                            }
+//
+//                            if (mLog.isDebugEnabled) {
+//                                mLog.debug("HIDE REFRESH ICON")
+//                            }
+//                        }
+//                    }
+//
+//                    if (position == MainViewModel.INDEX_NEWS) {
+//                        mSplashViewModel.closeSplash()
+//                    }
+//
+//                    syncCookie()
+//                }
+//            }
+//
+////            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+////                super.onReceivedError(view, errorCode, description, failingUrl)
+////
+////                receivedError?.invoke(failingUrl)
+////
+////                view?.let { canGoForward?.invoke(it.canGoForward()) }
+////            }
+////
+////            override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+////                //super.onReceivedSslError(view, handler, error)
+////                // http://theeye.pe.kr/archives/2721
+////                sslError?.invoke(handler)
+////            }
+//        }
 
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
@@ -60,10 +180,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 
                         viewController.browserFragment(it)
                     } else {
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("URL LOADING : $url")
-                        }
-
                         // uri 를 redirect 시키는 이유가 뭘까나?
                         webview.loadUrl(url)
                     }
@@ -89,7 +205,6 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     }
                 }
 
-                // 이 값이 구 버전에서는 제대로 안들어왔음 =_ =
                 if (position == MainViewModel.INDEX_NEWS) {
                     mSplashViewModel.closeSplash()
                 }
@@ -108,10 +223,9 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
             // 해당 brs 에만 작용하기 위해서 수정
             webview.reload()
 
-            mTimerDisposable.add(Observable.timer(TIMEOUT_RELOAD_ICO, TimeUnit.SECONDS)
-                .take(1)
+            mTimerDisposable.add(singleTimer(TIMEOUT_RELOAD_ICO)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .subscribe { _ ->
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXPLODE RELOAD ICO TIMER")
                     }
@@ -131,8 +245,12 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
 //        Unit
     }
 
+    private fun initWebViewSetting() {
+
+    }
+
     override fun initViewModelEvents() {
-        mMainViewModel.apply {
+        mViewModel.apply {
             // appbar 이동 시 webview 도 동일하게 이동 시킴
             observe(appbarOffsetLive) {
                 if (mLog.isTraceEnabled) {
@@ -155,27 +273,17 @@ class MainWebviewFragment: BaseDaggerFragment<MainWebviewFragmentBinding, MainWe
                     it.toInt(), (it * 1.3f).toInt())
             }
 
-            observe(currentTabPositionLive) {
-//                // current pos 에 web 만 load url 을 하도록 수정
-//                mBinding.webview.apply {
-//                    if (url.isNullOrEmpty()) {
-//                        loadUrl(mUrl)
-//                    }
-//                }
+            observe(tabChangedLive) { tab ->
+                val tabPosition = tab?.position ?: -1
+                val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
 
-                mBinding.webview.apply {
-                    if (url.isNullOrEmpty()) {
-                        val pos = arguments!!.getInt(MainTabAdapter.K_POSITION)
-
-                        if (pos == it.toInt()) {
-                            preConfig.tabLabelList[pos].url.let {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("TAB CHANGED ($pos) : $it")
-                                }
-
-                                loadUrl(it)
-                            }
+                if (pos == tabPosition) {
+                    preConfig.tabLabelList[pos].url.let {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("LOAD URL ($pos) $it")
                         }
+
+                        mBinding.webview.loadUrl(it)
                     }
                 }
             }

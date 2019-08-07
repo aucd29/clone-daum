@@ -1,9 +1,11 @@
 package brigitte.di.dagger.module
 
+import brigitte.AuthorizationInterceptor
 import brigitte.Json
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
+import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.slf4j.Logger
@@ -23,13 +25,20 @@ class OkhttpModule {
     @Provides
     @Singleton
     fun provideOkhttpClient(logInterceptor: HttpLoggingInterceptor,
-                            logLevel: HttpLoggingInterceptor.Level) : OkHttpClient {
+                            logLevel: HttpLoggingInterceptor.Level,
+                            authenticator: AuthorizationInterceptor?) : OkHttpClient {
         logInterceptor.level = logLevel
 
-        return OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
-            .addInterceptor(logInterceptor).build()
+            .addInterceptor(logInterceptor)
+
+        authenticator?.let {
+            builder.addInterceptor(it)
+        }
+
+        return builder.build()
     }
 
     @Provides

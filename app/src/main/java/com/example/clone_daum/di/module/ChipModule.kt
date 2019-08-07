@@ -2,6 +2,7 @@ package com.example.clone_daum.di.module
 
 import android.content.Context
 import android.view.Gravity
+import androidx.databinding.ObservableField
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import dagger.Module
 import dagger.Provides

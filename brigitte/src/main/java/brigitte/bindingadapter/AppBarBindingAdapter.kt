@@ -12,14 +12,16 @@ import com.google.android.material.tabs.TabLayout
 object AppBarBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindOffsetChangedListener")
-    fun bindOffsetChangedListener(appbar: AppBarLayout, callback: (AppBarLayout, Int) -> Unit) {
-        appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { p0, p1 -> callback(p0, p1) })
+    fun bindOffsetChangedListener(appbar: AppBarLayout, callback: (Int, Int) -> Unit) {
+        appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appbar, verticalOffset ->
+            callback(appbar.totalScrollRange, verticalOffset)
+        })
     }
 
     // https://stackoverflow.com/questions/34108501/how-to-disable-scrolling-of-appbarlayout-in-coordinatorlayout
     @JvmStatic
-    @BindingAdapter("bindAppBarDrag")
-    fun bindAppBarDrag(appbar: AppBarLayout, state: Boolean) {
+    @BindingAdapter("bindAppBarDragCallback")
+    fun bindAppBarDragCallback(appbar: AppBarLayout, state: Boolean) {
         val lp = appbar.layoutParams
         if (lp is CoordinatorLayout.LayoutParams) {
             val br = if (lp.behavior == null) {

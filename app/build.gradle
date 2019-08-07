@@ -21,6 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    
     packagingOptions {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/license.txt'
@@ -46,17 +47,39 @@ android {
         generateStubs = true
         correctErrorTypes = true
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // https://github.com/googlesamples/android-testing
+
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:2.25.0"
+    testImplementation 'org.mockito:mockito-inline:2.13.0'  // for final static
+    testImplementation 'ch.qos.logback:logback-classic:1.2.3'
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'androidx.test:rules:1.2.0'
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation "androidx.arch.core:core-testing:2.0.1"
+    testImplementation "org.robolectric:robolectric:4.3"
+    debugImplementation ('androidx.fragment:fragment-testing:1.2.0-alpha01') {
+        exclude group: "androidx.test", module: "core"
+    }
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation "com.github.gmazzo:okhttp-mock:1.3.1"
+    androidTestImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
 
     //
     // KOTLIN
@@ -111,9 +134,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
     implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-1'
 
     // chip layout
     implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
@@ -142,10 +163,12 @@ dependencies {
 //    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
     implementation 'org.tensorflow:tensorflow-android:1.2.0'
 
+//    implementation 'org.xwalk:xwalk_core_library:23.53.589.4'
+
     // local lib
     implementation project(path: ':brigitte')
     implementation project(path: ':dingbat')
 }
 
-// fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..
+// fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..
 apply plugin: 'com.google.gms.google-services'

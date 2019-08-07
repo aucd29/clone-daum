@@ -1,6 +1,8 @@
 package brigitte.bindingadapter
 
+import android.net.Uri
 import android.view.View
+import android.widget.VideoView
 import androidx.databinding.BindingAdapter
 import brigitte.layoutHeight
 import brigitte.layoutWidth
@@ -32,4 +34,35 @@ object ViewBindingAdapter {
 
         view.layoutWidth(width)
     }
+
+    @JvmStatic
+    @BindingAdapter("bindVideoUrl")
+    fun bindVideoUrl(view: VideoView, url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND VIDEO URL : $url")
+        }
+
+        view.setVideoURI(Uri.parse(url))
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindAlphaValue")
+    fun bindVideoUrl(view: View, alpha: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND ALPHA VALUE : $alpha")
+        }
+
+        view.alpha = alpha
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindTranslationYValue")
+    fun bindTranslationYValue(view: View, transY: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BIND TRANSLATION Y VALUE : $transY")
+        }
+
+        view.translationY = transY
+    }
+
 }

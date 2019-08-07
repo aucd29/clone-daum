@@ -25,8 +25,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchViewModel @Inject constructor(app: Application
-    , val config: Config
+class SearchViewModel @Inject constructor(
+    app: Application,
+    val config: Config
 ) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
@@ -65,7 +66,7 @@ class SearchViewModel @Inject constructor(app: Application
             true
         }
 
-        initAdapter("search_recycler_history_item", "search_recycler_suggest_item")
+        initAdapter(R.layout.search_recycler_history_item, R.layout.search_recycler_suggest_item)
         reloadHistoryData()
     }
 
@@ -169,8 +170,7 @@ class SearchViewModel @Inject constructor(app: Application
 
     fun suggest(keyword: String) {
         mDisposable.add(daum.suggest(keyword)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe ({
+            .map {
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
@@ -183,7 +183,11 @@ class SearchViewModel @Inject constructor(app: Application
                     suggestList.add(SuggestItem(newkey, key))
                 }
 
-                items.set(suggestList.toList())
+                suggestList
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe ({
+                items.set(it.toList())
             }, {
                 errorLog(it)
                 snackbar(it)

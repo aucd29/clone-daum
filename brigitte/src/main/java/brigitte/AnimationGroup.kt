@@ -8,6 +8,8 @@ import android.animation.ValueAnimator
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewPropertyAnimatorListener
+import androidx.lifecycle.ViewModel
 import org.slf4j.LoggerFactory
 
 /**
@@ -15,6 +17,12 @@ import org.slf4j.LoggerFactory
  */
 
 typealias AniListener = (Boolean, Animator?) -> Unit
+
+interface ViewPropertyEndAnimatorListener: ViewPropertyAnimatorListener {
+    override fun onAnimationCancel(view: View?) { }
+    override fun onAnimationStart(view: View?) { }
+}
+
 
 /**
  * view 의 높이 값을 변경 한다.

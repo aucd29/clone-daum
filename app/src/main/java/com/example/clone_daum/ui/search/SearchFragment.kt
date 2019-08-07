@@ -1,6 +1,5 @@
 package com.example.clone_daum.ui.search
 
-import androidx.recyclerview.widget.DefaultItemAnimator
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
@@ -15,7 +14,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
+class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
@@ -27,11 +26,6 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     private lateinit var mPopularViewModel: PopularViewModel
 
     override fun initViewBinding() {
-//        mBinding.searchRecycler.itemAnimator.apply {
-//            if (this is DefaultItemAnimator) {
-//                supportsChangeAnimations = false
-//            }
-//        }
     }
 
     override fun bindViewModel() {
@@ -39,6 +33,8 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 
         mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment)
         mBinding.popularmodel = mPopularViewModel
+
+        mCommandEventModels.add(mPopularViewModel)
     }
 
     override fun initViewModelEvents() {
@@ -46,10 +42,6 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
         mPopularViewModel.apply {
             init()
             chipLayoutManager.set(layoutManager)
-
-            observe(commandEvent) {
-                mViewModel.command(it.first, it.second)
-            }
         }
     }
 
@@ -69,11 +61,11 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
 //        mViewModel.finish()
         when (cmd) {
             SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())
-            PopularViewModel.CMD_BRS_SEARCH -> showBrowser(data.toString())
+            PopularViewModel.CMD_BRS_SEARCH -> daumSearch(data.toString())
         }
     }
 
-    private fun showBrowser(url: String)  {
+    private fun daumSearch(url: String)  {
         if (mLog.isDebugEnabled) {
             mLog.debug("SHOW BROWSER !!!!!")
         }

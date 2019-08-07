@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
-class FavoriteFolderFragment
+class FavoriteFolderFragment @Inject constructor()
     : BaseDaggerFragment<FavoriteFolderFragmentBinding, FavoriteFolderViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)

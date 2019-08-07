@@ -17,7 +17,7 @@ import javax.inject.Inject
  * 찜이랑 성격이 같은거 같은데, 폴더 구분이 다르긴 하지만 중복되는 내용은 없어도 될듯한
  */
 
-class FavoriteFragment
+class FavoriteFragment @Inject constructor()
     : BaseDaggerFragment<FavoriteFragmentBinding, FavoriteViewModel>() {
 
     companion object {

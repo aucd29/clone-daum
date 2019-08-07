@@ -20,7 +20,6 @@ class BarcodeInputViewModel @Inject constructor(application: Application)
 
         const val CMD_CLEAR_EDIT    = "clear-edt"
         const val CMD_HIDE_KEYBOARD = "hide-keyboard"
-//        const val CMD_BARCODE       = "barcode"
     }
 
     override val dialogEvent  = SingleLiveEvent<DialogParam>()
@@ -49,10 +48,10 @@ class BarcodeInputViewModel @Inject constructor(application: Application)
         }
     }
 
-    override fun command(cmd: String) {
+    override fun command(cmd: String, data: Any) {
         when (cmd) {
             CMD_CLEAR_EDIT -> barcodeNumber.set("")
-            else -> super.command(cmd)
+            else -> super.command(cmd, data)
         }
     }
 }

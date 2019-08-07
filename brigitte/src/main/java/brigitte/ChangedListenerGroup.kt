@@ -11,6 +11,7 @@ import android.widget.SeekBar
  */
 interface ISeekBarProgressChanged {
     fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean)
+    fun onStopTrackingTouch(seekbar: SeekBar)
 }
 
 /**

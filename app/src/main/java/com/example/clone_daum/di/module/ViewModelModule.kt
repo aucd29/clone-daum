@@ -7,7 +7,6 @@ import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
-import com.example.clone_daum.ui.main.MainWebViewViewModel
 import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputViewModel
@@ -50,11 +49,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MainWebViewViewModel::class)
-    abstract fun bindMainWebViewViewModel(vm: MainWebViewViewModel): ViewModel
 
     @Binds
     @IntoMap

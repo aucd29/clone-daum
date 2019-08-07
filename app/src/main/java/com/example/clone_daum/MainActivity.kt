@@ -1,19 +1,15 @@
 package com.example.clone_daum
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.webkit.WebView
+import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import brigitte.*
-import com.example.clone_daum.model.local.BrowserSubMenu
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {
@@ -24,9 +20,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     @Inject lateinit var viewController: ViewController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        exceptionCatcher { mLog.error("ERROR: $it") }
         chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
-
+        exceptionCatcher { mLog.error("ERROR: $it") }
         setTheme(R.style.AppTheme)
 
         super.onCreate(savedInstanceState)
@@ -41,6 +36,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
             viewController.mainFragment()
         }
     }
+
+    // 내부적으로 클래스 명을 참조하긴 하지만
+    // 리소스가 사용되고 있는지 확인이 필요하다라는 의견이 있었음
+    override fun layoutId() = R.layout.main_activity
 
     override fun attachBaseContext(newBase: Context) {
         // https://github.com/InflationX/Calligraphy
@@ -60,13 +59,23 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     }
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        observe(closeSplashEvent) {
-            visibleSplash.set(View.GONE)
+        observe(closeEvent) {
+            viewSplash.gone()
+
             mBinding.root.removeView(mBinding.splash)
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TEST
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    // https://github.com/chiuki/espresso-samples/tree/master/idling-resource-okhttp
+    @VisibleForTesting
+    @Inject lateinit var okhttp: OkHttpClient
 }

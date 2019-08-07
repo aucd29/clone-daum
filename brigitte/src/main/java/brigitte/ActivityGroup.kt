@@ -10,14 +10,15 @@ import android.view.View
 import android.view.WindowManager
 import android.webkit.WebView
 import android.widget.Toast
-//import androidx.activity.OnBackPressedCallback
-//import androidx.activity.OnBackPressedDispatcher
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
@@ -34,6 +35,24 @@ import java.util.concurrent.TimeUnit
  *
  * Activity 관련 된 extension 모음
  */
+
+interface ILifeCycle {
+    fun onPause()
+    fun onResume()
+}
+
+//https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
+inline fun Activity.changeStatusBarColorRes(@ColorRes color: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.statusBarColor = ContextCompat.getColor(this, color)
+    }
+}
+
+inline fun Activity.changeStatusBarColor(@ColorInt color: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.statusBarColor = color
+    }
+}
 
 /**
  * snackbar 호출
@@ -198,7 +217,7 @@ fun Activity.chromeInspector(log: ((String) -> Unit)? = null) {
 /**
  * 다이얼로그를 띄우기 위한 속성을 관리하는 데이터 클래스
  */
-data class DialogParam (
+data class DialogParam @JvmOverloads constructor (
     var message: String? = null,        // 다이얼로그에 출력할 메시지
     var title: String? = null,          // 다이얼로그 타이틀
     var positiveStr: String? = null,    // positive 버튼에 출력할 문구
@@ -267,7 +286,9 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
 /**
  * 앱 종료를 위해 다시 한번 backkey 를 선택하라는 문구를 동작 시키기 위한 클래스
  */
-open class BackPressedManager(private var mActivity: AppCompatActivity, var view: View? = null) {
+open class BackPressedManager @JvmOverloads constructor (
+    private var mActivity: AppCompatActivity, var view: View? = null
+) {
     companion object {
         const val DELAY = 2000
     }

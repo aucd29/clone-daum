@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
+import android.annotation.SuppressLint
 import org.slf4j.LoggerFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,6 +97,15 @@ inline fun Long.toDateString(): String = Calendar.getInstance().run {
     defaultDateFormat.format(time)
 }
 
+//https://stackoverflow.com/questions/20238280/date-in-to-utc-format-java
+//https://stackoverflow.com/questions/6993365/convert-string-date-into-timestamp-in-android
+@SuppressLint("SimpleDateFormat")
+inline fun String.toUnixTime(format: String, format2: String? = null) = try {
+    SimpleDateFormat(format).parse(this).time
+} catch (e: Exception) {
+    format2?.run { SimpleDateFormat(this@run).parse(this).time } ?: 0
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 //
 // IDateCalculator
@@ -112,7 +122,7 @@ interface IDateCalculator {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class DateCalculator<T : IDateCalculator> {
+class DateCalculator<T : IDateCalculator> @JvmOverloads constructor() {
     companion object {
         private val mLog = LoggerFactory.getLogger(DateCalculator::class.java)
 

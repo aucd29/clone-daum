@@ -1,5 +1,6 @@
 package com.example.clone_daum.di.module
 
+import brigitte.AuthorizationInterceptor
 import brigitte.di.dagger.module.OkhttpModule
 import dagger.Module
 import dagger.Provides
@@ -27,5 +28,9 @@ class NetworkModule {
     @Singleton
     fun provideLogLevel() =
         HttpLoggingInterceptor.Level.BODY
+
+    @Provides
+    @Singleton
+    fun provideAuthorizationInterceptor(): AuthorizationInterceptor? = null
 
 }

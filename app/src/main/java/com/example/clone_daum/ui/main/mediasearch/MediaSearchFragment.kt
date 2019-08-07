@@ -18,7 +18,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 16. <p/>
  */
 
-class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
+class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
     , OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
@@ -97,7 +97,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         val searchExtendMenuHeight = mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
         val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
         val containerTransYAnim = AnimParams(searchExtendMenuHeight, duration = ANIM_DURATION
-            , endListener = { v, anim ->
+            , endListener = { anim ->
                 finish()
                 endCallback?.invoke()
             })
@@ -112,6 +112,15 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             dimmingBgAlpha.set(dimmingBgAlphaAnim)
             containerTransY.set(containerTransYAnim)
         }
+    }
+
+    override fun onDestroyView() {
+        mViewModel.apply {
+            dimmingBgAlpha.set(null)
+            containerTransY.set(null)
+        }
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -146,28 +155,28 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                 CMD_SEARCH_SPEECH  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { req, res -> if (res) { viewController.speechFragment() } }
+                        , { _, res -> if (res) { viewController.speechFragment() } }
                         , REQ_RECORD_SPEECH))
                 }
 
                 CMD_SEARCH_MUSIC   -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { req, res -> if (res) { viewController.musicFragment() } }
+                        , { _, res -> if (res) { viewController.musicFragment() } }
                         , REQ_RECORD_MUSIC))
                 }
 
                 CMD_SEARCH_FLOWER  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { req, res -> if (res) { viewController.flowerFragment() } }
+                        , { _, res -> if (res) { viewController.flowerFragment() } }
                         , REQ_FLOWER))
                 }
 
                 CMD_SEARCH_BARCODE -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { req, res -> if (res) { viewController.barcodeFragment() } }
+                        , { _, res -> if (res) { viewController.barcodeFragment() } }
                         , REQ_BARCODE))
                 }
             }

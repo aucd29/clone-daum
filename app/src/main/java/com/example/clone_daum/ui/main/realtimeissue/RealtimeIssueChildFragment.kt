@@ -13,7 +13,7 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 9. <p/>
  */
 
-class RealtimeIssueChildFragment
+class RealtimeIssueChildFragment @Inject constructor()
     : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
@@ -28,7 +28,7 @@ class RealtimeIssueChildFragment
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this)
+        mRealtimeIssueViewModel = inject(requireActivity())
     }
 
     override fun initViewBinding() {

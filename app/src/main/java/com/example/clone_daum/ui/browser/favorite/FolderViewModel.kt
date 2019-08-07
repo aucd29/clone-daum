@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.browser.favorite
 
 import android.app.Application
+import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.MyFavorite
@@ -31,6 +32,7 @@ class FolderViewModel @Inject constructor(application: Application
 
     var selectedPosition: Int = 0
     var smoothToPosition = ObservableInt(0)
+    val empty = ObservableField("")
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -42,7 +44,7 @@ class FolderViewModel @Inject constructor(application: Application
         this.mDisposable      = dp
         this.mCurrentFolderId = currentFolderId
 
-        initAdapter("folder_item")
+        initAdapter(R.layout.folder_item)
         reloadFolderItems()
     }
 
