@@ -47,6 +47,8 @@ class SpeechFragment @Inject constructor(
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
     private var mRecognizer: SpeechRecognizerClient? = null
 
+    override fun layoutId() = R.layout.speech_fragment
+
     override fun initViewBinding() = mBinding.run {
         keepScreen(true)
 
