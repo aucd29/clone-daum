@@ -8,6 +8,7 @@ import com.example.clone_daum.databinding.BarcodeFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
 import brigitte.finish
+import com.example.clone_daum.R
 import com.google.zxing.*
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -30,6 +31,8 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
     }
 
     @Inject lateinit var viewController: ViewController
+
+    override fun layoutId() = R.layout.barcode_fragment
 
     override fun initViewBinding() {
         mBinding.barcodeScanner.apply {

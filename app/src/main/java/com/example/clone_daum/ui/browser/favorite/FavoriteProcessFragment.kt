@@ -5,6 +5,7 @@ import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
 import brigitte.hideKeyboard
+import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -23,6 +24,8 @@ class FavoriteProcessFragment @Inject constructor()
     }
 
     @Inject lateinit var viewController: ViewController
+
+    override fun layoutId() = R.layout.favorite_process_fragment
 
     override fun initViewBinding() {
     }

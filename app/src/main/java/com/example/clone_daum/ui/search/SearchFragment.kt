@@ -6,6 +6,7 @@ import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.di.dagger.module.injectOfActivity
+import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -24,6 +25,8 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     @Inject lateinit var viewController: ViewController
 
     private lateinit var mPopularViewModel: PopularViewModel
+
+    override fun layoutId() = R.layout.search_fragment
 
     override fun initViewBinding() {
     }

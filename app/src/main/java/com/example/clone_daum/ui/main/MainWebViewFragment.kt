@@ -1,26 +1,17 @@
 package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.graphics.Bitmap
-import android.os.Build
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
-import brigitte.di.dagger.module.injectOfActivity
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import dagger.android.ContributesAndroidInjector
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -46,6 +37,8 @@ class MainWebviewFragment @Inject constructor(): BaseDaggerFragment<MainWebviewF
     private lateinit var mSplashViewModel: SplashViewModel
 
     private var mTimerDisposable = CompositeDisposable()
+
+    override fun layoutId() = R.layout.main_webview_fragment
 
     override fun bindViewModel() {
 //        super.bindViewModel()

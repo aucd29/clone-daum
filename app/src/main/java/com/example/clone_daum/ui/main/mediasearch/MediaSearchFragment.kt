@@ -10,6 +10,7 @@ import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
+import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -35,6 +36,8 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
     @Inject lateinit var viewController: ViewController
 
     private var mPauseAnimator: Animator? = null
+
+    override fun layoutId() = R.layout.media_search_fragment
 
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.apply {

@@ -5,6 +5,7 @@ import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
 import brigitte.finish
 import brigitte.urlencode
+import com.example.clone_daum.R
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -22,6 +23,8 @@ class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBi
     @Inject lateinit var viewController: ViewController
 
     private var mFirstLoad = true
+
+    override fun layoutId() = R.layout.flower_fragment
 
     override fun initViewBinding() {
         mBinding.tensorflow.mResultCallback = { it?.let {

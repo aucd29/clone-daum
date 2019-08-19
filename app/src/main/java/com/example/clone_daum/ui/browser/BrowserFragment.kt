@@ -56,6 +56,8 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
         }
     }
 
+    override fun layoutId() = R.layout.browser_fragment
+
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
         mUrl = arguments?.getString(K_URL)

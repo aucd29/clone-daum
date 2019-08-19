@@ -4,6 +4,7 @@ import com.example.clone_daum.databinding.ShortcutFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.module.injectOf
+import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -16,6 +17,8 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
     private lateinit var mFrequentlySiteModel : FrequentlySiteViewModel
 
     @Inject lateinit var viewController: ViewController
+
+    override fun layoutId() = R.layout.shortcut_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()

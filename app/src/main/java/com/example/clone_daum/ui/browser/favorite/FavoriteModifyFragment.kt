@@ -23,6 +23,8 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
 
     @Inject lateinit var viewController: ViewController
 
+    override fun layoutId() = R.layout.favorite_modify_fragment
+
     override fun initViewBinding() {
         mBinding.apply {
             favoriteModifyBar.fadeColorResource(android.R.color.white,

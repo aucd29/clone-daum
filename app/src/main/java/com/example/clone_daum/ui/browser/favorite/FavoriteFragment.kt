@@ -26,6 +26,8 @@ class FavoriteFragment @Inject constructor()
 
     @Inject lateinit var viewController: ViewController
 
+    override fun layoutId() = R.layout.favorite_fragment
+
     override fun initViewBinding() {
         mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {

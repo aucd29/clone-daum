@@ -26,6 +26,8 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
     @Inject lateinit var config: Config
     @Inject lateinit var viewController: ViewController
 
+    override fun layoutId() = R.layout.navigation_fragment
+
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
             singleTimer(50)

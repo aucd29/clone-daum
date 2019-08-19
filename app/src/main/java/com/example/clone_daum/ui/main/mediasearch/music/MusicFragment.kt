@@ -32,6 +32,8 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
 
+    override fun layoutId() = R.layout.music_fragment
+
     override fun initViewBinding() {
         keepScreen(true)
 

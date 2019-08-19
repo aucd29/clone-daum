@@ -44,6 +44,8 @@ class WeatherFragment
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
 
+    override fun layoutId() = R.layout.weather_fragment
+
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
         BottomSheetDialog(requireContext(), R.style.round_bottom_sheet_dialog)

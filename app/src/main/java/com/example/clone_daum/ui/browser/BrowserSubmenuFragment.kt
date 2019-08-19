@@ -24,6 +24,8 @@ import dagger.android.ContributesAndroidInjector
 class BrowserSubmenuFragment (private val mCallback: (String) -> Unit)
     : BaseDaggerBottomSheetDialogFragment<BrowserSubmenuFragmentBinding, BrowserSubmenuViewModel>() {
 
+    override fun layoutId() = R.layout.browser_submenu_fragment
+
     override fun initViewBinding() {
     }
 
