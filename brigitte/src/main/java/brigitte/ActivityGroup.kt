@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit
 interface ILifeCycle {
     fun onPause()
     fun onResume()
+    fun onDestroy()
 }
 
 //https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android

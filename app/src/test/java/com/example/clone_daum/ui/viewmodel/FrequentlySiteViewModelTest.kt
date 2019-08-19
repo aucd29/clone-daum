@@ -1,18 +1,16 @@
 package com.example.clone_daum.ui.viewmodel
 
-import androidx.lifecycle.Observer
 import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.local.FrequentlySiteDao
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
-import com.example.clone_daum.util.*
-import io.reactivex.disposables.CompositeDisposable
-import junit.framework.TestCase.assertEquals
+import brigitte.shield.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-05 <p/>
@@ -28,8 +26,8 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
     }
 
     @Test
-    fun gridCountTest() {
-        viewmodel.gridCount.get() eq 5
+    fun defaultGridCountTest() {
+        viewmodel.gridCount.get().assertEquals(5)
     }
 
     @Test
@@ -41,11 +39,11 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
     fun eventIconTextTest() {
         mock(FrequentlySite::class.java).apply {
             title.mockReturn(FrequentlySiteViewModel.DEFAULT_TITLE)
-            viewmodel.eventIconText(this) eq "http"
+            viewmodel.eventIconText(this).assertEquals("http")
 
             title.mockReturn("ANOTHER")
             url.mockReturn("http://test.net")
-            viewmodel.eventIconText(this) eq "T"
+            viewmodel.eventIconText(this).assertEquals("T")
         }
     }
 
@@ -54,11 +52,18 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
         val url = "http://test.net"
 
         viewmodel.apply {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("EVENT URL : $url")
+            }
+
             eventOpen(url)
 
             mockObserver<String>(brsOpenEvent).apply {
                 verifyChanged(url)
-                verifyNoMoreInteractions(this)
+
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("OBSERVE URL : ${brsOpenEvent.value}")
+                }
             }
         }
     }
@@ -68,6 +73,10 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
     // MOCK
     //
     ////////////////////////////////////////////////////////////////////////////////////
+
+    companion object {
+        private val mLog = LoggerFactory.getLogger(FrequentlySiteViewModelTest::class.java)
+    }
 
     @Mock lateinit var dao: FrequentlySiteDao
 }

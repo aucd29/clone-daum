@@ -1,10 +1,13 @@
 package com.example.clone_daum.ui.viewmodel
 
 import androidx.core.text.toHtml
+import brigitte.html
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
-import com.example.clone_daum.util.BaseRoboViewModelTest
-import com.example.clone_daum.util.mockReturn
+import brigitte.shield.BaseRoboViewModelTest
+import brigitte.shield.assertEquals
+import brigitte.shield.assertTrue
+import brigitte.shield.mockReturn
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -33,15 +36,16 @@ class RealtimeIssueChildViewModelTest: BaseRoboViewModelTest<RealtimeIssueChildV
         issue.apply {
             type.mockReturn("+")
             value.mockReturn("10")
-            assertEquals(typeConvert(this), "<font color='red'>↑</font> 10")
+            viewmodel.typeConvert(this)?.toHtml()
+                .assertEquals("<font color='red'>↑</font> $value".html()?.toHtml())
 
             type.mockReturn("-")
-            assertEquals(typeConvert(this), "<font color='blue'>↓</font> 10")
+            viewmodel.typeConvert(this)?.toHtml()
+                .assertEquals("<font color='blue'>↓</font> $value".html()?.toHtml())
 
             type.mockReturn("N")
-            assertEquals(typeConvert(this), "<font color='red'>NEW</font>")
+            viewmodel.typeConvert(this)?.toHtml()
+                .assertEquals("<font color='red'>NEW</font>".html()?.toHtml())
         }
     }
-
-    private fun typeConvert(issue: RealtimeIssue) = viewmodel.typeConvert(issue)?.toHtml()
 }

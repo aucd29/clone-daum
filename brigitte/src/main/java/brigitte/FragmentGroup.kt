@@ -157,6 +157,9 @@ object FragmentAnim {
     val RIGHT: String
         get() = "right"
 
+    val RIGHT_ALPHA: String
+        get() = "right-alpha"
+
     val UP: String
         get() = "up"
 
@@ -222,6 +225,8 @@ inline fun FragmentManager.internalShow(fragment: Fragment, params: FragmentPara
                     when (it) {
                         RIGHT -> setCustomAnimations(R.anim.slide_in_current,   R.anim.slide_in_next,
                                                      R.anim.slide_out_current,  R.anim.slide_out_prev)
+                        RIGHT_ALPHA -> setCustomAnimations(R.anim.slide_in_current_fadein,   R.anim.slide_in_next_fadeout,
+                                                           R.anim.slide_out_current_fadein,  R.anim.slide_out_prev_fadeout)
                         LEFT  -> setCustomAnimations(R.anim.slide_out_current,  R.anim.slide_out_prev,
                                                      R.anim.slide_in_current,   R.anim.slide_in_next)
                         UP    -> setCustomAnimations(R.anim.slide_up_current,   R.anim.slide_up_next,

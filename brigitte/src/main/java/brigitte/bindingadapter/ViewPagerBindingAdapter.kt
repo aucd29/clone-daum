@@ -117,4 +117,14 @@ object ViewPagerBindingAdapter {
             })
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("bindCurrentItem", "bindSmoothScroll", requireAll = false)
+    fun bindCurrentItem(viewpager: ViewPager, pos: Int, smoothScroll: Boolean?) {
+        if (smoothScroll == null) {
+            viewpager.currentItem = pos
+        } else {
+            viewpager.setCurrentItem(pos, smoothScroll)
+        }
+    }
 }

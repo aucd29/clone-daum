@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package com.example.clone_daum.util
+package brigitte.shield
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -42,19 +42,6 @@ inline fun <T> awaitObserveValue(livedata: LiveData<T>, timeout: Long = 1): T? {
     return data
 }
 
-inline fun CommandEventViewModel.testCommand(changedValues: Array<Pair<String, Any>>, process: () -> Unit) {
-    val observer = mock(Observer::class.java) as Observer<Pair<String, Any>>
-    commandEvent.observeForever(observer)
-
-    process.invoke()
-
-    changedValues.forEach {
-        verify(observer).onChanged(it)
-    }
-
-    commandEvent.removeObserver(observer)
-}
-
 inline fun mockReactiveX() {
     RxAndroidPlugins.reset()
     RxJavaPlugins.reset()
@@ -92,40 +79,6 @@ inline fun mockReactiveX() {
 //        Log.w("Undeliverable exception received, not sure what to do", error)
     }
 }
-
-//
-////https://gist.github.com/dpmedeiros/7f7724fdf13fc5390bb05958448cdcad
-//object AndroidMockUtil {
-//    private val mMainThread = Executors.newSingleThreadScheduledExecutor()
-//
-//    @Throws(Exception::class)
-//    fun mockMainThreadHandler() {
-//        val mainThreadLooper = mock(Looper::class.java)
-//        val mainThreadHandler = mock(Handler::class.java)
-//
-//        `when`(Looper.getMainLooper()).thenReturn(mainThreadLooper)
-//
-//        val handlerPostAnswer = Answer {
-//            val runnable = it.getArgument<Runnable>(0)
-//            var delay: Long = 0L
-//
-//            if (it.arguments.size > 1) {
-//                delay = it.getArgument(1)
-//            }
-//
-//            if (runnable != null) {
-//                mMainThread.schedule(runnable, delay, TimeUnit.MILLISECONDS)
-//            }
-//
-//            true
-//        }
-//
-//        doAnswer(handlerPostAnswer).`when`(mainThreadHandler)
-//            .post(any(Runnable::class.java))
-//        doAnswer(handlerPostAnswer).`when`(mainThreadHandler)
-//            .postDelayed(any(Runnable::class.java), anyLong())
-//    }
-//}
 
 // https://stackoverflow.com/questions/40300469/mock-build-version-with-mockito
 @Throws(Exception::class)

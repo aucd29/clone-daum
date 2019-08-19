@@ -11,11 +11,10 @@ import com.example.clone_daum.model.DbRepository
 import com.example.clone_daum.model.local.*
 import com.example.clone_daum.model.remote.DaumService
 import com.example.clone_daum.model.remote.Sitemap
-import com.example.clone_daum.util.BaseRoboTest
-import com.example.clone_daum.util.eq
-import com.example.clone_daum.util.mockReactiveX
+import brigitte.shield.BaseRoboTest
+import brigitte.shield.assertEquals
+import brigitte.shield.mockReactiveX
 import io.reactivex.disposables.CompositeDisposable
-import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,12 +48,12 @@ class PreloadConfigTest: BaseRoboTest() {
         val submenu = app.assets.open("res/brs_submenu.json").readBytes()
             .jsonParse<List<BrowserSubMenu>>()
 
-        config.brsSubMenuList.size eq submenu.size
+        config.brsSubMenuList.size.assertEquals(submenu.size)
 
         var i = 0
         config.brsSubMenuList.forEach {
-            it.icon eq submenu[i].icon
-            it.name eq submenu[i].name
+            it.icon.assertEquals(submenu[i].icon)
+            it.name.assertEquals(submenu[i].name)
 
             ++i
         }
@@ -69,12 +68,12 @@ class PreloadConfigTest: BaseRoboTest() {
         val sitemap = app.assets.open("res/navi_sitemap.json").readBytes()
             .jsonParse<List<Sitemap>>()
 
-        config.naviSitemapList.size eq sitemap.size
+        config.naviSitemapList.size.assertEquals(sitemap.size)
 
         var i = 0
         config.naviSitemapList.forEach {
-            it.icon eq sitemap[i].icon
-            it.name eq sitemap[i].name
+            it.icon.assertEquals(sitemap[i].icon)
+            it.name.assertEquals(sitemap[i].name)
 
             ++i
         }
@@ -91,15 +90,15 @@ class PreloadConfigTest: BaseRoboTest() {
 
         val select = db.frequentlySiteDao().select()
         select.subscribe {
-            it.size eq frequently.size
+            it.size.assertEquals(frequently.size)
         }
 
         select.subscribe {
             var i = 0
 
             it.forEach {
-                it.title eq frequently[i].title
-                it.url eq frequently[i].url
+                it.title.assertEquals(frequently[i].title)
+                it.url.assertEquals(frequently[i].url)
 
                 ++i
             }
@@ -114,11 +113,11 @@ class PreloadConfigTest: BaseRoboTest() {
 
         val tab = app.assets.open("res/tab.json").readBytes().jsonParse<List<TabData>>()
 
-        config.tabLabelList.size eq tab.size
+        config.tabLabelList.size.assertEquals(tab.size)
 
         var i = 0
         config.tabLabelList.forEach {
-            it.name eq tab[i].name
+            it.name.assertEquals(tab[i].name)
 
             ++i
         }

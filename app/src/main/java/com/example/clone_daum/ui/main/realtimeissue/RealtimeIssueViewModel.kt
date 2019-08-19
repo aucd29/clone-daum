@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
 import android.view.View
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -38,38 +39,34 @@ class RealtimeIssueViewModel @Inject constructor(
         const val INTERVAL          = 7L
 
         const val CMD_BRS_OPEN      = "brs-open"
-        const val CMD_ANIM_FINISH   = "anim-finish"
-        const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
         const val CMD_CLOSE_ISSUE   = "close-realtime-issue"
+        const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
+        const val CMD_RELOAD_ISSUE  = "reload-realtime-issue"
+
+        const val CMD_ERROR_ISSUE   = "error-realtime-issue"
     }
 
     private var mAllIssueList: List<RealtimeIssue>? = null
-    private var mRealtimeCount = 0
     private val mDisposable = CompositeDisposable()
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
 
     val tabChangedCallback = ObservableField<TabSelectedCallback>()
     var tabChangedLive     = MutableLiveData<TabLayout.Tab?>()
+    val currentIssue       = ObservableField<RealtimeIssue>()
 
-    val currentIssue    = ObservableField<RealtimeIssue>()
-
-
-    val containerTransY = ObservableField<AnimParams>()
-//    val dimmingBgAlpha  = ObservableField<AnimParams>()
-    val tabMenuRotation = ObservableField<AnimParams>()
-    val tabAlpha        = ObservableField<AnimParams>()
-    val bgAlpha         = ObservableField<AnimParams>()
-    val backgroundAlpha = ObservableField<AnimParams>()
-
-//    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
-    val enableClick     = ObservableBoolean(false)
+    val containerTransY    = ObservableField<AnimParams>()
+    val tabMenuRotation    = ObservableField<AnimParams>()
+    val tabAlpha           = ObservableField<AnimParams>()
+    val bgAlpha            = ObservableField<AnimParams>()
+    val backgroundAlpha    = ObservableField<AnimParams>()
 
     val layoutTranslationY = ObservableField<Float>()
+    val enableClick        = ObservableBoolean(false)
 
-    val viewProgress      = ObservableInt(View.VISIBLE)
-    val viewRealtimeIssue = ObservableInt(View.GONE)
-
+    val viewRealtimeProgress = ObservableInt(View.VISIBLE)
+    val viewRealtimeIssue    = ObservableInt(View.GONE)
+    val viewRetry            = ObservableInt(View.GONE)
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
@@ -82,20 +79,52 @@ class RealtimeIssueViewModel @Inject constructor(
     }
 
     fun load(html: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("LOAD REALTIME ISSUE")
+        }
+
+        if (html.isEmpty()) {
+            mLog.error("ERROR: INVALID REALTIME ISSUE DATA")
+
+            command(CMD_ERROR_ISSUE)
+            return
+        }
+
         mDisposable.add(Observable.just(html)
             .subscribeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
+            .filter {
+                if (it.isNotEmpty()) {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("PARSING ERROR")
+                    }
+
+                    command(CMD_ERROR_ISSUE)
+
+                    false
+                } else true
+            }
             .subscribe ({
-                viewProgress.gone()
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("SUBSCRIBE REALTIME ISSUE")
+                }
+
+                viewRealtimeProgress.gone()
+                viewRetry.gone()
 
                 mRealtimeIssueList = it
                 mAllIssueList      = it[0].second
 
                 enableClick.set(true)
-                command(CMD_LOADED_ISSUE)
                 startRealtimeIssue()
-            }, { errorLog(it, mLog) }))
+
+                command(CMD_LOADED_ISSUE)
+            }, {
+                errorLog(it, mLog)
+
+                command(CMD_ERROR_ISSUE)
+            }))
     }
 
     private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {
@@ -153,22 +182,17 @@ class RealtimeIssueViewModel @Inject constructor(
         }
 
         mAllIssueList?.let { list ->
-            val index = mRealtimeCount % list.size
-            val issue = list[index]
+            mDisposable.clear()
+            mDisposable.add(interval(INTERVAL, TimeUnit.SECONDS, 0)
+                .map {
+                    if (mLog.isTraceEnabled) {
+                        mLog.trace("REALTIME ISSUE INTERVAL $it")
+                    }
 
-            currentIssue.set(issue)
-
-            mDisposable.add(Observable.timer(INTERVAL, TimeUnit.SECONDS).subscribe {
-                val index = (it % list.size).toInt()
-                val issue = list[index]
-
-                currentIssue.set(issue)
-//                ++mRealtimeCount
-
-                if (mLog.isTraceEnabled) {
-                    mLog.trace("TIMER EXPLODE $it ${issue.text} ")
+                    list[(it % list.size).toInt()]
                 }
-            })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { currentIssue.set(it) })
         }
     }
 
@@ -206,5 +230,24 @@ class RealtimeIssueViewModel @Inject constructor(
         }
 
         layoutTranslationY.set(h)
+    }
+
+    override fun command(cmd: String, data: Any) {
+        when (cmd) {
+            CMD_ERROR_ISSUE -> {
+                viewRealtimeProgress.gone()
+                viewRetry.visible()
+            }
+            else -> {
+                when (cmd) {
+                    CMD_RELOAD_ISSUE -> {
+                        viewRealtimeProgress.visible()
+                        viewRetry.gone()
+                    }
+                }
+
+                super.command(cmd, data)
+            }
+        }
     }
 }

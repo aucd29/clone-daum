@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
+import dagger.Module
 import dagger.Provides
+import dagger.android.ContributesAndroidInjector
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import javax.inject.Named
 
@@ -42,7 +44,6 @@ class MainFragment @Inject constructor(
 
     private lateinit var mIssueViewModel: RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
-
 
     override fun layoutId() = R.layout.main_fragment
 
@@ -69,14 +70,6 @@ class MainFragment @Inject constructor(
 
                 mViewModel.appbarHeight(appbarSearch.height, mainWebTabContainer.height)
                 mIssueViewModel.layoutTranslationY.set(realtimeIssueViewpager.height * -1f)
-
-//                realtimeIssueViewpager.let {
-//                    if (mLog.isDebugEnabled) {
-//                        mLog.debug("REALTIME ISSUE VIEWPAGER HEIGHT : ${it.height}")
-//                    }
-//
-//                    it.translationY = it.height * -1f
-//                }
 
                 result
             }
@@ -190,6 +183,7 @@ class MainFragment @Inject constructor(
             when (cmd) {
                 CMD_LOADED_ISSUE -> loadRealtimeIssueTab()
                 CMD_CLOSE_ISSUE  -> toggleRealtimeIssueArea()
+                CMD_RELOAD_ISSUE -> webCrawling()
             }
         }
     }
@@ -343,5 +337,3 @@ class MainFragment @Inject constructor(
         }
     }
 }
-
-

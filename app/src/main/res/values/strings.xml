@@ -17,6 +17,7 @@
     <string name="main_weather_more">더 보기 &gt;</string>
     <string name="main_weather_current_position">현위치</string>
     <string name="main_realtime_issue_load_error">실시간 이슈 정보를 제대로 불러오지 못했사옵니다.</string>
+    <string name="main_realtime_issue_retry">재시도</string>
 
     <!-- media search -->
     <string name="media_search_history">히스토리</string>

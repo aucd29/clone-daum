@@ -22,9 +22,11 @@ import org.slf4j.LoggerFactory
  */
 
 interface IBannerItem
+
 abstract class IBannerPagerAdapter : PagerAdapter()
 
-open class BannerViewModel<T: IBannerItem> constructor(application: Application
+open class BannerViewModel<T: IBannerItem> constructor(
+    application: Application
 ) : AndroidViewModel(application) {
 
     val items              = ObservableField<List<T>>()

@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.viewmodel
 
 import androidx.lifecycle.Observer
 import com.example.clone_daum.ui.main.SplashViewModel
-import com.example.clone_daum.util.BaseJUnitViewModelTest
+import brigitte.shield.BaseJUnitViewModelTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,7 +35,6 @@ class SplashViewModelTest: BaseJUnitViewModelTest<SplashViewModel>() {
         viewmodel.closeEvent.observeForever(observer)
         viewmodel.closeSplash()
 
-        verify(observer).onChanged(null)
-        verifyNoMoreInteractions(observer)
+        verify(observer, atLeastOnce()).onChanged(null)
     }
 }

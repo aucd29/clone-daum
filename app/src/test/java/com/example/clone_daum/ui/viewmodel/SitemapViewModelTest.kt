@@ -3,10 +3,10 @@ package com.example.clone_daum.ui.viewmodel
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
-import com.example.clone_daum.util.BaseRoboViewModelTest
-import com.example.clone_daum.util.mockObserver
-import com.example.clone_daum.util.verifyChanged
-import com.example.clone_daum.util.mockReturn
+import brigitte.shield.BaseRoboViewModelTest
+import brigitte.shield.mockObserver
+import brigitte.shield.verifyChanged
+import brigitte.shield.mockReturn
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,7 +41,6 @@ class SitemapViewModelTest: BaseRoboViewModelTest<SitemapViewModel>() {
 
             mockObserver<String>(brsOpenEvent).apply {
                 verifyChanged("http://url")
-                verifyNoMoreInteractions(this)
             }
         }
     }

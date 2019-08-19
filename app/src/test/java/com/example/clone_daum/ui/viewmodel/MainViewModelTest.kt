@@ -3,15 +3,15 @@ package com.example.clone_daum.ui.viewmodel
 import android.view.MotionEvent
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.main.MainViewModel
-import com.example.clone_daum.util.*
+import brigitte.shield.*
 import com.google.android.material.tabs.TabLayout
-import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-01 <p/>
@@ -33,10 +33,17 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
         repeat(2) {
             tab.position.mockReturn(it)
 
-            viewmodel.apply {
-                tabChangedCallback.get()?.onTabSelected(tab)
+            if (mLog.isDebugEnabled) {
+                mLog.debug("TEST CHANGE TAB $it")
+            }
 
-                tabChangedLive.value?.position eq it
+            viewmodel.apply {
+                mockObserver(tabChangedLive).apply {
+                    tabChangedCallback.get()?.onTabSelected(tab)
+                    verifyChanged(tab)
+
+                    tabChangedLive.value?.position.assertEquals(it)
+                }
             }
         }
     }
@@ -49,8 +56,8 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
 
             appbarHeight(mockAppbarHeight, mockContainerHeight)
 
-           progressViewOffsetLive.value eq mockAppbarHeight
-           appbarHeight eq mockAppbarHeight - mockContainerHeight
+            progressViewOffsetLive.value.assertEquals(mockAppbarHeight)
+            appbarHeight.assertEquals(mockAppbarHeight - mockContainerHeight)
         }
     }
 
@@ -60,16 +67,16 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
             appbarAlpha()
 
             appbarChangedListener.get()?.invoke(100, 10)
-            appbarAlpha.get() eq 1f-10f/100f
-            appbarOffsetLive.value eq 10
+            appbarAlpha.get().assertEquals(1f-10f/100f)
+            appbarOffsetLive.value.assertEquals(10)
 
             appbarChangedListener.get()?.invoke(100, 80)
-            appbarAlpha.get() eq 1f-80f/100f
-            appbarOffsetLive.value eq 80
+            appbarAlpha.get().assertEquals(1f-80f/100f)
+            appbarOffsetLive.value.assertEquals(80)
 
             appbarChangedListener.get()?.invoke(100, 100)
-            appbarAlpha.get() eq 1f-100f/100f
-            appbarOffsetLive.value eq 100
+            appbarAlpha.get().assertEquals(1f-100f/100f)
+            appbarOffsetLive.value.assertEquals(100)
         }
     }
 
@@ -78,7 +85,7 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
         viewmodel.apply {
             command(MainViewModel.GOTO_NEWS)
 
-            tabSelector.get() eq MainViewModel.INDEX_NEWS
+            tabSelector.get().assertEquals(MainViewModel.INDEX_NEWS)
         }
     }
 
@@ -93,16 +100,16 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
 
             appbarOffsetLive.value = -49
             mainContainerTouchEvent.get()?.invoke(motionEvent)
-            appbarMagneticEffectLive.value!! eq true
+            appbarMagneticEffectLive.value?.assertEquals(true) ?: assert(false)
 
             appbarOffsetLive.value = -51
             mainContainerTouchEvent.get()?.invoke(motionEvent)
-            appbarMagneticEffectLive.value!! eq false
+            appbarMagneticEffectLive.value?.assertEquals(false) ?: assert(false)
 
             // 비정상 값
             appbarOffsetLive.value = 50
             mainContainerTouchEvent.get()?.invoke(motionEvent)
-            appbarMagneticEffectLive.value!! eq false
+            appbarMagneticEffectLive.value?.assertEquals(false) ?: assert(false)
         }
     }
 
@@ -111,16 +118,14 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
         viewmodel.apply {
             mockObserver<Pair<String, Any>>(commandEvent).apply {
                 with (MainViewModel) {
-                    verifyChanged(viewmodel,
+                    verifyCommandChanged(viewmodel,
                         CMD_SEARCH_FRAGMENT,
                         CMD_NAVIGATION_FRAGMENT,
                         CMD_MEDIA_SEARCH_FRAGMENT,
                         CMD_REALTIME_ISSUE)
                 }
 
-                verifyChanged(viewmodel, MainViewModel.CMD_BRS_OPEN to "http://test.net")
-
-                verifyNoMoreInteractions(this)
+                verifyCommandChanged(viewmodel, MainViewModel.CMD_BRS_OPEN to "http://test.net")
             }
         }
     }
@@ -131,12 +136,9 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    @Mock lateinit var config: Config
-
-    override fun initMock() {
-        super.initMock()
-
-        initShadow()
-        shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION)
+    companion object {
+        private val mLog = LoggerFactory.getLogger(MainViewModelTest::class.java)
     }
+
+    @Mock lateinit var config: Config
 }

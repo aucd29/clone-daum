@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.viewmodel
 
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.search.SearchViewModel
-import com.example.clone_daum.util.BaseRoboViewModelTest
+import brigitte.shield.BaseRoboViewModelTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

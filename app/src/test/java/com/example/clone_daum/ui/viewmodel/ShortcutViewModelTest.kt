@@ -4,9 +4,9 @@ import androidx.lifecycle.Observer
 import brigitte.DialogParam
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
-import com.example.clone_daum.util.BaseRoboViewModelTest
-import com.example.clone_daum.util.mockObserver
-import com.example.clone_daum.util.verifyChanged
+import brigitte.shield.BaseRoboViewModelTest
+import brigitte.shield.mockObserver
+import brigitte.shield.verifyChanged
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,7 +33,6 @@ class ShortcutViewModelTest: BaseRoboViewModelTest<ShortcutViewModel>()  {
 
             mockObserver<String>(brsSitemapEvent).apply {
                 verifyChanged("https://m.daum.net/site.daum")
-                verifyNoMoreInteractions(this)
             }
         }
     }
@@ -51,7 +50,6 @@ class ShortcutViewModelTest: BaseRoboViewModelTest<ShortcutViewModel>()  {
 
             mockObserver<DialogParam>(dialogEvent).apply {
                 verifyChanged(dlgparam)
-                verifyNoMoreInteractions(this)
             }
         }
     }

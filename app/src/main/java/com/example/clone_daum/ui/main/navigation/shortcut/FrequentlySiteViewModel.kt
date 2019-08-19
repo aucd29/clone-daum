@@ -6,7 +6,6 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.local.FrequentlySiteDao
 import brigitte.RecyclerViewModel
-import brigitte.app
 import brigitte.arch.SingleLiveEvent
 import brigitte.launchApp
 import io.reactivex.disposables.CompositeDisposable

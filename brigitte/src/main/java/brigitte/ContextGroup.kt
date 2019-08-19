@@ -12,6 +12,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ArrayRes
+import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import java.io.File
@@ -27,6 +28,8 @@ inline fun Context.actionBarSize(): Float {
 
     return size
 }
+
+inline fun Context.color(@ColorRes resid: Int) = ContextCompat.getColor(this, resid)
 
 /**
  * pkgName 에 해당하는 앱이 foreground 인지 확인

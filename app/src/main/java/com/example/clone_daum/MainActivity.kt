@@ -7,9 +7,14 @@ import com.example.clone_daum.databinding.MainActivityBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.SplashViewModel
 import brigitte.*
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {

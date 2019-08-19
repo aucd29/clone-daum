@@ -145,6 +145,26 @@
                                 android:layout_marginStart="15dp"
                                 android:text="@{issueModel.titleConvert(issueModel.currentIssue)}"
                                 android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, issueModel.currentIssue.url)}"
+                                android:visibility="@{issueModel.viewRetry == View.GONE ? View.VISIBLE : View.GONE}"
+                        />
+
+                        <TextView
+                                android:id="@+id/realtime_retry"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="@+id/realtime_issue"
+                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
+                                app:layout_constraintEnd_toEndOf="@+id/realtime_issue"
+                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
+                                android:maxLines="1"
+                                android:maxWidth="@dimen/main_realtime_issue_max_width"
+                                android:ellipsize="end"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="@dimen/main_realtime_issue_text"
+                                android:padding="@dimen/main_realtime_issue_text_pad"
+                                android:layout_marginStart="15dp"
+                                android:text="@string/main_realtime_issue_retry"
+                                android:onClick="@{() -> issueModel.command(issueModel.CMD_RELOAD_ISSUE)}"
+                                android:visibility="@{issueModel.viewRetry}"
                         />
 
                         <ProgressBar
@@ -155,7 +175,7 @@
                                 app:layout_constraintTop_toTopOf="@+id/realtime_issue"
                                 app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
-                                android:visibility="@{issueModel.viewProgress}"
+                                android:visibility="@{issueModel.viewRealtimeProgress}"
                         />
 
                         <TextView
@@ -181,7 +201,6 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
                                 android:layout_marginEnd="14dp"
                                 android:padding="5dp"
-                                tools:ignore="ContentDescription"
                                 app:bindRotation="@{issueModel.tabMenuRotation}"
                                 android:contentDescription="@string/cd_main_realtime_issue_icon"
                                 android:clickable="@{issueModel.enableClick}"

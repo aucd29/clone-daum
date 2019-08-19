@@ -1,3 +1,4 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte.bindingadapter
 
 import android.animation.Animator

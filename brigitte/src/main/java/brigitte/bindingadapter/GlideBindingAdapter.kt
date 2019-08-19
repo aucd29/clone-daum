@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import org.slf4j.LoggerFactory
 import java.io.File
 
@@ -60,14 +61,22 @@ object GlideBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("bindImage", "bindImageThumbnail", "bindImageWidth", "bindImageHeight",
-        "bindRoundedCorners", requireAll = false)
-    fun glideImage(view: ImageView, path: String, thumbnail: String?, x: Int?, y: Int?, roundedCorners: Int?) {
+    @BindingAdapter("bindImage", "bindImageThumbnail",
+        "bindImageWidth", "bindImageHeight",
+        "bindRoundedCorners", "bindCircleCrop",
+        requireAll = false)
+    fun glideImage(view: ImageView, path: String?, thumbnail: String?,
+                   x: Int?, y: Int?,
+                   roundedCorners: Int?, circleCrop: Boolean?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BIND IMAGE : $path THUMBNAIL : $thumbnail")
         }
 
-        view.glide(path, thumbnail, x, y, roundedCorners)
+        if (path == null) {
+            return
+        }
+
+        view.glide(path, thumbnail, x, y, roundedCorners, circleCrop)
     }
 }
 
@@ -90,7 +99,9 @@ inline fun ImageView.fitxy() {
 }
 
 @SuppressLint("CheckResult")
-inline fun ImageView.glide(path: String, thumbnail: String?, x: Int?, y: Int?, roundedCorners: Int?) {
+inline fun ImageView.glide(path: String, thumbnail: String?,
+                           x: Int?, y: Int?,
+                           roundedCorners: Int?, circleCrop: Boolean?) {
     fitxy()
 
     val progress = CircularProgressDrawable(context)
@@ -114,7 +125,8 @@ inline fun ImageView.glide(path: String, thumbnail: String?, x: Int?, y: Int?, r
         thumbnail?.let { request.thumbnail(Glide.with(context).load(it)) }
 
         // https://github.com/wasabeef/glide-transformations
-//        roundedCorners?.let { request.transform(CenterCrop(), RoundedCorners(it))}
+        roundedCorners?.let { request.transform(CenterCrop(), RoundedCorners(it)) }
+        circleCrop?.let { if (it) { request.apply(RequestOptions.circleCropTransform()) }}
 
         if (x != null && y != null && x > 0 && y > 0) {
             request.override(x, y)
@@ -132,6 +144,9 @@ inline fun ImageView.glide(path: String, thumbnail: String?, x: Int?, y: Int?, r
     } else {
         val request = glide.load(fp)
             .transition(DrawableTransitionOptions.withCrossFade())
+
+        roundedCorners?.let { request.transform(CenterCrop(), RoundedCorners(it))}
+        circleCrop?.let { if (it) { request.apply(RequestOptions.circleCropTransform()) }}
 
         // 로컬 파일을 이럴 필요는 없나?
 //        thumbnail?.let { request.thumbnail(Glide.with(context).load(it)) }

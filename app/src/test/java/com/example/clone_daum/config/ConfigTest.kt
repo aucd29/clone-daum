@@ -1,22 +1,16 @@
 package com.example.clone_daum.config
 
 import android.os.Build
-import androidx.test.core.app.ApplicationProvider
+import briggite.shield.BaseRoboTest
+import briggite.shield.assertEquals
+import briggite.shield.assertTrue
 import brigitte.actionBarSize
 import com.example.clone_daum.BuildConfig
-import com.example.clone_daum.MainApp
 import com.example.clone_daum.common.Config
-import com.example.clone_daum.util.BaseRoboTest
-import com.example.clone_daum.util.eq
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
-import org.slf4j.LoggerFactory
 import java.util.*
 
 
@@ -45,17 +39,17 @@ class ConfigTest: BaseRoboTest() {
 
         val USER_AGENT = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
 
-        config.USER_AGENT eq USER_AGENT
+        config.USER_AGENT.assertEquals(USER_AGENT)
     }
 
     @Test
     fun actionBarHeightTest() {
-        config.ACTION_BAR_HEIGHT eq app.actionBarSize()
+        config.ACTION_BAR_HEIGHT.assertEquals(app.actionBarSize())
     }
 
     @Test
     fun gpsPermissionTest() {
-        config.HAS_PERMISSION_GPS eq true
+        config.HAS_PERMISSION_GPS.assertTrue()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +61,6 @@ class ConfigTest: BaseRoboTest() {
     override fun initMock() {
         super.initMock()
 
-        initShadow()
-        shadowApp?.grantPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        mockPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION)
     }
 }

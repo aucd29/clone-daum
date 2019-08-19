@@ -96,6 +96,14 @@ inline fun TextView.normal() {
     setTypeface(typeface, Typeface.NORMAL)
 }
 
+inline fun TextView.boldById(id: Int) {
+    if (this.id == id) {
+        bold()
+    } else {
+        normal()
+    }
+}
+
 inline fun View.showKeyboard(flags: Int = InputMethodManager.SHOW_IMPLICIT) {
     postDelayed({
         requestFocus()

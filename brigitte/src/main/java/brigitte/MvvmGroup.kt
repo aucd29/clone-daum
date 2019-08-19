@@ -91,7 +91,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         const val SCOPE_FRAGMENT = 1
     }
 
-    private var mLayoutName   = generateLayoutName()
+//    private var mLayoutName = generateLayoutName()
     private val mDisposable = CompositeDisposable()
 
     protected lateinit var mBinding: T
@@ -116,8 +116,11 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
     }
 
     // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
+//    @LayoutRes
+//    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
     @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
+    abstract fun layoutId(): Int
 
     override fun onBackPressed() {
         // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
@@ -152,8 +155,13 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
      */
     override fun onDestroy() {
+        mCommandEventModels.forEach {
+            if (it is ILifeCycle) it.onDestroy()
+        }
+
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
+        mCommandEventModels.clear()
 
         super.onDestroy()
     }
@@ -206,7 +214,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         const val SCOPE_FRAGMENT = 1
     }
 
-    private var mLayoutName = generateLayoutName()
+//    private var mLayoutName = generateLayoutName()
 
     protected lateinit var mBinding : T
     protected val mViewModel: M by lazy { initViewModel() }
@@ -215,9 +223,9 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layoutId = layoutId()
-        if (layoutId == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
+//        if (layoutId == 0) {
+//            return generateEmptyLayout(mLayoutName)
+//        }
 
         mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
@@ -227,9 +235,9 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         return mBinding.root
     }
 
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
     @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
+    abstract fun layoutId(): Int // = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -259,8 +267,13 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
     }
 
     override fun onDestroyView() {
+        mCommandEventModels.forEach {
+            if (it is ILifeCycle) it.onDestroy()
+        }
+
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
+        mCommandEventModels.clear()
 
         super.onDestroyView()
     }
@@ -303,7 +316,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 
 abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : AppCompatDialogFragment(), BaseEventAware {
-    private var mLayoutName = generateLayoutName()
+//    private var mLayoutName = generateLayoutName()
 
     protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
@@ -313,9 +326,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val layoutId = layoutId()
-        if (layoutId == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
+//        if (layoutId == 0) {
+//            return generateEmptyLayout(mLayoutName)
+//        }
 
         mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
@@ -325,9 +338,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
         return mBinding.root
     }
 
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
     @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
+    abstract fun layoutId(): Int // = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -387,7 +400,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
         private val mLog = LoggerFactory.getLogger(BaseBottomSheetDialogFragment::class.java)
     }
 
-    private var mLayoutName = generateLayoutName()
+//    private var mLayoutName = generateLayoutName()
 
     protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
@@ -396,9 +409,9 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val layoutId = layoutId()
-        if (layoutId == 0) {
-            return generateEmptyLayout(mLayoutName)
-        }
+//        if (layoutId == 0) {
+//            return generateEmptyLayout(mLayoutName)
+//        }
 
         mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
@@ -409,9 +422,9 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
         return mBinding.root
     }
 
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
+    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
     @LayoutRes
-    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
+    abstract fun layoutId(): Int // = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

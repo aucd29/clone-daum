@@ -28,7 +28,7 @@ inline val Calendar.s
     get() = get(Calendar.SECOND)
 
 inline val Calendar.defaultDateFormat
-    get() = SimpleDateFormat("yyyy-M-d H:m:s", Locale.getDefault())
+    get() = SimpleDateFormat("yyyy.MM.dd H:m:s", Locale.getDefault())
 
 inline fun Calendar.cloneAdd(field: Int, value: Int): Calendar {
     val cal = this.clone() as Calendar
@@ -92,9 +92,9 @@ inline fun Calendar.lastTimeToday(): Calendar {
 inline fun Calendar.isLow(time: Long) = timeInMillis <= time
 inline fun Calendar.isHigh(time: Long) = timeInMillis > time
 
-inline fun Long.toDateString(): String = Calendar.getInstance().run {
+inline fun Long.toDateString(format: SimpleDateFormat? = null): String = Calendar.getInstance().run {
     timeInMillis = this@toDateString
-    defaultDateFormat.format(time)
+    format?.let { it.format(time) } ?: defaultDateFormat.format(time)
 }
 
 //https://stackoverflow.com/questions/20238280/date-in-to-utc-format-java

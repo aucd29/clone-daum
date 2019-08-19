@@ -2,6 +2,7 @@ package brigitte.bindingadapter
 
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import brigitte.dpToPx
 import org.slf4j.LoggerFactory
 
 /**
@@ -13,12 +14,32 @@ object SwipeRefreshLayoutBindingAdapter {
 
     @JvmStatic
     @BindingAdapter("bindSwipeRefreshListener")
-    fun bindSwipeRefreshListener(view: SwipeRefreshLayout, callback: () -> Unit) {
+    fun bindSwipeRefreshListener(view: SwipeRefreshLayout, callback: (() -> Unit)?) {
         if (mLog.isDebugEnabled) {
             mLog.debug("bindSwipeRefreshListener")
         }
 
         view.setOnRefreshListener(callback)
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindSwipeIsEnabled")
+    fun bindSwipeIsEnabled(view: SwipeRefreshLayout, result: Boolean) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindSwipeIsEnabled $result")
+        }
+
+        view.isEnabled = result
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindSpinnerOffsetEnd")
+    fun bindSpinnerOffsetEnd(view: SwipeRefreshLayout, offset: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("bindSpinnerOffsetEnd $offset")
+        }
+
+        view.setProgressViewOffset(false, 0, offset)
     }
 
     @JvmStatic
