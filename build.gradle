@@ -9,9 +9,7 @@ buildscript {
 //        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
     }
     dependencies {
-        // 버전을 높이면 빌드가 안된다. (3.3.2 일단 고정)
-        // 문제는 원인이 안 나와.. -_ - 구글.... 일해라...
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         classpath 'com.google.gms:google-services:4.3.0'
