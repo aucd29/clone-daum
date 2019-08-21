@@ -3,8 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="java.lang.String"/>
-
+<!--        <import type="java.lang.String"/>-->
         <variable name="model" type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel"/>
         <variable name="item" type="com.example.clone_daum.model.remote.RealtimeIssue"/>
     </data>
@@ -26,10 +25,10 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/issue"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="@{String.valueOf(item.index)}"
                 android:layout_marginEnd="10dp"
                 android:textColor="#9c9c9c"
-        />
+                android:text="@{String.valueOf(item.index)}"
+                />
 
         <TextView
                 android:id="@+id/issue"

@@ -2,12 +2,12 @@ package com.example.clone_daum.di.module
 
 import androidx.lifecycle.ViewModel
 import brigitte.di.dagger.module.ViewModelKey
+import brigitte.viewmodel.SplashViewModel
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
-import com.example.clone_daum.ui.main.SplashViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeViewModel

@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.SplashViewModel"/>
+        <variable name="model" type="brigitte.viewmodel.SplashViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

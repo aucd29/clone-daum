@@ -6,6 +6,7 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
+import brigitte.viewmodel.SplashViewModel
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
