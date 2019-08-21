@@ -63,9 +63,9 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
 
     override fun initViewModelEvents() = mViewModel.run {
         observe(closeEvent) {
-            viewSplash.gone()
+//            viewSplash.gone()
 
-            mBinding.root.removeView(mBinding.splash)
+//            mBinding.root.removeView(mBinding.splash)
         }
     }
 

@@ -71,7 +71,7 @@ dependencies {
     testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation "androidx.arch.core:core-testing:2.0.1"
     testImplementation "org.robolectric:robolectric:4.3"
-    debugImplementation ('androidx.fragment:fragment-testing:1.2.0-alpha01') {
+    debugImplementation ('androidx.fragment:fragment-testing:1.2.0-alpha02') {
         exclude group: "androidx.test", module: "core"
     }
 
@@ -95,9 +95,10 @@ dependencies {
     implementation "androidx.core:core-ktx:$core_ktx"
     implementation "androidx.constraintlayout:constraintlayout:$constraint"
     implementation "com.google.android.material:material:$material"
-
     implementation "androidx.recyclerview:recyclerview:$androidx"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    kapt "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+
 
     implementation "androidx.multidex:multidex:2.0.1"
     implementation "androidx.room:room-runtime:$room"

@@ -5,11 +5,11 @@ import android.text.Spanned
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
-import brigitte.CommandEventViewModel
 import brigitte.ICommandEventAware
 import brigitte.arch.SingleLiveEvent
 import brigitte.bindingadapter.AnimParams
 import brigitte.html
+import brigitte.viewmodel.CommandEventViewModel
 import javax.inject.Inject
 
 /**

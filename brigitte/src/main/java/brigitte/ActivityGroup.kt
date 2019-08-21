@@ -36,11 +36,12 @@ import java.util.concurrent.TimeUnit
  * Activity 관련 된 extension 모음
  */
 
-interface ILifeCycle {
-    fun onPause()
-    fun onResume()
-    fun onDestroy()
-}
+// LifecycleObserver 으로 대체
+//interface ILifeCycle {
+//    fun onPause()
+//    fun onResume()
+//    fun onDestroy()
+//}
 
 //https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android
 inline fun Activity.changeStatusBarColorRes(@ColorRes color: Int) {

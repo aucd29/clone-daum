@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.test.core.app.ApplicationProvider
 import brigitte.*
+import brigitte.viewmodel.CommandEventViewModel
 import junit.framework.TestCase.*
 import org.junit.Rule
 import org.mockito.Mockito

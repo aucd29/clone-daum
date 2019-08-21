@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
+import brigitte.viewmodel.CommandEventViewModel
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

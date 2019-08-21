@@ -2,6 +2,41 @@
 
 buildscript {
     ext.kotlin_version = '1.3.41'
+    ext {
+        compile_sdk = 28
+        min_sdk     = 19
+        target_sdk  = 28
+
+        appcompat   = '1.0.2'
+        core_ktx    = "1.0.2"
+        androidx    = '1.0.0'
+        lifecycle   = "2.2.0-alpha03"
+        material    = "1.0.0"
+
+        jackson     = '2.9.7'
+        logback     = '1.1.1-11'
+        slf4j       = '1.7.5'
+        glide       = '4.9.0'
+        okhttp      = '3.11.0'
+        retrofit    = '2.4.0'
+        runner      = '1.0.2'
+        espresso    = '3.0.2'
+        dagger2     = '2.16' // 2.19 는 오류 발생 함
+        arch        = '1.1.1'
+        constraint  = '1.1.3'
+        rxjava      = '2.1.9'
+        rxandroid   = '2.1.0'
+        rxkotlin    = '2.3.0'
+        room        = '2.1.0'
+        calligraphy = '3.0.0'
+        viewpump    = '1.0.0'
+        koin_version = '2.0.1'
+
+        firebase_core          = '16.0.1'
+        firebase_msg           = '17.0.0'
+        firebase_jobdispatcher = '0.8.5'
+    }
+
     repositories {
         google()
         jcenter()
@@ -41,40 +76,4 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-ext {
-    compile_sdk = 28
-    min_sdk     = 19
-    target_sdk  = 28
-
-    appcompat   = '1.0.2'
-    core_ktx    = "1.0.2"
-    androidx    = '1.0.0'
-    lifecycle   = "2.0.0"
-    material    = "1.0.0"
-
-//    support_lib = '28.0.0'
-    jackson     = '2.9.7'
-    logback     = '1.1.1-11'
-    slf4j       = '1.7.5'
-    glide       = '4.9.0'
-    okhttp      = '3.11.0'
-    retrofit    = '2.4.0'
-    runner      = '1.0.2'
-    espresso    = '3.0.2'
-    dagger2     = '2.16' // 2.19 는 오류 발생 함
-    arch        = '1.1.1'
-    constraint  = '1.1.3'
-    rxjava      = '2.1.9'
-    rxandroid   = '2.1.0'
-    rxkotlin    = '2.3.0'
-    room        = '2.1.0'
-    calligraphy = '3.0.0'
-    viewpump    = '1.0.0'
-    koin_version = '2.0.0-GA6'
-
-    firebase_core          = '16.0.1'
-    firebase_msg           = '17.0.0'
-    firebase_jobdispatcher = '0.8.5'
 }

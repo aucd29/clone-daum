@@ -6,6 +6,7 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.viewmodel.CommandEventViewModel
 import javax.inject.Inject
 
 /**

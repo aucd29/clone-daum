@@ -9,10 +9,10 @@ import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
-//import com.example.clone_daum.model.remote.RealtimeIssueParser
 import com.example.clone_daum.model.remote.RealtimeIssueType
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.viewmodel.CommandEventViewModel
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

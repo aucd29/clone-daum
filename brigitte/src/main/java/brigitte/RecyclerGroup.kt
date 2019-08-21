@@ -12,6 +12,7 @@ import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.*
+import brigitte.viewmodel.CommandEventViewModel
 import org.slf4j.LoggerFactory
 import java.util.*
 import kotlin.collections.ArrayList
@@ -254,7 +255,6 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
         val newItems = if (oldItems.hashCode() == list.hashCode()) { ArrayList(list) } else { list }
 
         // FIXME 이곳의 구현 방식이 일반적이지 않다라고 들었고 관련 내용을 다시 찾아봄
-        //
         // https://blog.kmshack.kr/RecyclerView-DiffUtil%EB%A1%9C-%EC%84%B1%EB%8A%A5-%ED%96%A5%EC%83%81%ED%95%98%EA%B8%B0/
         val result = DiffUtil.calculateDiff(object: DiffUtil.Callback() {
             // 이전 목록 개수 반환

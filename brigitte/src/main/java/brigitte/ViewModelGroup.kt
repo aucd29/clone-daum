@@ -9,10 +9,9 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LifecycleEventObserver
 import brigitte.arch.SingleLiveEvent
-import io.reactivex.Single
 import org.slf4j.Logger
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-03 <p/>
@@ -60,26 +59,3 @@ inline fun AndroidViewModel.pxToDp(v: Int) = pxToDp(v.toFloat()).toInt()
 inline fun AndroidViewModel.dpToPx(v: Float) = v * app.displayDensity()
 inline fun AndroidViewModel.pxToDp(v: Float) = v / app.displayDensity()
 
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// CommandEventViewModel
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-open class CommandEventViewModel @JvmOverloads constructor (application: Application)
-    : AndroidViewModel(application)
-    , ICommandEventAware {
-
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
-
-    inline fun snackbar(@StringRes resid: Int) = snackbar(string(resid))
-    inline fun toast(@StringRes resid: Int) = toast(string(resid))
-    inline fun errorLog(e: Throwable, logger: Logger) {
-        if (logger.isDebugEnabled) {
-            e.printStackTrace()
-        }
-
-        logger.error("ERROR: ${e.message}")
-    }
-}

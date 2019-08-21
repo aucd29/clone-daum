@@ -5,10 +5,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
-import brigitte.CommandEventViewModel
-import brigitte.ICommandEventAware
 import brigitte.arch.SingleLiveEvent
+import brigitte.viewmodel.CommandEventViewModel
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

@@ -3,7 +3,6 @@ package brigitte.shield
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import brigitte.CommandEventViewModel
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins

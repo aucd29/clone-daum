@@ -91,13 +91,11 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         const val SCOPE_FRAGMENT = 1
     }
 
-//    private var mLayoutName = generateLayoutName()
     private val mDisposable = CompositeDisposable()
-
-    protected lateinit var mBinding: T
-    protected lateinit var mBackPressed: BackPressedManager
+    private lateinit var mBackPressed: BackPressedManager
 
     protected val mViewModel: M by lazy { initViewModel() }
+    protected lateinit var mBinding: T
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,10 +113,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         initViewModelEvents()
     }
 
-    // 기본 값은 파일 명으로 얻을 수 있지만 직접 레이아웃 아이디를 지정할 수도 있다.
     // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
-//    @LayoutRes
-//    open fun layoutId() = resources.getIdentifier(mLayoutName, LAYOUT, packageName)
     @LayoutRes
     abstract fun layoutId(): Int
 
@@ -135,30 +130,18 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onPause()
-        }
-    }
-
-    override fun onResume() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onResume()
-        }
-
-        super.onResume()
-    }
+//    override fun onPause() {
+//        super.onPause()
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//    }
 
     /**
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
      */
     override fun onDestroy() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onDestroy()
-        }
-
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
         mCommandEventModels.clear()
@@ -173,6 +156,9 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
      */
     protected open fun bindViewModel() {
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
 
     protected open fun initBackPressed() {
@@ -214,20 +200,13 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         const val SCOPE_FRAGMENT = 1
     }
 
-//    private var mLayoutName = generateLayoutName()
-
     protected lateinit var mBinding : T
     protected val mViewModel: M by lazy { initViewModel() }
     protected val mDisposable = CompositeDisposable()
     protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutId = layoutId()
-//        if (layoutId == 0) {
-//            return generateEmptyLayout(mLayoutName)
-//        }
-
-        mBinding = dataBinding(layoutId, container, false)
+        mBinding = dataBinding(layoutId(), container, false)
         mBinding.root.isClickable = true
 
         bindViewModel()
@@ -250,27 +229,15 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         initViewModelEvents()
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onPause()
-        }
-    }
-
-    override fun onResume() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onResume()
-        }
-
-        super.onResume()
-    }
+//    override fun onPause() {
+//        super.onPause()
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//    }
 
     override fun onDestroyView() {
-        mCommandEventModels.forEach {
-            if (it is ILifeCycle) it.onDestroy()
-        }
-
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
         mCommandEventModels.clear()
@@ -282,6 +249,9 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 
     protected open fun bindViewModel() {
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -316,8 +286,6 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 
 abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : AppCompatDialogFragment(), BaseEventAware {
-//    private var mLayoutName = generateLayoutName()
-
     protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
     protected val mViewModel: M by lazy { initViewModel() }
@@ -325,12 +293,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val layoutId = layoutId()
-//        if (layoutId == 0) {
-//            return generateEmptyLayout(mLayoutName)
-//        }
-
-        mBinding = dataBinding(layoutId, container, false)
+        mBinding = dataBinding(layoutId(), container, false)
         mBinding.root.isClickable = true
 
         bindViewModel()
@@ -363,6 +326,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 
     open protected fun bindViewModel() {
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -400,20 +366,13 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
         private val mLog = LoggerFactory.getLogger(BaseBottomSheetDialogFragment::class.java)
     }
 
-//    private var mLayoutName = generateLayoutName()
-
     protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
     protected val mViewModel: M by lazy { initViewModel() }
     protected var mViewModelScope = BaseFragment.SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val layoutId = layoutId()
-//        if (layoutId == 0) {
-//            return generateEmptyLayout(mLayoutName)
-//        }
-
-        mBinding = dataBinding(layoutId, container, false)
+        mBinding = dataBinding(layoutId(), container, false)
         mBinding.root.isClickable = true
 
         bindViewModel()
@@ -452,8 +411,10 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
     protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
 
     protected open fun bindViewModel() {
-//        mBinding.setVariable(BR.setModel, mViewModel)
         Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+
+        // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
+        mBinding.lifecycleOwner = this
     }
 
     private fun stateCallback() {
@@ -564,22 +525,28 @@ interface BaseEventAware {
         }
     }
 
-    fun addCommandEventModel(viewModel: ViewModel) {
-        if (viewModel is ICommandEventAware) { mCommandEventModels.add(viewModel) }
+    fun addCommandEventModel(viewmodel: ViewModel) {
+        if (viewmodel is ICommandEventAware) { mCommandEventModels.add(viewmodel) }
+        if (viewmodel is LifecycleObserver) {
+            activity().lifecycle.addObserver(viewmodel)
+        }
     }
 
-    fun addCommandEventModels(vararg viewModels: ViewModel) {
-        for (viewModel in viewModels) {
+    fun addCommandEventModels(vararg viewmodels: ViewModel) {
+        for (viewModel in viewmodels) {
             addCommandEventModel(viewModel)
         }
     }
 
-    fun removeCommandEventModel(viewModel: ViewModel) {
-        if (viewModel is ICommandEventAware) { mCommandEventModels.remove(viewModel) }
+    fun removeCommandEventModel(viewmodel: ViewModel) {
+        if (viewmodel is ICommandEventAware) { mCommandEventModels.remove(viewmodel) }
+        if (viewmodel is LifecycleObserver) {
+            activity().lifecycle.removeObserver(viewmodel)
+        }
     }
 
-    fun removeCommandEventModels(vararg viewModels: ViewModel) {
-        for (viewModel in viewModels) {
+    fun removeCommandEventModels(vararg viewmodels: ViewModel) {
+        for (viewModel in viewmodels) {
             removeCommandEventModel(viewModel)
         }
     }

@@ -1,6 +1,5 @@
 package brigitte
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
@@ -9,7 +8,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import brigitte.di.dagger.module.DaggerViewModelFactory
-import brigitte.di.dagger.module.injectOf
 import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasFragmentInjector
@@ -33,14 +31,16 @@ private const val LAYOUT          = "layout"         // 레이아웃
 /**
  * dagger 를 기본적으로 이용하면서 MVVM 아키텍처를 가지는 Activity
  */
+
+// Framework Fragment 는 deprecated 되어 삭제 [aucd29][2019-08-21]
 abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
-    : BaseActivity<T, M>(), HasFragmentInjector, HasSupportFragmentInjector {
+    : BaseActivity<T, M>(), HasSupportFragmentInjector {
+
+    @Inject lateinit var mGlobalDisposable: CompositeDisposable
 
     /** ViewModel 을 inject 하기 위한 Factory */
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
-    @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
-    @Inject lateinit var frameworkFragmentInjector: DispatchingAndroidInjector<android.app.Fragment>
-    @Inject lateinit var globalDisposable: CompositeDisposable
+    @Inject lateinit var mSupportFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     /**
      * view model 처리, 기본 이벤트 처리를 위한 aware 와 view binding, view model 을 호출 한다.
@@ -52,7 +52,7 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverload
     }
 
     override fun onDestroy() {
-        globalDisposable.clear()
+        mGlobalDisposable.clear()
 
         super.onDestroy()
     }
@@ -64,10 +64,7 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverload
         ViewModelProviders.of(this, mViewModelFactory).get(T::class.java)
 
     override fun supportFragmentInjector() =
-        supportFragmentInjector
-
-    override fun fragmentInjector() =
-        frameworkFragmentInjector
+        mSupportFragmentInjector
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

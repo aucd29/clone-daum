@@ -11,6 +11,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.*
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.viewmodel.CommandEventViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

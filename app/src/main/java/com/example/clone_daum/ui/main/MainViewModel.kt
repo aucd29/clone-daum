@@ -6,9 +6,11 @@ import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleEventObserver
 import com.example.clone_daum.common.Config
 import brigitte.*
+import brigitte.viewmodel.CommandEventViewModel
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.common.widget.magneticEffect
@@ -19,7 +21,11 @@ import kotlin.math.abs
 class MainViewModel @Inject constructor(
     app: Application,
     val config: Config
-) : CommandEventViewModel(app) {
+) : CommandEventViewModel(app), LifecycleEventObserver {
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        mLog.error("ERROR: ######## LIFE CYCLE $event")
+    }
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
@@ -54,7 +60,6 @@ class MainViewModel @Inject constructor(
     val viewBack                = ObservableInt(View.GONE)
 
     var appbarHeight = 0
-
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
