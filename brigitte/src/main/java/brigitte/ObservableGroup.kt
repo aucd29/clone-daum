@@ -2,14 +2,19 @@
 package brigitte
 
 import android.view.View
-import androidx.databinding.BaseObservable
-import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
-import androidx.databinding.ObservableInt
+import androidx.databinding.*
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-04-26 <p/>
  */
+
+// https://proandroiddev.com/the-ugly-onpropertychangedcallback-63c78c762394
+inline fun <reified T: Observable> T.observe(noinline callback: (T) -> Unit) =
+    addOnPropertyChangedCallback(
+        object: Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(observable: Observable, i: Int) =
+                callback(observable as T)
+        })
 
 inline fun ObservableBoolean.toggle() = set(!get())
 

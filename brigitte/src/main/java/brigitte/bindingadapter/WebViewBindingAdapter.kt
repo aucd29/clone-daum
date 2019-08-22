@@ -2,7 +2,9 @@ package brigitte.bindingadapter
 
 import android.webkit.WebView
 import androidx.databinding.BindingAdapter
-import brigitte.*
+import brigitte.widget.WebViewEvent
+import brigitte.widget.pause
+import brigitte.widget.resume
 import org.slf4j.LoggerFactory
 
 /**

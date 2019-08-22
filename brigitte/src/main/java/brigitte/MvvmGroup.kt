@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
@@ -28,20 +29,11 @@ import org.slf4j.LoggerFactory
 private const val SET_VIEW_MODEL  = "setModel"       // view model 을 설정하기 위한 메소드 명
 private const val LAYOUT          = "layout"         // 레이아웃
 
+const val SCOPE_ACTIVITY = 0
+const val SCOPE_FRAGMENT = 1
 
-////////////////////////////////////////////////////////////////////////////////////
-//
-// VIEW MODEL
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-inline fun <reified T : ViewModel> FragmentActivity.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
-    provider?.let {
-        ViewModelProviders.of(this, it).get(T::class.java)
-    } ?: ViewModelProviders.of(this).get(T::class.java)
-
-inline fun <reified T : ViewModel> Fragment.obtainViewModel(provider: ViewModelProvider.Factory? = null) =
-    activity?.obtainViewModel<T>( provider)
+@IntDef(value = [SCOPE_ACTIVITY, SCOPE_FRAGMENT])
+annotation class ViewModelScope
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -72,11 +64,26 @@ inline fun <T: ViewDataBinding> PagerAdapter.dataBinding(@LayoutRes resid: Int, 
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-
 interface OnBackPressedListener {
     fun onBackPressed(): Boolean
 }
 
+interface BaseViewModelProvider {
+    val mViewModelProvider: ViewModelProvider
+    val mViewModelProviderActivity: ViewModelProvider
+
+    private fun viewModelProvider(@ViewModelScope scope: Int) =
+        if (scope == SCOPE_FRAGMENT) mViewModelProvider else mViewModelProviderActivity
+
+    private fun scope(some: FragmentActivity?) =
+        if (some == null) SCOPE_FRAGMENT else SCOPE_ACTIVITY
+
+    fun <VM : ViewModel> inject(@ViewModelScope scope: Int, klass: Class<VM>) =
+        viewModelProvider(scope).get(klass)
+
+    fun <VM : ViewModel> inject(activity: FragmentActivity?, klass: Class<VM>) =
+        viewModelProvider(scope(activity)).get(klass)
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -129,14 +136,6 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
             super.onBackPressed()
         }
     }
-
-//    override fun onPause() {
-//        super.onPause()
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//    }
 
     /**
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
@@ -195,14 +194,12 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
 
 abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : Fragment(), BaseEventAware {
-    companion object {
-        const val SCOPE_ACTIVITY = 0
-        const val SCOPE_FRAGMENT = 1
-    }
 
     protected lateinit var mBinding : T
     protected val mViewModel: M by lazy { initViewModel() }
     protected val mDisposable = CompositeDisposable()
+
+    @ViewModelScope
     protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -216,7 +213,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 
     // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
     @LayoutRes
-    abstract fun layoutId(): Int // = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
+    abstract fun layoutId(): Int
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -228,14 +225,6 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         initViewBinding()
         initViewModelEvents()
     }
-
-//    override fun onPause() {
-//        super.onPause()
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//    }
 
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
@@ -289,7 +278,9 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
     protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
     protected val mViewModel: M by lazy { initViewModel() }
-    protected var mViewModelScope = BaseFragment.SCOPE_FRAGMENT
+
+    @ViewModelScope
+    protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -369,7 +360,9 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
     protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
     protected val mViewModel: M by lazy { initViewModel() }
-    protected var mViewModelScope = BaseFragment.SCOPE_FRAGMENT
+
+    @ViewModelScope
+    protected var mViewModelScope = SCOPE_FRAGMENT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId(), container, false)

@@ -22,15 +22,6 @@ fun ioThread(f : () -> Unit) {
     IO_EXECUTOR.execute(f)
 }
 
-// https://proandroiddev.com/the-ugly-onpropertychangedcallback-63c78c762394
-inline fun <reified T: Observable> T.observe(noinline callback: (T) -> Unit) =
-    addOnPropertyChangedCallback(
-        object: Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(observable: Observable, i: Int) =
-                callback(observable as T)
-        })
-
-
 inline fun validateMainThread() {
     if (Looper.getMainLooper() != Looper.myLooper()) {
         throw IllegalStateException("Must be called from the main thread.")

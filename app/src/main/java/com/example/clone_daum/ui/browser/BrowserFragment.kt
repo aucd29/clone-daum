@@ -14,6 +14,7 @@ import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
+import brigitte.widget.*
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -84,18 +85,20 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
                 }, sslError = {
                     mLog.error("ERROR: SSL ")
 
-                    dialog(DialogParam(context = requireContext(),
-                        messageId  = R.string.brs_dlg_message_ssl_error,
-                        titleId    = R.string.brs_dlg_title_ssl_error,
-                        positiveId = R.string.dlg_btn_open,
-                        negativeId = R.string.dlg_btn_close,
-                        listener   = { res, _ ->
-                            if (res) {
-                                it?.proceed()
-                                sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
-                            } else it?.cancel()
-                        }))
-                }, pageStarted  = {
+                    dialog(
+                        DialogParam(context = requireContext(),
+                            messageId = R.string.brs_dlg_message_ssl_error,
+                            titleId = R.string.brs_dlg_title_ssl_error,
+                            positiveId = R.string.dlg_btn_open,
+                            negativeId = R.string.dlg_btn_close,
+                            listener = { res, _ ->
+                                if (res) {
+                                    it?.proceed()
+                                    sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
+                                } else it?.cancel()
+                            })
+                    )
+                }, pageStarted = {
                     visibleProgress.set(View.VISIBLE)
                     reloadIconResId.set(R.drawable.ic_clear_black_24dp)
                 }, pageFinished = {
@@ -110,7 +113,7 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
                     addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }
-                , userAgent    = { config.USER_AGENT }
+                , userAgent = { config.USER_AGENT }
             ))
         }
 

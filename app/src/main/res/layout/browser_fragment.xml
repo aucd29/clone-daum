@@ -6,7 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="brigitte.WebViewEvent"/>
+        <import type="brigitte.widget.WebViewEvent"/>
 
         <variable name="model" type="com.example.clone_daum.ui.browser.BrowserViewModel"/>
     </data>

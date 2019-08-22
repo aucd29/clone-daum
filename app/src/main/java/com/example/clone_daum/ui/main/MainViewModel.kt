@@ -7,25 +7,22 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.*
-import androidx.lifecycle.LifecycleEventObserver
 import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.viewmodel.CommandEventViewModel
+import brigitte.widget.magneticEffect
+import com.example.clone_daum.common.PreloadConfig
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import com.example.clone_daum.common.widget.magneticEffect
 import com.google.android.material.tabs.TabLayout
+import io.reactivex.disposables.CompositeDisposable
 import kotlin.math.abs
 
 
 class MainViewModel @Inject constructor(
     app: Application,
     val config: Config
-) : CommandEventViewModel(app), LifecycleEventObserver {
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        mLog.error("ERROR: ######## LIFE CYCLE $event")
-    }
-
+) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
 
@@ -38,7 +35,7 @@ class MainViewModel @Inject constructor(
         const val CMD_REALTIME_ISSUE = "realtime-issue"
         const val CMD_BRS_OPEN       = "brs-open"
 
-        const val GOTO_NEWS = "goto-news"
+        const val ITN_GOTO_NEWS = "goto-news"
     }
 
     // MAIN WEB TAB CONTROL
@@ -116,16 +113,7 @@ class MainViewModel @Inject constructor(
 
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            GOTO_NEWS -> tabSelector.run {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("GOTO NEWS TAB $INDEX_NEWS")
-                }
-
-                when (get()) {
-                    INDEX_NEWS -> notifyChange()
-                    else       -> set(INDEX_NEWS)
-                }
-            }
+            ITN_GOTO_NEWS -> tabSelector.notify(INDEX_NEWS)
             else -> super.command(cmd, data)
         }
     }

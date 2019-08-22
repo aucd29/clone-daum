@@ -8,7 +8,6 @@ import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import brigitte.shield.*
 import com.google.android.material.tabs.TabLayout
-import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,7 +61,7 @@ class RealtimeIssueViewModelTest: BaseRoboViewModelTest<RealtimeIssueViewModel>(
 
                 verifyChanged(RealtimeIssueViewModel.CMD_LOADED_ISSUE)
 
-                viewRealtimeProgress.get().assertEquals(View.GONE)
+                viewIssueProgress.get().assertEquals(View.GONE)
                 viewRetry.get().assertEquals(View.GONE) // 정상적이면 gone
                 enableClick.get().assertTrue()
                 currentIssue.get().assertNotNull()
@@ -82,7 +81,7 @@ class RealtimeIssueViewModelTest: BaseRoboViewModelTest<RealtimeIssueViewModel>(
                 verifyNeverChanged(RealtimeIssueViewModel.CMD_LOADED_ISSUE)
 
                 // 그외 속성값 체크
-                viewRealtimeProgress.get().assertEquals(View.GONE)
+                viewIssueProgress.get().assertEquals(View.GONE)
                 viewRetry.get().assertEquals(View.VISIBLE)  // 비 정상이면 visible
                 enableClick.get().assertFalse()
                 currentIssue.get().assertNull()

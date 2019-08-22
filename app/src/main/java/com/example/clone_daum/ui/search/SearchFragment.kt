@@ -5,7 +5,6 @@ import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
-import brigitte.di.dagger.module.injectOfActivity
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -34,7 +33,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment)
+        mPopularViewModel     = inject(requireActivity())
         mBinding.popularmodel = mPopularViewModel
 
         mCommandEventModels.add(mPopularViewModel)

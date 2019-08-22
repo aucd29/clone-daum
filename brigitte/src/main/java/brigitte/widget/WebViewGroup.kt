@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package brigitte
+package brigitte.widget
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -8,7 +8,9 @@ import android.net.http.SslError
 import android.os.Build
 import android.webkit.*
 import androidx.databinding.ObservableField
-import brigitte.arch.SingleLiveEvent
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModel
+import brigitte.BaseDaggerFragment
 import org.slf4j.LoggerFactory
 import java.lang.Exception
 

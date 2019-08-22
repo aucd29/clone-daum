@@ -1,1 +1,1 @@
-include ':app', ':dingbat', ':brigitte'
+include ':app', ':dingbat', ':brigitte', ':brigitte-shield'

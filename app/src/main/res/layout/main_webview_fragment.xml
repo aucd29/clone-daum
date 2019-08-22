@@ -7,7 +7,7 @@
         <!--<variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>-->
     </data>
 
-    <com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout
+    <brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:fillViewport="true"
             android:layout_width="match_parent"
@@ -33,6 +33,6 @@
             />
 
         </androidx.core.widget.NestedScrollView>
-    </com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout>
+    </brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout>
 
 </layout>

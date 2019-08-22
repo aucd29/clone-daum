@@ -3,7 +3,6 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 import com.example.clone_daum.databinding.ShortcutFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
-import brigitte.di.dagger.module.injectOf
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
@@ -25,8 +24,8 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
 
         mViewModelFactory.apply {
             // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로 injectOf 를 이용 한다.
-            mSitemapViewModel    = injectOf(this@ShortcutFragment)
-            mFrequentlySiteModel = injectOf(this@ShortcutFragment)
+            mSitemapViewModel    = inject()
+            mFrequentlySiteModel = inject()
         }
 
         mBinding.apply {

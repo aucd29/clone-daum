@@ -31,7 +31,7 @@ class ViewController @Inject constructor(private val manager: FragmentManager) {
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
 
-        const val CONTAINER          = R.id.container
+        const val CONTAINER          = R.id.rootContainer
         const val NAV_TAB_CONTAINER  = R.id.navi_tab_container
         const val FAVORITE_CONTAINER = R.id.favorite_container
     }

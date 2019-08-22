@@ -6,7 +6,6 @@ import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import brigitte.BaseDaggerFragment
 import brigitte.dataBinding
-import brigitte.di.dagger.module.injectOf
 import brigitte.lpmm
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
@@ -24,7 +23,7 @@ class CafeFragment @Inject constructor() : BaseDaggerFragment<CafeFragmentBindin
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mLoginViewModel = mViewModelFactory.injectOf(this)
+        mLoginViewModel = inject()
     }
 
     override fun initViewBinding() = mBinding.run {

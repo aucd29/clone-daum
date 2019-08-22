@@ -3,6 +3,7 @@ package brigitte
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import io.reactivex.disposables.CompositeDisposable
 import org.koin.android.ext.android.get
@@ -81,7 +82,7 @@ abstract class BaseKoinDialogFragment<T: ViewDataBinding, M: ViewModel>
     : BaseDialogFragment<T, M>() {
 
     override fun initViewModel() =
-        if (mViewModelScope == BaseFragment.SCOPE_FRAGMENT)
+        if (mViewModelScope == SCOPE_FRAGMENT)
             getViewModel(viewModelClass().kotlin)
         else
             getSharedViewModel(viewModelClass().kotlin)
@@ -97,7 +98,7 @@ abstract class BaseKoinBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMode
     : BaseBottomSheetDialogFragment<T, M>() {
 
     override fun initViewModel() =
-        if (mViewModelScope == BaseFragment.SCOPE_FRAGMENT)
+        if (mViewModelScope == SCOPE_FRAGMENT)
             getViewModel(viewModelClass().kotlin)
         else
             getSharedViewModel(viewModelClass().kotlin)

@@ -4,12 +4,14 @@ import android.app.Application
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
 import brigitte.RecyclerViewModel
 import brigitte.jsonParse
 import com.example.clone_daum.R
+import com.example.clone_daum.common.PreloadConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -22,8 +24,9 @@ import javax.inject.Inject
  */
 
 class PopularViewModel @Inject constructor(
-    app: Application,
-    layoutManager: ChipsLayoutManager
+    val disposable: CompositeDisposable,
+    layoutManager: ChipsLayoutManager,
+    app: Application
 ) : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
@@ -32,10 +35,10 @@ class PopularViewModel @Inject constructor(
     }
 
     private var mPopularList: PopularSearchedWord? = null
-    private lateinit var mDisposable: CompositeDisposable
 
     val visiblePopular    = ObservableInt(View.GONE)
     val chipLayoutManager = ObservableField(layoutManager)
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -43,15 +46,14 @@ class PopularViewModel @Inject constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun load(html: String, disposable: CompositeDisposable) {
-        mDisposable = disposable    // main fragment 의 composite disposable
+    fun load(html: String) {
 
         if (mPopularList == null) {
             if (mLog.isDebugEnabled) {
                 mLog.debug("HTML PARSE (POPULAR LIST)")
             }
 
-            mDisposable.add(Observable.just(html)
+            disposable.add(Observable.just(html)
                 .subscribeOn(Schedulers.io())
                 .map(::parsePopular)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -92,23 +94,43 @@ class PopularViewModel @Inject constructor(
         }
     }
 
+    // 이건 좀 에반대  [aucd29][2019-08-22]
+//    {
+//        "items": [
+//        {
+//            "item": [
+//            {
+//            "keyword": "핸드폰거치대",
+//            "url": "https://search.daum.net/search?w=tot&q=%ED%95%B8%EB%93%9C%ED%8F%B0%EA%B1%B0%EC%B9%98%EB%8C%80&DA=NPT"
+//            }]
+//        },
+//        {
+//            "item": [{
+//            {
+//            "keyword": "알로에겔",
+//            "url": "https://search.daum.net/search?w=tot&q=%EC%95%8C%EB%A1%9C%EC%97%90%EA%B2%94&DA=NPT"
+//        }]
+//        },
+
+    // [ [ {},{} ] ] 면 될거를 { "items": [ "item": [ {}, {}] ] } 이러고 있으니.. =_ = 내 참..
+    // 이런 애들은 뽑고 나는.. 젠장 ㅋㅋㅋㅋ 머 js 에서 이렇게 달라고 한걸로 대충 이해하자
+
     private fun parsePopular(html: String): PopularSearchedWord? {
         var data: PopularSearchedWord? = null
 
         val fk = "hotSearchedWordData = include("
         val ek = ");"
 
-        val fp = html.indexOf(fk)
-        if (fp == -1) {
-            return null
+        val f = html.indexOf(fk) + fk.length
+        val e = html.indexOf(ek, f)
+
+        if (f == fk.length || e == -1) {
+            mLog.error("ERROR: INVALID HTML DATA")
+
+            return data
         }
 
-        val ep = html.indexOf(ek, fp)
-        if (ep == -1) {
-            return null
-        }
-
-        val plaintext = html.subSequence(fp + fk.length, ep - ek.length + 1).trim()
+        val plaintext = html.substring(f, e)
             .replace("(\n|\t)".toRegex(), "")
 
         try {

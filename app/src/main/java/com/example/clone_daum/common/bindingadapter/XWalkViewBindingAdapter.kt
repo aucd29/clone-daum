@@ -1,7 +1,7 @@
 package com.example.clone_daum.common.bindingadapter
 
 //import androidx.databinding.BindingAdapter
-//import brigitte.WebViewEvent
+//import brigitte.widget.WebViewEvent
 //import com.example.clone_daum.common.widget.*
 //import org.slf4j.LoggerFactory
 //import org.xwalk.core.XWalkView

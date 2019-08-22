@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
 import android.view.View
-import androidx.annotation.VisibleForTesting
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -19,7 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -29,21 +27,22 @@ import javax.inject.Inject
  */
 
 class RealtimeIssueViewModel @Inject constructor(
-    app: Application,
-    val preConfig: PreloadConfig
+    val preConfig: PreloadConfig,
+    val disposable: CompositeDisposable,
+    app: Application
 ) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
         const val ANIM_DURATION     = 300L
-        const val INTERVAL          = 7L
+        const val INTERVAL          = 7000L
 
         const val CMD_BRS_OPEN      = "brs-open"
         const val CMD_CLOSE_ISSUE   = "close-realtime-issue"
         const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
-        const val CMD_RELOAD_ISSUE  = "reload-realtime-issue"
+        const val ITN_RELOAD_ISSUE  = "reload-realtime-issue"
 
-        const val CMD_ERROR_ISSUE   = "error-realtime-issue"
+        const val ITN_ERROR_ISSUE   = "error-realtime-issue"
     }
 
     private var mAllIssueList: List<RealtimeIssue>? = null
@@ -64,9 +63,11 @@ class RealtimeIssueViewModel @Inject constructor(
     val layoutTranslationY = ObservableField<Float>()
     val enableClick        = ObservableBoolean(false)
 
-    val viewRealtimeProgress = ObservableInt(View.VISIBLE)
-    val viewRealtimeIssue    = ObservableInt(View.GONE)
-    val viewRetry            = ObservableInt(View.GONE)
+    val viewIssueProgress  = ObservableInt(View.VISIBLE)
+    val viewRealtimeIssue  = ObservableInt(View.GONE)
+    val viewRetry          = ObservableInt(View.GONE)
+
+    val htmlDataLive      = MutableLiveData<String>()
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
@@ -78,6 +79,14 @@ class RealtimeIssueViewModel @Inject constructor(
         })
     }
 
+    fun loadData() {
+        disposable.add(preConfig.daumMain()
+            .subscribe({ html ->
+                htmlDataLive.postValue(html)
+                load(html)
+            }, { errorLog(it, mLog) }))
+    }
+
     fun load(html: String) {
         if (mLog.isDebugEnabled) {
             mLog.debug("LOAD REALTIME ISSUE")
@@ -86,7 +95,7 @@ class RealtimeIssueViewModel @Inject constructor(
         if (html.isEmpty()) {
             mLog.error("ERROR: INVALID REALTIME ISSUE DATA")
 
-            command(CMD_ERROR_ISSUE)
+            command(ITN_ERROR_ISSUE)
             return
         }
 
@@ -95,12 +104,12 @@ class RealtimeIssueViewModel @Inject constructor(
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
             .filter {
-                if (it.isNotEmpty()) {
+                if (it.isEmpty()) {
                     if (mLog.isDebugEnabled) {
                         mLog.debug("PARSING ERROR")
                     }
 
-                    command(CMD_ERROR_ISSUE)
+                    command(ITN_ERROR_ISSUE)
 
                     false
                 } else true
@@ -110,7 +119,7 @@ class RealtimeIssueViewModel @Inject constructor(
                     mLog.debug("SUBSCRIBE REALTIME ISSUE")
                 }
 
-                viewRealtimeProgress.gone()
+                viewIssueProgress.gone()
                 viewRetry.gone()
 
                 mRealtimeIssueList = it
@@ -123,7 +132,7 @@ class RealtimeIssueViewModel @Inject constructor(
             }, {
                 errorLog(it, mLog)
 
-                command(CMD_ERROR_ISSUE)
+                command(ITN_ERROR_ISSUE)
             }))
     }
 
@@ -183,7 +192,7 @@ class RealtimeIssueViewModel @Inject constructor(
 
         mAllIssueList?.let { list ->
             mDisposable.clear()
-            mDisposable.add(interval(INTERVAL, TimeUnit.SECONDS, 0)
+            mDisposable.add(interval(INTERVAL, initDelay = 0)
                 .map {
                     if (mLog.isTraceEnabled) {
                         mLog.trace("REALTIME ISSUE INTERVAL $it")
@@ -218,8 +227,8 @@ class RealtimeIssueViewModel @Inject constructor(
 
     fun typeConvert(issue: RealtimeIssue?) = issue?.run {
             when (type) {
-                "+" -> "<font color='red'>↑</font> $value"
-                "-" -> "<font color='blue'>↓</font> $value"
+                "+"  -> "<font color='red'>↑</font> $value"
+                "-"  -> "<font color='blue'>↓</font> $value"
                 else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
@@ -234,18 +243,17 @@ class RealtimeIssueViewModel @Inject constructor(
 
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            CMD_ERROR_ISSUE -> {
-                viewRealtimeProgress.gone()
+            ITN_ERROR_ISSUE -> {
+                viewIssueProgress.gone()
                 viewRetry.visible()
             }
-            else -> {
-                when (cmd) {
-                    CMD_RELOAD_ISSUE -> {
-                        viewRealtimeProgress.visible()
-                        viewRetry.gone()
-                    }
-                }
+            ITN_RELOAD_ISSUE -> {
+                viewIssueProgress.visible()
+                viewRetry.gone()
 
+                loadData()
+            }
+            else -> {
                 super.command(cmd, data)
             }
         }

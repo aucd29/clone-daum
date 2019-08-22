@@ -12,8 +12,8 @@
                   type="com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel"/>
     </data>
 
-    <com.example.clone_daum.common.widget.BkConstraintLayout
-            android:id="@+id/main_container"
+    <brigitte.widget.constraint.ConstraintLayout
+            android:id="@+id/mainContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity"
@@ -26,16 +26,16 @@
         >
 
             <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/main_web_viewpager"
+                    android:id="@+id/mainWebViewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
             />
 
             <!-- realtime issue 쪽 배경 용 -->
             <View
-                    android:id="@+id/realtime_issue_background"
+                    android:id="@+id/mainIssueBackground"
                     android:layout_width="match_parent" android:layout_height="match_parent"
-                    android:background="#52000000"
+                    android:background="@color/black_5200"
                     android:alpha="0"
                     android:onClick="@{() -> model.command(model.CMD_REALTIME_ISSUE)}"
                     app:bindAlpha="@{issueModel.backgroundAlpha}"
@@ -48,7 +48,7 @@
             -->
 
             <com.google.android.material.appbar.AppBarLayout
-                    android:id="@+id/appbar_search"
+                    android:id="@+id/mainAppbar"
                     android:fitsSystemWindows="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,24 +59,24 @@
                 <!--app:bindAlpha="@{model.appbarAlpha}"-->
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
-                        android:id="@+id/toolbar_layout"
+                        android:id="@+id/mainToolbar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/main_search_container"
+                            android:id="@+id/mainToolbarContainer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@android:color/white"
+                            android:background="@color/white"
                             android:clickable="true"
                             android:focusable="true"
                     >
 
-                        <!-- SEARCH TEXT -->
+                        <!-- SEARCH AREA -->
 
-                        <TextView
-                                android:id="@+id/search"
+                        <View
+                                android:id="@+id/mainSearchView"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/main_search_height"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -90,51 +90,51 @@
                                 android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAGMENT)}"
                         />
 
-                        <ImageView
-                                android:id="@+id/move_to_news"
+                        <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/mainMoveToNewsIcon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="0dp"
-                                app:layout_constraintStart_toStartOf="@+id/search"
-                                app:layout_constraintTop_toTopOf="@+id/search"
-                                app:layout_constraintBottom_toBottomOf="@+id/search"
+                                app:layout_constraintStart_toStartOf="@+id/mainSearchView"
+                                app:layout_constraintTop_toTopOf="@+id/mainSearchView"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainSearchView"
                                 android:paddingStart="@dimen/main_search_logo_pad_se"
                                 android:paddingEnd="@dimen/main_search_logo_pad_se"
                                 android:contentDescription="@string/cd_main_move_to_news_icon"
                                 android:src="@drawable/ic_android_black_14dp"
-                                android:onClick="@{() -> model.command(model.GOTO_NEWS)}"
+                                android:onClick="@{() -> model.command(model.ITN_GOTO_NEWS)}"
                         />
 
-                        <!-- MEDIA SEARCH ICON -->
-                        <ImageView
-                                android:id="@+id/search_extend_menu"
+                        <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/mainMediaSearchIcon"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:src="@{model.idSearchIcon}"
-                                app:layout_constraintTop_toTopOf="@+id/search"
-                                app:layout_constraintEnd_toEndOf="@+id/search"
-                                app:layout_constraintBottom_toBottomOf="@+id/search"
+                                app:layout_constraintTop_toTopOf="@+id/mainSearchView"
+                                app:layout_constraintEnd_toEndOf="@+id/mainSearchView"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainSearchView"
                                 android:padding="@dimen/main_search_extend_pad"
                                 android:contentDescription="@string/cd_main_media_search_icon"
+                                android:src="@{model.idSearchIcon}"
                                 android:onClick="@{() -> model.command(model.CMD_MEDIA_SEARCH_FRAGMENT)}"
                         />
 
                         <!-- REALTIME ISSUE -->
-                        <TextView
-                                android:id="@+id/realtime_label"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                app:layout_constraintStart_toStartOf="@+id/move_to_news"
-                                app:layout_constraintTop_toBottomOf="@+id/search"
-                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue_extend"
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/mainIssueLabel"
+                                android:layout_width="wrap_content" android:layout_height="0dp"
+                                app:layout_constraintStart_toStartOf="@+id/mainMoveToNewsIcon"
+                                app:layout_constraintTop_toBottomOf="@+id/mainSearchView"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainIssueOpenIcon"
+                                android:gravity="center_vertical"
                                 android:textColor="#B3B3B3"
                                 android:text="@string/main_realtime"
                         />
 
-                        <TextView
-                                android:id="@+id/realtime_issue"
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/mainIssueText"
                                 android:layout_width="0dp" android:layout_height="wrap_content"
-                                app:layout_constraintStart_toEndOf="@+id/realtime_label"
-                                app:layout_constraintTop_toBottomOf="@+id/search"
-                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
+                                app:layout_constraintStart_toEndOf="@+id/mainIssueLabel"
+                                app:layout_constraintTop_toBottomOf="@+id/mainSearchView"
+                                app:layout_constraintEnd_toStartOf="@+id/mainIssueOpenIcon"
                                 tools:text="4 내용"
                                 android:maxLines="1"
                                 android:maxWidth="@dimen/main_realtime_issue_max_width"
@@ -145,16 +145,15 @@
                                 android:layout_marginStart="15dp"
                                 android:text="@{issueModel.titleConvert(issueModel.currentIssue)}"
                                 android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, issueModel.currentIssue.url)}"
-                                android:visibility="@{issueModel.viewRetry == View.GONE ? View.VISIBLE : View.GONE}"
                         />
 
-                        <TextView
-                                android:id="@+id/realtime_retry"
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/mainIssueRetryText"
                                 android:layout_width="0dp" android:layout_height="wrap_content"
-                                app:layout_constraintStart_toStartOf="@+id/realtime_issue"
-                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
-                                app:layout_constraintEnd_toEndOf="@+id/realtime_issue"
-                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
+                                app:layout_constraintStart_toStartOf="@+id/mainIssueText"
+                                app:layout_constraintTop_toTopOf="@+id/mainIssueText"
+                                app:layout_constraintEnd_toEndOf="@+id/mainIssueText"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainIssueText"
                                 android:maxLines="1"
                                 android:maxWidth="@dimen/main_realtime_issue_max_width"
                                 android:ellipsize="end"
@@ -163,27 +162,28 @@
                                 android:padding="@dimen/main_realtime_issue_text_pad"
                                 android:layout_marginStart="15dp"
                                 android:text="@string/main_realtime_issue_retry"
-                                android:onClick="@{() -> issueModel.command(issueModel.CMD_RELOAD_ISSUE)}"
+                                android:gravity="center_horizontal"
+                                android:onClick="@{() -> issueModel.command(issueModel.ITN_RELOAD_ISSUE)}"
                                 android:visibility="@{issueModel.viewRetry}"
                         />
 
                         <ProgressBar
-                                android:id="@+id/realtime_issue_progress"
+                                android:id="@+id/mainIssueProgress"
                                 android:layout_width="@dimen/main_mini_progress"
                                 android:layout_height="@dimen/main_mini_progress"
-                                app:layout_constraintStart_toStartOf="@+id/realtime_issue"
-                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
-                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
-                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
-                                android:visibility="@{issueModel.viewRealtimeProgress}"
+                                app:layout_constraintStart_toStartOf="@+id/mainIssueText"
+                                app:layout_constraintTop_toTopOf="@+id/mainIssueText"
+                                app:layout_constraintEnd_toStartOf="@+id/mainIssueOpenIcon"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainIssueText"
+                                android:visibility="@{issueModel.viewIssueProgress}"
                         />
 
-                        <TextView
-                                android:id="@+id/realtime_rank"
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/mainIssueRankText"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
-                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
-                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
+                                app:layout_constraintTop_toTopOf="@+id/mainIssueText"
+                                app:layout_constraintEnd_toStartOf="@+id/mainIssueOpenIcon"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainIssueText"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="10dp"
                                 tools:text="791"
@@ -192,13 +192,13 @@
 
                         <!-- REALTIME ISSUE TAB LAYOUT -->
 
-                        <ImageView
-                                android:id="@+id/realtime_issue_extend"
+                        <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/mainIssueOpenIcon"
                                 android:layout_width="30dp" android:layout_height="0dp"
                                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
-                                app:layout_constraintTop_toTopOf="@+id/realtime_issue"
+                                app:layout_constraintTop_toTopOf="@+id/mainIssueText"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="@+id/realtime_issue"
+                                app:layout_constraintBottom_toBottomOf="@+id/mainIssueText"
                                 android:layout_marginEnd="14dp"
                                 android:padding="5dp"
                                 app:bindRotation="@{issueModel.tabMenuRotation}"
@@ -208,15 +208,15 @@
                         />
 
                         <View
-                                android:id="@+id/search_underline"
+                                android:id="@+id/mainToolbarUnderline"
                                 style="@style/dumyView"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/realtime_issue_extend"
+                                app:layout_constraintTop_toBottomOf="@+id/mainIssueOpenIcon"
                                 app:layout_constraintEnd_toEndOf="parent"
                         />
 
                         <com.google.android.material.tabs.TabLayout
-                                android:id="@+id/realtime_issue_tab"
+                                android:id="@+id/mainIssueTab"
                                 style="@style/realtime_issue_tab_layout"
                                 android:layout_width="0dp"
                                 android:layout_height="@dimen/main_tab_height"
@@ -225,8 +225,8 @@
                                 app:tabMinWidth="0dp"
                                 android:layout_marginStart="10dp"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/realtime_issue_extend"
-                                app:layout_constraintEnd_toStartOf="@+id/realtime_issue_extend"
+                                app:layout_constraintTop_toTopOf="@+id/mainIssueOpenIcon"
+                                app:layout_constraintEnd_toStartOf="@+id/mainIssueOpenIcon"
                                 android:requiresFadingEdge="horizontal"
                                 app:tabBackground="@android:color/white"
                                 android:background="@android:color/white"
@@ -242,10 +242,10 @@
                 <!-- TAB -->
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/main_web_tab_container"
+                        android:id="@+id/main_tab_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_anchor="@+id/toolbar_layout"
+                        app:layout_anchor="@+id/mainToolbar"
                 >
 
                     <!--
@@ -253,19 +253,19 @@
                     https://stackoverflow.com/questions/11538873/making-the-edge-of-the-scrollview-fade-when-scrolling-in-android/16726054
                     -->
                     <com.google.android.material.tabs.TabLayout
-                            android:id="@+id/main_web_tab"
+                            android:id="@+id/main_tab"
                             style="@style/MyCustomTabLayout"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/main_tab_height"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/main_navigation_menu"
                             android:layout_gravity="bottom"
                             app:tabMode="scrollable"
                             app:tabPaddingStart="5dp"
                             app:tabPaddingEnd="5dp"
                             app:tabGravity="fill"
                             app:tabMinWidth="0dp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/tab_menu"
                             android:requiresFadingEdge="horizontal"
                             android:fadingEdgeLength="50dp"
                             app:bindTabSelect="@{model.tabSelector}"
@@ -273,22 +273,22 @@
                     />
 
                     <View
-                            android:id="@+id/tab_underline"
+                            android:id="@+id/main_tab_underline"
                             style="@style/line1dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/main_web_tab"
+                            app:layout_constraintTop_toBottomOf="@+id/main_tab"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                     />
 
-                    <ImageView
-                            android:id="@+id/tab_menu"
+                    <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/main_navigation_menu"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/main_tab_height"
                             android:src="@drawable/ic_menu_black_24dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/tab_underline"
+                            app:layout_constraintBottom_toTopOf="@+id/main_tab_underline"
                             android:paddingEnd="@dimen/main_tab_menu_pad"
                             android:paddingStart="@dimen/main_tab_menu_pad"
                             android:background="@drawable/selector_button_bgcolor"
@@ -305,33 +305,33 @@
         버벅이는 문제로 그냥 top level 의 layout 에 view 를 넣는 형태로 변경
         -->
         <FrameLayout
-                android:id="@+id/realtime_issue_area"
+                android:id="@+id/mainIssueContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
         >
-            <com.example.clone_daum.common.widget.BkViewPager
-                    android:id="@+id/realtime_issue_viewpager"
+            <brigitte.widget.viewpager.WrapContentViewPager
+                    android:id="@+id/mainIssueViewpager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bindTranslationYValue="@{issueModel.layoutTranslationY}"
+                    android:translationY="@{issueModel.layoutTranslationY}"
                     app:bindTranslateY="@{issueModel.containerTransY}"
             />
 
             <!--app:bindViewPagerLoaded="@{issueModel.viewPagerLoaded}"-->
         </FrameLayout>
 
-        <ImageView
-                android:id="@+id/over_back"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:src="@drawable/ic_backspace_black_24dp"
-                android:padding="@dimen/main_over_back_pad"
-                android:contentDescription="@string/cd_main_back_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:visibility="@{model.viewBack}"
-        />
-    </com.example.clone_daum.common.widget.BkConstraintLayout>
+<!--        <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:id="@+id/over_back"-->
+<!--                android:layout_width="wrap_content" android:layout_height="wrap_content"-->
+<!--                android:src="@drawable/ic_backspace_black_24dp"-->
+<!--                android:padding="@dimen/main_over_back_pad"-->
+<!--                android:contentDescription="@string/cd_main_back_icon"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                android:visibility="@{model.viewBack}"-->
+<!--        />-->
+    </brigitte.widget.constraint.ConstraintLayout>
 </layout>

@@ -83,7 +83,7 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
     @Test
     fun gotoNewsTest() {
         viewmodel.apply {
-            command(MainViewModel.GOTO_NEWS)
+            command(MainViewModel.ITN_GOTO_NEWS)
 
             tabSelector.get().assertEquals(MainViewModel.INDEX_NEWS)
         }

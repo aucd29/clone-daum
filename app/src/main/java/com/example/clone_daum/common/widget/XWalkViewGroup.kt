@@ -3,7 +3,7 @@ package com.example.clone_daum.common.widget
 
 //import android.net.http.SslError
 //import android.webkit.ValueCallback
-//import brigitte.WebViewSettingParams
+//import brigitte.widget.WebViewSettingParams
 //import org.slf4j.LoggerFactory
 //import org.xwalk.core.*
 

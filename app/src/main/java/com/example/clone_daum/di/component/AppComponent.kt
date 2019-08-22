@@ -23,9 +23,9 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidSupportInjectionModule::class
     , ContextModule::class
+    , ActivityBindingModule::class
     , ChipModule::class
     , DaumModule::class
-    , ActivityBindingModule::class
 ])
 interface AppComponent {
     @Component.Builder
