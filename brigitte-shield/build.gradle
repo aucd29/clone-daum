@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion compile_sdk
 
@@ -60,4 +62,28 @@ dependencies {
     api 'androidx.test.ext:junit:1.1.1'
     api "androidx.arch.core:core-testing:2.0.1"
     api "org.robolectric:robolectric:4.3"
+
+    //
+    // OPEN LIBS
+    //
+
+    implementation "com.squareup.okhttp3:okhttp:$okhttp"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+
+    implementation "org.slf4j:slf4j-api:$slf4j"
+    implementation "com.github.tony19:logback-android:$logback"
+
+    implementation "io.reactivex.rxjava2:rxjava:$rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson"
+
+    implementation "com.github.bumptech.glide:glide:$glide"
+    implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
+    implementation "com.github.bumptech.glide:annotations:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
 }

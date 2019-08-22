@@ -63,7 +63,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation project(path: ':brigitte-shield')
-
     debugImplementation ('androidx.fragment:fragment-testing:1.2.0-alpha02') {
         exclude group: "androidx.test", module: "core"
     }
