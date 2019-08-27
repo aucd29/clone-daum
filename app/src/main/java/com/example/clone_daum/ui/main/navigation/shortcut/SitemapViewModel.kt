@@ -5,7 +5,7 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Sitemap
 import brigitte.RecyclerViewModel
-import brigitte.app
+import brigitte.viewmodel.app
 import brigitte.arch.SingleLiveEvent
 import brigitte.launchApp
 import com.example.clone_daum.R
@@ -16,8 +16,8 @@ import javax.inject.Inject
  */
 
 class SitemapViewModel @Inject constructor(
-    app: Application,
-    val preConfig: PreloadConfig
+    val preConfig: PreloadConfig,
+    app: Application
 ) : RecyclerViewModel<Sitemap>(app) {
 
     val gridCount    = ObservableInt(5)

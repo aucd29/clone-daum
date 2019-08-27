@@ -10,6 +10,7 @@ import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import brigitte.*
+import brigitte.viewmodel.app
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

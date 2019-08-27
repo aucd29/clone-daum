@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import brigitte.di.dagger.module.ChildFragmentManager
 import com.example.clone_daum.model.remote.RealtimeIssue
 import javax.inject.Inject
 import javax.inject.Named
@@ -24,7 +25,7 @@ import javax.inject.Named
 ////////////////////////////////////////////////////////////////////////////////////
 
 class RealtimeIssueTabAdapter @Inject constructor(
-    @param:Named("child_fragment_manager") fm: FragmentManager
+    @param:ChildFragmentManager("main") fm: FragmentManager
 ) : FragmentStatePagerAdapter(fm) {
     var issueList: List<Pair<String, List<RealtimeIssue>>>? = null
 

@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentActivity
 import brigitte.DialogParam
 import brigitte.R
 import brigitte.dialog
-import brigitte.string
 import org.slf4j.LoggerFactory
 
 /**

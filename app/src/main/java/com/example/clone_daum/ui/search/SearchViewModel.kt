@@ -14,6 +14,7 @@ import com.example.clone_daum.model.local.SearchHistoryDao
 import com.example.clone_daum.model.remote.SuggestItem
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
+import brigitte.viewmodel.app
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

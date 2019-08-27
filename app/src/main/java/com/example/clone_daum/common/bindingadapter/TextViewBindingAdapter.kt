@@ -6,8 +6,6 @@ import android.util.TypedValue
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.example.clone_daum.R
-import brigitte.dpToPx
-import brigitte.spToPx
 import org.slf4j.LoggerFactory
 
 /**

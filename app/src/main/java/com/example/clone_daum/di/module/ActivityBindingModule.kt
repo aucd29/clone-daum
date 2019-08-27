@@ -1,21 +1,14 @@
 package com.example.clone_daum.di.module
 
-import android.app.Activity
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
-import brigitte.di.dagger.module.DaggerViewModelFactory
+import brigitte.di.dagger.module.FragmentActivityModule
 import com.example.clone_daum.MainActivity
-import com.example.clone_daum.ui.ViewController
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 6. <p/>
@@ -32,13 +25,13 @@ abstract class ActivityBindingModule {
 }
 
 // https://stackoverflow.com/questions/48533899/how-to-inject-members-in-baseactivity-using-dagger-android
-@Module
+@Module(includes = [FragmentActivityModule::class])
 class MainActivityModule {
     @Provides
     fun provideFragmentManager(activity: MainActivity): FragmentManager =
         activity.supportFragmentManager
 
     @Provides
-    fun provideViewModelStore(activity: MainActivity): ViewModelStore =
-        activity.viewModelStore
+    fun provideFragmentActivity(activity: MainActivity): FragmentActivity =
+        activity
 }

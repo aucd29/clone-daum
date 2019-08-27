@@ -8,6 +8,7 @@ import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import brigitte.shield.*
 import com.google.android.material.tabs.TabLayout
+import io.reactivex.disposables.CompositeDisposable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,7 +27,7 @@ class RealtimeIssueViewModelTest: BaseRoboViewModelTest<RealtimeIssueViewModel>(
     fun setup() {
         initMock()
 
-        viewmodel = RealtimeIssueViewModel(app, config)
+        viewmodel = RealtimeIssueViewModel(CompositeDisposable(), config, app)
     }
 
     @Test
@@ -94,7 +95,7 @@ class RealtimeIssueViewModelTest: BaseRoboViewModelTest<RealtimeIssueViewModel>(
         viewmodel.titleConvert(null).assertEquals("")
 
         val issue = mock(RealtimeIssue::class.java)
-        issue.index.mockReturn(1)
+        issue.index.mockReturn("1")
         issue.text.mockReturn("hello")
 
         viewmodel.titleConvert(issue).assertEquals("1 hello")

@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.viewmodel
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.shield.BaseRoboViewModelTest
+import io.reactivex.disposables.CompositeDisposable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +20,7 @@ class PopularViewModelTest: BaseRoboViewModelTest<PopularViewModel>() {
     fun setup() {
         initMock()
 
-        viewmodel = PopularViewModel(app, layoutmanager)
+        viewmodel = PopularViewModel(CompositeDisposable(), layoutmanager, app)
     }
 
     @Test

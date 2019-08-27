@@ -116,30 +116,6 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
         private const val CLASS_DATA_BINDING     = ".databinding."
         private const val CLASS_BINDING          = "Binding"
 
-//        fun bindingClassName(context: Context, layoutId: String): String {
-//            var classPath = context.packageName
-//            classPath += CLASS_DATA_BINDING
-//            classPath += Character.toUpperCase(layoutId[0])
-//
-//            var i = 1
-//            while (i < layoutId.length) {
-//                var c = layoutId[i]
-//
-//                if (c == '_') {
-//                    c = layoutId[++i]
-//                    classPath += Character.toUpperCase(c)
-//                } else {
-//                    classPath += c
-//                }
-//
-//                ++i
-//            }
-//
-//            classPath += CLASS_BINDING
-//
-//            return classPath
-//        }
-
         fun invokeMethod(binding: ViewDataBinding, methodName: String, argType: Class<*>, argValue: Any, log: Boolean) {
             try {
                 val method = binding.javaClass.getDeclaredMethod(methodName, *arrayOf(argType))
@@ -195,14 +171,6 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
         holder.mBinding.executePendingBindings()
         viewHolderCallback?.invoke(holder, position)
     }
-
-//    override fun onBindViewHolder(holder: RecyclerHolder, position: Int, payloads: MutableList<Any>) {
-//        if (payloads.isEmpty()) {
-//            super.onBindViewHolder(holder, position, payloads)
-//        } else {
-//// TODO
-//        }
-//    }
 
     /**
      * 화면에 출력해야할 아이템의 총 개수를 반환 한다.

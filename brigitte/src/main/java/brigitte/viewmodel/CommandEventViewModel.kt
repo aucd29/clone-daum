@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleEventObserver
 import brigitte.ICommandEventAware
 import brigitte.arch.SingleLiveEvent
-import brigitte.string
 import org.slf4j.Logger
 
 /**

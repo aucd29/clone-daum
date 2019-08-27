@@ -1,5 +1,5 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
-package brigitte
+package brigitte.viewmodel
 
 import android.app.Application
 import android.content.Context
@@ -9,9 +9,8 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LifecycleEventObserver
-import brigitte.arch.SingleLiveEvent
-import org.slf4j.Logger
+import brigitte.displayDensity
+import brigitte.string
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-03 <p/>

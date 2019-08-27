@@ -7,6 +7,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
+import brigitte.viewmodel.requireContext
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-04-22 <p/>

@@ -2,6 +2,9 @@ package brigitte
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -10,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import brigitte.di.dagger.module.DaggerViewModelFactory
+import brigitte.di.dagger.module.DaggerViewModelProvider
 import brigitte.widget.free
 import brigitte.widget.pause
 import brigitte.widget.resume
@@ -40,14 +44,10 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverload
 ) : BaseActivity<T, M>(), HasSupportFragmentInjector {
 
     @Inject lateinit var mGlobalDisposable: CompositeDisposable
+    @Inject lateinit var mViewModelProvider: DaggerViewModelProvider
 
     /** ViewModel 을 inject 하기 위한 Factory */
-    @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
     @Inject lateinit var mSupportFragmentInjector: DispatchingAndroidInjector<Fragment>
-
-    protected val mViewModelProvider: ViewModelProvider by lazy {
-        ViewModelProvider(this, mViewModelFactory)
-    }
 
     /**
      * view model 처리, 기본 이벤트 처리를 위한 aware 와 view binding, view model 을 호출 한다.
@@ -83,15 +83,18 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> @JvmOverload
 abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
     : BaseFragment<T, M>(), HasSupportFragmentInjector, BaseViewModelProvider {
 
+
     @Inject lateinit var mViewModelFactory: DaggerViewModelFactory
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override val mViewModelProvider: ViewModelProvider by lazy {
         ViewModelProvider(this, mViewModelFactory)
     }
-    override val mViewModelProviderActivity: ViewModelProvider by lazy {
-        ViewModelProvider(requireActivity(), mViewModelFactory)
-    }
+
+//    @Inject lateinit var mViewModelProviderActivity: dagger.Lazy<DaggerViewModelProvider>
+//    override val mViewModelProviderActivity: ViewModelProvider by lazy {
+//        ViewModelProvider(requireActivity(), mViewModelFactory)
+//    }
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -191,6 +194,11 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         inject(scope, VM::class.java)
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+// BaseDaggerWebViewFragment
+//
+////////////////////////////////////////////////////////////////////////////////////
 
 abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor(
 ): BaseDaggerFragment<T, M>() {
@@ -203,8 +211,23 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> @JvmO
 
     abstract val webview: WebView
 
-    override fun initViewBinding() {
-        webview.loadUrl(mUrl)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (savedInstanceState != null) {
+            webview.restoreState(savedInstanceState)
+        } else {
+            webview.loadUrl(mUrl)
+        }
+    }
+//
+//    override fun initViewBinding() {
+//        webview.run { postDelayed({ loadUrl(mUrl) }, 300)}
+//    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        webview.saveState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {

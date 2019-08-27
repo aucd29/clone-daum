@@ -9,7 +9,6 @@ import java.text.NumberFormat
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
  */
 
-
 inline fun Float.dpToPx(context: Context) = this * context.displayDensity()
 inline fun Float.pxToDp(context: Context) = this / context.displayDensity()
 inline fun Float.spToPx(context: Context) = TypedValue.applyDimension(

@@ -2,7 +2,6 @@ package brigitte.bindingadapter
 
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import brigitte.dpToPx
 import org.slf4j.LoggerFactory
 
 /**

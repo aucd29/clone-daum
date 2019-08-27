@@ -1,10 +1,10 @@
 package com.example.clone_daum.config
 
 import android.os.Build
-import briggite.shield.BaseRoboTest
-import briggite.shield.assertEquals
-import briggite.shield.assertTrue
 import brigitte.actionBarSize
+import brigitte.shield.BaseRoboTest
+import brigitte.shield.assertEquals
+import brigitte.shield.assertTrue
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.common.Config
 import org.junit.Before

@@ -5,9 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
 import brigitte.DialogParam
 import brigitte.IDialogAware
-import brigitte.app
+import brigitte.viewmodel.app
 import brigitte.arch.SingleLiveEvent
-import brigitte.string
 import javax.inject.Inject
 
 /**

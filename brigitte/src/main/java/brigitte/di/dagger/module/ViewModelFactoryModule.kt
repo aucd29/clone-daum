@@ -1,11 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte.di.dagger.module
 
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStore
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.*
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -35,14 +31,25 @@ class DaggerViewModelFactory @Inject constructor(
     }
 }
 
-//inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOfActivity(activity: FragmentActivity) =
-//    ViewModelProviders.of(activity, this).get(T::class.java)
+class DaggerViewModelProvider @Inject constructor(
+    owner: ViewModelStore, factory: DaggerViewModelFactory
+) : ViewModelProvider(owner, factory)
+
+//@Singleton
+//class DaggerSavedStateViewModelFactory @Inject constructor(
+//    private val creator: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>,
+//    owner: SavedStateRegistryOwner,
+//    defaultArgs: Bundle? = null
+//) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+//    override fun <T : ViewModel?> create(
+//        key: String,
+//        modelClass: Class<T>,
+//        handle: SavedStateHandle
+//    ): T {
+//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//    }
 //
-//inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOfActivity(fragment: Fragment) =
-//    ViewModelProviders.of(fragment.activity!!, this).get(T::class.java)
-//
-//inline fun <reified T : ViewModel> DaggerViewModelFactory.injectOf(fragment: Fragment) =
-//    ViewModelProviders.of(fragment, this).get(T::class.java)
+//}
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @MapKey
@@ -52,4 +59,7 @@ annotation class ViewModelKey(val value: KClass<out ViewModel>)
 abstract class ViewModelFactoryModule {
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: DaggerViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    abstract fun bindViewModelProvider(provider: DaggerViewModelProvider): ViewModelProvider
 }

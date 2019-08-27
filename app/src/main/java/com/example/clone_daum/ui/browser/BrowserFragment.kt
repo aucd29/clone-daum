@@ -14,6 +14,7 @@ import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
+import brigitte.viewmodel.requireContext
 import brigitte.widget.*
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory

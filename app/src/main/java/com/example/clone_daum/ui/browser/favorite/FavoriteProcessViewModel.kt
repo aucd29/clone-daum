@@ -10,6 +10,7 @@ import com.example.clone_daum.model.local.MyFavoriteDao
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
+import brigitte.viewmodel.string
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

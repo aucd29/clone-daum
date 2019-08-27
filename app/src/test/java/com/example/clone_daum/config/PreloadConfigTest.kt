@@ -22,7 +22,6 @@ import org.mockito.Mock
 import org.robolectric.RobolectricTestRunner
 import org.slf4j.LoggerFactory
 
-
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-31 <p/>
  */

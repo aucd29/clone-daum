@@ -13,6 +13,7 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.module.ChildFragmentManager
 import brigitte.widget.observeTabPosition
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -23,6 +24,7 @@ import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import javax.inject.Named
+import javax.inject.Qualifier
 
 class MainFragment @Inject constructor(
 ) : BaseDaggerFragment<MainFragmentBinding, MainViewModel>(), OnBackPressedListener {
@@ -326,8 +328,16 @@ class MainFragment @Inject constructor(
             @JvmStatic
             @Provides
             @Named("child_fragment_manager")
+            fun provideChildFragmentManagerNamed(fragment: MainFragment) =
+                fragment.childFragmentManager
+
+
+            @JvmStatic
+            @Provides
+            @ChildFragmentManager("main")
             fun provideChildFragmentManager(fragment: MainFragment) =
                 fragment.childFragmentManager
         }
     }
+
 }

@@ -3,12 +3,16 @@ package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.SparseArray
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import brigitte.BaseDaggerWebViewFragment
-import brigitte.widget.pageradapter.FragmentStatePagerAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
+import brigitte.di.dagger.module.ChildFragmentManager
 import com.example.clone_daum.common.PreloadConfig
+import com.example.clone_daum.model.local.TabData
 import org.slf4j.LoggerFactory
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -24,7 +28,7 @@ import javax.inject.Named
 
 @SuppressLint("WrongConstant")
 class MainTabAdapter @Inject constructor(
-    @param:Named("child_fragment_manager") fm: FragmentManager,
+    @param:ChildFragmentManager("main") fm: FragmentManager,
     private val mPreConfig: PreloadConfig
 ) : FragmentStatePagerAdapter(fm) {
     companion object {
@@ -33,25 +37,42 @@ class MainTabAdapter @Inject constructor(
         const val K_POSITION = "position"
     }
 
-    override fun getItem(position: Int): Fragment {
-        // 이건 어떻게 inject 해야할지 모르겠네?
-        return MainWebviewFragment().apply {
-            arguments = Bundle().apply {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CREATE TAB ($position) ${url(position)}")
-                }
+    private val items: List<TabData>
+        get() = mPreConfig.tabLabelList
 
-                putInt(K_POSITION, position)
-                putString(BaseDaggerWebViewFragment.K_URL, url(position))
-            }
+    private val mFragments = SparseArray<WeakReference<MainWebviewFragment>>()
+
+    override fun getItem(position: Int): Fragment {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("CREATE TAB ($position) ${url(position)}")
         }
+
+        val fragment = MainWebviewFragment.create(position, url(position))
+        mFragments.put(position, WeakReference(fragment))
+
+        return fragment
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        mFragments.remove(position)
+
+        super.destroyItem(container, position, obj)
     }
 
     override fun getPageTitle(position: Int) = title(position)
-    override fun getCount() = mPreConfig.tabLabelList.size // Integer.MAX_VALUE
+    override fun getCount() = items.size // Integer.MAX_VALUE
 
     private fun url(pos: Int)   = data(pos).url
     private fun title(pos: Int) = data(pos).name
-
-    private inline fun data(pos: Int) = mPreConfig.tabLabelList[pos]
+    private inline fun data(pos: Int) = items[pos]
 }
+
+//class MainTabWebViewAdapter @Inject constructor(
+//    private val mPreConfig: PreloadConfig
+//): PagerAdapter() {
+//    private val tabList: List<TabData>
+//        get() = mPreConfig.tabLabelList
+//
+//    override fun getCount() = tabList.size
+//
+//}

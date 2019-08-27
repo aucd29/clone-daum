@@ -24,7 +24,7 @@ class SitemapViewModelTest: BaseRoboViewModelTest<SitemapViewModel>() {
     fun setup() {
         initMock()
 
-        viewmodel = SitemapViewModel(app, config)
+        viewmodel = SitemapViewModel(config, app)
     }
 
     @Test

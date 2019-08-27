@@ -13,7 +13,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.viewpager.widget.PagerAdapter
-import brigitte.drawable
+import brigitte.viewmodel.drawable
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 

@@ -6,6 +6,8 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
 import brigitte.*
+import brigitte.viewmodel.string
+import brigitte.viewmodel.stringArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers

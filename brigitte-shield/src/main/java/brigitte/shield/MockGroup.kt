@@ -8,38 +8,57 @@ import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import org.mockito.Mockito.*
+import org.mockito.verification.VerificationMode
 import java.io.IOException
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 import java.net.SocketException
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-23 <p/>
+ * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-06 <p/>
  *
- * android-architecture 참조
- * 먼가 빌드 실행 시 과거 정보가 남아서 제대로 동작 안되는 듯한 현상이 자주 일어난다.. 망했다..
+ * https://github.com/mockito/mockito/wiki/Mockito-features-in-Korean
+ *
+ * bdd - http://en.wikipedia.org/wiki/Behavior_Driven_Development
+ *  * give, when, then
+ *
  */
 
-@Throws(InterruptedException::class)
-inline fun <T> awaitObserveValue(livedata: LiveData<T>, timeout: Long = 1): T? {
-    var data: T? = null
-    val latch = CountDownLatch(1)
-    val observer = object: Observer<T> {
-        override fun onChanged(t: T) {
-            data = t
+inline fun <reified T> mockObserver(event: LiveData<T>): Observer<T> {
+    val mockObserver = mock(Observer::class.java) as Observer<T>
+    event.observeForever(mockObserver)
 
-            latch.countDown()
-            livedata.removeObserver(this)
-        }
-    }
-
-    livedata.observeForever(observer)
-    latch.await(timeout, TimeUnit.SECONDS)
-
-    return data
+    return mockObserver
 }
+
+inline fun <T> T.mockReturn(value: T) {
+    `when`(this).thenReturn(value)
+}
+
+inline fun <T> T.mockThrow(e: Throwable) {
+    `when`(this).thenThrow(e)
+}
+
+inline fun <T> List<T>.mockReturn(value: List<T>) {
+    `when`(this).thenReturn(value)
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Observable.OnPropertyChangedCallback
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+inline fun androidx.databinding.Observable.mockCallback(): androidx.databinding.Observable.OnPropertyChangedCallback {
+    val mockCallback = mock(androidx.databinding.Observable.OnPropertyChangedCallback::class.java)
+    addOnPropertyChangedCallback(mockCallback)
+
+    return mockCallback
+}
+
+inline fun androidx.databinding.Observable.OnPropertyChangedCallback.verifyPropertyChanged(mode: VerificationMode = atLeastOnce()) {
+    verify(this, mode).onPropertyChanged(any(androidx.databinding.Observable::class.java), anyInt())
+}
+
 
 inline fun mockReactiveX() {
     RxAndroidPlugins.reset()
@@ -79,14 +98,3 @@ inline fun mockReactiveX() {
     }
 }
 
-// https://stackoverflow.com/questions/40300469/mock-build-version-with-mockito
-@Throws(Exception::class)
-inline fun setFinalStatic(field: Field, newValue: Any) {
-    field.isAccessible = true
-
-    val modifiersField = Field::class.java.getDeclaredField("modifiers");
-    modifiersField.isAccessible = true;
-    modifiersField.setInt(field, field.getModifiers() and Modifier.FINAL.inv())
-
-    field.set(null, newValue);
-}

@@ -14,6 +14,7 @@ import brigitte.singleTimer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 import kotlin.math.abs
 
 /**
@@ -61,8 +62,10 @@ open class VerticalSwipeRefreshLayout(context: Context
     }
 }
 
-
-class SwipeRefreshController {
+// 이걸 dagger 종속적 이게 @inject 가 나으려나 아니면 koin 과 같이 쓰게
+// provider 로 하는게 나으려나?? =_ = ?
+// 후자가 나아보이긴 한데 =_ =ㅋ
+class SwipeRefreshController @Inject constructor() {
     private val mLog = LoggerFactory.getLogger(SwipeRefreshController::class.java)
 
     val listener    = ObservableField<() -> Unit>()

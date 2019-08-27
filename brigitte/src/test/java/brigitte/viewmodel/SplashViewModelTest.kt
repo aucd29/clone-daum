@@ -1,13 +1,15 @@
-package com.example.clone_daum.ui.viewmodel
+package brigitte.viewmodel
 
 import androidx.lifecycle.Observer
 import brigitte.shield.BaseJUnitViewModelTest
-import brigitte.viewmodel.SplashViewModel
+import brigitte.shield.BaseRoboViewModelTest
+import brigitte.shield.verifyChanged
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito.*
+import org.robolectric.RobolectricTestRunner
 
 
 /**
@@ -18,8 +20,8 @@ import org.mockito.Mockito.*
  * https://fernandocejas.com/2014/04/08/unit-testing-asynchronous-methods-with-mockito/
  */
 
-@RunWith(JUnit4::class)
-class SplashViewModelTest: BaseJUnitViewModelTest<SplashViewModel>() {
+@RunWith(RobolectricTestRunner::class)
+class SplashViewModelTest: BaseRoboViewModelTest<SplashViewModel>() {
     @Before
     @Throws(Exception::class)
     fun setup() {

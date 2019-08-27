@@ -11,6 +11,7 @@ import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.viewmodel.CommandEventViewModel
 import brigitte.widget.magneticEffect
+import brigitte.widget.swiperefresh.SwipeRefreshController
 import com.example.clone_daum.common.PreloadConfig
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -20,8 +21,8 @@ import kotlin.math.abs
 
 
 class MainViewModel @Inject constructor(
-    app: Application,
-    val config: Config
+    val config: Config,
+    app: Application
 ) : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
@@ -48,15 +49,15 @@ class MainViewModel @Inject constructor(
 
     val appbarDragCallback      = ObservableBoolean(false)
     val appbarOffsetLive        = MutableLiveData<Int>()
-    var progressViewOffsetLive  = MutableLiveData<Int>()
 
     var mainContainerTouchEvent  = ObservableField<(MotionEvent) -> Boolean>()
     var appbarMagneticEffectLive = MutableLiveData<Boolean>()
 
     val idSearchIcon            = ObservableInt(config.SEARCH_ICON)
-    val viewBack                = ObservableInt(View.GONE)
+//    val viewBack                = ObservableInt(View.GONE)
 
-    var appbarHeight = 0
+    var appbarHeight     = 0
+    val spinnerOffsetEnd = ObservableInt()
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
@@ -73,8 +74,9 @@ class MainViewModel @Inject constructor(
             mLog.debug("APPBAR HEIGHT: $appbarHeight, CONTAINER HEIGHT: $containerHeight")
         }
 
-        this.progressViewOffsetLive.value = appbarHeight
-        this.appbarHeight                 = appbarHeight - containerHeight
+//        this.progressViewOffsetLive.value = appbarHeight
+        spinnerOffsetEnd.set(appbarHeight)
+        this.appbarHeight = appbarHeight - containerHeight
     }
 
     fun appbarAlpha() {

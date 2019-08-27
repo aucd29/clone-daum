@@ -2,11 +2,11 @@ package com.example.clone_daum.ui.main.mediasearch.barcode
 
 import android.app.Application
 import androidx.databinding.ObservableField
-import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
+import brigitte.viewmodel.app
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 

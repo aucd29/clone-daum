@@ -27,8 +27,8 @@ import javax.inject.Inject
  */
 
 class RealtimeIssueViewModel @Inject constructor(
-    val preConfig: PreloadConfig,
     val disposable: CompositeDisposable,
+    val preConfig: PreloadConfig,
     app: Application
 ) : CommandEventViewModel(app) {
     companion object {
