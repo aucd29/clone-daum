@@ -9,7 +9,7 @@ import org.mockito.MockitoAnnotations
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-23 <p/>
  */
 
-open class BaseJUnitViewModelTest<T: ViewModel> @JvmOverloads constructor() {
+open class BaseJUnitViewModelTest<T: ViewModel> constructor() {
     lateinit var viewmodel: T
 
     @get:Rule

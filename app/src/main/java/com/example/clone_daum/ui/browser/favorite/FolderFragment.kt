@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.browser.favorite
 
 import com.example.clone_daum.databinding.FolderFragmentBinding
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
@@ -21,7 +22,7 @@ class FolderFragment @Inject constructor()
         const val K_CURRENT_FOLDER = "current-folder"
     }
 
-    override fun layoutId() = R.layout.folder_fragment
+    override val layoutId  = R.layout.folder_fragment
 
     override fun initViewBinding() {
     }
@@ -29,7 +30,7 @@ class FolderFragment @Inject constructor()
     override fun initViewModelEvents() {
         val currentFolderId = arguments?.getInt(K_CURRENT_FOLDER, 0) ?: 0
 
-        mViewModel.initFolder(mDisposable, currentFolderId)
+        mViewModel.initFolder(disposable(), currentFolderId)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -77,6 +78,7 @@ class FolderFragment @Inject constructor()
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): FolderFragment
     }

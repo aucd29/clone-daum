@@ -23,7 +23,7 @@ import java.lang.reflect.Field
  * https://github.com/antonyt/InfiniteViewPager/blob/master/library/src/main/java/com/antonyt/infiniteviewpager/InfiniteViewPager.java
  */
 
-class ViewPagerScroller @JvmOverloads constructor(
+class ViewPagerScroller constructor(
     context: Context,
     interpolator: Interpolator? = null,
     flywheel: Boolean = context.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.HONEYCOMB
@@ -50,7 +50,7 @@ fun ViewPager.setViewPagerScroller(scroller: ViewPagerScroller) {
     }
 }
 
-class InfiniteViewPager @JvmOverloads constructor(
+class InfiniteViewPager constructor(
     context: Context,
     attr: AttributeSet? = null
 ) : WrapContentViewPager(context, attr) {

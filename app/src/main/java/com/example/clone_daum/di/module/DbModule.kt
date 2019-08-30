@@ -34,11 +34,6 @@ class DbModule {
     fun provideZzimDao(db: LocalDb)=
         db.zzimDao()
 
-//    @Singleton
-//    @Provides
-//    fun providePopularKeywordDao(db: LocalDb) =
-//        db.popularKeywordDao()
-
     @Singleton
     @Provides
     fun provideUrlHistoryDao(db: LocalDb) =

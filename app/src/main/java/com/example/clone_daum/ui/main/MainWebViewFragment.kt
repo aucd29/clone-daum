@@ -8,6 +8,7 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.viewmodel.SplashViewModel
 import brigitte.widget.*
 import dagger.android.ContributesAndroidInjector
@@ -39,6 +40,8 @@ class MainWebviewFragment @Inject constructor(
         mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 공유
     }
 
+    override val layoutId = R.layout.main_webview_fragment
+
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
@@ -50,9 +53,6 @@ class MainWebviewFragment @Inject constructor(
 
     private val mPosition: Int
         get() = arguments?.getInt(MainTabAdapter.K_POSITION) ?: 0
-
-    override fun layoutId() =
-        R.layout.main_webview_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -83,7 +83,7 @@ class MainWebviewFragment @Inject constructor(
                     if (isRefreshing) {
                         isRefreshing = false     // hide refresh icon
 
-                        mDisposable.clear()
+                        disposable().clear()
                     }
                 }
 
@@ -103,7 +103,7 @@ class MainWebviewFragment @Inject constructor(
 
             webview.reload()
 
-            mDisposable.add(singleTimer(TIMEOUT_RELOAD_ICO)
+            disposable().add(singleTimer(TIMEOUT_RELOAD_ICO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { _ ->
                     if (mLog.isInfoEnabled) {
@@ -170,6 +170,7 @@ class MainWebviewFragment @Inject constructor(
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeMainWebviewFragmentInjector(): MainWebviewFragment
     }

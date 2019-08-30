@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.mediasearch.flower
 import com.example.clone_daum.databinding.FlowerFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import brigitte.urlencode
 import com.example.clone_daum.R
@@ -22,9 +23,9 @@ class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBi
 
     @Inject lateinit var viewController: ViewController
 
-    private var mFirstLoad = true
+    override val layoutId = R.layout.flower_fragment
 
-    override fun layoutId() = R.layout.flower_fragment
+    private var mFirstLoad = true
 
     override fun initViewBinding() {
         mBinding.tensorflow.mResultCallback = { it?.let {
@@ -94,6 +95,7 @@ class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBi
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): FlowerFragment
     }

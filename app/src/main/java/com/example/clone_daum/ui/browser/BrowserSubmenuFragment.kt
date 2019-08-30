@@ -6,6 +6,7 @@ import android.net.Uri
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserSubmenuFragmentBinding
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import dagger.android.ContributesAndroidInjector
 
 /**
@@ -24,13 +25,11 @@ import dagger.android.ContributesAndroidInjector
 class BrowserSubmenuFragment (private val mCallback: (String) -> Unit)
     : BaseDaggerBottomSheetDialogFragment<BrowserSubmenuFragmentBinding, BrowserSubmenuViewModel>() {
 
-    override fun layoutId() = R.layout.browser_submenu_fragment
+    override val layoutId = R.layout.browser_submenu_fragment
 
-    override fun initViewBinding() {
-    }
+    override fun initViewBinding() { }
 
-    override fun initViewModelEvents() {
-    }
+    override fun initViewModelEvents() { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -54,6 +53,7 @@ class BrowserSubmenuFragment (private val mCallback: (String) -> Unit)
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): BrowserSubmenuFragment
     }

@@ -14,7 +14,7 @@ abstract class FragmentStatePagerAdapter(
     fm: FragmentManager
 ) : androidx.fragment.app.FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
 
-abstract class PagerAdapter @JvmOverloads constructor (
+abstract class PagerAdapter constructor (
 ) : androidx.viewpager.widget.PagerAdapter() {
     override fun isViewFromObject(view: View, obj: Any) = view == obj
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {

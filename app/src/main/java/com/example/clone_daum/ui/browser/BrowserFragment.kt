@@ -12,6 +12,7 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import brigitte.viewmodel.requireContext
@@ -36,6 +37,8 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
     @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
 
+    override val layoutId = R.layout.browser_fragment
+
     private val webview: WebView
         get() = mBinding.brsWebview
 
@@ -57,8 +60,6 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
             }
         }
     }
-
-    override fun layoutId() = R.layout.browser_fragment
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
@@ -130,7 +131,7 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
             return@run
         }
 
-        init(mDisposable)
+        init(disposable())
         applyUrl(mUrl!!)
         // 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrsCount(mBinding.brsArea.childCount)
@@ -366,7 +367,7 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
             arrayListOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
             { _, r ->
                if (r) {
-                   mDisposable.add(webview.capture(CaptureParams(
+                   disposable().add(webview.capture(CaptureParams(
                        "CLONE-DAUM_Screenshot-${System.currentTimeMillis()}.png"))
                        .subscribe { res ->
                            if (res.first) {
@@ -428,7 +429,8 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
     
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [])
         abstract fun contributeInjector(): BrowserFragment
     }
 }

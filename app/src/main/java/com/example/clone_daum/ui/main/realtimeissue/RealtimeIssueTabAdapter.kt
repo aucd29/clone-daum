@@ -3,9 +3,10 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import brigitte.di.dagger.module.ChildFragmentManager
+import brigitte.widget.pageradapter.FragmentStatePagerAdapter
 import com.example.clone_daum.model.remote.RealtimeIssue
+import com.example.clone_daum.ui.main.MainFragment
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -24,8 +25,8 @@ import javax.inject.Named
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class RealtimeIssueTabAdapter @Inject constructor(
-    @param:ChildFragmentManager("main") fm: FragmentManager
+class RealtimeIssueTabAdapter constructor(
+    fm: FragmentManager
 ) : FragmentStatePagerAdapter(fm) {
     var issueList: List<Pair<String, List<RealtimeIssue>>>? = null
 

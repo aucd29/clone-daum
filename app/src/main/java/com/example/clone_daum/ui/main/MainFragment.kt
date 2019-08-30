@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
@@ -14,11 +15,14 @@ import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.module.ChildFragmentManager
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.widget.observeTabPosition
+import brigitte.widget.pageradapter.FragmentStatePagerAdapter
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.android.ContributesAndroidInjector
@@ -36,21 +40,27 @@ class MainFragment @Inject constructor(
         mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
-    @Inject lateinit var viewController: ViewController
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var viewController: ViewController
 
-    @Inject lateinit var mainTabAdapter: MainTabAdapter
-    @Inject lateinit var realtimeIssueTabAdapter: dagger.Lazy<RealtimeIssueTabAdapter>
+    lateinit var mainTabAdapter: MainTabAdapter
+    lateinit var realtimeIssueTabAdapter: dagger.Lazy<RealtimeIssueTabAdapter>
+//    @Inject lateinit var mainTabAdapter: MainTabAdapter
+//    @Inject lateinit var realtimeIssueTabAdapter: dagger.Lazy<RealtimeIssueTabAdapter>
+
+    override val layoutId = R.layout.main_fragment
 
     private lateinit var mIssueViewModel: RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
 
-    override fun layoutId() =
-        R.layout.main_fragment
-
     override fun bindViewModel() {
         super.bindViewModel()
+
+        val test = childFragmentManager
+        if (mLog.isDebugEnabled) {
+            mLog.debug("child fragment manager : $test")
+        }
 
         mIssueViewModel   = inject(requireActivity())
         mPopularViewModel = inject(requireActivity())
@@ -126,7 +136,6 @@ class MainFragment @Inject constructor(
                 mBinding.mainAppbar.setExpanded(it, true)
             }
         }
-
     }
 
     override fun onPause() {
@@ -320,24 +329,40 @@ class MainFragment @Inject constructor(
 
     @dagger.Module
     abstract class Module {
-        @dagger.android.ContributesAndroidInjector
+//        @FragmentScope // MainFragmentModule::class
+        @dagger.android.ContributesAndroidInjector(modules = [MainFragmentModule::class])
         abstract fun contributeMainFragmentInjector(): MainFragment
 
-        @dagger.Module
-        companion object {
-            @JvmStatic
-            @Provides
-            @Named("child_fragment_manager")
-            fun provideChildFragmentManagerNamed(fragment: MainFragment) =
-                fragment.childFragmentManager
+//        @dagger.Module
+//        companion object {
+//            @Named("main-fragment")
+//            @JvmStatic
+//            @Provides
+//            fun provideFragmentManager(fragment: MainFragment) =
+//                fragment.childFragmentManager
 
-
-            @JvmStatic
-            @Provides
-            @ChildFragmentManager("main")
-            fun provideChildFragmentManager(fragment: MainFragment) =
-                fragment.childFragmentManager
-        }
+//            @JvmStatic
+//            @Provides
+//            fun provideTabAdapter(fragment: Fragment, preConfig: PreloadConfig) =
+//                MainTabAdapter(preConfig, fragment.childFragmentManager)
+//
+//            @JvmStatic
+//            @Provides
+//            fun provideRealtimeIssueTabAdapter(fragment: Fragment) =
+//                RealtimeIssueTabAdapter(fragment.childFragmentManager)
+//        }
     }
 
+    // ADAPTER INJECT 해야 함 좀 이해가 안되네?
+    @dagger.Module
+    abstract class MainFragmentModule {
+//        @dagger.Module
+//        companion object {
+//            @JvmStatic
+//            @Provides
+//            @Named("main")
+//            fun provideFragmentManager(fragment: MainFragment) =
+//                fragment.childFragmentManager
+//        }
+    }
 }

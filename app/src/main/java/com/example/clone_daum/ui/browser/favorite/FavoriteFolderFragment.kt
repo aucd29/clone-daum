@@ -4,6 +4,7 @@ import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -24,10 +25,9 @@ class FavoriteFolderFragment @Inject constructor()
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.favorite_folder_fragment
+    override val layoutId = R.layout.favorite_folder_fragment
 
-    override fun initViewBinding() {
-    }
+    override fun initViewBinding() { }
 
     override fun initViewModelEvents() {
         arguments?.getInt(K_FOLDER)?.let {
@@ -35,7 +35,7 @@ class FavoriteFolderFragment @Inject constructor()
                 mLog.debug("FOLDER ID : $it")
             }
 
-            mViewModel.initByFolder(it, mDisposable)
+            mViewModel.initByFolder(it, disposable())
         }
     }
 
@@ -83,6 +83,7 @@ class FavoriteFolderFragment @Inject constructor()
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): FavoriteFolderFragment
     }

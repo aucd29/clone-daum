@@ -4,6 +4,7 @@ package brigitte
 import org.slf4j.LoggerFactory
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -34,14 +35,13 @@ object Reflect {
      *
      * ```
      */
-    inline fun <reified T> create(clazzPath: String, params: Params? = null): T {
-        try {
-//            val clazz = Class.forName(clazzPath)
-            return create(params)
-        } catch (e: Exception) {
-            throw java.lang.RuntimeException(e)
-        }
-    }
+//    inline fun <reified T> create(clazzPath: String, params: Params? = null): T {
+//        try {
+//            return create(params)
+//        } catch (e: Exception) {
+//            throw java.lang.RuntimeException(e)
+//        }
+//    }
 
     /**
      * 클래스형틀 지정하고 인자 타입과 인자를 전달하여 클래스를 인스턴스 시킨다.
@@ -105,8 +105,11 @@ object Reflect {
         }
     }
 
-    inline fun classType(obj: Any, index: Int): Type =
-        (obj.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[index]
+//    inline fun classType(obj: Any, index: Int) =
+//        (obj.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[index]
+
+    inline fun <reified T> classType(obj: Any, index: Int) =
+        (obj.javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[index] as T
 
     data class Params(val argTypes: List<Class<out Any>>? = null, val argv : List<Any>? = null) {
         constructor(argTypes: Class<out Any>, argv: Any) : this(listOf(argTypes), listOf(argv))

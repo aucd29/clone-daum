@@ -4,6 +4,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteModifyFragmentBinding
 import dagger.android.ContributesAndroidInjector
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import org.slf4j.LoggerFactory
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.ViewController
@@ -23,7 +24,7 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.favorite_modify_fragment
+    override val layoutId = R.layout.favorite_modify_fragment
 
     override fun initViewBinding() {
         mBinding.apply {
@@ -38,7 +39,7 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
                 mLog.debug("FOLDER : $it")
             }
 
-            mViewModel.init(it, mDisposable)
+            mViewModel.init(it, disposable())
         }
     }
 
@@ -149,6 +150,7 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): FavoriteModifyFragment
     }

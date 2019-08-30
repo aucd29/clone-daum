@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.mediasearch.barcode
 
 import com.example.clone_daum.databinding.BarcodeInputFragmentBinding
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.hideKeyboard
 import com.example.clone_daum.R
 import dagger.Module
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class BarcodeInputFragment @Inject constructor() : BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
 
-    override fun layoutId() = R.layout.barcode_input_fragment
+    override val layoutId = R.layout.barcode_input_fragment
 
     override fun initViewBinding() {
     }
@@ -52,6 +53,7 @@ class BarcodeInputFragment @Inject constructor() : BaseDaggerFragment<BarcodeInp
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): BarcodeInputFragment
     }

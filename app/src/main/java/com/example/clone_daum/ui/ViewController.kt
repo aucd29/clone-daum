@@ -21,13 +21,19 @@ import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import brigitte.*
+import brigitte.di.dagger.scope.ActivityScope
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
  */
-class ViewController @Inject constructor(private val manager: FragmentManager) {
+//@Singleton
+class ViewController @Inject constructor(
+    private val manager: FragmentManager
+) {
     companion object {
         private val mLog = LoggerFactory.getLogger(ViewController::class.java)
 

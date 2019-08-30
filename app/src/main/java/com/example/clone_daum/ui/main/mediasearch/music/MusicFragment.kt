@@ -7,6 +7,7 @@ import com.example.clone_daum.databinding.MusicFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.scope.FragmentScope
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -29,10 +30,10 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
 
     @Inject lateinit var viewController: ViewController
 
+    override val layoutId = R.layout.music_fragment
+
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
-
-    override fun layoutId() = R.layout.music_fragment
 
     override fun initViewBinding() {
         keepScreen(true)
@@ -125,6 +126,7 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): MusicFragment
     }

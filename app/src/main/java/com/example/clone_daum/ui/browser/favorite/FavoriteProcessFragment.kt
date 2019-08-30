@@ -4,6 +4,7 @@ import com.example.clone_daum.databinding.FavoriteProcessFragmentBinding
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.hideKeyboard
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
@@ -25,14 +26,14 @@ class FavoriteProcessFragment @Inject constructor()
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.favorite_process_fragment
+    override val layoutId = R.layout.favorite_process_fragment
 
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
         arguments?.let { mViewModel.run {
-            init(mDisposable)
+            init(disposable())
 
             val fav = it.getSerializable(K_MODIFY)
             if (fav is MyFavorite) {
@@ -97,6 +98,7 @@ class FavoriteProcessFragment @Inject constructor()
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): FavoriteProcessFragment
     }

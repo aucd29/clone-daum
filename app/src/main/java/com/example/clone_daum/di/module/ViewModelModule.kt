@@ -57,6 +57,11 @@ abstract class ViewModelModule {
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
 
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(MainViewModel.Factory::class)
+//    abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
+
     @Binds
     @IntoMap
     @ViewModelKey(RealtimeIssueViewModel::class)

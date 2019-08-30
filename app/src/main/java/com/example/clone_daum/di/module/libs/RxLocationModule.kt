@@ -1,4 +1,4 @@
-package com.example.clone_daum.di.module
+package com.example.clone_daum.di.module.libs
 
 import android.content.Context
 import com.google.android.gms.location.LocationRequest
@@ -26,5 +26,7 @@ class RxLocationModule {
 
     @Provides
     fun provideLocationRequest(): LocationRequest =
-        LocationRequest.create().apply { priority = LOCATION_PRIORITY }
+        LocationRequest.create().apply { priority =
+            LOCATION_PRIORITY
+        }
 }

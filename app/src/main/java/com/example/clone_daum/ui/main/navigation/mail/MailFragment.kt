@@ -5,6 +5,7 @@ import com.example.clone_daum.databinding.MailFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class MailFragment @Inject constructor() : BaseDaggerFragment<MailFragmentBindin
     private lateinit var mLoginViewModel: NavigationLoginViewModel
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
-    override fun layoutId() = R.layout.mail_fragment
+    override val layoutId = R.layout.mail_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -51,6 +52,7 @@ class MailFragment @Inject constructor() : BaseDaggerFragment<MailFragmentBindin
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): MailFragment
     }

@@ -9,6 +9,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.ui.ViewController
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
@@ -43,11 +44,10 @@ class SpeechFragment @Inject constructor(
 
     @Inject lateinit var viewController: ViewController
 
+    override val layoutId = R.layout.speech_fragment
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
     private var mRecognizer: SpeechRecognizerClient? = null
-
-    override fun layoutId() = R.layout.speech_fragment
 
     override fun initViewBinding() = mBinding.run {
         keepScreen(true)
@@ -219,7 +219,7 @@ class SpeechFragment @Inject constructor(
             mLog.debug("SPEECH END")
         }
 
-        mDisposable.add(Single.just(null)
+        disposable().add(Single.just(null)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 endAnimation()
@@ -246,7 +246,7 @@ class SpeechFragment @Inject constructor(
             mLog.debug("SPEECH PARTIAL RESULT : $partialResult")
         }
 
-        mDisposable.add(Single.just(partialResult)
+        disposable().add(Single.just(partialResult)
             .observeOn(AndroidSchedulers.mainThread())
             .filter { !it.isEmpty() }
             .subscribe({
@@ -271,7 +271,7 @@ class SpeechFragment @Inject constructor(
             mLog.debug("CANCEL RECORDING")
         }
 
-        mDisposable.add(Single.just(mRecognizer)
+        disposable().add(Single.just(mRecognizer)
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .map {
@@ -311,7 +311,7 @@ class SpeechFragment @Inject constructor(
     override fun onError(errorCode: Int, errorMsg: String?) {
         mLog.error("ERROR: $errorCode $errorMsg")
 
-        mDisposable.add(Single.just(null)
+        disposable().add(Single.just(null)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 endAnimation()
@@ -381,6 +381,7 @@ class SpeechFragment @Inject constructor(
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): SpeechFragment
     }

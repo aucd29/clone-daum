@@ -1,4 +1,4 @@
-package com.example.clone_daum.di.module
+package com.example.clone_daum.di.module.libs
 
 import android.content.Context
 import android.view.Gravity

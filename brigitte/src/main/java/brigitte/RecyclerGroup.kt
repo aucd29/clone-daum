@@ -96,7 +96,7 @@ interface IRecyclerExpandable<T> : IRecyclerItem, IRecyclerDiff {
 }
 
 /** view holder */
-class RecyclerHolder @JvmOverloads constructor (itemView: View) : RecyclerView.ViewHolder(itemView) {
+class RecyclerHolder constructor (itemView: View) : RecyclerView.ViewHolder(itemView) {
     lateinit var mBinding: ViewDataBinding
 }
 
@@ -104,7 +104,7 @@ class RecyclerHolder @JvmOverloads constructor (itemView: View) : RecyclerView.V
  * xml 에서 event 와 data 를 binding 하므로 obtainViewModel 과 출력할 데이터를 내부적으로 알아서 설정 하도록
  * 한다.
  */
-class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
+class RecyclerAdapter<T: IRecyclerDiff> constructor (
     val mLayouts: Array<Int>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
@@ -315,7 +315,7 @@ class RecyclerAdapter<T: IRecyclerDiff> @JvmOverloads constructor (
 /**
  * Recycler View 에 사용될 items 정보와 adapter 를 쉽게 설정하게 만드는 ViewModel
  */
-open class RecyclerViewModel<T: IRecyclerDiff> @JvmOverloads constructor (app: Application)
+open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
     : CommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
@@ -449,7 +449,7 @@ open class RecyclerViewModel<T: IRecyclerDiff> @JvmOverloads constructor (app: A
     }
 }
 
-open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>> @JvmOverloads constructor (app: Application)
+open class RecyclerExpandableViewModel<T: IRecyclerExpandable<T>> constructor (app: Application)
     : RecyclerViewModel<T>(app) {
 
     fun toggle(item: T) {
@@ -467,7 +467,7 @@ inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
     }
 }
 
-class InfiniteScrollListener @JvmOverloads constructor (val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
+class InfiniteScrollListener constructor (val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
     companion object {
         private val mLog = LoggerFactory.getLogger(InfiniteScrollListener::class.java)
     }

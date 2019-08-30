@@ -138,7 +138,7 @@ inline fun View.spToPx(v: Int) = TypedValue.applyDimension(
 ////////////////////////////////////////////////////////////////////////////////////
 
 // https://stackoverflow.com/questions/39894792/recyclerview-scrolllistener-inside-nestedscrollview
-class ScrollChangeListener @JvmOverloads constructor (
+class ScrollChangeListener constructor (
     val callback: (Int, Int, Boolean) -> Unit
 ) : NestedScrollView.OnScrollChangeListener {
     override fun onScrollChange(v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int) {
@@ -156,7 +156,7 @@ class ScrollChangeListener @JvmOverloads constructor (
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-data class CaptureParams @JvmOverloads constructor (
+data class CaptureParams constructor (
     val fileName: String,
     val listener: ((Boolean, String) -> Unit)? = null,
     val path: String? = null,

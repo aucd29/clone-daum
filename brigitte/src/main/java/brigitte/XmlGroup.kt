@@ -14,7 +14,7 @@ import javax.xml.xpath.XPathFactory
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 8. <p/>
  */
 
-abstract class BaseXPath @JvmOverloads constructor() {
+abstract class BaseXPath constructor() {
     companion object {
         private val log = LoggerFactory.getLogger(BaseXPath::class.java)
     }

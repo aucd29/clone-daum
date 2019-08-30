@@ -7,6 +7,7 @@ import android.view.View
 import com.example.clone_daum.databinding.BarcodeFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import com.example.clone_daum.R
 import com.google.zxing.*
@@ -32,7 +33,7 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.barcode_fragment
+    override val layoutId = R.layout.barcode_fragment
 
     override fun initViewBinding() {
         mBinding.barcodeScanner.apply {
@@ -174,6 +175,7 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): BarcodeFragment
     }

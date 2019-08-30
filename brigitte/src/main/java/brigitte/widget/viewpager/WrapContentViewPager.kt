@@ -8,7 +8,7 @@ import androidx.viewpager.widget.ViewPager
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 11. <p/>
  */
 
-open class WrapContentViewPager @JvmOverloads constructor(
+open class WrapContentViewPager constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : ViewPager(context, attrs) {

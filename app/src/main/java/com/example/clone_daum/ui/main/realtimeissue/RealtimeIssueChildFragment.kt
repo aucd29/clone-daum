@@ -4,6 +4,7 @@ import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -22,10 +23,9 @@ class RealtimeIssueChildFragment @Inject constructor()
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
 
+    override val layoutId = R.layout.realtime_issue_child_fragment
     // main fragment 와 공유
     lateinit var mRealtimeIssueViewModel: RealtimeIssueViewModel
-
-    override fun layoutId() = R.layout.realtime_issue_child_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -76,6 +76,7 @@ class RealtimeIssueChildFragment @Inject constructor()
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): RealtimeIssueChildFragment
     }

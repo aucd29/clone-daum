@@ -19,6 +19,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
 
     @Inject lateinit var viewController: ViewController
 
+    override val layoutId = R.layout.main_activity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
         exceptionCatcher { mLog.error("ERROR: $it") }
@@ -36,10 +38,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
             viewController.mainFragment()
         }
     }
-
-    // 내부적으로 클래스 명을 참조하긴 하지만
-    // 리소스가 사용되고 있는지 확인이 필요하다라는 의견이 있었음
-    override fun layoutId() = R.layout.main_activity
 
     override fun attachBaseContext(newBase: Context) {
         // https://github.com/InflationX/Calligraphy

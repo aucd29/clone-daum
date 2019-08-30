@@ -11,6 +11,7 @@ import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerBottomSheetDialogFragment
 import brigitte.BaseFragment
 import brigitte.SCOPE_ACTIVITY
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -45,7 +46,7 @@ class WeatherFragment
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.weather_fragment
+    override val layoutId = R.layout.weather_fragment
 
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
@@ -122,6 +123,7 @@ class WeatherFragment
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): WeatherFragment
     }

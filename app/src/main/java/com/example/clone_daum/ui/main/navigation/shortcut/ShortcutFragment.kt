@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 import com.example.clone_daum.databinding.ShortcutFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
@@ -17,16 +18,14 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.shortcut_fragment
+    override val layoutId = R.layout.shortcut_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mViewModelFactory.apply {
-            // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로 injectOf 를 이용 한다.
-            mSitemapViewModel    = inject()
-            mFrequentlySiteModel = inject()
-        }
+        // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로 injectOf 를 이용 한다.
+        mSitemapViewModel    = inject()
+        mFrequentlySiteModel = inject()
 
         mBinding.apply {
             sitemapModel        = mSitemapViewModel
@@ -35,7 +34,6 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
     }
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() {
@@ -47,7 +45,7 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
             viewController.browserFragment(it)
         }
 
-        mFrequentlySiteModel.init(mDisposable)
+        mFrequentlySiteModel.init(disposable())
         observe(mFrequentlySiteModel.brsOpenEvent) {
             viewController.browserFragment(it)
         }
@@ -61,6 +59,7 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): ShortcutFragment
     }

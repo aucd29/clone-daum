@@ -5,6 +5,7 @@ import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -23,9 +24,8 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var viewController: ViewController
 
+    override val layoutId = R.layout.search_fragment
     private lateinit var mPopularViewModel: PopularViewModel
-
-    override fun layoutId() = R.layout.search_fragment
 
     override fun initViewBinding() {
     }
@@ -40,7 +40,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init(mDisposable)
+        mViewModel.init(disposable())
         mPopularViewModel.apply {
             init()
             chipLayoutManager.set(layoutManager)
@@ -84,6 +84,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): SearchFragment
     }

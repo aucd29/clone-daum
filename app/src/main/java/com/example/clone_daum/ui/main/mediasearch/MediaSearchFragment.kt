@@ -8,6 +8,7 @@ import com.example.clone_daum.databinding.MediaSearchFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.example.clone_daum.R
@@ -35,9 +36,9 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
 
     @Inject lateinit var viewController: ViewController
 
-    private var mPauseAnimator: Animator? = null
+    override val layoutId = R.layout.media_search_fragment
 
-    override fun layoutId() = R.layout.media_search_fragment
+    private var mPauseAnimator: Animator? = null
 
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.apply {
@@ -194,6 +195,7 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): MediaSearchFragment
     }

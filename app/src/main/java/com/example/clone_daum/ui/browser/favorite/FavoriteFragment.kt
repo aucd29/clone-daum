@@ -5,6 +5,7 @@ import com.example.clone_daum.databinding.FavoriteFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.find
 import brigitte.finish
 import dagger.android.ContributesAndroidInjector
@@ -26,7 +27,7 @@ class FavoriteFragment @Inject constructor()
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.favorite_fragment
+    override val layoutId  = R.layout.favorite_fragment
 
     override fun initViewBinding() {
         mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
@@ -38,7 +39,7 @@ class FavoriteFragment @Inject constructor()
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init(mDisposable)
+        mViewModel.init(disposable())
         mViewModel.initItems()
     }
 
@@ -77,6 +78,7 @@ class FavoriteFragment @Inject constructor()
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): FavoriteFragment
     }

@@ -1,11 +1,9 @@
 package com.example.clone_daum.di.component
 
-import android.app.Application
-import brigitte.di.dagger.module.ContextModule
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.di.module.*
-import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
@@ -21,19 +19,24 @@ import javax.inject.Singleton
 // 며칠 삽질을 했다..=_ =
 
 @Singleton
-@Component(modules = [AndroidSupportInjectionModule::class
-    , ContextModule::class
-    , ActivityBindingModule::class
-    , ChipModule::class
-    , DaumModule::class
+@Component(modules = [
+    AndroidSupportInjectionModule::class,
+    AppModule::class,
+    ActivityModule::class,
+    LibraryModule::class
 ])
-interface AppComponent {
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(app: Application): Builder
-        fun build(): AppComponent
-    }
+interface AppComponent: AndroidInjector<MainApp> {
+    @Component.Factory
+    interface Factory : AndroidInjector.Factory<MainApp>
 
-    fun inject(app: MainApp)
+    // dagger 버전 변경으로 아래 내용 삭제
+//interface AppComponent {
+//    @Component.Builder
+//    interface Builder {
+//        @BindsInstance
+//        fun application(app: Application): Builder
+//        fun build(): AppComponent
+//    }
+//
+//    fun inject(app: MainApp)
 }

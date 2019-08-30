@@ -122,7 +122,7 @@ interface IDateCalculator {
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class DateCalculator<T : IDateCalculator> @JvmOverloads constructor() {
+class DateCalculator<T : IDateCalculator> constructor() {
     companion object {
         private val mLog = LoggerFactory.getLogger(DateCalculator::class.java)
 

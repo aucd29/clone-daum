@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.main
 
 import android.app.Application
 import android.view.MotionEvent
-import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
@@ -10,16 +9,25 @@ import androidx.lifecycle.*
 import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.viewmodel.CommandEventViewModel
+import brigitte.viewmodel.ISavedStateHandle
 import brigitte.widget.magneticEffect
-import brigitte.widget.swiperefresh.SwipeRefreshController
-import com.example.clone_daum.common.PreloadConfig
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.android.material.tabs.TabLayout
-import io.reactivex.disposables.CompositeDisposable
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
+import com.squareup.inject.assisted.dagger2.AssistedModule
+import dagger.Module
 import kotlin.math.abs
+//
+//@AssistedModule
+//@Module(includes = [AssistedInject_ViewModelAssistedFactoriesModule::class])
+//abstract class ViewModelAssistedFactoriesModule
+//
+//@AssistedInject.Factory
+//interface Factory: SavedStateViewModelFactory<MainViewModel>
 
-
+//    @Assisted val handle: SavedStateHandle,
 class MainViewModel @Inject constructor(
     val config: Config,
     app: Application
@@ -38,6 +46,8 @@ class MainViewModel @Inject constructor(
 
         const val ITN_GOTO_NEWS = "goto-news"
     }
+
+//    override lateinit var savedStateHandle: SavedStateHandle
 
     // MAIN WEB TAB CONTROL
     val tabChangedCallback      = ObservableField<TabSelectedCallback>()

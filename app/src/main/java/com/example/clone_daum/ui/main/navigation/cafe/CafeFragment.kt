@@ -6,6 +6,7 @@ import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import brigitte.BaseDaggerFragment
 import brigitte.dataBinding
+import brigitte.di.dagger.scope.FragmentScope
 import brigitte.lpmm
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
@@ -18,7 +19,7 @@ class CafeFragment @Inject constructor() : BaseDaggerFragment<CafeFragmentBindin
     private lateinit var mLoginViewModel: NavigationLoginViewModel
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
-    override fun layoutId() = R.layout.cafe_fragment
+    override val layoutId = R.layout.cafe_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -52,6 +53,7 @@ class CafeFragment @Inject constructor() : BaseDaggerFragment<CafeFragmentBindin
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): CafeFragment
     }

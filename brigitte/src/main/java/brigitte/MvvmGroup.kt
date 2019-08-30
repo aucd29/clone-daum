@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import kotlin.reflect.KClass
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 10. 15. <p/>
@@ -68,30 +69,13 @@ interface OnBackPressedListener {
     fun onBackPressed(): Boolean
 }
 
-interface BaseViewModelProvider {
-    val mViewModelProvider: ViewModelProvider
-    val mViewModelProviderActivity: ViewModelProvider
-
-    private fun viewModelProvider(@ViewModelScope scope: Int) =
-        if (scope == SCOPE_FRAGMENT) mViewModelProvider else mViewModelProviderActivity
-
-    private fun scope(some: FragmentActivity?) =
-        if (some == null) SCOPE_FRAGMENT else SCOPE_ACTIVITY
-
-    fun <VM : ViewModel> inject(@ViewModelScope scope: Int, klass: Class<VM>) =
-        viewModelProvider(scope).get(klass)
-
-    fun <VM : ViewModel> inject(activity: FragmentActivity?, klass: Class<VM>) =
-        viewModelProvider(scope(activity)).get(klass)
-}
-
 ////////////////////////////////////////////////////////////////////////////////////
 //
 // BaseActivity
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     : AppCompatActivity(), BaseEventAware {
     companion object {
         const val SCOPE_ACTIVITY = 0
@@ -101,14 +85,17 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
     private val mDisposable = CompositeDisposable()
     private lateinit var mBackPressed: BackPressedManager
 
-    protected val mViewModel: M by lazy { initViewModel() }
+    @get:LayoutRes
+    protected abstract val layoutId: Int
     protected lateinit var mBinding: T
+
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = dataBindingView(layoutId())
-
+        mBinding = dataBindingView(layoutId)
         initBackPressed()
         bindViewModel()
 
@@ -119,10 +106,6 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         initViewBinding()
         initViewModelEvents()
     }
-
-    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
-    @LayoutRes
-    abstract fun layoutId(): Int
 
     override fun onBackPressed() {
         // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
@@ -148,13 +131,11 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
         super.onDestroy()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
     /**
      * brigitte.viewModel 을 ViewDataBinding 에 설정 한다.
      */
     protected open fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
 
         // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
         mBinding.lifecycleOwner = this
@@ -192,28 +173,28 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel> @JvmOverloads con
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : Fragment(), BaseEventAware {
 
+    private val mDisposable = CompositeDisposable()
+
+    @get:LayoutRes
+    protected abstract val layoutId: Int
     protected lateinit var mBinding : T
-    protected val mViewModel: M by lazy { initViewModel() }
-    protected val mDisposable = CompositeDisposable()
 
     @ViewModelScope
     protected var mViewModelScope = SCOPE_FRAGMENT
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = dataBinding(layoutId(), container, false)
+        mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
 
         bindViewModel()
 
         return mBinding.root
     }
-
-    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
-    @LayoutRes
-    abstract fun layoutId(): Int
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -234,10 +215,8 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
         super.onDestroyView()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
     protected open fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
 
         // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
         mBinding.lifecycleOwner = this
@@ -273,28 +252,28 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads cons
 ////////////////////////////////////////////////////////////////////////////////////
 
 
-abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : AppCompatDialogFragment(), BaseEventAware {
+    private val mDisposable = CompositeDisposable()
+
+    @get:LayoutRes
+    protected abstract val layoutId: Int
     protected lateinit var mBinding : T
-    protected val mDisposable = CompositeDisposable()
-    protected val mViewModel: M by lazy { initViewModel() }
 
     @ViewModelScope
     protected var mViewModelScope = SCOPE_FRAGMENT
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        mBinding = dataBinding(layoutId(), container, false)
+        mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
 
         bindViewModel()
 
         return mBinding.root
     }
-
-    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
-    @LayoutRes
-    abstract fun layoutId(): Int // = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -309,14 +288,13 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
+        mCommandEventModels.clear()
 
         super.onDestroyView()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
-    open protected fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+    protected open fun bindViewModel() {
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
 
         // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
         mBinding.lifecycleOwner = this
@@ -350,22 +328,26 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverload
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @JvmOverloads constructor()
+abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : BottomSheetDialogFragment(), BaseEventAware {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(BaseBottomSheetDialogFragment::class.java)
     }
 
-    protected lateinit var mBinding : T
     protected val mDisposable = CompositeDisposable()
-    protected val mViewModel: M by lazy { initViewModel() }
+
+    @get:LayoutRes
+    protected abstract val layoutId: Int
+    protected lateinit var mBinding : T
 
     @ViewModelScope
     protected var mViewModelScope = SCOPE_FRAGMENT
+    protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
+    protected val mViewModel: M by lazy { initViewModel() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = dataBinding(layoutId(), container, false)
+        mBinding = dataBinding(layoutId, container, false)
         mBinding.root.isClickable = true
 
         bindViewModel()
@@ -373,10 +355,6 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
 
         return mBinding.root
     }
-
-    // 리소스 사용 확인 문제로 이를 LiveTemplate 에서 처리 하도록 수정
-    @LayoutRes
-    abstract fun layoutId(): Int // = resources.getIdentifier(mLayoutName, LAYOUT, requireActivity().packageName)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -397,14 +375,13 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> @
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
+        mCommandEventModels.clear()
 
         super.onDestroyView()
     }
 
-    protected fun viewModelClass() = Reflect.classType(this, 1) as Class<M>
-
     protected open fun bindViewModel() {
-        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(viewModelClass(), mViewModel))
+        Reflect.method(mBinding, SET_VIEW_MODEL, Reflect.Params(mViewModelClass, mViewModel))
 
         // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
         mBinding.lifecycleOwner = this
@@ -504,15 +481,13 @@ interface BaseEventAware {
      */
     fun commandEventAware() {
         mCommandEventModels.forEach { vm ->
-            if (vm is ICommandEventAware) {
-                observe(vm.commandEvent) {
-                    when (it.first) {
-                        ICommandEventAware.CMD_FINISH   -> commandFinish()
-                        ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
-                        ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
+            observe(vm.commandEvent) {
+                when (it.first) {
+                    ICommandEventAware.CMD_FINISH   -> commandFinish()
+                    ICommandEventAware.CMD_TOAST    -> commandToast(it.second.toString())
+                    ICommandEventAware.CMD_SNACKBAR -> commandSnackbar(it.second.toString())
 
-                        else -> onCommandEvent(it.first, it.second)
-                    }
+                    else -> onCommandEvent(it.first, it.second)
                 }
             }
         }

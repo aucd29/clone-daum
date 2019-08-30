@@ -20,7 +20,7 @@ import org.robolectric.shadows.ShadowNetworkInfo
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-23 <p/>
  */
 
-open class BaseRoboTest @JvmOverloads constructor()  {
+open class BaseRoboTest constructor()  {
     protected open fun initMock() {
         MockitoAnnotations.initMocks(this)
     }

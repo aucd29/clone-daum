@@ -99,10 +99,9 @@ dependencies {
 
     // dagger : https://google.github.io/dagger/android
     implementation "com.google.dagger:dagger:$dagger2"
-    implementation "com.google.dagger:dagger-android:$dagger2"
     implementation "com.google.dagger:dagger-android-support:$dagger2" // if you use the support libraries
     kapt "com.google.dagger:dagger-compiler:$dagger2"
-    kapt "com.google.dagger:dagger-android-processor:2.16"  // 애는 버전이 낮음
+    kapt "com.google.dagger:dagger-android-processor:$dagger2"  // 애는 버전이 낮음
 
     // AssistedInject : https://github.com/square/AssistedInject
     compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.5.0'

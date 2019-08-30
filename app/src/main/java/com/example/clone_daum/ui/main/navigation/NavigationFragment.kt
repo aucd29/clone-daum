@@ -6,6 +6,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.common.Config
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
     @Inject lateinit var config: Config
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.navigation_fragment
+    override val layoutId = R.layout.navigation_fragment
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
@@ -123,6 +124,7 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeInjector(): NavigationFragment
     }

@@ -4,6 +4,7 @@ import com.example.clone_daum.databinding.UrlHistoryFragmentBinding
 import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -21,14 +22,14 @@ class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFr
 
     @Inject lateinit var viewController: ViewController
 
-    override fun layoutId() = R.layout.url_history_fragment
+    override val layoutId  = R.layout.url_history_fragment
 
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
         mViewModel.apply {
-            init(mDisposable)
+            init(disposable())
             initItems()
         }
 
@@ -96,6 +97,7 @@ class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFr
 
     @dagger.Module
     abstract class Module {
+        @FragmentScope
         @ContributesAndroidInjector
         abstract fun contributeUrlHistoryFragmentInjector(): UrlHistoryFragment
     }

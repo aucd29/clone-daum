@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  * Note that only one observer is going to be notified of changes.
  */
-class SingleLiveEvent<T> @JvmOverloads constructor () : MutableLiveData<T>() {
+class SingleLiveEvent<T> constructor () : MutableLiveData<T>() {
     private val pending = AtomicBoolean(false)
 
     @MainThread
