@@ -1,21 +1,10 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte.di.dagger.module
 
-import android.os.Bundle
-import android.os.Parcelable
-import android.util.SparseArray
-import androidx.core.util.contains
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
-import brigitte.viewmodel.ISavedStateHandle
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
-import dagger.Provides
-import java.util.HashMap
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton

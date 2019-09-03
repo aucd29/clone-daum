@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.browser.favorite
 
 import com.example.clone_daum.databinding.FavoriteProcessFragmentBinding
 import com.example.clone_daum.model.local.MyFavorite
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.hideKeyboard
@@ -24,7 +24,7 @@ class FavoriteProcessFragment @Inject constructor()
         const val K_MODIFY = "modify"
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.favorite_process_fragment
 
@@ -86,7 +86,7 @@ class FavoriteProcessFragment @Inject constructor()
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteProcessViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> viewController.folderFragment(childFragmentManager, mViewModel.folderId)
+            CMD_FOLDER_DETAIL -> fragmentFactory.folderFragment(childFragmentManager, mViewModel.folderId)
         }
     }
 

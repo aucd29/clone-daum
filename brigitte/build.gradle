@@ -56,8 +56,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     kapt "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
-//    implementation "androidx.navigation:navigation-fragment:$nav_version" // For Kotlin use navigation-fragment-ktx
-//    implementation "androidx.navigation:navigation-ui:$nav_version" // For Kotlin use navigation-ui-ktx
+    // navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
 
     // material
     implementation "com.google.android.material:material:$androidx"
@@ -83,7 +84,7 @@ dependencies {
     //
 
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'

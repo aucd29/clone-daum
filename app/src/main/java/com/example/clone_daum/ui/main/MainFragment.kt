@@ -1,36 +1,32 @@
 package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
-import com.example.clone_daum.ui.ViewController
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import brigitte.di.dagger.module.ChildFragmentManager
+import brigitte.di.dagger.module.DaggerViewModelFactory
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.widget.observeTabPosition
-import brigitte.widget.pageradapter.FragmentStatePagerAdapter
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import dagger.Binds
-import dagger.Module
 import dagger.Provides
-import dagger.android.ContributesAndroidInjector
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
-import javax.inject.Named
-import javax.inject.Qualifier
+import javax.inject.Provider
 
-class MainFragment @Inject constructor(
+class MainFragment constructor(
 ) : BaseDaggerFragment<MainFragmentBinding, MainViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
@@ -42,12 +38,8 @@ class MainFragment @Inject constructor(
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
-
-    lateinit var mainTabAdapter: MainTabAdapter
-    lateinit var realtimeIssueTabAdapter: dagger.Lazy<RealtimeIssueTabAdapter>
-//    @Inject lateinit var mainTabAdapter: MainTabAdapter
-//    @Inject lateinit var realtimeIssueTabAdapter: dagger.Lazy<RealtimeIssueTabAdapter>
+    @Inject lateinit var mainTabAdapter: MainTabAdapter
+    @Inject lateinit var realtimeIssueTabAdapter: Provider<RealtimeIssueTabAdapter>
 
     override val layoutId = R.layout.main_fragment
 
@@ -178,9 +170,9 @@ class MainFragment @Inject constructor(
             if (mViewModel.appbarOffsetLive.value == 0) {
                 when (cmd) {
                     CMD_SEARCH_FRAGMENT       -> showSearchFragment()
-                    CMD_NAVIGATION_FRAGMENT   -> viewController.navigationFragment()
+                    CMD_NAVIGATION_FRAGMENT   -> showNavigationFragment()
                     CMD_MEDIA_SEARCH_FRAGMENT -> showMediaSearch()
-                    CMD_REALTIME_ISSUE        -> toggleRealtimeIssueArea()
+                    CMD_REALTIME_ISSUE        -> toggleIssueLayout()
                     CMD_BRS_OPEN              -> showBrowser(data)
                 }
             }
@@ -189,16 +181,22 @@ class MainFragment @Inject constructor(
         RealtimeIssueViewModel.apply {
             when (cmd) {
                 CMD_LOADED_ISSUE -> loadRealtimeIssueTab()
-                CMD_CLOSE_ISSUE  -> toggleRealtimeIssueArea()
+                CMD_CLOSE_ISSUE  -> toggleIssueLayout()
             }
         }
     }
 
     private fun showSearchFragment() {
-        toggleRealtimeIssueArea { viewController.searchFragment() }
+        toggleIssueLayout {
+            mBinding.mainSearchView.navigate(R.id.actionMainToSearch)
+        }
     }
 
-    private fun toggleRealtimeIssueArea(visibleCallback: (() -> Unit)? = null) {
+    private fun showNavigationFragment() {
+        mBinding.mainNavigationMenu.navigate(R.id.actionMainToNavigation)
+    }
+
+    private fun toggleIssueLayout(visibleCallback: (() -> Unit)? = null) {
         // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
         val lp = mBinding.mainIssueContainer.layoutParams as ConstraintLayout.LayoutParams
 
@@ -278,12 +276,18 @@ class MainFragment @Inject constructor(
         }
     }
 
-    private fun showBrowser(url: Any) {
-        toggleRealtimeIssueArea { viewController.browserFragment(url.toString()) }
+    private fun showMediaSearch() {
+        toggleIssueLayout {
+            mBinding.mainMediaSearchIcon.navigate(R.id.actionMainToMediaSearch)
+        }
     }
 
-    private fun showMediaSearch() {
-        toggleRealtimeIssueArea { viewController.mediaSearchFragment() }
+    private fun showBrowser(url: Any) {
+        toggleIssueLayout {
+            mBinding.mainMediaSearchIcon.navigate(R.id.actionMainToBrowser, Bundle().apply {
+                putString("url", url.toString())
+            })
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -294,7 +298,7 @@ class MainFragment @Inject constructor(
     
     override fun onBackPressed(): Boolean {
         if (mIssueViewModel.viewRealtimeIssue.isVisible()) {
-            toggleRealtimeIssueArea()
+            toggleIssueLayout()
             return true
         }
 
@@ -329,40 +333,22 @@ class MainFragment @Inject constructor(
 
     @dagger.Module
     abstract class Module {
-//        @FragmentScope // MainFragmentModule::class
+        @FragmentScope
         @dagger.android.ContributesAndroidInjector(modules = [MainFragmentModule::class])
         abstract fun contributeMainFragmentInjector(): MainFragment
-
-//        @dagger.Module
-//        companion object {
-//            @Named("main-fragment")
-//            @JvmStatic
-//            @Provides
-//            fun provideFragmentManager(fragment: MainFragment) =
-//                fragment.childFragmentManager
-
-//            @JvmStatic
-//            @Provides
-//            fun provideTabAdapter(fragment: Fragment, preConfig: PreloadConfig) =
-//                MainTabAdapter(preConfig, fragment.childFragmentManager)
-//
-//            @JvmStatic
-//            @Provides
-//            fun provideRealtimeIssueTabAdapter(fragment: Fragment) =
-//                RealtimeIssueTabAdapter(fragment.childFragmentManager)
-//        }
     }
 
-    // ADAPTER INJECT 해야 함 좀 이해가 안되네?
     @dagger.Module
     abstract class MainFragmentModule {
-//        @dagger.Module
-//        companion object {
-//            @JvmStatic
-//            @Provides
-//            @Named("main")
-//            fun provideFragmentManager(fragment: MainFragment) =
-//                fragment.childFragmentManager
-//        }
+        @Binds
+        abstract fun bindMainFragment(fragment: MainFragment): Fragment
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideChildFragmentManager(fragment: Fragment) =
+                fragment.childFragmentManager
+        }
     }
 }

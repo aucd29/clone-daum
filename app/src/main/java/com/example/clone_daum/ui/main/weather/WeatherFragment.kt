@@ -7,9 +7,8 @@ import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerBottomSheetDialogFragment
-import brigitte.BaseFragment
 import brigitte.SCOPE_ACTIVITY
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
@@ -44,7 +43,7 @@ class WeatherFragment
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.weather_fragment
 
@@ -81,7 +80,7 @@ class WeatherFragment
         WeatherViewModel.apply {
             when (cmd) {
                 CMD_MORE_DETAIL -> {
-                    viewController.browserFragment(MORE_DETAIL_URL)
+                    fragmentFactory.browserFragment(fragmentManager, MORE_DETAIL_URL)
 
                     dismiss()
                 }

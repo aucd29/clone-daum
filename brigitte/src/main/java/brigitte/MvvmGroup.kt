@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
-import kotlin.reflect.KClass
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 10. 15. <p/>
@@ -173,12 +173,10 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> constructor()
+abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     : Fragment(), BaseEventAware {
-
     private val mDisposable = CompositeDisposable()
 
-    @get:LayoutRes
     protected abstract val layoutId: Int
     protected lateinit var mBinding : T
 
@@ -186,9 +184,10 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> constructor()
     protected var mViewModelScope = SCOPE_FRAGMENT
     protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
     protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
+    protected var mOnBackPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = dataBinding(layoutId, container, false)
+        mBinding = dataBinding(layoutId, container)
         mBinding.root.isClickable = true
 
         bindViewModel()
@@ -199,6 +198,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> constructor()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        registeBackPressedDispatcher()
         addCommandEventModel(mViewModel)
         dialogAware()
         commandEventAware()
@@ -220,6 +220,12 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel> constructor()
 
         // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
         mBinding.lifecycleOwner = this
+    }
+
+    protected inline fun registeBackPressedDispatcher() {
+        mOnBackPressedCallback?.let {
+            requireActivity().onBackPressedDispatcher.addCallback(this@BaseFragment, it)
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -501,9 +507,7 @@ interface BaseEventAware {
     }
 
     fun addCommandEventModels(vararg viewmodels: ViewModel) {
-        for (viewModel in viewmodels) {
-            addCommandEventModel(viewModel)
-        }
+        viewmodels.forEach(::addCommandEventModel)
     }
 
     fun removeCommandEventModel(viewmodel: ViewModel) {
@@ -514,9 +518,7 @@ interface BaseEventAware {
     }
 
     fun removeCommandEventModels(vararg viewmodels: ViewModel) {
-        for (viewModel in viewmodels) {
-            removeCommandEventModel(viewModel)
-        }
+        viewmodels.forEach(::removeCommandEventModel)
     }
 
     fun onCommandEvent(cmd: String, data: Any) { }

@@ -4,7 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MusicFragmentBinding
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
@@ -28,7 +28,7 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
         private const val V_SCALE_DURATION = 500L
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.music_fragment
 
@@ -59,7 +59,7 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
             if (it == 100f) {
                 dialog(DialogParam("대충 찾았다고 하고", context = context, listener = { _, _ ->
                     finish()
-                    viewController.browserFragment("http://www.melon.com/song/detail.htm?songId=30985406&ref=W10600")
+                    fragmentFactory.browserFragment(fragmentManager, "http://www.melon.com/song/detail.htm?songId=30985406&ref=W10600")
                 }))
             }
         }

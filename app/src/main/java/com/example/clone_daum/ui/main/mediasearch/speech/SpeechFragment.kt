@@ -3,14 +3,12 @@ package com.example.clone_daum.ui.main.mediasearch.speech
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.os.Handler
-import androidx.core.os.HandlerCompat.postDelayed
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
@@ -21,9 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.log
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 18. <p/>
@@ -42,7 +38,7 @@ class SpeechFragment @Inject constructor(
         private const val V_SCALE_DURATION = 500L
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.speech_fragment
     // https://code.i-harness.com/ko-kr/q/254ae5
@@ -287,7 +283,7 @@ class SpeechFragment @Inject constructor(
             .subscribe({ data ->
                 data?.let {
                     finish()
-                    viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
+                    fragmentFactory.browserFragment(fragmentManager, "https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
                 } ?: let {
                     mViewModel.messageResId.set(R.string.speech_no_result)
                     finish()
@@ -297,11 +293,7 @@ class SpeechFragment @Inject constructor(
                     }, 100)
                 }
             }, { errorLog(it, mLog) }))
-
-
 //        ioThread { mRecognizer?.cancelRecording() }
-
-
     }
 
 //    결과를 얻기 위한 callback 말고도 다양한 callback 메서드가 존재합니다.

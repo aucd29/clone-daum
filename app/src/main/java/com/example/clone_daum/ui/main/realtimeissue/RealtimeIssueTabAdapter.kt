@@ -25,7 +25,9 @@ import javax.inject.Named
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class RealtimeIssueTabAdapter constructor(
+class RealtimeIssueTabAdapter @Inject constructor(
+//    @param:ChildFragmentManager("main") fm: FragmentManager
+//class RealtimeIssueTabAdapter constructor(
     fm: FragmentManager
 ) : FragmentStatePagerAdapter(fm) {
     var issueList: List<Pair<String, List<RealtimeIssue>>>? = null

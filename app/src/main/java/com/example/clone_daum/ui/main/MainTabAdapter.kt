@@ -28,8 +28,8 @@ import javax.inject.Provider
 
 @SuppressLint("WrongConstant")
 class MainTabAdapter @Inject constructor(
-    private val mPreConfig: PreloadConfig,
-    @Named("main") fm: FragmentManager
+    fm: FragmentManager,
+    private val mPreConfig: PreloadConfig
 ) : FragmentStatePagerAdapter(fm) {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainTabAdapter::class.java)
@@ -38,7 +38,7 @@ class MainTabAdapter @Inject constructor(
     }
 
     // https://dagger.dev/users-guide
-    @Inject lateinit var webViewFragment: Provider<MainWebviewFragment>
+//    @Inject lateinit var webViewFragment: Provider<MainWebviewFragment>
 
     private val mFragments = SparseArray<WeakReference<MainWebviewFragment>>()
     private val items: List<TabData>
@@ -49,7 +49,8 @@ class MainTabAdapter @Inject constructor(
             mLog.debug("CREATE TAB ($position) ${url(position)}")
         }
 
-        val fragment = webViewFragment.get()
+//        val fragment = webViewFragment.get()
+        val fragment = MainWebviewFragment.create(position, url(position))
         mFragments.put(position, WeakReference(fragment))
 
         return fragment

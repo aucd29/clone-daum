@@ -6,6 +6,8 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="androidx.navigation.Navigation" />
+        <import type="com.example.clone_daum.R" />
 
         <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
         <variable name="issueModel"
@@ -259,7 +261,7 @@
                             android:layout_height="@dimen/main_tab_height"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/main_navigation_menu"
+                            app:layout_constraintEnd_toStartOf="@+id/mainNavigationMenu"
                             android:layout_gravity="bottom"
                             app:tabMode="scrollable"
                             app:tabPaddingStart="5dp"
@@ -282,7 +284,7 @@
                     />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/main_navigation_menu"
+                            android:id="@+id/mainNavigationMenu"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/main_tab_height"
                             android:src="@drawable/ic_menu_black_24dp"

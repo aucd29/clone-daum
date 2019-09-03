@@ -1,6 +1,7 @@
 package com.example.clone_daum
 
 import android.content.Context
+import android.view.View
 import androidx.multidex.MultiDex
 import com.example.clone_daum.di.component.DaggerAppComponent
 import dagger.android.AndroidInjector
@@ -24,8 +25,6 @@ class MainApp : DaggerApplication() {
         super.onCreate()
 
         mLog.error("START APP ${BuildConfig.APPLICATION_ID} (${BuildConfig.VERSION_NAME})")
-
-
 
         ViewPump.init(viewPump)
     }

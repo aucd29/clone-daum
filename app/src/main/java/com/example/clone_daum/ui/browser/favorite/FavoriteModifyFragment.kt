@@ -7,7 +7,7 @@ import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import org.slf4j.LoggerFactory
 import com.example.clone_daum.model.local.MyFavorite
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import javax.inject.Inject
 
 
@@ -22,7 +22,7 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
         const val K_FOLDER = "folder"
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.favorite_modify_fragment
 
@@ -97,7 +97,7 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
 
     private fun moveFavoriteFolder() {
         val fav = mViewModel.selectedList[0]
-        viewController.folderFragment(childFragmentManager, fav.folderId, R.id.favorite_modify_container)
+        fragmentFactory.folderFragment(childFragmentManager, fav.folderId, R.id.favorite_modify_container)
     }
 
     private fun modifyFavorite() {
@@ -115,7 +115,7 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
     private fun modifyFavoriteLink(fav: MyFavorite) {
         finish()
 
-        viewController.favoriteProcessFragment(fav)
+        fragmentFactory.favoriteProcessFragment(fav)
     }
 
     private fun addIconToHomeLauncher() {

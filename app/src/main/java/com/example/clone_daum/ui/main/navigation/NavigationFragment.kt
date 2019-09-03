@@ -11,7 +11,7 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
@@ -25,7 +25,7 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
     }
 
     @Inject lateinit var config: Config
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.navigation_fragment
 
@@ -51,27 +51,27 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
             // R 경로를 수동으로 입력해주면 된다.
             when (it.itemId) {
                 R.id.mnu_navi_shortcut -> {
-                    viewController.shortcutFragment(childFragmentManager)
+                    fragmentFactory.shortcutFragment(childFragmentManager)
                     true
                 }
                 R.id.mnu_navi_mail -> {
-                    viewController.mailFragment(childFragmentManager)
+                    fragmentFactory.mailFragment(childFragmentManager)
                     true
                 }
                 R.id.mnu_navi_cafe -> {
-                    viewController.cafeFragment(childFragmentManager)
+                    fragmentFactory.cafeFragment(childFragmentManager)
                     true
                 }
                 else -> false
             }
         }
 
-        viewController.shortcutFragment(childFragmentManager, true)
+        fragmentFactory.shortcutFragment(childFragmentManager, true)
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         observe(brsOpenEvent) {
-            viewController.browserFragment(it)
+            fragmentFactory.browserFragment(fragmentManager, it)
         }
     }
 

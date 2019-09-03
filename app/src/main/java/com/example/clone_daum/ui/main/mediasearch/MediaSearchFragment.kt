@@ -5,7 +5,7 @@ import android.animation.Animator
 import android.os.Build
 import android.view.animation.*
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
@@ -34,7 +34,7 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
         private const val REQ_BARCODE       = 7814
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.media_search_fragment
 
@@ -159,28 +159,28 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
                 CMD_SEARCH_SPEECH  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { _, res -> if (res) { viewController.speechFragment() } }
+                        , { _, res -> if (res) { fragmentFactory.speechFragment() } }
                         , REQ_RECORD_SPEECH))
                 }
 
                 CMD_SEARCH_MUSIC   -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { _, res -> if (res) { viewController.musicFragment() } }
+                        , { _, res -> if (res) { fragmentFactory.musicFragment() } }
                         , REQ_RECORD_MUSIC))
                 }
 
                 CMD_SEARCH_FLOWER  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { _, res -> if (res) { viewController.flowerFragment() } }
+                        , { _, res -> if (res) { fragmentFactory.flowerFragment() } }
                         , REQ_FLOWER))
                 }
 
                 CMD_SEARCH_BARCODE -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { _, res -> if (res) { viewController.barcodeFragment() } }
+                        , { _, res -> if (res) { fragmentFactory.barcodeFragment() } }
                         , REQ_BARCODE))
                 }
             }

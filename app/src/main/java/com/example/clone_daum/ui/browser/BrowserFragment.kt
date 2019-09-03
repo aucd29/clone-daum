@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.common.Config
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
@@ -34,7 +34,7 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
         const val K_URL = "url"
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
     @Inject lateinit var config: Config
 
     override val layoutId = R.layout.browser_fragment
@@ -252,7 +252,7 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
             when (cmd) {
                 CMD_HOME,
                 CMD_BACK              -> onBackPressed()
-                CMD_SEARCH_FRAGMENT   -> viewController.searchFragment()
+                CMD_SEARCH_FRAGMENT   -> fragmentFactory.searchFragment(fragmentManager)
                 CMD_SUBMENU_FRAGMENT  -> subMenu()
                 CMD_SHARE_EVENT       -> shareLink(data.toString())
                 CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
@@ -281,9 +281,9 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
     }
 
     private fun subMenu() {
-        viewController.browserSubFragment { cmd ->
+        fragmentFactory.browserSubFragment { cmd ->
             when (cmd) {
-                "즐겨찾기목록"   -> viewController.favoriteFragment()
+                "즐겨찾기목록"   -> fragmentFactory.favoriteFragment()
                 "즐겨찾기추가"   -> addFavorite()
                 "방문기록"      -> urlHistory()
                 "URL 복사"     -> copyUrl()
@@ -319,11 +319,11 @@ class BrowserFragment @Inject constructor() : BaseDaggerFragment<BrowserFragment
         val title = webview.title
         val url   = webview.url
 
-        viewController.favoriteProcessFragment(title, url)
+        fragmentFactory.favoriteProcessFragment(title, url)
     }
 
     private fun urlHistory() {
-        viewController.urlHistoryFragment()
+        fragmentFactory.urlHistoryFragment()
     }
 
     private fun copyUrl() {

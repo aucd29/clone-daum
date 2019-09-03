@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.search
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
@@ -22,7 +22,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
 
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var layoutManager: ChipsLayoutManager
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.search_fragment
     private lateinit var mPopularViewModel: PopularViewModel
@@ -62,7 +62,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     override fun onCommandEvent(cmd: String, data: Any) {
 //        mViewModel.finish()
         when (cmd) {
-            SearchViewModel.CMD_BRS_OPEN    -> viewController.browserFragment(data.toString())
+            SearchViewModel.CMD_BRS_OPEN    -> fragmentFactory.browserFragment(fragmentManager, data.toString())
             PopularViewModel.CMD_BRS_SEARCH -> daumSearch(data.toString())
         }
     }
@@ -73,7 +73,7 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
         }
 
         finish()
-        viewController.browserFragment("https://m.search.daum.net/search?w=tot&q=${url.urlencode()}&DA=13H")
+        fragmentFactory.browserFragment(fragmentManager, "https://m.search.daum.net/search?w=tot&q=${url.urlencode()}&DA=13H")
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

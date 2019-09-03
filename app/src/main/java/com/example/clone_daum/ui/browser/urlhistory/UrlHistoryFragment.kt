@@ -1,7 +1,7 @@
 package com.example.clone_daum.ui.browser.urlhistory
 
 import com.example.clone_daum.databinding.UrlHistoryFragmentBinding
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
@@ -20,7 +20,7 @@ class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFr
         private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId  = R.layout.url_history_fragment
 

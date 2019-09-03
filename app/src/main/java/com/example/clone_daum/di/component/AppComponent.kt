@@ -23,20 +23,10 @@ import javax.inject.Singleton
     AndroidSupportInjectionModule::class,
     AppModule::class,
     ActivityModule::class,
-    LibraryModule::class
+    UtilModule::class,
+    NetworkModule::class
 ])
 interface AppComponent: AndroidInjector<MainApp> {
     @Component.Factory
     interface Factory : AndroidInjector.Factory<MainApp>
-
-    // dagger 버전 변경으로 아래 내용 삭제
-//interface AppComponent {
-//    @Component.Builder
-//    interface Builder {
-//        @BindsInstance
-//        fun application(app: Application): Builder
-//        fun build(): AppComponent
-//    }
-//
-//    fun inject(app: MainApp)
 }

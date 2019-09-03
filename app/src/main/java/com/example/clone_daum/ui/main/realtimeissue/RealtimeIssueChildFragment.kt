@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.main.realtimeissue
 
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
@@ -21,7 +21,7 @@ class RealtimeIssueChildFragment @Inject constructor()
     }
 
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.realtime_issue_child_fragment
     // main fragment 와 공유
@@ -65,7 +65,7 @@ class RealtimeIssueChildFragment @Inject constructor()
     private fun showBrowser(url: String) {
         mRealtimeIssueViewModel.command(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
 
-        viewController.browserFragment(url)
+        fragmentFactory.browserFragment(fragmentManager, url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

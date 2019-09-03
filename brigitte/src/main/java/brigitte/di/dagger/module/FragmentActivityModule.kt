@@ -1,5 +1,6 @@
 package brigitte.di.dagger.module
 
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelStore
@@ -15,11 +16,6 @@ import javax.inject.Named
 
 @Module
 class FragmentActivityModule {
-//    @Provides
-////    @Named("activity")
-//    fun provideFragmentManager(activity: FragmentActivity): FragmentManager =
-//        activity.supportFragmentManager
-
     @Provides
     fun provideViewModelStore(activity: FragmentActivity): ViewModelStore =
         activity.viewModelStore
@@ -27,4 +23,19 @@ class FragmentActivityModule {
     @Provides
     fun provideSavedStateRegistryOwner(activity: FragmentActivity): SavedStateRegistryOwner =
         activity
+
+    @Provides
+    fun provideOnBackPressedCallback() =
+        DaggerOnBackPressedCallback()
+
+}
+
+class DaggerOnBackPressedCallback(
+    enabled: Boolean = true
+) : OnBackPressedCallback(enabled) {
+    val callback: (() -> Unit)? = null
+
+    override fun handleOnBackPressed() {
+        callback?.invoke()
+    }
 }

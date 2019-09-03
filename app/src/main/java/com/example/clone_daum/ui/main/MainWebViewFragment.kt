@@ -6,7 +6,7 @@ import android.webkit.WebView
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.viewmodel.SplashViewModel
@@ -44,7 +44,7 @@ class MainWebviewFragment @Inject constructor(
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var fragmentFactory: FragmentFactory
 
     private lateinit var mSplashViewModel: SplashViewModel
 
@@ -72,7 +72,7 @@ class MainWebviewFragment @Inject constructor(
                             mLog.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
-                        viewController.browserFragment(it)
+                        fragmentFactory.browserFragment(fragmentManager, it)
                     } else {
                         // uri 를 redirect 시키는 이유가 뭘까나?
                         webview.loadUrl(url)

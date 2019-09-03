@@ -75,7 +75,7 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> constructor(
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel> constructor()
+abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     : BaseFragment<T, M>(), HasSupportFragmentInjector {
 
     @Inject lateinit var mViewModelProviders: DaggerViewModelProviders

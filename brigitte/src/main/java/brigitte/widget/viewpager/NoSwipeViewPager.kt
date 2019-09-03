@@ -13,7 +13,7 @@ import androidx.core.view.MotionEventCompat
  */
 
 
-class NoSwipeViewPager constructor(
+class NoSwipeViewPager @JvmOverloads constructor(
     context: Context,
     attr: AttributeSet? = null
 ) : WrapContentViewPager(context, attr) {

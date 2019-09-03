@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
-import com.example.clone_daum.ui.ViewController
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -16,8 +15,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     companion object {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
-
-    @Inject lateinit var viewController: ViewController
 
     override val layoutId = R.layout.main_activity
 
@@ -33,10 +30,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         }
 
         initCookieManager()
-
-        if (savedInstanceState == null) {
-            viewController.mainFragment()
-        }
     }
 
     override fun attachBaseContext(newBase: Context) {

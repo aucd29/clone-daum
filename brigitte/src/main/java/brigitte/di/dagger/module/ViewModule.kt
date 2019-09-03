@@ -13,3 +13,4 @@ abstract class ViewModule {
 //    @Binds
 //    abstract fun bindSwipeRefreshController(controller: SwipeRefreshController): Any
 }
+
