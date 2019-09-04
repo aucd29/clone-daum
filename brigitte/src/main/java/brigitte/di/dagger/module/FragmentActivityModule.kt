@@ -33,7 +33,7 @@ class FragmentActivityModule {
 class DaggerOnBackPressedCallback(
     enabled: Boolean = true
 ) : OnBackPressedCallback(enabled) {
-    val callback: (() -> Unit)? = null
+    var callback: (() -> Unit)? = null
 
     override fun handleOnBackPressed() {
         callback?.invoke()

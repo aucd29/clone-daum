@@ -36,6 +36,7 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
 
     override fun initViewBinding() {
+        backPressedCallback()
         keepScreen(true)
 
         if (!DeviceUtils.isSupportedDevice()) {

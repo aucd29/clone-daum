@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -49,14 +50,9 @@ class MainFragment constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
-        val test = childFragmentManager
-        if (mLog.isDebugEnabled) {
-            mLog.debug("child fragment manager : $test")
-        }
+        mIssueViewModel     = inject(requireActivity())
+        mPopularViewModel   = inject(requireActivity())
 
-        mIssueViewModel   = inject(requireActivity())
-        mPopularViewModel = inject(requireActivity())
-        
         mBinding.issueModel = mIssueViewModel
 
         addCommandEventModels(mIssueViewModel)
@@ -223,6 +219,7 @@ class MainFragment constructor(
                     mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
 
+                backPressedCallback()
                 mBinding.mainIssueContainer.layoutHeight(changeTabHeight)
             } else {
                 tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION
@@ -299,6 +296,7 @@ class MainFragment constructor(
     override fun onBackPressed(): Boolean {
         if (mIssueViewModel.viewRealtimeIssue.isVisible()) {
             toggleIssueLayout()
+
             return true
         }
 

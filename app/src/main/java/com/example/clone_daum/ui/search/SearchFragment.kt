@@ -15,7 +15,8 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
+class SearchFragment @Inject constructor(
+) : BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
@@ -23,11 +24,14 @@ class SearchFragment @Inject constructor() : BaseDaggerFragment<SearchFragmentBi
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var fragmentFactory: FragmentFactory
+//    @Inject lateinit var backPressedListener: DaggerOnBackPressedCallback
 
     override val layoutId = R.layout.search_fragment
+
     private lateinit var mPopularViewModel: PopularViewModel
 
     override fun initViewBinding() {
+//        mOnBackPressedCallback = backPressedListener
     }
 
     override fun bindViewModel() {

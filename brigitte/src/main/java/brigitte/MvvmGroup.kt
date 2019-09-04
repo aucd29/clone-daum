@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -108,17 +109,27 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     }
 
     override fun onBackPressed() {
-        // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
-        // h/w backkey 를 처리한 것으로 본다.
-        val fragment = supportFragmentManager.current
-        if (fragment != null && fragment is OnBackPressedListener && fragment.onBackPressed()) {
+        if (!onBackPressedDispatcher.hasEnabledCallbacks()) {
+            mBackPressed.onBackPressed()
             return
         }
 
-        if (mBackPressed.onBackPressed()) {
-            super.onBackPressed()
-        }
+        super.onBackPressed()
     }
+
+    // FIXME OnBackPressedDispatcher 에서 동작하도록 삭제 [aucd29][2019-09-04]
+//    override fun onBackPressed() {
+//        // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
+//        // h/w backkey 를 처리한 것으로 본다.
+//        val fragment = supportFragmentManager.current
+//        if (fragment != null && fragment is OnBackPressedListener && fragment.onBackPressed()) {
+//            return
+//        }
+//
+//        if (mBackPressed.onBackPressed()) {
+//            super.onBackPressed()
+//        }
+//    }
 
     /**
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
@@ -184,7 +195,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     protected var mViewModelScope = SCOPE_FRAGMENT
     protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
     protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
-    protected var mOnBackPressedCallback: OnBackPressedCallback? = null
+    private var mOnBackPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId, container)
@@ -196,9 +207,10 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        initBackPressedDispatcher()
+
         super.onActivityCreated(savedInstanceState)
 
-        registeBackPressedDispatcher()
         addCommandEventModel(mViewModel)
         dialogAware()
         commandEventAware()
@@ -222,10 +234,22 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
         mBinding.lifecycleOwner = this
     }
 
-    protected inline fun registeBackPressedDispatcher() {
-        mOnBackPressedCallback?.let {
-            requireActivity().onBackPressedDispatcher.addCallback(this@BaseFragment, it)
+    private fun initBackPressedDispatcher() {
+        if (this is OnBackPressedListener) {
+            mOnBackPressedCallback = object: OnBackPressedCallback(false) {
+                override fun handleOnBackPressed() {
+                    mOnBackPressedCallback?.isEnabled = !onBackPressed()
+                }
+            }
+
+            mOnBackPressedCallback?.let {
+                requireActivity().onBackPressedDispatcher.addCallback(this@BaseFragment, it)
+            }
         }
+    }
+
+    protected fun backPressedCallback(enableCallback: Boolean = true) {
+        mOnBackPressedCallback?.isEnabled = enableCallback
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
