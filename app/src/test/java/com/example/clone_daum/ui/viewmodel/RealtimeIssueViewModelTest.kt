@@ -27,7 +27,7 @@ class RealtimeIssueViewModelTest: BaseRoboViewModelTest<RealtimeIssueViewModel>(
     fun setup() {
         initMock()
 
-        viewmodel = RealtimeIssueViewModel(CompositeDisposable(), config, app)
+        viewmodel = RealtimeIssueViewModel(config, app)
     }
 
     @Test

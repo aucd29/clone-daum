@@ -22,9 +22,6 @@
             android:id="@+id/actionMainToNavigation"
             app:destination="@id/navigationFragment" />
 
-        <action
-                android:id="@+id/actionMainToBrowser"
-                app:destination="@id/browserFragment" />
     </fragment>
 
     <fragment
@@ -60,6 +57,11 @@
         <!--                app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim"/>-->
     </fragment>
 
+    <!-- global action : https://developer.android.com/guide/navigation/navigation-global-action -->
+    <action
+        android:id="@+id/actionGlobalBrowserFragment"
+        app:destination="@id/browserFragment" />
+
     <fragment
             android:id="@+id/browserFragment"
             android:name="com.example.clone_daum.ui.browser.BrowserFragment"
@@ -70,11 +72,6 @@
             android:name="url"
             app:nullable="true"
             app:argType="string" />
-
-        <!--        <action android:id="@+id/action_commitListFragment_to_commitDetailFragment"-->
-        <!--                app:destination="@id/commitDetailFragment" app:launchSingleTop="true"-->
-        <!--                app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"-->
-        <!--                app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim"/>-->
     </fragment>
 
 </navigation>

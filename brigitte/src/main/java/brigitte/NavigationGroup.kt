@@ -1,18 +1,15 @@
 package brigitte
 
-import android.os.Bundle
-import android.view.View
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 
 /**
  * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-09-03 <p/>
  */
 
-fun View.navigate(@IdRes id: Int, bundle: Bundle? = null) =
-    Navigation.findNavController(this).navigate(id, bundle)
+//fun View.navigate(@IdRes id: Int, bundle: Bundle? = null) =
+//    Navigation.findNavController(this).navigate(id, bundle)
 
-fun FragmentManager.obtainNavHostFragment(@IdRes id: Int) =
+inline fun FragmentManager.obtainNavHostFragment(@IdRes id: Int) =
     findFragmentById(id) as NavHostFragment?

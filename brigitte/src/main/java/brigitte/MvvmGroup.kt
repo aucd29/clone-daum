@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
+import androidx.annotation.IdRes
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +18,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -109,6 +111,11 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     }
 
     override fun onBackPressed() {
+        // 현재의 문제점 부분
+        // callback 을 등록했다는 의미는 callback 을 상위에서 쓰겠다는 의미이고
+        // 안쓰면 그 이후 처리를 해야 되는데
+        // 지금 구조는 무조건 적으로 onBackPressed 가 호출되어야지만
+        // 되는 거라 =_ = 이상함 다른 방법이 있나? [aucd29][2019-09-05]
         if (!onBackPressedDispatcher.hasEnabledCallbacks()) {
             mBackPressed.onBackPressed()
             return
@@ -250,6 +257,20 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
 
     protected fun backPressedCallback(enableCallback: Boolean = true) {
         mOnBackPressedCallback?.isEnabled = enableCallback
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // NAVIGATE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    protected inline fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
+        mBinding.root.findNavController().navigate(actionId, bundle)
+    }
+
+    protected inline fun navigate(view: View, actionId: Int, bundle: Bundle? = null) {
+        Navigation.findNavController(view).navigate(actionId, bundle)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

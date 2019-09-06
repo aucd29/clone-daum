@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import android.webkit.WebView
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
@@ -27,32 +28,23 @@ class MainWebviewFragment @Inject constructor(
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
         private const val TIMEOUT_RELOAD_ICO = 4000L
-
-        fun create(pos: Int, url: String) = MainWebviewFragment().apply {
-            arguments = Bundle().apply {
-                putInt(MainTabAdapter.K_POSITION, pos)
-                putString(K_URL, url)
-            }
-        }
     }
 
     init {
         mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 공유
     }
 
-    override val layoutId = R.layout.main_webview_fragment
-
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var fragmentFactory: FragmentFactory
 
-    private lateinit var mSplashViewModel: SplashViewModel
-
+    override val layoutId = R.layout.main_webview_fragment
     override val webview: WebView
         get() = mBinding.webview
 
     private val mPosition: Int
         get() = arguments?.getInt(MainTabAdapter.K_POSITION) ?: 0
+
+    private lateinit var mSplashViewModel: SplashViewModel
 
     override fun bindViewModel() {
         super.bindViewModel()
@@ -62,8 +54,6 @@ class MainWebviewFragment @Inject constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
-        mLog.error("WEB FRAGMENT ($mPosition) ${this@MainWebviewFragment} $mUrl ")
-
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
                 url?.let {
@@ -72,9 +62,15 @@ class MainWebviewFragment @Inject constructor(
                             mLog.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
-                        fragmentFactory.browserFragment(fragmentManager, it)
+                        navigate(R.id.actionGlobalBrowserFragment, Bundle().apply {
+                            putString("url", url)
+                        })
                     } else {
                         // uri 를 redirect 시키는 이유가 뭘까나?
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("LOAD URL : $url")
+                        }
+
                         webview.loadUrl(url)
                     }
                 }
@@ -159,6 +155,22 @@ class MainWebviewFragment @Inject constructor(
 ////                    }
 ////                }
 //            }
+        }
+    }
+
+    override fun onPause() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("PAUSE $mPosition")
+        }
+
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (mLog.isDebugEnabled) {
+            mLog.debug("RESUME $mPosition")
         }
     }
 

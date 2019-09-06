@@ -18,6 +18,7 @@ import dagger.android.AndroidInjection
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.*
 import io.reactivex.disposables.CompositeDisposable
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -188,6 +189,7 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> constructor(
 ): BaseDaggerFragment<T, M>() {
     companion object {
+        private val mLog = LoggerFactory.getLogger(BaseDaggerWebViewFragment::class.java)
         const val K_URL = "url"
     }
 
@@ -201,8 +203,6 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> const
 
         if (savedInstanceState != null) {
             webview.restoreState(savedInstanceState)
-        } else {
-            webview.loadUrl(mUrl)
         }
     }
 
@@ -213,11 +213,26 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> const
 
     override fun onPause() {
         super.onPause()
-        webview.pause()
+
+        webview.apply {
+            stopLoading()
+            pause()
+        }
     }
 
     override fun onResume() {
-        webview.resume()
+        webview.apply {
+            resume()
+            if (url.isNullOrEmpty() || url.contains(mUrl)) {
+
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("RESUME LOAD URL : $mUrl")
+                }
+
+                loadUrl(mUrl)
+            }
+        }
+
         super.onResume()
     }
 

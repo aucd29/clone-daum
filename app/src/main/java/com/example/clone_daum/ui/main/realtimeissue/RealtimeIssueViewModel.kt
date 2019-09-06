@@ -5,13 +5,15 @@ import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.model.remote.RealtimeIssueType
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import brigitte.viewmodel.CommandEventViewModel
+import brigitte.viewmodel.LifeCycleCommandEventViewModel
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,10 +29,9 @@ import javax.inject.Inject
  */
 
 class RealtimeIssueViewModel @Inject constructor(
-    val disposable: CompositeDisposable,
     val preConfig: PreloadConfig,
     app: Application
-) : CommandEventViewModel(app) {
+) : LifeCycleCommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
@@ -67,7 +68,7 @@ class RealtimeIssueViewModel @Inject constructor(
     val viewRealtimeIssue  = ObservableInt(View.GONE)
     val viewRetry          = ObservableInt(View.GONE)
 
-    val htmlDataLive      = MutableLiveData<String>()
+    val htmlDataLive       = MutableLiveData<String>()
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
@@ -80,7 +81,7 @@ class RealtimeIssueViewModel @Inject constructor(
     }
 
     fun loadData() {
-        disposable.add(preConfig.daumMain()
+        mDisposable.add(preConfig.daumMain()
             .subscribe({ html ->
                 htmlDataLive.postValue(html)
                 load(html)
@@ -185,7 +186,7 @@ class RealtimeIssueViewModel @Inject constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun startRealtimeIssue() {
+    private fun startRealtimeIssue() {
         if (mLog.isDebugEnabled) {
             mLog.debug("START REALTIME ISSUE")
         }
@@ -205,7 +206,7 @@ class RealtimeIssueViewModel @Inject constructor(
         }
     }
 
-    fun stopRealtimeIssue() {
+    private fun stopRealtimeIssue() {
         if (mLog.isDebugEnabled) {
             mLog.debug("STOP REALTIME ISSUE")
         }
@@ -213,7 +214,7 @@ class RealtimeIssueViewModel @Inject constructor(
         mDisposable.clear()
     }
 
-    fun disposeRealtimeIssue() {
+    private fun disposeRealtimeIssue() {
         if (mLog.isDebugEnabled) {
             mLog.debug("DISPOSE REALTIME ISSUE")
         }
@@ -239,6 +240,20 @@ class RealtimeIssueViewModel @Inject constructor(
         }
 
         layoutTranslationY.set(h)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // LifeCycleCommandEventViewModel
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_PAUSE   -> stopRealtimeIssue()
+            Lifecycle.Event.ON_RESUME  -> startRealtimeIssue()
+            Lifecycle.Event.ON_DESTROY -> disposeRealtimeIssue()
+        }
     }
 
     override fun command(cmd: String, data: Any) {

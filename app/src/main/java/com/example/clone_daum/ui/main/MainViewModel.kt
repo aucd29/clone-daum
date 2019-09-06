@@ -9,7 +9,6 @@ import androidx.lifecycle.*
 import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.viewmodel.CommandEventViewModel
-import brigitte.viewmodel.ISavedStateHandle
 import brigitte.widget.magneticEffect
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -64,6 +63,7 @@ class MainViewModel @Inject constructor(
     var appbarMagneticEffectLive = MutableLiveData<Boolean>()
 
     val idSearchIcon            = ObservableInt(config.SEARCH_ICON)
+    val webViewPagerOffLimit    = ObservableInt(3)
 //    val viewBack                = ObservableInt(View.GONE)
 
     var appbarHeight     = 0
@@ -77,6 +77,8 @@ class MainViewModel @Inject constructor(
 
             tabChangedLive.value = it
         })
+
+        command(ITN_GOTO_NEWS)
     }
 
     fun appbarHeight(appbarHeight: Int, containerHeight: Int) {
@@ -84,7 +86,6 @@ class MainViewModel @Inject constructor(
             mLog.debug("APPBAR HEIGHT: $appbarHeight, CONTAINER HEIGHT: $containerHeight")
         }
 
-//        this.progressViewOffsetLive.value = appbarHeight
         spinnerOffsetEnd.set(appbarHeight)
         this.appbarHeight = appbarHeight - containerHeight
     }

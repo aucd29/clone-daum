@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
@@ -15,7 +13,6 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import brigitte.di.dagger.module.DaggerViewModelFactory
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.widget.observeTabPosition
 import org.slf4j.LoggerFactory
@@ -54,7 +51,6 @@ class MainFragment constructor(
         mPopularViewModel   = inject(requireActivity())
 
         mBinding.issueModel = mIssueViewModel
-
         addCommandEventModels(mIssueViewModel)
     }
 
@@ -76,10 +72,7 @@ class MainFragment constructor(
 
     private fun initMainWebTab() = mBinding.run {
         mainWebViewpager.adapter = mainTabAdapter
-        mainTab.apply {
-            setupWithViewPager(mainWebViewpager)
-            postDelayed({ getTabAt(1)?.select() }, 100)
-        }
+        mainTab.setupWithViewPager(mainWebViewpager)
     }
 
     private fun initIssueTab() = mBinding.run {
@@ -109,10 +102,7 @@ class MainFragment constructor(
     override fun initViewModelEvents() {
         mIssueViewModel.apply {
             loadData()
-            observe(htmlDataLive) {
-                mPopularViewModel.load(it)
-            }
-
+            observe(htmlDataLive) { mPopularViewModel.load(it) }
             observeTabPosition(tabChangedLive, ::realtimeIssueTabFocusText)
         }
 
@@ -126,21 +116,7 @@ class MainFragment constructor(
         }
     }
 
-    override fun onPause() {
-        mIssueViewModel.stopRealtimeIssue()
-
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        mIssueViewModel.startRealtimeIssue()
-    }
-
     override fun onDestroy() {
-        mIssueViewModel.disposeRealtimeIssue()
-
         mBinding.apply {
             mainWebViewpager.adapter   = null
             mainIssueViewpager.adapter = null
@@ -165,11 +141,11 @@ class MainFragment constructor(
             // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
             if (mViewModel.appbarOffsetLive.value == 0) {
                 when (cmd) {
-                    CMD_SEARCH_FRAGMENT       -> showSearchFragment()
-                    CMD_NAVIGATION_FRAGMENT   -> showNavigationFragment()
-                    CMD_MEDIA_SEARCH_FRAGMENT -> showMediaSearch()
+                    CMD_SEARCH_FRAGMENT       -> navigateSearchFragment()
+                    CMD_NAVIGATION_FRAGMENT   -> navigateNavigationFragment()
+                    CMD_MEDIA_SEARCH_FRAGMENT -> navigateMediaSearchFragment()
                     CMD_REALTIME_ISSUE        -> toggleIssueLayout()
-                    CMD_BRS_OPEN              -> showBrowser(data)
+                    CMD_BRS_OPEN              -> navigateBrowserFragment(data)
                 }
             }
         }
@@ -182,14 +158,14 @@ class MainFragment constructor(
         }
     }
 
-    private fun showSearchFragment() {
+    private fun navigateSearchFragment() {
         toggleIssueLayout {
-            mBinding.mainSearchView.navigate(R.id.actionMainToSearch)
+            navigate(mBinding.mainSearchView, R.id.actionMainToSearch)
         }
     }
 
-    private fun showNavigationFragment() {
-        mBinding.mainNavigationMenu.navigate(R.id.actionMainToNavigation)
+    private fun navigateNavigationFragment() {
+        navigate(mBinding.mainNavigationMenu, R.id.actionMainToNavigation)
     }
 
     private fun toggleIssueLayout(visibleCallback: (() -> Unit)? = null) {
@@ -273,15 +249,15 @@ class MainFragment constructor(
         }
     }
 
-    private fun showMediaSearch() {
+    private fun navigateMediaSearchFragment() {
         toggleIssueLayout {
-            mBinding.mainMediaSearchIcon.navigate(R.id.actionMainToMediaSearch)
+            navigate(mBinding.mainMediaSearchIcon, R.id.actionMainToMediaSearch)
         }
     }
 
-    private fun showBrowser(url: Any) {
+    private fun navigateBrowserFragment(url: Any) {
         toggleIssueLayout {
-            mBinding.mainMediaSearchIcon.navigate(R.id.actionMainToBrowser, Bundle().apply {
+            navigate(R.id.actionGlobalBrowserFragment, Bundle().apply {
                 putString("url", url.toString())
             })
         }

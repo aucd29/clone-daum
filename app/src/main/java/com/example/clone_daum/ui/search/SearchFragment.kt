@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.search
 
+import android.os.Bundle
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
@@ -24,14 +25,12 @@ class SearchFragment @Inject constructor(
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var fragmentFactory: FragmentFactory
-//    @Inject lateinit var backPressedListener: DaggerOnBackPressedCallback
 
     override val layoutId = R.layout.search_fragment
 
     private lateinit var mPopularViewModel: PopularViewModel
 
     override fun initViewBinding() {
-//        mOnBackPressedCallback = backPressedListener
     }
 
     override fun bindViewModel() {
@@ -64,20 +63,17 @@ class SearchFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-//        mViewModel.finish()
         when (cmd) {
-            SearchViewModel.CMD_BRS_OPEN    -> fragmentFactory.browserFragment(fragmentManager, data.toString())
-            PopularViewModel.CMD_BRS_SEARCH -> daumSearch(data.toString())
+            SearchViewModel.CMD_BRS_OPEN    -> navigateBrowserFragment(data.toString())
+            PopularViewModel.CMD_BRS_SEARCH -> navigateBrowserFragment(
+                "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H")
         }
     }
 
-    private fun daumSearch(url: String)  {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHOW BROWSER !!!!!")
-        }
-
-        finish()
-        fragmentFactory.browserFragment(fragmentManager, "https://m.search.daum.net/search?w=tot&q=${url.urlencode()}&DA=13H")
+    private fun navigateBrowserFragment(url: Any) {
+        navigate(R.id.actionGlobalBrowserFragment, Bundle().apply {
+            putString("url", url.toString())
+        })
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
