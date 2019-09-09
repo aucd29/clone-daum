@@ -3,6 +3,7 @@ package com.example.clone_daum.di.module
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import brigitte.di.dagger.module.DaggerViewModelFactory
+import brigitte.di.dagger.module.ViewModelAssistedFactory
 import brigitte.di.dagger.module.ViewModelKey
 import brigitte.viewmodel.SplashViewModel
 import com.example.clone_daum.MainActivity
@@ -56,11 +57,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
-
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(MainViewModel.Factory::class)
-//    abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
 
     @Binds
     @IntoMap

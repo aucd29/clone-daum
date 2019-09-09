@@ -1,7 +1,10 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte.di.dagger.module
 
+import android.os.Bundle
 import androidx.lifecycle.*
+import androidx.savedstate.SavedStateRegistryOwner
+import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -28,31 +31,36 @@ class DaggerViewModelFactory @Inject constructor(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//
+// https://proandroiddev.com/saving-ui-state-with-viewmodel-savedstate-and-dagger-f77bcaeb8b08
+//
+////////////////////////////////////////////////////////////////////////////////////
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+@MapKey
+annotation class AssistedViewModelKey(val value: KClass<out ViewModel>)
+
+@AssistedModule
+@Module(includes = [AssistedInject_ViewModelAssistedFactoriesModule::class])
+abstract class ViewModelAssistedFactoriesModule
+
+interface ViewModelAssistedFactory<T : ViewModel> {
+    fun create(handle: SavedStateHandle): T
+}
+
 // https://satoshun.github.io/2019/05/viewmodel-savedstate-dagger/
 
-//@Singleton
-//class DaggerSavedStateViewModelFactory @Inject constructor(
-//    private val creator: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<SavedStateViewModelFactory<out: ViewModel>>>,
-//    private val owner: SavedStateRegistryOwner
-//) : AbstractSavedStateViewModelFactory(owner, null) {
-//    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-//
-//        return creator[modelClass]?.let {
-////            // it 은 lazy<ViewModel> 이고
-////            val viewmodel = it.get().create(handle)
-////
-//////            // ISavedStateHandle 인터페이스를 상속하고 있으면 이를 설정
-//////            // 사용자는 saveStateHandle 을
-//////            if (viewmodel is ISavedStateHandle) {
-//////                viewmodel.savedStateHandle = handle
-//////            }
-////
-////            viewmodel as? T
-//        } ?: throw IllegalArgumentException("unknown model class $modelClass")
-//    }
-//}
+class DaggerSavedStateViewModelFactory @Inject constructor(
+    private val viewModelMap: MutableMap<Class<out ViewModel>, ViewModelAssistedFactory<out ViewModel>>,
+    owner: SavedStateRegistryOwner
+) : AbstractSavedStateViewModelFactory(owner, null) {
 
-typealias MyViewModelFactory = DaggerViewModelFactory
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+        return viewModelMap[modelClass]?.create(handle) as? T ?: throw IllegalStateException("Unknown ViewModel class")
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
@@ -62,7 +70,8 @@ typealias MyViewModelFactory = DaggerViewModelFactory
 
 @Singleton
 class DaggerViewModelProviders @Inject constructor(
-    val factory: MyViewModelFactory
+//    val savedStateFactory: DaggerSavedStateViewModelFactory,
+    val factory: DaggerViewModelFactory
 ) {
     fun <T: ViewModel> get(owner: ViewModelStoreOwner, klass: KClass<T>): T {
         // TODO 추후 이걸로 바꾸자
@@ -76,16 +85,6 @@ class DaggerViewModelProviders @Inject constructor(
 
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// https://proandroiddev.com/saving-ui-state-with-viewmodel-savedstate-and-dagger-f77bcaeb8b08
-//
-////////////////////////////////////////////////////////////////////////////////////
-
-interface SavedStateViewModelFactory<T: ViewModel> {
-    fun create(handle: SavedStateHandle): T
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-//
 //
 //
 ////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +92,10 @@ interface SavedStateViewModelFactory<T: ViewModel> {
 @Module
 abstract class ViewModelFactoryModule {
     @Binds
-    abstract fun bindViewModelFactory(viewModelFactory: MyViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(viewModelFactory: DaggerViewModelFactory): ViewModelProvider.Factory
+
+//    @Binds
+//    abstract fun bindSavedStateViewModelFactory(viewModelFactory: DaggerSavedStateViewModelFactory): AbstractSavedStateViewModelFactory
 
     @Binds
     abstract fun bindViewModelProvider(provider: DaggerViewModelProviders): Any

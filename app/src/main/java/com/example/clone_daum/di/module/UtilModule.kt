@@ -1,6 +1,7 @@
 package com.example.clone_daum.di.module
 
 import brigitte.di.dagger.module.RxModule
+import brigitte.di.dagger.module.ViewModelAssistedFactoriesModule
 import brigitte.di.dagger.module.ViewModelFactoryModule
 import com.example.clone_daum.di.module.libs.CalligraphyModule
 import com.example.clone_daum.di.module.libs.ChipModule
@@ -18,6 +19,8 @@ import dagger.Module
     RxModule::class,
     DbModule::class,
     ViewModelModule::class,
-    ViewModelFactoryModule::class
+    AssistedViewModelModule::class,
+    ViewModelFactoryModule::class,
+    ViewModelAssistedFactoriesModule::class
 ])
 class UtilModule

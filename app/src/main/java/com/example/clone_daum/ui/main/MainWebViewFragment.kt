@@ -124,54 +124,13 @@ class MainWebviewFragment @Inject constructor(
                 // https://stackoverflow.com/questions/30779667/android-collapsingtoolbarlayout-and-swiperefreshlayout-get-stuck
                 mBinding.swipeRefresh.isEnabled = it == 0
             }
-
-//            // appbar 에 가려져 있는 progress 를 보이게 하기 위해 offset 값이 필요함
-//            observe(progressViewOffsetLive) {
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("PROGRESS VIEW OFFSET $it")
-//                }
-//
-//                mBinding.swipeRefresh.setProgressViewOffset(false,
-//                    it.toInt(), (it * 1.3f).toInt())
-//            }
-
-//            observe(tabChangedLive) { tab ->
-//                val tabPosition = tab?.position ?: -1
-//
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("TAB CHANGE ${this@MainWebviewFragment}: $tabPosition = $mPosition")
-//                }
-//
-////                val tabPosition = tab?.position ?: -1
-////
-////                if (mPosition == tabPosition) {
-////                    webview.load
-////                    preConfig.tabLabelList[pos].url.let {
-////                        if (mLog.isDebugEnabled) {
-////                            mLog.debug("LOAD URL ($pos) $it")
-////                        }
-////
-////                        mBinding.webview.loadUrl(it)
-////                    }
-////                }
-//            }
         }
     }
 
-    override fun onPause() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("PAUSE $mPosition")
-        }
+    override fun onDestroyView() {
+        mBinding.swipeRefresh.removeAllViews()
 
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RESUME $mPosition")
-        }
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
