@@ -1,10 +1,13 @@
 package com.example.clone_daum.ui.browser.favorite
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FolderFragmentBinding
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -79,7 +82,13 @@ class FolderFragment @Inject constructor()
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): FolderFragment
+        @ContributesAndroidInjector(modules = [FolderFragmentModule::class])
+        abstract fun contributeFolderFragmentInjector(): FolderFragment
+    }
+
+    @dagger.Module
+    abstract class FolderFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: FolderFragment): SavedStateRegistryOwner
     }
 }

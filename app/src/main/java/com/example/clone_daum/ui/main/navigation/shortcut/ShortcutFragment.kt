@@ -1,10 +1,13 @@
 package com.example.clone_daum.ui.main.navigation.shortcut
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.ShortcutFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -53,14 +56,20 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
-
+    
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): ShortcutFragment
+        @ContributesAndroidInjector(modules = [ShortcutFragmentModule::class])
+        abstract fun contributeShortcutFragmentInjector(): ShortcutFragment
+    }
+    
+    @dagger.Module
+    abstract class ShortcutFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: ShortcutFragment): SavedStateRegistryOwner
     }
 }

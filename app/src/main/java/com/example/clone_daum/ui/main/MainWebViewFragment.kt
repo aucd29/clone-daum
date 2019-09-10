@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
@@ -17,6 +18,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>
@@ -135,14 +138,20 @@ class MainWebviewFragment @Inject constructor(
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @FragmentScope
-        @ContributesAndroidInjector
+        @brigitte.di.dagger.scope.FragmentScope
+        @ContributesAndroidInjector(modules = [MainWebviewFragmentModule::class])
         abstract fun contributeMainWebviewFragmentInjector(): MainWebviewFragment
+    }
+
+    @dagger.Module
+    abstract class MainWebviewFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MainWebviewFragment): SavedStateRegistryOwner
     }
 }

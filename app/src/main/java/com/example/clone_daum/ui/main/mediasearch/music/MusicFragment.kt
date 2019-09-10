@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.mediasearch.music
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MusicFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
@@ -9,6 +10,8 @@ import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -128,7 +131,13 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): MusicFragment
+        @ContributesAndroidInjector(modules = [MusicFragmentModule::class])
+        abstract fun contributeMusicFragmentInjector(): MusicFragment
+    }
+
+    @dagger.Module
+    abstract class MusicFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MusicFragment): SavedStateRegistryOwner
     }
 }

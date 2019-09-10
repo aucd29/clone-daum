@@ -1,11 +1,14 @@
 package com.example.clone_daum.ui.main.navigation.mail
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MailFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -46,14 +49,20 @@ class MailFragment @Inject constructor() : BaseDaggerFragment<MailFragmentBindin
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): MailFragment
+        @ContributesAndroidInjector(modules = [MailFragmentModule::class])
+        abstract fun contributeMailFragmentInjector(): MailFragment
+    }
+
+    @dagger.Module
+    abstract class MailFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MailFragment): SavedStateRegistryOwner
     }
 }

@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.MainFragmentBinding
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
@@ -19,8 +21,12 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
+import com.example.clone_daum.di.module.AssistedViewModelKey
+import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
+import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import dagger.Binds
 import dagger.Provides
+import dagger.multibindings.IntoMap
 import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import javax.inject.Provider
 
@@ -38,17 +44,23 @@ class MainFragment constructor(
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var mainTabAdapter: MainTabAdapter
     @Inject lateinit var realtimeIssueTabAdapter: Provider<RealtimeIssueTabAdapter>
+    @Inject lateinit var stateViewModelFactory: DaggerSavedStateViewModelFactory
 
     override val layoutId = R.layout.main_fragment
 
     private lateinit var mIssueViewModel: RealtimeIssueViewModel
     private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
+    private lateinit var mAssignedInjectViewModel: AssignedInjectTestViewModel
+
+    override fun stateViewModelFactory() =
+        stateViewModelFactory
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mIssueViewModel     = inject(requireActivity())
-        mPopularViewModel   = inject(requireActivity())
+        mIssueViewModel          = inject(requireActivity())
+        mPopularViewModel        = inject(requireActivity())
+        mAssignedInjectViewModel = stateInject()
 
         mBinding.issueModel = mIssueViewModel
         addCommandEventModels(mIssueViewModel)
@@ -100,6 +112,12 @@ class MainFragment constructor(
     }
 
     override fun initViewModelEvents() {
+        observe(mAssignedInjectViewModel.testLive) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("LIVE DATA HELLO ${it.toUpperCase()}")
+            }
+        }
+
         mIssueViewModel.apply {
             loadData()
             observe(htmlDataLive) { mPopularViewModel.load(it) }
@@ -316,6 +334,15 @@ class MainFragment constructor(
     abstract class MainFragmentModule {
         @Binds
         abstract fun bindMainFragment(fragment: MainFragment): Fragment
+
+        @Binds
+        @IntoMap
+        @AssistedViewModelKey(AssignedInjectTestViewModel::class)
+        abstract fun bindAssignedInjectTestViewModelFactory(vm: AssignedInjectTestViewModel.Factory)
+                : ViewModelAssistedFactory<out ViewModel>
+
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(fragment: MainFragment): SavedStateRegistryOwner
 
         @dagger.Module
         companion object {

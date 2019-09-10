@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.browser.favorite
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
@@ -8,6 +9,8 @@ import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.find
 import brigitte.finish
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -79,7 +82,13 @@ class FavoriteFragment @Inject constructor()
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): FavoriteFragment
+        @ContributesAndroidInjector(modules = [FavoriteFragmentModule::class])
+        abstract fun contributeFavoriteFragmentInjector(): FavoriteFragment
+    }
+
+    @dagger.Module
+    abstract class FavoriteFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: FavoriteFragment): SavedStateRegistryOwner
     }
 }

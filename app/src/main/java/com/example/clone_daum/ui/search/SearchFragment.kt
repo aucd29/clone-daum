@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.search
 
 import android.os.Bundle
+import androidx.savedstate.SavedStateRegistryOwner
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
@@ -8,6 +9,8 @@ import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -78,14 +81,20 @@ class SearchFragment @Inject constructor(
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): SearchFragment
+        @ContributesAndroidInjector(modules = [SearchFragmentModule::class])
+        abstract fun contributeSearchFragmentInjector(): SearchFragment
+    }
+
+    @dagger.Module
+    abstract class SearchFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: SearchFragment): SavedStateRegistryOwner
     }
 }

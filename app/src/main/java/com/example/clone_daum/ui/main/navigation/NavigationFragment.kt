@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.navigation
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.common.Config
 import brigitte.*
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.ui.FragmentFactory
+import dagger.Binds
+import dagger.Module
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
@@ -118,15 +121,21 @@ class NavigationFragment @Inject constructor() : BaseDaggerFragment<NavigationFr
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): NavigationFragment
+        @ContributesAndroidInjector(modules = [NavigationFragmentModule::class])
+        abstract fun contributeNavigationFragmentInjector(): NavigationFragment
+    }
+
+    @dagger.Module
+    abstract class NavigationFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: NavigationFragment): SavedStateRegistryOwner
     }
 }
 

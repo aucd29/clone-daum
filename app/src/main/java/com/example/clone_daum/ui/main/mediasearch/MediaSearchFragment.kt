@@ -4,6 +4,7 @@ import android.Manifest
 import android.animation.Animator
 import android.os.Build
 import android.view.animation.*
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
@@ -12,6 +13,8 @@ import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -196,7 +199,13 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): MediaSearchFragment
+        @ContributesAndroidInjector(modules = [MediaSearchFragmentModule::class])
+        abstract fun contributeMediaSearchFragmentInjector(): MediaSearchFragment
+    }
+
+    @dagger.Module
+    abstract class MediaSearchFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MediaSearchFragment): SavedStateRegistryOwner
     }
 }

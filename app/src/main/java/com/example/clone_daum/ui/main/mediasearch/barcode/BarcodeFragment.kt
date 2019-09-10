@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.View
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.BarcodeFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerFragment
@@ -18,6 +19,8 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.zxing.common.HybridBinarizer
+import dagger.Binds
+import dagger.Module
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
@@ -176,7 +179,13 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): BarcodeFragment
+        @ContributesAndroidInjector(modules = [BarcodeFragmentModule::class])
+        abstract fun contributeBarcodeFragmentInjector(): BarcodeFragment
+    }
+
+    @dagger.Module
+    abstract class BarcodeFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: BarcodeFragment): SavedStateRegistryOwner
     }
 }

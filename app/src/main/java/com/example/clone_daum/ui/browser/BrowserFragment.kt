@@ -6,6 +6,7 @@ import android.net.Uri
 import android.view.View
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.common.Config
@@ -17,6 +18,8 @@ import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import brigitte.viewmodel.requireContext
 import brigitte.widget.*
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -423,14 +426,20 @@ class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding,
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
     
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector(modules = [])
-        abstract fun contributeInjector(): BrowserFragment
+        @ContributesAndroidInjector(modules = [BrowserFragmentModule::class])
+        abstract fun contributeBrowserFragmentInjector(): BrowserFragment
+    }
+    
+    @dagger.Module
+    abstract class BrowserFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: BrowserFragment): SavedStateRegistryOwner
     }
 }

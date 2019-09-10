@@ -1,11 +1,14 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -70,14 +73,20 @@ class RealtimeIssueChildFragment @Inject constructor()
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): RealtimeIssueChildFragment
+        @ContributesAndroidInjector(modules = [RealtimeIssueChildFragmentModule::class])
+        abstract fun contributeRealtimeIssueChildFragmentInjector(): RealtimeIssueChildFragment
+    }
+
+    @dagger.Module
+    abstract class RealtimeIssueChildFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: RealtimeIssueChildFragment): SavedStateRegistryOwner
     }
 }

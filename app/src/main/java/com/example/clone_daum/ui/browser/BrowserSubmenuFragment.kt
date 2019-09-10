@@ -3,10 +3,13 @@ package com.example.clone_daum.ui.browser
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserSubmenuFragmentBinding
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 /**
@@ -47,14 +50,20 @@ class BrowserSubmenuFragment (private val mCallback: (String) -> Unit)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
-
+    
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): BrowserSubmenuFragment
+        @ContributesAndroidInjector(modules = [BrowserSubmenuFragmentModule::class])
+        abstract fun contributeBrowserSubmenuFragmentInjector(): BrowserSubmenuFragment
+    }
+    
+    @dagger.Module
+    abstract class BrowserSubmenuFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: BrowserSubmenuFragment): SavedStateRegistryOwner
     }
 }

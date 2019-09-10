@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
@@ -21,10 +22,12 @@ import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.viewpager.widget.PagerAdapter
+import brigitte.di.dagger.module.DaggerViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 10. 15. <p/>
@@ -202,6 +205,8 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     protected var mViewModelScope = SCOPE_FRAGMENT
     protected val mViewModelClass = Reflect.classType<Class<M>>(this, 1)
     protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
+    protected var mStateViewModelFactory: AbstractSavedStateViewModelFactory? = null
+
     private var mOnBackPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

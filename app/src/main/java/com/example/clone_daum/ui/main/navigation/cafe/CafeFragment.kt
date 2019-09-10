@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main.navigation.cafe
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.CafeFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
@@ -8,6 +9,8 @@ import brigitte.BaseDaggerFragment
 import brigitte.dataBinding
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.lpmm
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -47,14 +50,20 @@ class CafeFragment @Inject constructor() : BaseDaggerFragment<CafeFragmentBindin
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): CafeFragment
+        @ContributesAndroidInjector(modules = [CafeFragmentModule::class])
+        abstract fun contributeCafeFragmentInjector(): CafeFragment
+    }
+
+    @dagger.Module
+    abstract class CafeFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: CafeFragment): SavedStateRegistryOwner
     }
 }

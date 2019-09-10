@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.weather
 import android.Manifest
 import android.os.Bundle
 import android.view.View
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
@@ -14,6 +15,8 @@ import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -116,14 +119,20 @@ class WeatherFragment
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): WeatherFragment
+        @ContributesAndroidInjector(modules = [WeatherFragmentModule::class])
+        abstract fun contributeWeatherFragmentInjector(): WeatherFragment
+    }
+
+    @dagger.Module
+    abstract class WeatherFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: WeatherFragment): SavedStateRegistryOwner
     }
 }

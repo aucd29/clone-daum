@@ -10,6 +10,7 @@ import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.viewmodel.CommandEventViewModel
 import brigitte.widget.magneticEffect
+import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.android.material.tabs.TabLayout
@@ -18,16 +19,9 @@ import com.squareup.inject.assisted.AssistedInject
 import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Module
 import kotlin.math.abs
-//
-//@AssistedModule
-//@Module(includes = [AssistedInject_ViewModelAssistedFactoriesModule::class])
-//abstract class ViewModelAssistedFactoriesModule
-//
-//@AssistedInject.Factory
-//interface Factory: SavedStateViewModelFactory<MainViewModel>
 
-//    @Assisted val handle: SavedStateHandle,
 class MainViewModel @Inject constructor(
+//    @Assisted val handle: SavedStateHandle,
     val config: Config,
     app: Application
 ) : CommandEventViewModel(app) {
@@ -130,4 +124,13 @@ class MainViewModel @Inject constructor(
             else -> super.command(cmd, data)
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FACTORY
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+//    @AssistedInject.Factory
+//    interface Factory : ViewModelAssistedFactory<MainViewModel>
 }

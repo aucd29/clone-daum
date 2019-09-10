@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.mediasearch.speech
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
@@ -13,6 +14,8 @@ import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -367,14 +370,20 @@ class SpeechFragment @Inject constructor(
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): SpeechFragment
+        @ContributesAndroidInjector(modules = [SpeechFragmentModule::class])
+        abstract fun contributeSpeechFragmentInjector(): SpeechFragment
+    }
+
+    @dagger.Module
+    abstract class SpeechFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: SpeechFragment): SavedStateRegistryOwner
     }
 }

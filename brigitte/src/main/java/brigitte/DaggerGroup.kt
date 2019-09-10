@@ -9,7 +9,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
 import brigitte.di.dagger.module.DaggerViewModelProviders
 import brigitte.widget.free
 import brigitte.widget.pause
@@ -66,7 +65,7 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> constructor(
     override fun initViewModel() =
         mViewModelProviders.get(this, mViewModelClass)
 
-    protected inline fun <reified T : ViewModel> inject()=
+    protected inline fun <reified T : ViewModel> inject() =
         mViewModelProviders.get(this, T::class.java)
 }
 
@@ -104,6 +103,14 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
             activity?.run { it.get(this, VM::class.java) }
                 ?: it.get(this@BaseDaggerFragment, VM::class.java)
         }
+
+    protected inline fun <reified VM: ViewModel> stateInject() =
+        mViewModelProviders.let {
+            mViewModelProviders.get(this@BaseDaggerFragment, stateViewModelFactory(), VM::class.java)
+        }
+
+    protected open fun stateViewModelFactory() =
+        defaultViewModelProviderFactory
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -141,6 +148,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> constr
                 it.get(this, VM::class.java)
             } ?: it.get(this@BaseDaggerDialogFragment, VM::class.java)
         }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

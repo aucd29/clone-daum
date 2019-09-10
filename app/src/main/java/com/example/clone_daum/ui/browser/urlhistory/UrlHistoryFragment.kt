@@ -1,11 +1,14 @@
 package com.example.clone_daum.ui.browser.urlhistory
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.UrlHistoryFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -88,17 +91,22 @@ class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFr
         find<BrowserFragment>()?.loadUrl(url)
     }
 
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
+        @ContributesAndroidInjector(modules = [UrlHistoryFragmentModule::class])
         abstract fun contributeUrlHistoryFragmentInjector(): UrlHistoryFragment
+    }
+
+    @dagger.Module
+    abstract class UrlHistoryFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: UrlHistoryFragment): SavedStateRegistryOwner
     }
 }

@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.main.mediasearch.flower
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FlowerFragmentBinding
 import com.example.clone_daum.ui.FragmentFactory
 import brigitte.BaseDaggerFragment
@@ -7,6 +8,8 @@ import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import brigitte.urlencode
 import com.example.clone_daum.R
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -95,7 +98,13 @@ class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBi
     @dagger.Module
     abstract class Module {
         @FragmentScope
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): FlowerFragment
+        @ContributesAndroidInjector(modules = [FlowerFragmentModule::class])
+        abstract fun contributeFlowerFragmentInjector(): FlowerFragment
+    }
+
+    @dagger.Module
+    abstract class FlowerFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: FlowerFragment): SavedStateRegistryOwner
     }
 }

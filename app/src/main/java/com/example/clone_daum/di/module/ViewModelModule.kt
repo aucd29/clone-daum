@@ -1,12 +1,8 @@
 package com.example.clone_daum.di.module
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import brigitte.di.dagger.module.DaggerViewModelFactory
-import brigitte.di.dagger.module.ViewModelAssistedFactory
 import brigitte.di.dagger.module.ViewModelKey
 import brigitte.viewmodel.SplashViewModel
-import com.example.clone_daum.MainActivity
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
 import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
@@ -29,12 +25,10 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
+import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.multibindings.IntoMap
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 6. <p/>
