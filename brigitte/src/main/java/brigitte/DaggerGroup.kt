@@ -212,13 +212,6 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> const
         if (savedInstanceState != null) {
             webview.restoreState(savedInstanceState)
         }
-//        else {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("URL : $mUrl")
-//            }
-//
-//            webview.loadUrl(mUrl)
-//        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

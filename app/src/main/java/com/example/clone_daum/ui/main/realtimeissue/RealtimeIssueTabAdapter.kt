@@ -3,12 +3,11 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import brigitte.di.dagger.module.ChildFragmentManager
 import brigitte.widget.pageradapter.FragmentStatePagerAdapter
 import com.example.clone_daum.model.remote.RealtimeIssue
-import com.example.clone_daum.ui.main.MainFragment
+import dagger.Provides
 import javax.inject.Inject
-import javax.inject.Named
+import javax.inject.Provider
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 9. <p/>
@@ -26,20 +25,22 @@ import javax.inject.Named
 ////////////////////////////////////////////////////////////////////////////////////
 
 class RealtimeIssueTabAdapter @Inject constructor(
-//    @param:ChildFragmentManager("main") fm: FragmentManager
-//class RealtimeIssueTabAdapter constructor(
     fm: FragmentManager
 ) : FragmentStatePagerAdapter(fm) {
+    companion object {
+        const val K_POS = "position"
+    }
+
+    @Inject lateinit var fragment: Provider<RealtimeIssueChildFragment>
+
     var issueList: List<Pair<String, List<RealtimeIssue>>>? = null
 
     override fun getItem(position: Int): Fragment {
-        val frgmt  = RealtimeIssueChildFragment()
-        val bundle = Bundle()
-        bundle.putInt("position", position)
-
-        frgmt.arguments = bundle
-
-        return frgmt
+        return fragment.get().apply {
+            arguments = Bundle().apply {
+                putInt(K_POS, position)
+            }
+        }
     }
 
     // 이슈 검색어 단어는 삭제하고 타이틀을 생성한다.

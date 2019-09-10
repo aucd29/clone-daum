@@ -49,9 +49,6 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         super.onPause()
     }
 
-    fun navihost() =
-        supportFragmentManager.obtainNavHostFragment(R.id.my_nav_host_fragment)?.navController
-
     override fun initViewBinding() {
     }
 

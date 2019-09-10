@@ -2,15 +2,12 @@ package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
 import android.webkit.WebView
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
-import com.example.clone_daum.ui.FragmentFactory
 import brigitte.*
-import brigitte.di.dagger.scope.FragmentScope
 import brigitte.viewmodel.SplashViewModel
 import brigitte.widget.*
 import dagger.android.ContributesAndroidInjector
@@ -19,7 +16,6 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 27. <p/>

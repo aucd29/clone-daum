@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import brigitte.BaseDaggerWebViewFragment
 import brigitte.widget.pageradapter.FragmentPagerAdapter
-import brigitte.widget.pageradapter.FragmentStatePagerAdapter
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.local.TabData
 import org.slf4j.LoggerFactory
@@ -46,13 +45,12 @@ class MainTabAdapter @Inject constructor(
             mLog.debug("CREATE TAB ($position) ${url(position)}")
         }
 
-        val fragment = webViewFragment.get()
-        fragment.arguments = Bundle().apply {
-            putInt(K_POSITION, position)
-            putString(BaseDaggerWebViewFragment.K_URL, url(position))
+        return webViewFragment.get().apply {
+            arguments = Bundle().apply {
+                putInt(K_POSITION, position)
+                putString(BaseDaggerWebViewFragment.K_URL, url(position))
+            }
         }
-
-        return fragment
     }
 
     override fun getPageTitle(position: Int) = title(position)
