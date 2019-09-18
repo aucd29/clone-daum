@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import brigitte.arch.SingleLiveEvent
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.Logger
@@ -128,14 +129,20 @@ inline fun Fragment.hideKeyboard(view: View) =
  * fragment 를 종료 시키낟.
  */
 inline fun Fragment.finish(animate: Boolean = true) {
-    if (animate) {
-        fragmentManager?.pop()
-    } else {
-        fragmentManager?.apply {
-            beginTransaction().setCustomAnimations(0, 0).commitNow()
-            pop()
-        }
+//    if (animate) {
+//        fragmentManager?.pop()
+//    } else {
+//        fragmentManager?.apply {
+//            beginTransaction().setCustomAnimations(0, 0).commitNow()
+//            pop()
+//        }
+//    }
+
+    if (!animate) {
+        fragmentManager?.beginTransaction()?.setCustomAnimations(0, 0)?.commitNow()
     }
+
+    findNavController().popBackStack()
 }
 
 /**

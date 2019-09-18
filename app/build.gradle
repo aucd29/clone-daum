@@ -56,6 +56,8 @@ android {
     }
 }
 
+//googleServices { disableVersionCheck = false }
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -153,7 +155,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.2'
 
     // firebase
-    implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     // tensorflow
@@ -169,3 +171,5 @@ dependencies {
 
 // fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..
 apply plugin: 'com.google.gms.google-services'
+
+googleServices { disableVersionCheck = true }

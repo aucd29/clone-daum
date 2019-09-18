@@ -19,8 +19,8 @@ class FragmentFactory @Inject constructor(
     companion object {
         private val mLog = LoggerFactory.getLogger(FragmentFactory::class.java)
 
-        const val CONTAINER          = 0 //R.id.rootContainer
-        const val NAV_TAB_CONTAINER  = R.id.navi_tab_container
+//        const val CONTAINER          = 0 //R.id.rootContainer
+//        const val NAV_TAB_CONTAINER  = R.id.navi_tab_container
         const val FAVORITE_CONTAINER = R.id.favorite_container
     }
 
@@ -150,8 +150,6 @@ class FragmentFactory @Inject constructor(
 //        child.showBy(FragmentParams(NAV_TAB_CONTAINER,
 //            fragment = mShortcutFragment.get(), add = add))
     }
-
-
 
     fun browserSubFragment(callback: (String) -> Unit) {
         if (mLog.isInfoEnabled) {

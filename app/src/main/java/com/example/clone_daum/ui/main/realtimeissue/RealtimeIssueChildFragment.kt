@@ -27,14 +27,8 @@ class RealtimeIssueChildFragment @Inject constructor()
     @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.realtime_issue_child_fragment
-    // main fragment 와 공유
-    lateinit var mRealtimeIssueViewModel: RealtimeIssueViewModel
 
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mRealtimeIssueViewModel = inject(requireActivity())
-    }
+    private val mRealtimeIssueViewModel: RealtimeIssueViewModel by activityInject()
 
     override fun initViewBinding() {
 

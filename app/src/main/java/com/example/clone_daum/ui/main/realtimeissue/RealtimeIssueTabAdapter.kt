@@ -3,9 +3,8 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import brigitte.widget.pageradapter.FragmentStatePagerAdapter
+import brigitte.widget.pageradapter.FragmentPagerAdapter
 import com.example.clone_daum.model.remote.RealtimeIssue
-import dagger.Provides
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -26,7 +25,7 @@ import javax.inject.Provider
 
 class RealtimeIssueTabAdapter @Inject constructor(
     fm: FragmentManager
-) : FragmentStatePagerAdapter(fm) {
+) : FragmentPagerAdapter(fm) {
     companion object {
         const val K_POS = "position"
     }

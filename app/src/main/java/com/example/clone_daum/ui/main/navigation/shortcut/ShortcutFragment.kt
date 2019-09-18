@@ -7,7 +7,6 @@ import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -16,8 +15,8 @@ import javax.inject.Inject
  */
 
 class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
-    private lateinit var mSitemapViewModel : SitemapViewModel
-    private lateinit var mFrequentlySiteModel : FrequentlySiteViewModel
+    private val mSitemapViewModel : SitemapViewModel by inject()
+    private val mFrequentlySiteModel : FrequentlySiteViewModel by inject()
 
     @Inject lateinit var fragmentFactory: FragmentFactory
 
@@ -27,9 +26,6 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
         super.bindViewModel()
 
         // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로 injectOf 를 이용 한다.
-        mSitemapViewModel    = inject()
-        mFrequentlySiteModel = inject()
-
         mBinding.apply {
             sitemapModel        = mSitemapViewModel
             frequentlySiteModel = mFrequentlySiteModel

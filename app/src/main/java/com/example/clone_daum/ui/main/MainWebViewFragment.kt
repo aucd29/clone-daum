@@ -43,13 +43,7 @@ class MainWebviewFragment @Inject constructor(
     private val mPosition: Int
         get() = arguments?.getInt(MainTabAdapter.K_POSITION) ?: 0
 
-    private lateinit var mSplashViewModel: SplashViewModel
-
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mSplashViewModel = inject(requireActivity())
-    }
+    private val mSplashViewModel: SplashViewModel by activityInject()
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
@@ -74,7 +68,7 @@ class MainWebviewFragment @Inject constructor(
                     }
                 }
             }, pageFinished = {
-                swipeRefresh.apply {
+                mainWebViewSwipeRefresh.apply {
                     if (isRefreshing) {
                         isRefreshing = false     // hide refresh icon
 
@@ -91,7 +85,7 @@ class MainWebviewFragment @Inject constructor(
             , userAgent = { config.USER_AGENT }
         ))
 
-        swipeRefresh.setOnRefreshListener {
+        mainWebViewSwipeRefresh.setOnRefreshListener {
             if (mLog.isDebugEnabled) {
                 mLog.debug("SWIPE RELOAD URL : ${webview.url}")
             }
@@ -105,7 +99,7 @@ class MainWebviewFragment @Inject constructor(
                         mLog.info("EXPLODE RELOAD ICO TIMER")
                     }
 
-                    swipeRefresh.isRefreshing = false
+                    mainWebViewSwipeRefresh.isRefreshing = false
                 })
         }
     }
@@ -120,16 +114,24 @@ class MainWebviewFragment @Inject constructor(
 
                 webview.translationY = it.toFloat()
 
-                // https://stackoverflow.com/questions/30779667/android-collapsingtoolbarlayout-and-swiperefreshlayout-get-stuck
-                mBinding.swipeRefresh.isEnabled = it == 0
+                // https://stackoverflow.com/questions/30779667/android-collapsingtoolbarlayout-and-mainWebViewSwipeRefreshlayout-get-stuck
+                mBinding.mainWebViewSwipeRefresh.isEnabled = it == 0
             }
         }
     }
 
     override fun onDestroyView() {
-        mBinding.swipeRefresh.removeAllViews()
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DESTROY VIEW = ")
+        }
+        mBinding.mainWebViewSwipeRefresh.isEnabled = false
+        mBinding.mainWebViewSwipeRefresh.removeAllViews()
 
         super.onDestroyView()
+    }
+
+    fun disableSwipeRefresh() {
+        mBinding.mainWebViewSwipeRefresh.isEnabled = false
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

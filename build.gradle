@@ -7,12 +7,12 @@ buildscript {
         min_sdk     = 19
         target_sdk  = 28
 
-        appcompat  = '1.0.2'
-        core_ktx   = "1.0.2"
+        appcompat  = '1.1.0'
+        core_ktx   = "1.2.0-alpha04"
         androidx   = '1.0.0'
-        lifecycle  = "2.2.0-alpha03"
+        lifecycle  = "2.2.0-alpha04"
         material   = "1.0.0"
-        navigation = "2.2.0-alpha01"
+        navigation = "2.2.0-alpha02"
 
         jackson     = '2.9.7'
         logback     = '1.1.1-11'
@@ -48,7 +48,8 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
-        classpath 'com.google.gms:google-services:4.3.0'
+        classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"
+        classpath 'com.google.gms:google-services:4.3.2'
         classpath 'io.fabric.tools:gradle:1.28.1'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -78,3 +79,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+

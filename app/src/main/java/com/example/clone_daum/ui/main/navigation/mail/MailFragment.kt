@@ -17,16 +17,10 @@ import javax.inject.Inject
  */
 
 class MailFragment @Inject constructor() : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
-    private lateinit var mLoginViewModel: NavigationLoginViewModel
+    private val mLoginViewModel: NavigationLoginViewModel by inject()
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
     override val layoutId = R.layout.mail_fragment
-
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mLoginViewModel = inject()
-    }
 
     override fun initViewBinding() = mBinding.run {
         // LOGOUT STATUS

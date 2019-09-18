@@ -1,7 +1,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/home_nav_graph.xml"
+        android:id="@+id/navigation_root"
         app:startDestination="@id/mainFragment">
 
     <fragment
@@ -20,8 +20,11 @@
 
         <action
             android:id="@+id/actionMainToNavigation"
-            app:destination="@id/navigationFragment" />
+            app:destination="@id/navigationFragment"
 
+            />
+<!--        app:popUpTo="@id/mainFragment"-->
+<!--        app:popUpToInclusive="true"-->
     </fragment>
 
     <fragment
@@ -50,12 +53,17 @@
             android:id="@+id/navigationFragment"
             android:name="com.example.clone_daum.ui.main.navigation.NavigationFragment"
             android:label="navigation_fragment"
-            tools:layout="@layout/navigation_fragment">
+            tools:layout="@layout/navigation_fragment"
+            >
+<!--        app:popUpTo="@id/mainFragment"-->
+
+
         <!--        <action android:id="@+id/action_commitListFragment_to_commitDetailFragment"-->
         <!--                app:destination="@id/commitDetailFragment" app:launchSingleTop="true"-->
         <!--                app:enterAnim="@anim/nav_default_enter_anim" app:exitAnim="@anim/nav_default_exit_anim"-->
         <!--                app:popEnterAnim="@anim/nav_default_pop_enter_anim" app:popExitAnim="@anim/nav_default_pop_exit_anim"/>-->
     </fragment>
+
 
     <!-- global action : https://developer.android.com/guide/navigation/navigation-global-action -->
     <action

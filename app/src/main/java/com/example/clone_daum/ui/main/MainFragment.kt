@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -21,13 +20,13 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
+import com.example.clone_daum.databinding.TabMainCustomBinding
 import com.example.clone_daum.di.module.AssistedViewModelKey
 import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import dagger.Binds
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import kotlinx.android.synthetic.main.tab_main_custom.view.*
 import javax.inject.Provider
 
 class MainFragment constructor(
@@ -44,33 +43,30 @@ class MainFragment constructor(
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var mainTabAdapter: MainTabAdapter
     @Inject lateinit var realtimeIssueTabAdapter: Provider<RealtimeIssueTabAdapter>
-    @Inject lateinit var stateViewModelFactory: DaggerSavedStateViewModelFactory
+    @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
     override val layoutId = R.layout.main_fragment
 
-    private lateinit var mIssueViewModel: RealtimeIssueViewModel
-    private lateinit var mPopularViewModel: PopularViewModel    // SearchFragment 와 공유
-    private lateinit var mAssignedInjectViewModel: AssignedInjectTestViewModel
-
-    override fun stateViewModelFactory() =
-        stateViewModelFactory
+    private val mIssueViewModel: RealtimeIssueViewModel by activityInject()
+    private val mPopularViewModel: PopularViewModel by activityInject()
+    private val mAssignedInjectViewModel: AssignedInjectTestViewModel by stateInject { factory }
 
     override fun bindViewModel() {
         super.bindViewModel()
-
-        mIssueViewModel          = inject(requireActivity())
-        mPopularViewModel        = inject(requireActivity())
-        mAssignedInjectViewModel = stateInject()
 
         mBinding.issueModel = mIssueViewModel
         addCommandEventModels(mIssueViewModel)
     }
 
     override fun initViewBinding() {
-        initMainWebTab()
-        initIssueTab()
-
         mBinding.apply {
+            // MAIN TAB
+            mainWebViewpager.adapter = mainTabAdapter
+            mainTab.setupWithViewPager(mainWebViewpager)
+
+            // ISSUE TAB
+            mainIssueTab.setupWithViewPager(mainIssueViewpager)
+
             mainAppbar.globalLayoutListener {
                 val result = realtimeIssueAreaMargin()
 
@@ -80,15 +76,6 @@ class MainFragment constructor(
                 result
             }
         }
-    }
-
-    private fun initMainWebTab() = mBinding.run {
-        mainWebViewpager.adapter = mainTabAdapter
-        mainTab.setupWithViewPager(mainWebViewpager)
-    }
-
-    private fun initIssueTab() = mBinding.run {
-        mainIssueTab.setupWithViewPager(mainIssueViewpager)
     }
 
     private fun realtimeIssueAreaMargin(): Boolean {
@@ -255,11 +242,9 @@ class MainFragment constructor(
         mBinding.mainIssueTab.apply {
             tabs.forEach {
                 it?.let { tab ->
-                    // 여기만 ktx 로
-                    val custom = LayoutInflater.from(requireContext()).inflate(R.layout.tab_main_custom, null)
-                    custom.tab_label.text = tab.text
-
-                    tab.customView = custom
+                    val binding = dataBinding<TabMainCustomBinding>(R.layout.tab_main_custom)
+                    binding.tabLabel.text = tab.text
+                    tab.customView        = binding.root
                 }
 
                 mBinding.mainIssueTab.tabs[0]?.customView?.let { v -> if (v is TextView) { v.bold() } }
@@ -286,7 +271,7 @@ class MainFragment constructor(
     // OnBackPressedListener
     //
     ////////////////////////////////////////////////////////////////////////////////////
-    
+
     override fun onBackPressed(): Boolean {
         if (mIssueViewModel.viewRealtimeIssue.isVisible()) {
             toggleIssueLayout()
@@ -316,7 +301,7 @@ class MainFragment constructor(
             }
         }
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // Module
@@ -348,7 +333,7 @@ class MainFragment constructor(
         companion object {
             @JvmStatic
             @Provides
-            fun provideChildFragmentManager(fragment: Fragment) =
+            fun provideMainFragmentManager(fragment: Fragment) =
                 fragment.childFragmentManager
         }
     }

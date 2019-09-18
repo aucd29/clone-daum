@@ -19,16 +19,11 @@ import javax.inject.Inject
  */
 
 class CafeFragment @Inject constructor() : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
-    private lateinit var mLoginViewModel: NavigationLoginViewModel
-    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
-
     override val layoutId = R.layout.cafe_fragment
 
-    override fun bindViewModel() {
-        super.bindViewModel()
+    private val mLoginViewModel: NavigationLoginViewModel by inject()
+    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
-        mLoginViewModel = inject()
-    }
 
     override fun initViewBinding() = mBinding.run {
         mLoginDataBinding = dataBinding(R.layout.navigation_login_view)

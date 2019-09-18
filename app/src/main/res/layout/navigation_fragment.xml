@@ -8,19 +8,20 @@
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
-            android:id="@+id/navi_container"
+            android:id="@+id/naviContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
     >
         <View
-                android:id="@+id/navi_background"
+                android:id="@+id/naviBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#0c000000"
+                android:alpha="@{model.backgroundAlpha}"
         />
 
         <com.google.android.material.navigation.NavigationView
-                android:id="@+id/navi_view"
+                android:id="@+id/naviView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:elevation="0dp"
@@ -29,7 +30,7 @@
         >
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/navi_layout"
+                    android:id="@+id/naviLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@android:color/white"
@@ -42,7 +43,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="X"
-                        android:onClick="@{() -> model.eventSetting()}"
+                        android:onClick="@{() -> model.command(model.CMD_SETTING)}"
                 />
 
                 <TextView
@@ -52,7 +53,7 @@
                         app:layout_constraintStart_toEndOf="@+id/nav_setting"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="X"
-                        android:onClick="@{() -> model.eventMenuPosition()}"
+                        android:onClick="@{() -> model.command(model.CMD_MENU_POSITION)}"
                 />
 
                 <TextView
@@ -62,7 +63,7 @@
                         app:layout_constraintStart_toEndOf="@+id/nav_menu_position"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="X"
-                        android:onClick="@{() -> model.eventWebViewTextSize()}"
+                        android:onClick="@{() -> model.command(model.CMD_WEBVIEW_TEXT_SIZE)}"
                 />
 
                 <TextView
@@ -108,7 +109,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
                         app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                        android:onClick="@{() -> model.eventReceivedNoti()}"
+                        android:onClick="@{() -> model.command(model.CMD_RECEIVED_NOTI)}"
                 />
 
                 <TextView
@@ -118,7 +119,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/navi_notification"
                         app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
                         app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                        android:onClick="@{() -> model.eventBookMark()}"
+                        android:onClick="@{() -> model.command(model.CMD_BOOKMARK)}"
                 />
 
                 <!-- line 2
@@ -126,28 +127,71 @@
                 그 구조가 그닥 이라서 일단 BottomNavigationView 으로 대체
                 -->
 
-                <com.google.android.material.bottomnavigation.BottomNavigationView
+                <RadioGroup
                         android:id="@+id/navi_tab"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:menu="@menu/navigation"
                         app:itemTextColor="@drawable/selector_navi_tab_bgcolor"
+                        android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/navi_user_photo"
                         app:layout_constraintEnd_toEndOf="parent"
-                />
+                        android:weightSum="3"
+                        >
+
+                    <RadioButton
+                            android:id="@+id/navi_tab_shortcut"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="@string/navi_tab_shortcut"
+                            android:textAlignment="center"
+                            android:onClick="@{() -> model.command(model.ITN_SHORTCUT)}"
+                        />
+
+                    <RadioButton
+                            android:id="@+id/navi_tab_mail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toEndOf="@id/navi_tab_shortcut"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_weight="1"
+                            android:text="@string/navi_tab_mail"
+                            android:textAlignment="center"
+                            android:onClick="@{() -> model.command(model.ITN_MAIL)}"
+                            />
+
+                    <RadioButton
+                            android:id="@+id/navi_tab_cafe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toEndOf="@id/navi_tab_mail"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:layout_weight="1"
+                            android:text="@string/navi_tab_cafe"
+                            android:textAlignment="center"
+                            android:onClick="@{() -> model.command(model.ITN_CAFE)}"
+                            />
+                </RadioGroup>
 
                 <!-- line 3 -->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/navi_tab_container"
+                <brigitte.widget.viewpager.NoSwipeViewPager
+                        android:id="@+id/naviViewpager"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/navi_tab"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@+id/navi_bottom"
-                />
+                        app:bindCurrentItem="@{model.currentItem}"
+                        app:bindSmoothScroll="@{model.smoothScroll}"
+                        app:bindOffscreenPageLimit="@{model.offsetPageLimit}"
+                        />
 
                 <!-- bottom area -->
 
@@ -160,12 +204,13 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                 >
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                             style="@style/navi_bottom_button"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/navi_vertical_bar"
-                            android:onClick="@{() -> model.eventNotification()}"
+                            android:onClick="@{() -> model.command(model.CMD_NOTIFICATION)}"
                     >
 
                         <TextView
@@ -208,7 +253,7 @@
                             app:layout_constraintStart_toEndOf="@+id/navi_vertical_bar"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            android:onClick="@{() -> model.eventLogin()}"
+                            android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
                     >
 
                         <TextView

@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import brigitte.BaseDaggerWebViewFragment
@@ -49,6 +50,21 @@ class MainTabAdapter @Inject constructor(
             arguments = Bundle().apply {
                 putInt(K_POSITION, position)
                 putString(BaseDaggerWebViewFragment.K_URL, url(position))
+            }
+        }
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        super.destroyItem(container, position, obj)
+
+        if (obj is MainWebviewFragment) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("DESTROY ITEM")
+            }
+            obj.disableSwipeRefresh()
+            obj.fragmentManager?.beginTransaction()?.apply {
+                remove(obj)
+                commit()
             }
         }
     }

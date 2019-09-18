@@ -7,8 +7,8 @@ import android.view.View
 import android.webkit.WebView
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import brigitte.di.dagger.module.DaggerViewModelProviders
 import brigitte.widget.free
 import brigitte.widget.pause
@@ -19,6 +19,7 @@ import dagger.android.support.*
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 19. <p/>
@@ -92,25 +93,26 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 
     override fun initViewModel(): M = mViewModelProviders.let {
         if (mViewModelScope == SCOPE_ACTIVITY) {
-            it.get(requireActivity(), mViewModelClass)
+            it.get(activity(), mViewModelClass)
         } else {
-            it.get(this@BaseDaggerFragment, mViewModelClass)
+            it.get(this, mViewModelClass)
         }
     }
 
-    protected inline fun <reified VM : ViewModel> inject(activity: FragmentActivity? = null) =
-        mViewModelProviders.let {
-            activity?.run { it.get(this, VM::class.java) }
-                ?: it.get(this@BaseDaggerFragment, VM::class.java)
+    protected inline fun <reified VM : ViewModel> inject() =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(this, VM::class.java)
         }
 
-    protected inline fun <reified VM: ViewModel> stateInject() =
-        mViewModelProviders.let {
-            mViewModelProviders.get(this@BaseDaggerFragment, stateViewModelFactory(), VM::class.java)
+    protected inline fun <reified VM : ViewModel> activityInject() =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(requireActivity(), VM::class.java)
         }
 
-    protected open fun stateViewModelFactory() =
-        defaultViewModelProviderFactory
+    protected inline fun <reified VM: ViewModel> stateInject(noinline factory: () -> ViewModelProvider.Factory) =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(this, factory(), VM::class.java)
+        }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -142,13 +144,15 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> constr
         }
     }
 
-    protected inline fun <reified VM : ViewModel> inject(activity: FragmentActivity? = null) =
-        mViewModelProviders.let {
-            activity?.run {
-                it.get(this, VM::class.java)
-            } ?: it.get(this@BaseDaggerDialogFragment, VM::class.java)
+    protected inline fun <reified VM : ViewModel> inject() =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(this, VM::class.java)
         }
 
+    protected inline fun <reified VM : ViewModel> activityInject() =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(requireActivity(), VM::class.java)
+        }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -180,11 +184,14 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
         }
     }
 
-    protected inline fun <reified VM : ViewModel> inject(activity: FragmentActivity? = null) =
-        mViewModelProviders.let {
-            activity?.run {
-                it.get(this, VM::class.java)
-            } ?: it.get(this@BaseDaggerBottomSheetDialogFragment, VM::class.java)
+    protected inline fun <reified VM : ViewModel> inject() =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(this, VM::class.java)
+        }
+
+    protected inline fun <reified VM : ViewModel> activityInject() =
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(requireActivity(), VM::class.java)
         }
 }
 

@@ -31,7 +31,7 @@ class SearchFragment @Inject constructor(
 
     override val layoutId = R.layout.search_fragment
 
-    private lateinit var mPopularViewModel: PopularViewModel
+    private val mPopularViewModel: PopularViewModel by activityInject()
 
     override fun initViewBinding() {
     }
@@ -39,9 +39,7 @@ class SearchFragment @Inject constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mPopularViewModel     = inject(requireActivity())
         mBinding.popularmodel = mPopularViewModel
-
         mCommandEventModels.add(mPopularViewModel)
     }
 
