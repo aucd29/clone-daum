@@ -45,7 +45,20 @@ inline fun Fragment.color(@ColorRes resid: Int) =
 
 /** 현재 화면에 위치하는 Fragment 를 반환 */
 inline val FragmentManager.current: Fragment?
-    get() = fragments.last()
+    get() = lastBaseFragment()
+
+inline fun FragmentManager.lastBaseFragment(): Fragment? {
+    val it = fragments.listIterator(fragments.size)
+
+    while (it.hasPrevious()) {
+        val f = it.previous()
+        if (f is BaseFragment<*,*>) {
+            return f
+        }
+    }
+
+    return null
+}
 
 /** 현재 등록되어 있는 Fragment 개수를 반환 */
 inline val FragmentManager.count: Int
@@ -129,20 +142,20 @@ inline fun Fragment.hideKeyboard(view: View) =
  * fragment 를 종료 시키낟.
  */
 inline fun Fragment.finish(animate: Boolean = true) {
-//    if (animate) {
-//        fragmentManager?.pop()
-//    } else {
-//        fragmentManager?.apply {
-//            beginTransaction().setCustomAnimations(0, 0).commitNow()
-//            pop()
-//        }
-//    }
-
-    if (!animate) {
-        fragmentManager?.beginTransaction()?.setCustomAnimations(0, 0)?.commitNow()
+    if (animate) {
+        fragmentManager?.pop()
+    } else {
+        fragmentManager?.apply {
+            beginTransaction().setCustomAnimations(0, 0).commitNow()
+            pop()
+        }
     }
 
-    findNavController().popBackStack()
+//    if (!animate) {
+//        fragmentManager?.beginTransaction()?.setCustomAnimations(0, 0)?.commitNow()
+//    }
+//
+//    findNavController().popBackStack()
 }
 
 /**

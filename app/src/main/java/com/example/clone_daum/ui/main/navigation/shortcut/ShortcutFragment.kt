@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.ShortcutFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
@@ -18,7 +18,7 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
     private val mSitemapViewModel : SitemapViewModel by inject()
     private val mFrequentlySiteModel : FrequentlySiteViewModel by inject()
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.shortcut_fragment
 
@@ -37,16 +37,16 @@ class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragme
 
     override fun initViewModelEvents() {
         observe(mViewModel.brsSitemapEvent) {
-            fragmentFactory.browserFragment(fragmentManager, it)
+            navigator.browserFragment(it)
         }
 
         observe(mSitemapViewModel.brsOpenEvent) {
-            fragmentFactory.browserFragment(fragmentManager, it)
+            navigator.browserFragment(it)
         }
 
         mFrequentlySiteModel.init(disposable())
         observe(mFrequentlySiteModel.brsOpenEvent) {
-            fragmentFactory.browserFragment(fragmentManager, it)
+            navigator.browserFragment(it)
         }
     }
 

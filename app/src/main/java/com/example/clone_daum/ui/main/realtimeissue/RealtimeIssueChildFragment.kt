@@ -3,12 +3,11 @@ package com.example.clone_daum.ui.main.realtimeissue
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -24,7 +23,7 @@ class RealtimeIssueChildFragment @Inject constructor()
     }
 
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.realtime_issue_child_fragment
 
@@ -62,7 +61,7 @@ class RealtimeIssueChildFragment @Inject constructor()
     private fun showBrowser(url: String) {
         mRealtimeIssueViewModel.command(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
 
-        fragmentFactory.browserFragment(fragmentManager, url)
+        navigator.browserFragment(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

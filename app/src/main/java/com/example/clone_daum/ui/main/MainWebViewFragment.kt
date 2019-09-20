@@ -15,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
+import com.example.clone_daum.ui.Navigator
 import dagger.Binds
 
 /**
@@ -35,6 +36,7 @@ class MainWebviewFragment @Inject constructor(
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.main_webview_fragment
     override val webview: WebView
@@ -55,9 +57,7 @@ class MainWebviewFragment @Inject constructor(
                             mLog.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
-                        navigate(R.id.actionGlobalBrowserFragment, Bundle().apply {
-                            putString("url", url)
-                        })
+                        navigator.browserFragment(url)
                     } else {
                         // uri 를 redirect 시키는 이유가 뭘까나?
                         if (mLog.isDebugEnabled) {

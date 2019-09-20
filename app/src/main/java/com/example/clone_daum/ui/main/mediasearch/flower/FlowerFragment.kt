@@ -2,14 +2,13 @@ package com.example.clone_daum.ui.main.mediasearch.flower
 
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FlowerFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import brigitte.urlencode
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -23,7 +22,7 @@ class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBi
         private val mLog = LoggerFactory.getLogger(FlowerFragment::class.java)
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.flower_fragment
 
@@ -83,7 +82,7 @@ class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBi
 
                 mBinding.flowerBack.postDelayed({
                     val url = "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H"
-                    fragmentFactory.browserFragment(fragmentManager, url)
+                    navigator.browserFragment(url)
                 }, 400)
             }
         }

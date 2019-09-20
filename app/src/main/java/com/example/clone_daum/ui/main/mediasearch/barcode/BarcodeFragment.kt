@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.view.View
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.BarcodeFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.zxing.common.HybridBinarizer
 import dagger.Binds
-import dagger.Module
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
@@ -34,7 +33,7 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
         const val REQ_FILE_OPEN = 7912
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.barcode_fragment
 
@@ -75,7 +74,7 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
         BarcodeViewModel.apply {
             when (cmd) {
                 CMD_FILE_OPEN  -> fileOpen()
-                CMD_INPUT_CODE -> fragmentFactory.barcodeInputFragment()
+                CMD_INPUT_CODE -> navigator.barcodeInputFragment()
             }
         }
     }
@@ -140,7 +139,7 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
 
             // 단순하게 http 만 했는데, sms, vcard, pdf 등등이 존재
             if (text.substring(0, 4).toLowerCase().startsWith("http")) {
-                v.postDelayed({ fragmentFactory.browserFragment(fragmentManager, text) }, 800)
+                v.postDelayed({ navigator.browserFragment(text) }, 800)
             } else if (text.startsWith("MATMSG")) {
                 // MATMSG:TO:aucd29@gmail.com;SUB:hello ;BODY:world;;
                 val email = text.split(";")

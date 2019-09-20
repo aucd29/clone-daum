@@ -2,13 +2,12 @@ package com.example.clone_daum.ui.browser.favorite
 
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -25,7 +24,7 @@ class FavoriteFolderFragment @Inject constructor()
         const val K_FOLDER = "folder"
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.favorite_folder_fragment
 
@@ -73,7 +72,7 @@ class FavoriteFolderFragment @Inject constructor()
                 mLog.debug("FOLDER ID : $it")
             }
 
-            fragmentFactory.favoriteModifyFragment(it)
+            navigator.favoriteModifyFragment(it)
         }
     }
 

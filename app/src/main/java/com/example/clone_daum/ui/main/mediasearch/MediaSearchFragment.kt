@@ -6,7 +6,7 @@ import android.os.Build
 import android.view.animation.*
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
@@ -14,7 +14,6 @@ import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
         private const val REQ_BARCODE       = 7814
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.media_search_fragment
 
@@ -162,28 +161,28 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
                 CMD_SEARCH_SPEECH  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { _, res -> if (res) { fragmentFactory.speechFragment() } }
+                        , { _, res -> if (res) { navigator.speechFragment() } }
                         , REQ_RECORD_SPEECH))
                 }
 
                 CMD_SEARCH_MUSIC   -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { _, res -> if (res) { fragmentFactory.musicFragment() } }
+                        , { _, res -> if (res) { navigator.musicFragment() } }
                         , REQ_RECORD_MUSIC))
                 }
 
                 CMD_SEARCH_FLOWER  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { _, res -> if (res) { fragmentFactory.flowerFragment() } }
+                        , { _, res -> if (res) { navigator.flowerFragment() } }
                         , REQ_FLOWER))
                 }
 
                 CMD_SEARCH_BARCODE -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { _, res -> if (res) { fragmentFactory.barcodeFragment() } }
+                        , { _, res -> if (res) { navigator.barcodeFragment() } }
                         , REQ_BARCODE))
                 }
             }

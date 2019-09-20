@@ -9,13 +9,12 @@ import com.example.clone_daum.databinding.SpeechFragmentBinding
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import com.kakao.sdk.newtoneapi.SpeechRecognizeListener
 import com.kakao.sdk.newtoneapi.SpeechRecognizerClient
 import com.kakao.sdk.newtoneapi.SpeechRecognizerManager
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -41,7 +40,7 @@ class SpeechFragment @Inject constructor(
         private const val V_SCALE_DURATION = 500L
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.speech_fragment
     // https://code.i-harness.com/ko-kr/q/254ae5
@@ -286,12 +285,12 @@ class SpeechFragment @Inject constructor(
             .subscribe({ data ->
                 data?.let {
                     finish()
-                    fragmentFactory.browserFragment(fragmentManager, "https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
+                    navigator.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
                 } ?: let {
                     mViewModel.messageResId.set(R.string.speech_no_result)
                     finish()
 
-                    mBinding.root.postDelayed({
+                    mBinding.speechContainer.postDelayed({
                         finish()
                     }, 100)
                 }

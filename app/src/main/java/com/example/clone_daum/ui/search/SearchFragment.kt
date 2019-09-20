@@ -5,12 +5,11 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -25,9 +24,9 @@ class SearchFragment @Inject constructor(
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var layoutManager: ChipsLayoutManager
-    @Inject lateinit var fragmentFactory: FragmentFactory
 
     override val layoutId = R.layout.search_fragment
 
@@ -72,9 +71,7 @@ class SearchFragment @Inject constructor(
     }
 
     private fun navigateBrowserFragment(url: Any) {
-        navigate(R.id.actionGlobalBrowserFragment, Bundle().apply {
-            putString("url", url.toString())
-        })
+        navigator.browserFragment(url.toString())
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

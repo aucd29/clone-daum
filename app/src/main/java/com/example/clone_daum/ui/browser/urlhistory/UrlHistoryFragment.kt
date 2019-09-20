@@ -2,13 +2,12 @@ package com.example.clone_daum.ui.browser.urlhistory
 
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.UrlHistoryFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -23,7 +22,7 @@ class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFr
         private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId  = R.layout.url_history_fragment
 

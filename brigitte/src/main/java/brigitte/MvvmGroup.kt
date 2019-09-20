@@ -110,33 +110,32 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
         initViewModelEvents()
     }
 
-    override fun onBackPressed() {
-        // 현재의 문제점 부분
-        // callback 을 등록했다는 의미는 callback 을 상위에서 쓰겠다는 의미이고
-        // 안쓰면 그 이후 처리를 해야 되는데
-        // 지금 구조는 무조건 적으로 onBackPressed 가 호출되어야지만
-        // 되는 거라 =_ = 이상함 다른 방법이 있나? [aucd29][2019-09-05]
-        if (!onBackPressedDispatcher.hasEnabledCallbacks()) {
-            mBackPressed.onBackPressed()
-            return
-        }
-
-        super.onBackPressed()
-    }
-
-    // FIXME OnBackPressedDispatcher 에서 동작하도록 삭제 [aucd29][2019-09-04]
 //    override fun onBackPressed() {
-//        // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
-//        // h/w backkey 를 처리한 것으로 본다.
-//        val fragment = supportFragmentManager.current
-//        if (fragment != null && fragment is OnBackPressedListener && fragment.onBackPressed()) {
+//        // 현재의 문제점 부분
+//        // callback 을 등록했다는 의미는 callback 을 상위에서 쓰겠다는 의미이고
+//        // 안쓰면 그 이후 처리를 해야 되는데
+//        // 지금 구조는 무조건 적으로 onBackPressed 가 호출되어야지만
+//        // 되는 거라 =_ = 이상함 다른 방법이 있나? [aucd29][2019-09-05]
+//        if (!onBackPressedDispatcher.hasEnabledCallbacks()) {
+//            mBackPressed.onBackPressed()
 //            return
 //        }
 //
-//        if (mBackPressed.onBackPressed()) {
-//            super.onBackPressed()
-//        }
+//        super.onBackPressed()
 //    }
+
+    override fun onBackPressed() {
+        // 현재 fragment 가 OnBackPressedListener 를 상속 받고 return true 를 하면 인터페이스에서
+        // h/w backkey 를 처리한 것으로 본다.
+        val fragment = supportFragmentManager.current
+        if (fragment != null && fragment is OnBackPressedListener && fragment.onBackPressed()) {
+            return
+        }
+
+        if (mBackPressed.onBackPressed()) {
+            super.onBackPressed()
+        }
+    }
 
     /**
      * 앱 종료 시 CompositeDisposable 를 clear 한다.
@@ -204,7 +203,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     protected val mViewModel: M by lazy(LazyThreadSafetyMode.NONE) { initViewModel() }
     protected var mStateViewModelFactory: AbstractSavedStateViewModelFactory? = null
 
-    private var mOnBackPressedCallback: OnBackPressedCallback? = null
+//    private var mOnBackPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId, container)
@@ -216,7 +215,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        initBackPressedDispatcher()
+//        initBackPressedDispatcher()
 
         super.onActivityCreated(savedInstanceState)
 
@@ -243,37 +242,37 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
         mBinding.lifecycleOwner = this
     }
 
-    private fun initBackPressedDispatcher() {
-        if (this is OnBackPressedListener) {
-            mOnBackPressedCallback = object: OnBackPressedCallback(false) {
-                override fun handleOnBackPressed() {
-                    mOnBackPressedCallback?.isEnabled = !onBackPressed()
-                }
-            }
+//    private fun initBackPressedDispatcher() {
+//        if (this is OnBackPressedListener) {
+//            mOnBackPressedCallback = object: OnBackPressedCallback(false) {
+//                override fun handleOnBackPressed() {
+//                    mOnBackPressedCallback?.isEnabled = !onBackPressed()
+//                }
+//            }
+//
+//            mOnBackPressedCallback?.let {
+//                requireActivity().onBackPressedDispatcher.addCallback(this@BaseFragment, it)
+//            }
+//        }
+//    }
 
-            mOnBackPressedCallback?.let {
-                requireActivity().onBackPressedDispatcher.addCallback(this@BaseFragment, it)
-            }
-        }
-    }
+//    protected fun backPressedCallback(enableCallback: Boolean = true) {
+//        mOnBackPressedCallback?.isEnabled = enableCallback
+//    }
 
-    protected fun backPressedCallback(enableCallback: Boolean = true) {
-        mOnBackPressedCallback?.isEnabled = enableCallback
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // NAVIGATE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    protected inline fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
-        mBinding.root.findNavController().navigate(actionId, bundle)
-    }
-
-    protected inline fun navigate(view: View, actionId: Int, bundle: Bundle? = null) {
-        Navigation.findNavController(view).navigate(actionId, bundle)
-    }
+//    ////////////////////////////////////////////////////////////////////////////////////
+//    //
+//    // NAVIGATE
+//    //
+//    ////////////////////////////////////////////////////////////////////////////////////
+//
+//    protected inline fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
+//        mBinding.root.findNavController().navigate(actionId, bundle)
+//    }
+//
+//    protected inline fun navigate(view: View, actionId: Int, bundle: Bundle? = null) {
+//        Navigation.findNavController(view).navigate(actionId, bundle)
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -352,6 +351,20 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> constructor(
         // live data 를 xml 에서 data binding 하기 위해서는 lifecycleOwner 를 등록해야 함
         mBinding.lifecycleOwner = this
     }
+
+//    ////////////////////////////////////////////////////////////////////////////////////
+//    //
+//    // NAVIGATE
+//    //
+//    ////////////////////////////////////////////////////////////////////////////////////
+//
+//    protected inline fun navigate(@IdRes actionId: Int, bundle: Bundle? = null) {
+//        mBinding.root.findNavController().navigate(actionId, bundle)
+//    }
+//
+//    protected inline fun navigate(view: View, actionId: Int, bundle: Bundle? = null) {
+//        Navigation.findNavController(view).navigate(actionId, bundle)
+//    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

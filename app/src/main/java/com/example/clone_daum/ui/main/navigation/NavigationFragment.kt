@@ -15,6 +15,7 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
+import com.example.clone_daum.ui.Navigator
 import dagger.Binds
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,14 +31,13 @@ class NavigationFragment constructor(
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
     }
 
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
     @Inject lateinit var adapter: NavigationTabAdapter
 
     override val layoutId = R.layout.navigation_fragment
 
     override fun initViewBinding() = mBinding.run {
-        backPressedCallback()
-
         naviContainer.apply {
             singleTimer(50)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,7 +52,7 @@ class NavigationFragment constructor(
 
     override fun initViewModelEvents() = mViewModel.run {
         observe(brsOpenEvent) {
-            navigate(R.id.actionGlobalBrowserFragment)
+            navigator.browserFragment(it)
         }
     }
 

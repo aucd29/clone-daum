@@ -3,14 +3,13 @@ package com.example.clone_daum.ui.browser.favorite
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.FavoriteFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.find
 import brigitte.finish
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class FavoriteFragment @Inject constructor()
         private val mLog = LoggerFactory.getLogger(FavoriteFragment::class.java)
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId  = R.layout.favorite_fragment
 
@@ -60,9 +59,9 @@ class FavoriteFragment @Inject constructor()
         FavoriteViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN           -> showBrowser(data.toString())
-                CMD_FOLDER_CHOOSE      -> fragmentFactory.favoriteFolderFragment(data as Int)
+                CMD_FOLDER_CHOOSE      -> navigator.favoriteFolderFragment(data as Int)
                 CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, mViewModel)
-                CMD_FAVORITE_MODIFY    -> fragmentFactory.favoriteModifyFragment()
+                CMD_FAVORITE_MODIFY    -> navigator.favoriteModifyFragment()
             }
         }
     }

@@ -24,6 +24,7 @@ import com.example.clone_daum.databinding.TabMainCustomBinding
 import com.example.clone_daum.di.module.AssistedViewModelKey
 import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
+import com.example.clone_daum.ui.Navigator
 import dagger.Binds
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -33,12 +34,15 @@ class MainFragment constructor(
 ) : BaseDaggerFragment<MainFragmentBinding, MainViewModel>(), OnBackPressedListener {
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
+
+        fun create() = MainFragment()
     }
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 MainWebViewFragment 와 공유
+        mViewModelScope = SCOPE_ACTIVITY    // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var mainTabAdapter: MainTabAdapter
@@ -164,13 +168,11 @@ class MainFragment constructor(
     }
 
     private fun navigateSearchFragment() {
-        toggleIssueLayout {
-            navigate(mBinding.mainSearchView, R.id.actionMainToSearch)
-        }
+        toggleIssueLayout { navigator.searchFragment() }
     }
 
     private fun navigateNavigationFragment() {
-        navigate(mBinding.mainNavigationMenu, R.id.actionMainToNavigation)
+        navigator.navigationFragment()
     }
 
     private fun toggleIssueLayout(visibleCallback: (() -> Unit)? = null) {
@@ -200,7 +202,6 @@ class MainFragment constructor(
                     mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
 
-                backPressedCallback()
                 mBinding.mainIssueContainer.layoutHeight(changeTabHeight)
             } else {
                 tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION
@@ -244,7 +245,7 @@ class MainFragment constructor(
                 it?.let { tab ->
                     val binding = dataBinding<TabMainCustomBinding>(R.layout.tab_main_custom)
                     binding.tabLabel.text = tab.text
-                    tab.customView        = binding.root
+                    tab.customView        = binding.tabLabel
                 }
 
                 mBinding.mainIssueTab.tabs[0]?.customView?.let { v -> if (v is TextView) { v.bold() } }
@@ -254,15 +255,13 @@ class MainFragment constructor(
 
     private fun navigateMediaSearchFragment() {
         toggleIssueLayout {
-            navigate(mBinding.mainMediaSearchIcon, R.id.actionMainToMediaSearch)
+            navigator.mediaSearchFragment()
         }
     }
 
     private fun navigateBrowserFragment(url: Any) {
         toggleIssueLayout {
-            navigate(R.id.actionGlobalBrowserFragment, Bundle().apply {
-                putString("url", url.toString())
-            })
+            navigator.browserFragment(url.toString())
         }
     }
 

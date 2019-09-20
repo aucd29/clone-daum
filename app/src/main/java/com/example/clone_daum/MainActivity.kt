@@ -6,6 +6,7 @@ import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
+import com.example.clone_daum.ui.Navigator
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
@@ -15,6 +16,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
     companion object {
         private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
+
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.main_activity
 
@@ -30,6 +33,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         }
 
         initCookieManager()
+
+        if (savedInstanceState == null) {
+            navigator.mainFragment()
+        }
     }
 
     override fun attachBaseContext(newBase: Context) {

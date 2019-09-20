@@ -1,11 +1,14 @@
 package com.example.clone_daum.di.module
 
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import brigitte.di.dagger.scope.ActivityScope
 import com.example.clone_daum.MainActivity
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
+import javax.inject.Named
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 6. <p/>
@@ -29,6 +32,12 @@ abstract class MainActivityModule {
     @Binds
     abstract fun bindFragmentActivity(activity: MainActivity): FragmentActivity
 
-//    @Binds
-//    abstract fun bindSavedStateRegistryOwner(activity: MainActivity): SavedStateRegistryOwner
+    @Module
+    companion object {
+        @Provides
+        @JvmStatic
+        @Named("activityFragmentManager")
+        fun provideFragmentManager(activity: MainActivity) =
+            activity.supportFragmentManager
+    }
 }

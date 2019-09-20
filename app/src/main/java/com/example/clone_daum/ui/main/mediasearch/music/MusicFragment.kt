@@ -5,13 +5,12 @@ import android.animation.ValueAnimator
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MusicFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
 import com.kakao.sdk.newtoneapi.impl.util.DeviceUtils
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -31,7 +30,7 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
         private const val V_SCALE_DURATION = 500L
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.music_fragment
 
@@ -39,7 +38,6 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
 
     override fun initViewBinding() {
-        backPressedCallback()
         keepScreen(true)
 
         if (!DeviceUtils.isSupportedDevice()) {
@@ -63,7 +61,7 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
             if (it == 100f) {
                 dialog(DialogParam("대충 찾았다고 하고", context = context, listener = { _, _ ->
                     finish()
-                    fragmentFactory.browserFragment(fragmentManager, "http://www.melon.com/song/detail.htm?songId=30985406&ref=W10600")
+                    navigator.browserFragment("http://www.melon.com/song/detail.htm?songId=30985406&ref=W10600")
                 }))
             }
         }

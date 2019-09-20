@@ -8,7 +8,7 @@ import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerBottomSheetDialogFragment
 import brigitte.SCOPE_ACTIVITY
 import brigitte.di.dagger.scope.FragmentScope
@@ -16,7 +16,6 @@ import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -46,7 +45,7 @@ class WeatherFragment
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.weather_fragment
 
@@ -83,7 +82,7 @@ class WeatherFragment
         WeatherViewModel.apply {
             when (cmd) {
                 CMD_MORE_DETAIL -> {
-                    fragmentFactory.browserFragment(fragmentManager, MORE_DETAIL_URL)
+                    navigator.browserFragment(MORE_DETAIL_URL)
 
                     dismiss()
                 }

@@ -10,7 +10,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.common.Config
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
@@ -19,7 +19,6 @@ import brigitte.runtimepermission.runtimePermissions
 import brigitte.viewmodel.requireContext
 import brigitte.widget.*
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding,
         const val K_URL = "url"
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
     override val layoutId = R.layout.browser_fragment
@@ -255,7 +254,7 @@ class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding,
             when (cmd) {
                 CMD_HOME,
                 CMD_BACK              -> onBackPressed()
-                CMD_SEARCH_FRAGMENT   -> fragmentFactory.searchFragment(fragmentManager)
+                CMD_SEARCH_FRAGMENT   -> navigator.searchFragment()
                 CMD_SUBMENU_FRAGMENT  -> subMenu()
                 CMD_SHARE_EVENT       -> shareLink(data.toString())
                 CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
@@ -284,9 +283,9 @@ class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding,
     }
 
     private fun subMenu() {
-        fragmentFactory.browserSubFragment { cmd ->
+        navigator.browserSubFragment { cmd ->
             when (cmd) {
-                "즐겨찾기목록"   -> fragmentFactory.favoriteFragment()
+                "즐겨찾기목록"   -> navigator.favoriteFragment()
                 "즐겨찾기추가"   -> addFavorite()
                 "방문기록"      -> urlHistory()
                 "URL 복사"     -> copyUrl()
@@ -322,11 +321,11 @@ class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding,
         val title = webview.title
         val url   = webview.url
 
-        fragmentFactory.favoriteProcessFragment(title, url)
+        navigator.favoriteProcessFragment(title, url)
     }
 
     private fun urlHistory() {
-        fragmentFactory.urlHistoryFragment()
+        navigator.urlHistoryFragment()
     }
 
     private fun copyUrl() {

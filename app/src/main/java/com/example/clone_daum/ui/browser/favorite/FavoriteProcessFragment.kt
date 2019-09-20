@@ -3,13 +3,12 @@ package com.example.clone_daum.ui.browser.favorite
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FavoriteProcessFragmentBinding
 import com.example.clone_daum.model.local.MyFavorite
-import com.example.clone_daum.ui.FragmentFactory
+import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.hideKeyboard
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -27,7 +26,7 @@ class FavoriteProcessFragment @Inject constructor()
         const val K_MODIFY = "modify"
     }
 
-    @Inject lateinit var fragmentFactory: FragmentFactory
+    @Inject lateinit var navigator: Navigator
 
     override val layoutId = R.layout.favorite_process_fragment
 
@@ -89,7 +88,7 @@ class FavoriteProcessFragment @Inject constructor()
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteProcessViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> fragmentFactory.folderFragment(childFragmentManager, mViewModel.folderId)
+            CMD_FOLDER_DETAIL -> navigator.folderFragment(childFragmentManager, mViewModel.folderId)
         }
     }
 
