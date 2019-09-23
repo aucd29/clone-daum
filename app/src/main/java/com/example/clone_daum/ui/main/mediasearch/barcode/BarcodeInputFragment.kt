@@ -15,8 +15,8 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 23. <p/>
  */
 
-class BarcodeInputFragment @Inject constructor() : BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
-
+class BarcodeInputFragment @Inject constructor(
+) : BaseDaggerFragment<BarcodeInputFragmentBinding, BarcodeInputViewModel>() {
     override val layoutId = R.layout.barcode_input_fragment
 
     override fun initViewBinding() {

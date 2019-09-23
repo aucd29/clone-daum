@@ -22,8 +22,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 16. <p/>
  */
 
-class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
-    , OnBackPressedListener {
+class MediaSearchFragment @Inject constructor(
+) : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.media_search_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 
@@ -37,8 +38,6 @@ class MediaSearchFragment @Inject constructor() : BaseDaggerFragment<MediaSearch
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.media_search_fragment
 
     private var mPauseAnimator: Animator? = null
 

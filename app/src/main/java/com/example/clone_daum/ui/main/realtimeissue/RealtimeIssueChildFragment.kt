@@ -16,8 +16,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 9. <p/>
  */
 
-class RealtimeIssueChildFragment @Inject constructor()
-    : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
+class RealtimeIssueChildFragment @Inject constructor(
+) : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
+    override val layoutId = R.layout.realtime_issue_child_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
     }
@@ -25,24 +26,21 @@ class RealtimeIssueChildFragment @Inject constructor()
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var navigator: Navigator
 
-    override val layoutId = R.layout.realtime_issue_child_fragment
-
     private val mRealtimeIssueViewModel: RealtimeIssueViewModel by activityInject()
+    private val mPosition: Int
+        get() = arguments?.getInt(RealtimeIssueTabAdapter.K_POS)!!
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() {
-        arguments?.getInt("position")?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("POSITION : $it")
-            }
+        if (mLog.isDebugEnabled) {
+            mLog.debug("POSITION : $mPosition")
+        }
 
-            // main 에서 load 한 데이터를 읽어다가 출력
-            mRealtimeIssueViewModel.issueList(it)?.let { list ->
-                mViewModel.initRealtimeIssueAdapter(list)
-            }
+        // main 에서 load 한 데이터를 읽어다가 출력
+        mRealtimeIssueViewModel.issueList(mPosition)?.let { list ->
+            mViewModel.initRealtimeIssueAdapter(list)
         }
     }
 

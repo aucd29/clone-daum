@@ -4,6 +4,8 @@ import android.app.Application
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.SavedStateHandle
+//import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
@@ -15,6 +17,12 @@ import com.example.clone_daum.model.remote.SuggestItem
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.app
+import com.example.clone_daum.di.module.ViewModelAssistedFactory
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
+//import com.example.clone_daum.di.module.ViewModelAssistedFactory
+//import com.squareup.inject.assisted.Assisted
+//import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -24,11 +32,17 @@ import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
+ *
+ * https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle
  */
 
-class SearchViewModel @Inject constructor(
-    app: Application,
-    val config: Config
+class SearchViewModel @AssistedInject constructor(
+    @Assisted private val stateHandle: SavedStateHandle,
+    private val config: Config,
+    private val daum: DaumSuggestService,
+    private val searchDao: SearchHistoryDao,
+    private val mDisposable: CompositeDisposable,
+    app: Application
 ) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
@@ -37,16 +51,13 @@ class SearchViewModel @Inject constructor(
 
         const val CMD_BRS_OPEN    = "brs-open"
         const val CMD_BRS_SEARCH  = "brs-search"
+
+        const val STS_KEYWORD     = "keyword"
     }
 
-    @Inject lateinit var daum: DaumSuggestService
-    @Inject lateinit var searchDao: SearchHistoryDao
+    override val dialogEvent = SingleLiveEvent<DialogParam>()
 
-    private lateinit var mDisposable: CompositeDisposable
-
-    override val dialogEvent     = SingleLiveEvent<DialogParam>()
-
-    val searchKeyword            = ObservableField<String>()
+    val searchKeyword            = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
     val searchIconResId          = ObservableInt(config.SEARCH_ICON)
     val toggleRecentSearchText   = ObservableInt(R.string.search_turn_off_recent_search)
     val toggleEmptyAreaText      = ObservableInt(R.string.search_empty_recent_search)
@@ -59,9 +70,8 @@ class SearchViewModel @Inject constructor(
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
     val itemAnimator             = ObservableField<RecyclerView.ItemAnimator?>()
 
-    fun init(disposable: CompositeDisposable) {
-        mDisposable = disposable
 
+    fun init() {
         editorAction.set {
             eventSearch(it)
             true
@@ -170,6 +180,8 @@ class SearchViewModel @Inject constructor(
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
 
     fun suggest(keyword: String) {
+//        stateHandle.set(STS_KEYWORD, keyword)
+
         mDisposable.add(daum.suggest(keyword)
             .map {
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
@@ -210,4 +222,13 @@ class SearchViewModel @Inject constructor(
             View.VISIBLE
         })
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // FACTORY
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @AssistedInject.Factory
+    interface Factory : ViewModelAssistedFactory<SearchViewModel>
 }

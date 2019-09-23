@@ -30,11 +30,11 @@ class NavigationViewModel @Inject constructor(
 
         const val CMD_SETTING           = "setting"
         const val CMD_MENU_POSITION     = "menu-position"
-        const val CMD_WEBVIEW_TEXT_SIZE = "webview-text-size"
-        const val CMD_RECEIVED_NOTI     = "received-noti"
-        const val CMD_BOOKMARK          = "bookmark"
-        const val CMD_NOTIFICATION      = "notification"
+        const val CMD_MENU_TEXT_SIZE    = "menu-text-size"
+        const val CMD_ALARM             = "alarm"
         const val CMD_LOGIN             = "login"
+
+        const val CMD_BROWSER           = "browser"
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -43,21 +43,11 @@ class NavigationViewModel @Inject constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-//    val itemSelected    = ObservableField<(MenuItem) -> Unit>()
     val newIcon         = ObservableInt(View.GONE)
-    val brsOpenEvent    = SingleLiveEvent<String>()
     val currentItem     = ObservableInt(0)
     val offsetPageLimit = ObservableInt(3)
     val smoothScroll    = ObservableBoolean(false)
     val backgroundAlpha = ObservableFloat(1f)
-
-    fun eventNotification() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BRS OPEN NOTIFICATION")
-        }
-
-        brsOpenEvent.value = URL_NOTIFICATION
-    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

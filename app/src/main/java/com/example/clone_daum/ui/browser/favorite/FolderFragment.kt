@@ -17,15 +17,14 @@ import javax.inject.Inject
  */
 
 // 화면내 폴더 목록을 보여주고 그중에 하나 선택하게 끔 함
-class FolderFragment @Inject constructor()
-    : BaseDaggerFragment<FolderFragmentBinding, FolderViewModel>() {
+class FolderFragment @Inject constructor(
+) : BaseDaggerFragment<FolderFragmentBinding, FolderViewModel>() {
+    override val layoutId  = R.layout.folder_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(FolderFragment::class.java)
 
         const val K_CURRENT_FOLDER = "current-folder"
     }
-
-    override val layoutId  = R.layout.folder_fragment
 
     override fun initViewBinding() {
     }

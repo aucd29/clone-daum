@@ -27,7 +27,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+class BrowserFragment constructor(
+) : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.browser_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
@@ -38,8 +40,6 @@ class BrowserFragment constructor() : BaseDaggerFragment<BrowserFragmentBinding,
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
-
-    override val layoutId = R.layout.browser_fragment
 
     private val webview: WebView
         get() = mBinding.brsWebview

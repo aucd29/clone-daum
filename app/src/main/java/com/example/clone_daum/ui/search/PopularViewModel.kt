@@ -42,7 +42,6 @@ class PopularViewModel @Inject constructor(
     val visiblePopular    = ObservableInt(View.GONE)
     val chipLayoutManager = ObservableField(layoutManager)
 
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // MAIN FRAGMENT

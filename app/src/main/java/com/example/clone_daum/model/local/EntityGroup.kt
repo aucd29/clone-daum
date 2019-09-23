@@ -127,3 +127,38 @@ data class FrequentlySite(
     override fun contentsSame(item: IRecyclerDiff)=
         this.url == (item as FrequentlySite).url
 }
+
+data class Setting(
+    val _id: Int,
+    val title: String
+) : IRecyclerDiff {
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as Setting)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.title == (item as Setting).title
+}
+
+data class HomeMenu(
+    val _id: Int,
+    val title: String,
+    val order: Int
+) : IRecyclerDiff {
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as HomeMenu)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.title == (item as HomeMenu).title && order == (item as HomeMenu).order
+}
+
+data class AlarmHistory(
+    val _id: Int,
+    val title: String,
+    val date: Long
+) : IRecyclerDiff {
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as AlarmHistory)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.title == (item as AlarmHistory).title && date == (item as AlarmHistory).date
+}

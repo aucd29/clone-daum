@@ -10,18 +10,13 @@ import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.viewmodel.CommandEventViewModel
 import brigitte.widget.magneticEffect
-import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.android.material.tabs.TabLayout
-import com.squareup.inject.assisted.Assisted
-import com.squareup.inject.assisted.AssistedInject
-import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Module
 import kotlin.math.abs
 
 class MainViewModel @Inject constructor(
-//    @Assisted val handle: SavedStateHandle,
     val config: Config,
     app: Application
 ) : CommandEventViewModel(app) {
@@ -40,8 +35,6 @@ class MainViewModel @Inject constructor(
         const val ITN_GOTO_NEWS = "goto-news"
     }
 
-//    override lateinit var savedStateHandle: SavedStateHandle
-
     // MAIN WEB TAB CONTROL
     val tabChangedCallback      = ObservableField<TabSelectedCallback>()
     var tabChangedLive          = MutableLiveData<TabLayout.Tab?>()
@@ -58,7 +51,6 @@ class MainViewModel @Inject constructor(
 
     val idSearchIcon            = ObservableInt(config.SEARCH_ICON)
     val webViewPagerOffLimit    = ObservableInt(3)
-//    val viewBack                = ObservableInt(View.GONE)
 
     var appbarHeight     = 0
     val spinnerOffsetEnd = ObservableInt()

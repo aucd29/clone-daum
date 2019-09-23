@@ -1,7 +1,6 @@
 package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -32,10 +31,10 @@ import javax.inject.Provider
 
 class MainFragment constructor(
 ) : BaseDaggerFragment<MainFragmentBinding, MainViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.main_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
-
-        fun create() = MainFragment()
     }
 
     init {
@@ -48,8 +47,6 @@ class MainFragment constructor(
     @Inject lateinit var mainTabAdapter: MainTabAdapter
     @Inject lateinit var realtimeIssueTabAdapter: Provider<RealtimeIssueTabAdapter>
     @Inject lateinit var factory: DaggerSavedStateViewModelFactory
-
-    override val layoutId = R.layout.main_fragment
 
     private val mIssueViewModel: RealtimeIssueViewModel by activityInject()
     private val mPopularViewModel: PopularViewModel by activityInject()
@@ -254,15 +251,11 @@ class MainFragment constructor(
     }
 
     private fun navigateMediaSearchFragment() {
-        toggleIssueLayout {
-            navigator.mediaSearchFragment()
-        }
+        toggleIssueLayout { navigator.mediaSearchFragment() }
     }
 
     private fun navigateBrowserFragment(url: Any) {
-        toggleIssueLayout {
-            navigator.browserFragment(url.toString())
-        }
+        toggleIssueLayout { navigator.browserFragment(url.toString()) }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

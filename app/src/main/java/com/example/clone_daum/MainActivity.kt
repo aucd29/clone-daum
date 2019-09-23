@@ -13,13 +13,9 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
-    }
+    override val layoutId = R.layout.main_activity
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.main_activity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
@@ -63,6 +59,10 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() 
         observe(closeEvent) {
             mBinding.root.removeView(mBinding.splash)
         }
+    }
+
+    companion object {
+        private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

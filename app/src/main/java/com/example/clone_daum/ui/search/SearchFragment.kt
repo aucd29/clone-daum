@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.search
 
-import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
@@ -9,9 +10,13 @@ import com.example.clone_daum.ui.Navigator
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import com.example.clone_daum.di.module.AssistedViewModelKey
+import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
+import com.example.clone_daum.di.module.ViewModelAssistedFactory
+import com.example.clone_daum.ui.main.AssignedInjectTestViewModel
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
-import org.slf4j.LoggerFactory
+import dagger.multibindings.IntoMap
 import javax.inject.Inject
 
 /**
@@ -19,18 +24,20 @@ import javax.inject.Inject
  */
 
 class SearchFragment @Inject constructor(
-) : BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
+) : BaseDaggerFragment<SearchFragmentBinding, PopularViewModel>() {
+    override val layoutId = R.layout.search_fragment
+
+    init {
+        mViewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var layoutManager: ChipsLayoutManager
+    @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
-    override val layoutId = R.layout.search_fragment
-
-    private val mPopularViewModel: PopularViewModel by activityInject()
+//    private val mSearchViewModel: SearchViewModel by inject()
+    private val mSearchViewModel: SearchViewModel by stateInject { factory }
 
     override fun initViewBinding() {
     }
@@ -38,13 +45,13 @@ class SearchFragment @Inject constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mBinding.popularmodel = mPopularViewModel
-        mCommandEventModels.add(mPopularViewModel)
+        mBinding.model = mSearchViewModel
+        addCommandEventModel(mSearchViewModel)
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init(disposable())
-        mPopularViewModel.apply {
+        mSearchViewModel.init()
+        mViewModel.apply {
             init()
             chipLayoutManager.set(layoutManager)
         }
@@ -64,13 +71,13 @@ class SearchFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            SearchViewModel.CMD_BRS_OPEN    -> navigateBrowserFragment(data.toString())
-            PopularViewModel.CMD_BRS_SEARCH -> navigateBrowserFragment(
+            SearchViewModel.CMD_BRS_OPEN    -> browserFragment(data.toString())
+            PopularViewModel.CMD_BRS_SEARCH -> browserFragment(
                 "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H")
         }
     }
 
-    private fun navigateBrowserFragment(url: Any) {
+    private fun browserFragment(url: Any) {
         navigator.browserFragment(url.toString())
     }
 
@@ -90,6 +97,15 @@ class SearchFragment @Inject constructor(
     @dagger.Module
     abstract class SearchFragmentModule {
         @Binds
-        abstract fun bindSavedStateRegistryOwner(activity: SearchFragment): SavedStateRegistryOwner
+        abstract fun bindSearchFragment(fragment: SearchFragment): Fragment
+
+        @Binds
+        @IntoMap
+        @AssistedViewModelKey(SearchViewModel::class)
+        abstract fun bindSearchViewModelFactory(vm: SearchViewModel.Factory)
+                : ViewModelAssistedFactory<out ViewModel>
+
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(fragment: SearchFragment): SavedStateRegistryOwner
     }
 }

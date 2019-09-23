@@ -19,8 +19,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 10. <p/>
  */
 
-class UrlHistoryViewModel @Inject constructor(application: Application
-    , private val mUrlHistoryDao: UrlHistoryDao
+class UrlHistoryViewModel @Inject constructor(
+    private val mUrlHistoryDao: UrlHistoryDao,
+    application: Application
 ) : RecyclerViewModel<UrlHistory>(application) {
 
     companion object {

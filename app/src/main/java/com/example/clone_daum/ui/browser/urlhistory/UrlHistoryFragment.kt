@@ -16,15 +16,14 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 10. <p/>
  */
 
-class UrlHistoryFragment @Inject constructor() : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHistoryViewModel>()
-    , OnBackPressedListener {
+class UrlHistoryFragment @Inject constructor(
+) : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHistoryViewModel>(), OnBackPressedListener {
+    override val layoutId  = R.layout.url_history_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId  = R.layout.url_history_fragment
 
     override fun initViewBinding() {
     }

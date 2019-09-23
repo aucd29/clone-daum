@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 abstract class ViewModelAssistedFactoriesModule
 
 interface ViewModelAssistedFactory<T : ViewModel> {
-    fun create(handle: SavedStateHandle): T
+    fun create(stateHandle: SavedStateHandle): T
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ class DaggerSavedStateViewModelFactory @Inject constructor(
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-        return viewModelMap[modelClass]?.create(handle) as? T ?: throw IllegalStateException("Unknown ViewModel class") as Throwable
+    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, stateHandle: SavedStateHandle): T {
+        return viewModelMap[modelClass]?.create(stateHandle) as? T ?: throw IllegalStateException("Unknown ViewModel class") as Throwable
     }
 }

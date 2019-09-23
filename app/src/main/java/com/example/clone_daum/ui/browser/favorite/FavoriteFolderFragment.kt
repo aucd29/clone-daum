@@ -18,6 +18,8 @@ import javax.inject.Inject
 
 class FavoriteFolderFragment @Inject constructor()
     : BaseDaggerFragment<FavoriteFolderFragmentBinding, FavoriteFolderViewModel>() {
+    override val layoutId = R.layout.favorite_folder_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
 
@@ -25,8 +27,6 @@ class FavoriteFolderFragment @Inject constructor()
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.favorite_folder_fragment
 
     override fun initViewBinding() { }
 

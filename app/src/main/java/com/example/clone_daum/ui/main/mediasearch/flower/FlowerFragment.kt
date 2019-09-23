@@ -17,14 +17,15 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 31. <p/>
  */
 
-class FlowerFragment @Inject constructor() : BaseDaggerFragment<FlowerFragmentBinding, FlowerViewModel>() {
+class FlowerFragment @Inject constructor(
+) : BaseDaggerFragment<FlowerFragmentBinding, FlowerViewModel>() {
+    override val layoutId = R.layout.flower_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(FlowerFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.flower_fragment
 
     private var mFirstLoad = true
 

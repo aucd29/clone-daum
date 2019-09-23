@@ -21,8 +21,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 29. <p/>
  */
 
-class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>()
-    , OnBackPressedListener {
+class MusicFragment @Inject constructor(
+) : BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.music_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(MusicFragment::class.java)
 
@@ -31,8 +32,6 @@ class MusicFragment @Inject constructor() : BaseDaggerFragment<MusicFragmentBind
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.music_fragment
 
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())

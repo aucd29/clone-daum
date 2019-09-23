@@ -31,8 +31,9 @@ import javax.inject.Inject
  *  - https://developers.kakao.com/docs/android/getting-started#%ED%82%A4%ED%95%B4%EC%8B%9C-%EB%93%B1%EB%A1%9D
  */
 class SpeechFragment @Inject constructor(
-) : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>()
-    , OnBackPressedListener, SpeechRecognizeListener {
+) : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>(), OnBackPressedListener
+    , SpeechRecognizeListener {
+    override val layoutId = R.layout.speech_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(SpeechFragment::class.java)
 
@@ -42,7 +43,7 @@ class SpeechFragment @Inject constructor(
 
     @Inject lateinit var navigator: Navigator
 
-    override val layoutId = R.layout.speech_fragment
+
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
     private var mRecognizer: SpeechRecognizerClient? = null

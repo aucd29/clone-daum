@@ -25,8 +25,9 @@ import dagger.Binds
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
  */
 
-class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>()
-    , BarcodeCallback {
+class BarcodeFragment @Inject constructor(
+) : BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>(), BarcodeCallback {
+    override val layoutId = R.layout.barcode_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(BarcodeFragment::class.java)
 
@@ -34,8 +35,6 @@ class BarcodeFragment @Inject constructor() : BaseDaggerFragment<BarcodeFragment
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.barcode_fragment
 
     override fun initViewBinding() {
         mBinding.barcodeScanner.apply {

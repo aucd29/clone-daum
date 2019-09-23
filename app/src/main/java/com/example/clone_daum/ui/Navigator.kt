@@ -10,6 +10,10 @@ import com.example.clone_daum.ui.browser.BrowserSubmenuFragment
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
 import com.example.clone_daum.ui.main.MainFragment
+import com.example.clone_daum.ui.main.alarm.AlarmFragment
+import com.example.clone_daum.ui.main.homemenu.HomeMenuFragment
+import com.example.clone_daum.ui.main.hometext.HomeTextFragment
+import com.example.clone_daum.ui.main.login.LoginFragment
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeFragment
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputFragment
@@ -18,6 +22,7 @@ import com.example.clone_daum.ui.main.mediasearch.music.MusicFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
+import com.example.clone_daum.ui.main.setting.SettingFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -66,6 +71,49 @@ class Navigator @Inject constructor(
 
         manager.show<NavigationFragment>(FragmentParams(CONTAINER))
     }
+
+    fun settingFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("SETTING FRAGMENT")
+        }
+
+        manager.show<SettingFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
+    }
+
+    fun homeMenuFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("HOME MENU FRAGMENT")
+        }
+
+        manager.show<HomeMenuFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
+    }
+
+    fun homeTextFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("HomeTextFragment")
+        }
+
+        manager.showDialog(HomeTextFragment(), "home-text-fragment")
+    }
+
+    fun loginFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("LoginFragment")
+        }
+
+        manager.show<LoginFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun alarmFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("AlarmFragment")
+        }
+
+        manager.show<AlarmFragment>(FragmentParams(CONTAINER))
+    }
+
 
     fun mediaSearchFragment() {
         if (mLog.isInfoEnabled) {

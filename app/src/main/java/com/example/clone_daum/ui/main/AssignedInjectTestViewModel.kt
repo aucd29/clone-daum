@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
  */
 
 class AssignedInjectTestViewModel @AssistedInject constructor(
-    @Assisted private val handle: SavedStateHandle
+    @Assisted private val stateHandle: SavedStateHandle
 ) : ViewModel() {
     companion object {
         private val mLog = LoggerFactory.getLogger(AssignedInjectTestViewModel::class.java)
@@ -20,7 +20,7 @@ class AssignedInjectTestViewModel @AssistedInject constructor(
         private const val K_HELLO = "hello"
     }
 
-    val testLive = handle.getLiveData<String>(K_HELLO, "world")
+    val testLive = stateHandle.getLiveData<String>(K_HELLO, "world")
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

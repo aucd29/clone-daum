@@ -16,11 +16,12 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
  */
 
-class MailFragment @Inject constructor() : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
+class MailFragment @Inject constructor(
+) : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
+    override val layoutId = R.layout.mail_fragment
+
     private val mLoginViewModel: NavigationLoginViewModel by inject()
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
-
-    override val layoutId = R.layout.mail_fragment
 
     override fun initViewBinding() = mBinding.run {
         // LOGOUT STATUS

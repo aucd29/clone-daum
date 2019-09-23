@@ -30,10 +30,10 @@ open class CommandEventViewModel constructor (
     }
 }
 
-abstract class LifeCycleCommandEventViewModel constructor (
+abstract class LifecycleCommandEventViewModel constructor(
     app: Application
 ) : CommandEventViewModel(app), LifecycleEventObserver
 
-interface ISavedStateHandle {
-    var savedStateHandle: SavedStateHandle
-}
+//interface ISavedStateHandle {
+//    var savedStateHandle: SavedStateHandle
+//}

@@ -27,15 +27,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 class NavigationFragment constructor(
 ) : BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
     , OnBackPressedListener, DrawerLayout.DrawerListener {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
-    }
+    override val layoutId = R.layout.navigation_fragment
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
     @Inject lateinit var adapter: NavigationTabAdapter
-
-    override val layoutId = R.layout.navigation_fragment
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
@@ -51,9 +47,6 @@ class NavigationFragment constructor(
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        observe(brsOpenEvent) {
-            navigator.browserFragment(it)
-        }
     }
 
     override fun onDestroyView() {
@@ -71,7 +64,36 @@ class NavigationFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
+        NavigationViewModel.apply {
+            when (cmd) {
+                CMD_SETTING             -> settingFragment()
+                CMD_MENU_POSITION       -> homeMenuFragment()
+                CMD_MENU_TEXT_SIZE      -> homeTextFragment()
+                CMD_ALARM               -> alarmFragment()
+                CMD_LOGIN               -> loginFragment()
+                CMD_BROWSER             -> browserFragment(data.toString())
+            }
+        }
     }
+
+    private fun settingFragment() =
+        navigator.settingFragment()
+
+    private fun homeMenuFragment() =
+        navigator.homeMenuFragment()
+
+    private fun homeTextFragment() =
+        navigator.homeTextFragment()
+
+    private fun alarmFragment() =
+        navigator.alarmFragment()
+
+    private fun loginFragment() =
+        navigator.loginFragment()
+
+    private fun browserFragment(url: String) =
+        navigator.browserFragment(url)
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

@@ -17,7 +17,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 25. <p/>
  */
 
-class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<FavoriteModifyFragmentBinding, FavoriteModifyViewModel>() {
+class FavoriteModifyFragment @Inject constructor(
+) : BaseDaggerFragment<FavoriteModifyFragmentBinding, FavoriteModifyViewModel>() {
+    override val layoutId = R.layout.favorite_modify_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyFragment::class.java)
 
@@ -25,8 +27,6 @@ class FavoriteModifyFragment @Inject constructor() : BaseDaggerFragment<Favorite
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.favorite_modify_fragment
 
     override fun initViewBinding() {
         mBinding.apply {

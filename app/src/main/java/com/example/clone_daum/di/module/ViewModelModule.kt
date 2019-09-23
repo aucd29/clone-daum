@@ -8,6 +8,13 @@ import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
+import com.example.clone_daum.ui.main.alarm.AlarmFragment
+import com.example.clone_daum.ui.main.alarm.AlarmViewModel
+import com.example.clone_daum.ui.main.homemenu.HomeMenuFragment
+import com.example.clone_daum.ui.main.homemenu.HomeMenuViewModel
+import com.example.clone_daum.ui.main.hometext.HomeTextFragment
+import com.example.clone_daum.ui.main.hometext.HomeTextViewModel
+import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeViewModel
@@ -23,6 +30,7 @@ import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
+import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import com.example.clone_daum.ui.search.SearchViewModel
 import com.squareup.inject.assisted.dagger2.AssistedModule
@@ -97,7 +105,6 @@ abstract class ViewModelModule {
     @ViewModelKey(BarcodeInputViewModel::class)
     abstract fun bindBarcodeInputViewModel(vm: BarcodeInputViewModel): ViewModel
 
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // NAVIGATION
@@ -141,19 +148,51 @@ abstract class ViewModelModule {
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // SEARCH
+    // SETTING
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @Binds
     @IntoMap
-    @ViewModelKey(SearchViewModel::class)
-    abstract fun bindSearchViewModel(vm: SearchViewModel): ViewModel
+    @ViewModelKey(SettingViewModel::class)
+    abstract fun bindSettingViewModel(vm: SettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeMenuViewModel::class)
+    abstract fun bindHomeMenuFragment(vm: HomeMenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeTextViewModel::class)
+    abstract fun bindHomeTextViewModel(vm: HomeTextViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoginViewModel::class)
+    abstract fun bindLoginViewModel(vm: LoginViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AlarmViewModel::class)
+    abstract fun bindAlarmViewModel(vm: AlarmViewModel): ViewModel
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SEARCH
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(SearchViewModel::class)
+//    abstract fun bindSearchViewModel(vm: SearchViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(PopularViewModel::class)
     abstract fun bindPopularViewModel(vm: PopularViewModel): ViewModel
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

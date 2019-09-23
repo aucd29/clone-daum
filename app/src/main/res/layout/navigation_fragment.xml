@@ -63,7 +63,7 @@
                         app:layout_constraintStart_toEndOf="@+id/nav_menu_position"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="X"
-                        android:onClick="@{() -> model.command(model.CMD_WEBVIEW_TEXT_SIZE)}"
+                        android:onClick="@{() -> model.command(model.CMD_MENU_TEXT_SIZE)}"
                 />
 
                 <TextView
@@ -109,7 +109,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
                         app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                        android:onClick="@{() -> model.command(model.CMD_RECEIVED_NOTI)}"
+                        android:onClick="@{() -> model.command(model.CMD_ALARM)}"
                 />
 
                 <TextView
@@ -119,7 +119,7 @@
                         app:layout_constraintEnd_toStartOf="@+id/navi_notification"
                         app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
                         app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                        android:onClick="@{() -> model.command(model.CMD_BOOKMARK)}"
+                        android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
                 />
 
                 <!-- line 2
@@ -210,7 +210,7 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/navi_vertical_bar"
-                            android:onClick="@{() -> model.command(model.CMD_NOTIFICATION)}"
+                            android:onClick="@{() -> model.command(model.CMD_BROWSER, model.URL_NOTIFICATION)}"
                     >
 
                         <TextView

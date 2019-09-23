@@ -18,6 +18,8 @@ import javax.inject.Inject
  */
 class FavoriteProcessFragment @Inject constructor()
     : BaseDaggerFragment<FavoriteProcessFragmentBinding, FavoriteProcessViewModel>() {
+    override val layoutId = R.layout.favorite_process_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteProcessFragment::class.java)
 
@@ -27,8 +29,6 @@ class FavoriteProcessFragment @Inject constructor()
     }
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.favorite_process_fragment
 
     override fun initViewBinding() {
     }

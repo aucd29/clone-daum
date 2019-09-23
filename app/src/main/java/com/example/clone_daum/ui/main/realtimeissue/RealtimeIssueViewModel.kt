@@ -13,7 +13,7 @@ import com.example.clone_daum.model.remote.RealtimeIssue
 import com.example.clone_daum.model.remote.RealtimeIssueType
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
-import brigitte.viewmodel.LifeCycleCommandEventViewModel
+import brigitte.viewmodel.LifecycleCommandEventViewModel
 import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class RealtimeIssueViewModel @Inject constructor(
     val preConfig: PreloadConfig,
     app: Application
-) : LifeCycleCommandEventViewModel(app) {
+) : LifecycleCommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
@@ -244,7 +244,7 @@ class RealtimeIssueViewModel @Inject constructor(
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // LifeCycleCommandEventViewModel
+    // LifecycleCommandEventViewModel
     //
     ////////////////////////////////////////////////////////////////////////////////////
 

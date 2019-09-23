@@ -24,6 +24,8 @@ import dagger.Binds
 
 class MainWebviewFragment @Inject constructor(
 ): BaseDaggerWebViewFragment<MainWebviewFragmentBinding, MainViewModel>() {
+    override val layoutId = R.layout.main_webview_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
 
@@ -38,14 +40,13 @@ class MainWebviewFragment @Inject constructor(
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var navigator: Navigator
 
-    override val layoutId = R.layout.main_webview_fragment
+    private val mSplashViewModel: SplashViewModel by activityInject()
+
     override val webview: WebView
         get() = mBinding.webview
 
     private val mPosition: Int
         get() = arguments?.getInt(MainTabAdapter.K_POSITION) ?: 0
-
-    private val mSplashViewModel: SplashViewModel by activityInject()
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {

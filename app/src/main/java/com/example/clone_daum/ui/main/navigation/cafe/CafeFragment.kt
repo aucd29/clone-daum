@@ -18,7 +18,8 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
  */
 
-class CafeFragment @Inject constructor() : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
+class CafeFragment @Inject constructor(
+) : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
     override val layoutId = R.layout.cafe_fragment
 
     private val mLoginViewModel: NavigationLoginViewModel by inject()

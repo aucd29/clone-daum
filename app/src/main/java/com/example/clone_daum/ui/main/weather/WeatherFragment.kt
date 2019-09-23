@@ -31,6 +31,7 @@ import javax.inject.Inject
 
 class WeatherFragment
     : BaseDaggerBottomSheetDialogFragment<WeatherFragmentBinding, WeatherViewModel>() {
+    override val layoutId = R.layout.weather_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(WeatherFragment::class.java)
 
@@ -46,8 +47,6 @@ class WeatherFragment
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.weather_fragment
 
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =

@@ -14,13 +14,14 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
  */
 
-class ShortcutFragment @Inject constructor() : BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
+class ShortcutFragment @Inject constructor(
+) : BaseDaggerFragment<ShortcutFragmentBinding, ShortcutViewModel>() {
+    override val layoutId = R.layout.shortcut_fragment
+
     private val mSitemapViewModel : SitemapViewModel by inject()
     private val mFrequentlySiteModel : FrequentlySiteViewModel by inject()
 
     @Inject lateinit var navigator: Navigator
-
-    override val layoutId = R.layout.shortcut_fragment
 
     override fun bindViewModel() {
         super.bindViewModel()
