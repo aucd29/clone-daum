@@ -1,7 +1,6 @@
 package com.example.clone_daum.ui.main
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.webkit.WebView
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.MainWebviewFragmentBinding

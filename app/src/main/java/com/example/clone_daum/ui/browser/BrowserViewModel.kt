@@ -84,10 +84,6 @@ class BrowserViewModel @Inject constructor(app: Application
     }
 
     fun applyUrl(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("APPLY URL : $url")
-        }
-
         visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
         urlString.set(url)
     }

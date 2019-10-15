@@ -146,7 +146,9 @@ inline fun Fragment.finish(animate: Boolean = true) {
         fragmentManager?.pop()
     } else {
         fragmentManager?.apply {
-            beginTransaction().setCustomAnimations(0, 0).commitNow()
+            beginTransaction()
+                .setCustomAnimations(0, 0)
+                .commit()
             pop()
         }
     }
@@ -157,6 +159,9 @@ inline fun Fragment.finish(animate: Boolean = true) {
 //
 //    findNavController().popBackStack()
 }
+
+inline fun Fragment.finishInclusive() =
+    fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
 /**
  * 화면을 ON / OFF 시킨다.

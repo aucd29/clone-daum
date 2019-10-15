@@ -294,6 +294,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
+    override fun commandFinish() = finish()
 }
 
 

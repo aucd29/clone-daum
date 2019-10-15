@@ -6,6 +6,7 @@ import android.net.Uri
 import android.view.View
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.FragmentManager
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
@@ -226,7 +227,7 @@ class BrowserFragment constructor(
                 webview.goBack()
             } else {
                 endAnimation()
-                finish()
+                finishInclusive()
             }
         }
 

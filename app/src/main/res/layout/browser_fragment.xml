@@ -46,7 +46,7 @@
                     app:layout_constraintStart_toEndOf="@+id/brs_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="@dimen/brs_ssl_mgn_s"
+                    android:layout_marginStart="@dimen/dp5"
                     android:src="@{model.sslIconResId}"
                     android:visibility="@{model.visibleSslIcon}"
                     tools:ignore="ContentDescription"
@@ -54,19 +54,19 @@
 
             <TextView
                     android:id="@+id/brs_url"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
                     app:layout_constraintStart_toEndOf="@+id/brs_ssl_icon"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/reload_icon"
-                    tools:text="urlinfoasdfasdfassafdsaf dfasdfasdfa sdfasdaf"
-                    android:layout_marginStart="@dimen/brs_url_mgn_s"
-                    android:maxWidth="@dimen/brs_url_max_w"
+                    android:layout_marginStart="@dimen/dp5"
+                    android:layout_marginEnd="@dimen/dp5"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:textColor="@android:color/black"
-                    android:paddingEnd="10dp"
                     android:text="@{model.urlString}"
+                    tools:text="urlinfoasdfasdfassafdsaf dfasdfasdfa sdfasdaf"
             />
 
             <ImageView

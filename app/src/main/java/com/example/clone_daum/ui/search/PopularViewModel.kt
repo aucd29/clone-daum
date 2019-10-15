@@ -21,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import javax.inject.Provider
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 11. <p/>
@@ -28,7 +29,7 @@ import javax.inject.Inject
 
 class PopularViewModel @Inject constructor(
     val disposable: CompositeDisposable,
-    layoutManager: ChipsLayoutManager,
+    layoutManager: Provider<ChipsLayoutManager>,
     app: Application
 ) : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
@@ -40,7 +41,7 @@ class PopularViewModel @Inject constructor(
     private var mPopularList: PopularSearchedWord? = null
 
     val visiblePopular    = ObservableInt(View.GONE)
-    val chipLayoutManager = ObservableField(layoutManager)
+    val chipLayoutManager = ObservableField(layoutManager.get())
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -49,7 +50,6 @@ class PopularViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun load(html: String) {
-
         if (mPopularList == null) {
             if (mLog.isDebugEnabled) {
                 mLog.debug("HTML PARSE (POPULAR LIST)")

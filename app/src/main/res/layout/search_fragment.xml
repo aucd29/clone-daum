@@ -110,7 +110,7 @@
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="@dimen/search_popular_pad"
-                            android:visibility="@{popularmodel.visiblePopular}"
+                        android:visibility="@{popularmodel.visiblePopular}"
                         />
 
                 <androidx.recyclerview.widget.RecyclerView

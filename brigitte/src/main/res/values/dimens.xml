@@ -38,6 +38,7 @@
     <dimen name="dp160">160dp</dimen>
     <dimen name="dp180">180dp</dimen>
     <dimen name="dp200">200dp</dimen>
+    <dimen name="dp250">250dp</dimen>
     <dimen name="dp320">320dp</dimen>
     <dimen name="dp400">400dp</dimen>
 

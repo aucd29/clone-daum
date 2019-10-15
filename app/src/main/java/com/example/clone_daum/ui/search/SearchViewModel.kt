@@ -57,23 +57,23 @@ class SearchViewModel @AssistedInject constructor(
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
 
-    val searchKeyword            = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
-    val searchIconResId          = ObservableInt(config.SEARCH_ICON)
-    val toggleRecentSearchText   = ObservableInt(R.string.search_turn_off_recent_search)
-    val toggleEmptyAreaText      = ObservableInt(R.string.search_empty_recent_search)
-    val editorAction             = ObservableField<(String?) -> Boolean>()
+    val searchKeyword          = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
+    val searchIconResId        = ObservableInt(config.SEARCH_ICON)
+    val toggleRecentSearchText = ObservableInt(R.string.search_turn_off_recent_search)
+    val toggleEmptyAreaText    = ObservableInt(R.string.search_empty_recent_search)
+    val editorAction           = ObservableField<(String?) -> Boolean>()
 
-    var prefSearchRecycler       = prefs().getBoolean(K_RECENT_SEARCH, true)
-    val visibleSearchRecycler    = ObservableInt(View.VISIBLE)
-    val visibleBottomButtons     = ObservableInt(View.VISIBLE)
+    var prefSearchRecycler     = prefs().getBoolean(K_RECENT_SEARCH, true)
+    val visibleSearchRecycler  = ObservableInt(View.VISIBLE)
+    val visibleBottomButtons   = ObservableInt(View.VISIBLE)
 
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
-    val itemAnimator             = ObservableField<RecyclerView.ItemAnimator?>()
-
+    val itemAnimator           = ObservableField<RecyclerView.ItemAnimator?>()
 
     fun init() {
         editorAction.set {
             eventSearch(it)
+
             true
         }
 
@@ -103,6 +103,7 @@ class SearchViewModel @AssistedInject constructor(
                         mLog.debug("INSERTED DATA $it")
                     }
 
+                    stateHandle.set(STS_KEYWORD, "")
                     searchKeyword.set("")
                 }, { e ->
                     errorLog(e)
@@ -180,7 +181,7 @@ class SearchViewModel @AssistedInject constructor(
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
 
     fun suggest(keyword: String) {
-//        stateHandle.set(STS_KEYWORD, keyword)
+        stateHandle.set(STS_KEYWORD, keyword)
 
         mDisposable.add(daum.suggest(keyword)
             .map {

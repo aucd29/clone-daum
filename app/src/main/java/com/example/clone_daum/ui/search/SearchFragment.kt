@@ -1,6 +1,7 @@
 package com.example.clone_daum.ui.search
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
@@ -13,10 +14,13 @@ import com.example.clone_daum.R
 import com.example.clone_daum.di.module.AssistedViewModelKey
 import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
-import com.example.clone_daum.ui.main.AssignedInjectTestViewModel
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -25,6 +29,8 @@ import javax.inject.Inject
 
 class SearchFragment @Inject constructor(
 ) : BaseDaggerFragment<SearchFragmentBinding, PopularViewModel>() {
+    private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
+
     override val layoutId = R.layout.search_fragment
 
     init {
@@ -36,16 +42,16 @@ class SearchFragment @Inject constructor(
     @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
-//    private val mSearchViewModel: SearchViewModel by inject()
     private val mSearchViewModel: SearchViewModel by stateInject { factory }
 
     override fun initViewBinding() {
     }
 
     override fun bindViewModel() {
-        super.bindViewModel()
+//        super.bindViewModel()
+        mBinding.model        = mSearchViewModel
+        mBinding.popularmodel = mViewModel
 
-        mBinding.model = mSearchViewModel
         addCommandEventModel(mSearchViewModel)
     }
 
@@ -78,6 +84,10 @@ class SearchFragment @Inject constructor(
     }
 
     private fun browserFragment(url: Any) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("HIDE SEARCH FRAGMENT ${this}")
+        }
+
         navigator.browserFragment(url.toString())
     }
 
