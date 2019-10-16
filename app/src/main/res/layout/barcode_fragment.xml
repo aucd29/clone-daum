@@ -23,7 +23,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/barcode_back"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/barcode_qr_barcode_search"
@@ -67,7 +67,7 @@
                     android:onClick="@{() -> model.command(model.CMD_FILE_OPEN)}"
                     tools:ignore="ContentDescription"/>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/barcode_insert_code"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:background="@drawable/selector_barcode_input_background"
@@ -97,7 +97,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="ContentDescription"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/barcode_book_search_only"
                 app:layout_constraintStart_toStartOf="parent"

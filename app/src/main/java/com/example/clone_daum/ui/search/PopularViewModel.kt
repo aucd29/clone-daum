@@ -4,17 +4,12 @@ import android.app.Application
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
 import brigitte.RecyclerViewModel
 import brigitte.jsonParse
 import com.example.clone_daum.R
-import com.example.clone_daum.common.PreloadConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -28,8 +23,8 @@ import javax.inject.Provider
  */
 
 class PopularViewModel @Inject constructor(
-    val disposable: CompositeDisposable,
-    layoutManager: Provider<ChipsLayoutManager>,
+    private val mDisposable: CompositeDisposable,
+    private val mLayoutManager: Provider<ChipsLayoutManager>,
     app: Application
 ) : RecyclerViewModel<PopularKeyword>(app) {
     companion object {
@@ -40,8 +35,8 @@ class PopularViewModel @Inject constructor(
 
     private var mPopularList: PopularSearchedWord? = null
 
-    val visiblePopular    = ObservableInt(View.GONE)
-    val chipLayoutManager = ObservableField(layoutManager.get())
+    val viewPopular       = ObservableInt(View.GONE)
+    val chipLayoutManager = ObservableField<ChipsLayoutManager>()
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -55,7 +50,7 @@ class PopularViewModel @Inject constructor(
                 mLog.debug("HTML PARSE (POPULAR LIST)")
             }
 
-            disposable.add(Observable.just(html)
+            mDisposable.add(Observable.just(html)
                 .subscribeOn(Schedulers.io())
                 .map(::parsePopular)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,6 +67,8 @@ class PopularViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun init() {
+        chipLayoutManager.set(mLayoutManager.get())
+
         // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
         initAdapter(R.layout.search_recycler_popular_item)
         selectPopularList()
@@ -92,7 +89,7 @@ class PopularViewModel @Inject constructor(
             }
 
             this.items.set(chooseItem)
-            visiblePopular.set(View.VISIBLE)
+            viewPopular.set(View.VISIBLE)
         }
     }
 
@@ -114,8 +111,7 @@ class PopularViewModel @Inject constructor(
 //        }]
 //        },
 
-    // [ [ {},{} ] ] 면 될거를 { "items": [ "item": [ {}, {}] ] } 이러고 있으니.. =_ = 내 참..
-    // 이런 애들은 뽑고 나는.. 젠장 ㅋㅋㅋㅋ 머 js 에서 이렇게 달라고 한걸로 대충 이해하자
+    // [ [ {},{} ] ] 면 될거를 { "items": [ "item": [ {}, {}] ] } 이렇게 하는건 =_ =?
 
     private fun parsePopular(html: String): PopularSearchedWord? {
         var data: PopularSearchedWord? = null

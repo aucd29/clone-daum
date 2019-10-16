@@ -33,7 +33,7 @@
         />
         <!--android:onTextChanged="@{(s, st, b, c) -> model.innerSearch()}"-->
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/brs_inner_search_count"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textColor="@color/colorAccent"
@@ -45,7 +45,7 @@
                 android:text="@{model.innerSearchCount}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/brs_inner_search_prev"
                 style="@style/dingbat"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:onClick="@{() -> model.command(model.CMD_INNER_SEARCH_PREV)}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/brs_inner_search_next"
                 style="@style/dingbat"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"

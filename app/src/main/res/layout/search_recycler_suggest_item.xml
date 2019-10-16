@@ -17,7 +17,7 @@
             android:onClick="@{() -> model.command(model.CMD_BRS_SEARCH, item.rawKeyword)}"
             >
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/suggest_keyword"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 tools:text="Search Keyword"

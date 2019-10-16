@@ -13,9 +13,10 @@ import com.example.clone_daum.R
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 18. <p/>
  */
 
-class BrowserSubmenuViewModel @Inject constructor(application: Application
-    , val config: PreloadConfig
-) : RecyclerViewModel<BrowserSubMenu>(application) {
+class BrowserSubmenuViewModel @Inject constructor(
+    val config: PreloadConfig,
+    app: Application
+) : RecyclerViewModel<BrowserSubMenu>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)
 

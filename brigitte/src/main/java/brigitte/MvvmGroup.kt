@@ -387,6 +387,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> constructor(
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
+    override fun commandFinish() = dismiss()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

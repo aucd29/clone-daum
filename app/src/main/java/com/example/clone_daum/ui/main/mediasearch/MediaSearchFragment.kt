@@ -25,6 +25,7 @@ import javax.inject.Inject
 class MediaSearchFragment @Inject constructor(
 ) : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>(), OnBackPressedListener {
     override val layoutId = R.layout.media_search_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 

@@ -35,7 +35,7 @@
                     android:onClick="@{() -> model.finish()}"
                     tools:ignore="ContentDescription"/>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/favorite_modify_title"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintStart_toEndOf="@+id/favorite_modify_back"
@@ -48,7 +48,7 @@
                     android:textColor="@android:color/white"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/favorite_folder_select_all"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -62,7 +62,7 @@
             />
 
             <!-- disable 항목 추가해야 함 -->
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/favorite_folder_delete"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
@@ -76,7 +76,7 @@
                     android:enabled="@{model.enableDelete}"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/favorite_folder_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/favorite_empty"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textAppearance="@style/solid"

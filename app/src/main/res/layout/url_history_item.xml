@@ -32,7 +32,7 @@
                 android:onCheckedChanged="@{(v, state) -> model.deleteList(state, item)}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
                 android:layout_width="30dp" android:layout_height="30dp"
                 app:layout_constraintStart_toEndOf="@+id/checkbox"
@@ -48,7 +48,7 @@
                 android:layout_marginBottom="10dp"
                 tools:ignore="SmallSp"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text"
                 android:layout_width="0dp" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
@@ -63,7 +63,7 @@
                 tools:text="NAME"
                 tools:ignore="SmallSp"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/url"
                 android:layout_width="0dp" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@+id/text"

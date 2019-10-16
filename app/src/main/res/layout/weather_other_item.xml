@@ -32,7 +32,7 @@ bindding adapter 를 이용하면 될듯
                 tools:ignore="ContentDescription"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/description"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@{item.description}"
@@ -43,7 +43,7 @@ bindding adapter 를 이용하면 될듯
                 android:gravity="center"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/value"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@{item.value}"

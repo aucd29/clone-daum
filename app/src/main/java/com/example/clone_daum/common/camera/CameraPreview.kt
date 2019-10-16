@@ -8,7 +8,6 @@ import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.TextureView

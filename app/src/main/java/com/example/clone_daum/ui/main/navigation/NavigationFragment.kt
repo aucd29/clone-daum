@@ -46,7 +46,7 @@ class NavigationFragment constructor(
         naviViewpager.adapter = adapter
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
+    override fun initViewModelEvents() {
     }
 
     override fun onDestroyView() {
@@ -55,6 +55,10 @@ class NavigationFragment constructor(
         }
 
         super.onDestroyView()
+    }
+
+    override fun commandFinish() {
+        mBinding.naviContainer.closeDrawer(GravityCompat.END)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

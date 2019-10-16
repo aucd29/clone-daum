@@ -24,9 +24,11 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserViewModel @Inject constructor(app: Application
-    , private var mUrlHistoryDao: UrlHistoryDao
-    , private val mZzimDao: ZzimDao
+class BrowserViewModel @Inject constructor(
+    private var mUrlHistoryDao: UrlHistoryDao,
+    private val mZzimDao: ZzimDao,
+    private val mDisposable: CompositeDisposable,
+    app: Application
 ) : CommandEventViewModel(app), IWebViewEventAware, ISeekBarProgressChanged {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
@@ -49,7 +51,6 @@ class BrowserViewModel @Inject constructor(app: Application
     }
 
     override val webviewEvent = ObservableField<WebViewEvent>()
-    private lateinit var mDisposable: CompositeDisposable
 
     val urlString           = ObservableField<String>()
     val brsCount            = ObservableField<String>()
@@ -77,10 +78,6 @@ class BrowserViewModel @Inject constructor(app: Application
 
     init {
         applyWebViewFontSize()
-    }
-
-    fun init(disposable: CompositeDisposable) {
-        mDisposable = disposable
     }
 
     fun applyUrl(url: String) {
@@ -112,7 +109,7 @@ class BrowserViewModel @Inject constructor(app: Application
             }, { e -> errorLog(e, mLog) }))
     }
 
-    fun applyBrsCount(count: Int) {
+    fun applyBrowserCount(count: Int) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BRS COUNT : $count")
         }

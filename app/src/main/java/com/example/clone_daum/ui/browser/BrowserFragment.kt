@@ -1,12 +1,10 @@
 package com.example.clone_daum.ui.browser
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.fragment.app.FragmentManager
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
@@ -29,8 +27,9 @@ import javax.inject.Inject
  */
 
 class BrowserFragment constructor(
-) : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+) : BaseDaggerWebViewFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
     override val layoutId = R.layout.browser_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
@@ -42,10 +41,9 @@ class BrowserFragment constructor(
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
-    private val webview: WebView
+    override val webview: WebView
         get() = mBinding.brsWebview
 
-    private var mUrl: String? = null
     private var mScrollListener: () -> Unit = {
         if (webview.scrollY > config.SCREEN.y) {
             if (mBinding.brsMoveTop.alpha == 0f) {
@@ -64,15 +62,7 @@ class BrowserFragment constructor(
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun initViewBinding() = mBinding.run {
-        mUrl = arguments?.getString(K_URL)
-
-        if (mUrl == null) {
-            mLog.error("ERROR: URL : $mUrl")
-            return@run
-        }
-
         startAnimation()
 
         mViewModel.apply {
@@ -90,8 +80,7 @@ class BrowserFragment constructor(
                 }, sslError = {
                     mLog.error("ERROR: SSL ")
 
-                    dialog(
-                        DialogParam(context = requireContext(),
+                    dialog(DialogParam(context = requireContext(),
                             messageId = R.string.brs_dlg_message_ssl_error,
                             titleId = R.string.brs_dlg_title_ssl_error,
                             positiveId = R.string.dlg_btn_open,
@@ -122,7 +111,7 @@ class BrowserFragment constructor(
             ))
         }
 
-        loadUrl(mUrl!!)
+        loadUrl(mUrl)
         webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
         webview.setFindListener { active, count, _ ->
             mViewModel.innerSearchCount.set("${active + 1}/$count")
@@ -130,36 +119,24 @@ class BrowserFragment constructor(
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        if (mUrl == null) {
-            return@run
-        }
-
-        init(disposable())
-        applyUrl(mUrl!!)
-        // 임시 코드 추후 db 에서 얻어오도록 해야함
-        applyBrsCount(mBinding.brsArea.childCount)
+        applyUrl(mUrl)
+        // TODO 임시 코드 추후 db 에서 얻어오도록 해야함
+        applyBrowserCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
         innerSearch.observe { findAllAsync(it.get()) }
 
         // livedata 로 observe
-        observe(brsFontSizeLive) { webview.settings.textZoom =
-            it + BrowserViewModel.V_DEFAULT_TEXT_SIZE }
+        observe(brsFontSizeLive) {
+            webview.settings.textZoom = it + BrowserViewModel.V_DEFAULT_TEXT_SIZE
+        }
     }
 
     private fun addHistory() {
         mViewModel.addHistory(webview.url, webview.title)
     }
 
-    override fun onPause() {
-        super.onPause()
-
-        webview.pause()
-    }
-
     override fun onResume() {
-        webview.resume()
-
         activity?.let { fullscreen(it.isFullscreen()) }
 
         super.onResume()
@@ -167,7 +144,6 @@ class BrowserFragment constructor(
 
     override fun onDestroyView() {
         webview.apply {
-            free()
             viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
         }
 
@@ -271,7 +247,6 @@ class BrowserFragment constructor(
         try {
             webview.findNext(false)
         } catch (e: Exception) {
-
         }
     }
 
@@ -279,7 +254,6 @@ class BrowserFragment constructor(
         try {
             webview.findNext(true)
         } catch (e: Exception) {
-
         }
     }
 
@@ -332,20 +306,19 @@ class BrowserFragment constructor(
     private fun copyUrl() {
         context?.toast(R.string.brs_copied_url)
 
-        mUrl?.let {
-            requireContext().clipboard(it)
-        }
+        requireContext().clipboard(mUrl)
     }
 
     private fun showSystemBrowser() {
-        confirm(R.string.brs_using_base_brs, R.string.common_notify, listener = { res, _ ->
-            if (res) {
-                startActivity(Intent(Intent.ACTION_VIEW).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    data = Uri.parse(mUrl)
-                })
-            }
-        })
+        confirm(R.string.brs_using_base_brs, R.string.common_notify,
+            listener = { res, _ ->
+                if (res) {
+                    startActivity(Intent(Intent.ACTION_VIEW).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        data = Uri.parse(mUrl)
+                    })
+                }
+            })
     }
 
     private fun searchWithInScreen() {
@@ -370,6 +343,7 @@ class BrowserFragment constructor(
             arrayListOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
             { _, r ->
                if (r) {
+                   // TODO api 29 부터는 이렇게 할 수 없기 때문에 코드 변경이 필요 함
                    disposable().add(webview.capture(CaptureParams(
                        "CLONE-DAUM_Screenshot-${System.currentTimeMillis()}.png"))
                        .subscribe { res ->

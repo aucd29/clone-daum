@@ -81,11 +81,11 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:visibility="@{model.visibleSearchRecycler}"
+                        android:visibility="@{model.viewSearchRecycler}"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:bindItemAnimator="@{model.itemAnimator}" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/search_empty_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -96,10 +96,10 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         android:gravity="center"
                         android:text="@{model.toggleEmptyAreaText}"
-                        android:visibility="@{model.visibleSearchRecycler == View.VISIBLE ? View.GONE : View.VISIBLE}"
+                        android:visibility="@{model.viewSearchRecycler == View.VISIBLE ? View.GONE : View.VISIBLE}"
                 />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/popular_keyword"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:padding="@dimen/search_popular_pad"
-                        android:visibility="@{popularmodel.visiblePopular}"
+                        android:visibility="@{popularmodel.viewPopular}"
                         />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -125,7 +125,7 @@
                         app:bindItems="@{popularmodel.items}"
                         app:bindAdapter="@{popularmodel.adapter}"
                         app:bindLayoutManager="@{popularmodel.chipLayoutManager}"
-                        android:visibility="@{popularmodel.visiblePopular}"
+                        android:visibility="@{popularmodel.viewPopular}"
                 />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -156,11 +156,11 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:visibility="@{model.visibleBottomButtons}"
+                    android:visibility="@{model.viewBottomButtons}"
                 >
 
                 <!--android:layout_height="@dimen/search_bottom_recent_height"-->
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/toggle_recent_search"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                         tools:text="TEXT"
                 />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/close_search_history_bar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -183,10 +183,10 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="@dimen/search_bottom_close_mgn_s"
-                        android:visibility="@{model.visibleSearchRecycler}"
+                        android:visibility="@{model.viewSearchRecycler}"
                         tools:ignore="HardcodedText"/>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/search_delete_all_history"
@@ -197,11 +197,11 @@
                         android:padding="@dimen/search_bottom_cancel_pad"
                         android:gravity="center_vertical|center"
                         android:onClick="@{() -> model.eventDeleteAllHistory()}"
-                        android:visibility="@{model.visibleSearchRecycler}"
+                        android:visibility="@{model.viewSearchRecycler}"
                 />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@string/search_cancel"
                     app:layout_constraintStart_toStartOf="parent"

@@ -7,7 +7,7 @@
         <!--<variable name="model" type="" />-->
     </data>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tab_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

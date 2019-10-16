@@ -247,7 +247,7 @@ class SpeechFragment @Inject constructor(
 
         disposable().add(Single.just(partialResult)
             .observeOn(AndroidSchedulers.mainThread())
-            .filter { !it.isEmpty() }
+            .filter { it.isNotEmpty() }
             .subscribe({
                 mViewModel.speechResult.set(it)
             }, { errorLog(it, mLog) }))
@@ -272,7 +272,6 @@ class SpeechFragment @Inject constructor(
 
         disposable().add(Single.just(mRecognizer)
             .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.io())
             .map {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("OPEN BRS")

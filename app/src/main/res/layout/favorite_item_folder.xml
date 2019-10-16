@@ -17,7 +17,7 @@
             android:onClick="@{() -> model.command(model.CMD_FOLDER_CHOOSE, item._id)}"
     >
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
                 android:layout_width="25dp" android:layout_height="25dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
                 android:background="@drawable/ic_work_black_24dp"
                 tools:ignore="SmallSp"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text"
                 android:layout_width="0dp" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"
@@ -45,7 +45,7 @@
                 tools:text="NAME"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/detail"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"

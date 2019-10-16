@@ -23,8 +23,9 @@ import kotlin.math.abs
  * https://stackoverflow.com/questions/34136178/swiperefreshlayout-blocking-horizontally-scrolled-recyclerview
  */
 
-open class VerticalSwipeRefreshLayout @JvmOverloads constructor(context: Context
-    , attrs: AttributeSet
+open class VerticalSwipeRefreshLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet
 ) : SwipeRefreshLayout(context, attrs) {
     private var touchSlop: Int
     private var prevX: Float = 0f
@@ -37,6 +38,10 @@ open class VerticalSwipeRefreshLayout @JvmOverloads constructor(context: Context
 
     open fun initLayout() {
 
+    }
+
+    override fun requestLayout() {
+        super.requestLayout()
     }
 
     @SuppressLint("Recycle")

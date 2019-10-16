@@ -34,7 +34,7 @@
                     tools:ignore="ContentDescription"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/folder_title"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintStart_toEndOf="@+id/folder_back"
@@ -47,7 +47,7 @@
                     android:textColor="@android:color/black"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/folder_add"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@+id/folder_back"

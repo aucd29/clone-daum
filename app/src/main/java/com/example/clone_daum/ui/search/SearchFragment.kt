@@ -1,10 +1,8 @@
 package com.example.clone_daum.ui.search
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
 import com.example.clone_daum.ui.Navigator
@@ -18,8 +16,6 @@ import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -39,7 +35,6 @@ class SearchFragment @Inject constructor(
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var layoutManager: ChipsLayoutManager
     @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
     private val mSearchViewModel: SearchViewModel by stateInject { factory }
@@ -48,7 +43,6 @@ class SearchFragment @Inject constructor(
     }
 
     override fun bindViewModel() {
-//        super.bindViewModel()
         mBinding.model        = mSearchViewModel
         mBinding.popularmodel = mViewModel
 
@@ -56,11 +50,8 @@ class SearchFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
+        mViewModel.init()
         mSearchViewModel.init()
-        mViewModel.apply {
-            init()
-            chipLayoutManager.set(layoutManager)
-        }
     }
 
     override fun onDestroyView() {
@@ -89,6 +80,7 @@ class SearchFragment @Inject constructor(
         }
 
         navigator.browserFragment(url.toString())
+        mBinding.root.postDelayed({ hideKeyboard(mBinding.searchEdit) }, 100)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

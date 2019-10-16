@@ -19,6 +19,7 @@ import javax.inject.Inject
 class UrlHistoryFragment @Inject constructor(
 ) : BaseDaggerFragment<UrlHistoryFragmentBinding, UrlHistoryViewModel>(), OnBackPressedListener {
     override val layoutId  = R.layout.url_history_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
     }

@@ -14,7 +14,7 @@
             android:padding="6dp"
             android:onClick="@{() -> model.eventOpen(item.url)}"
     >
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
                 android:layout_width="45dp" android:layout_height="45dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +27,7 @@
                 app:bindIsMoveUrl="@{item.title}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"

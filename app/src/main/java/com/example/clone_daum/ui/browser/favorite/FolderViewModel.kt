@@ -18,9 +18,10 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 5. <p/>
  */
 
-class FolderViewModel @Inject constructor(application: Application
-    , private val mFavoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), IFolder {
+class FolderViewModel @Inject constructor(
+    private val mFavoriteDao: MyFavoriteDao,
+    app: Application
+) : RecyclerViewModel<MyFavorite>(app), IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FolderViewModel::class.java)
 

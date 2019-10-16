@@ -5,7 +5,6 @@ import android.view.View
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.SavedStateHandle
-//import androidx.lifecycle.SavedStateHandle
 import androidx.recyclerview.widget.RecyclerView
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
@@ -20,27 +19,22 @@ import brigitte.viewmodel.app
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-//import com.example.clone_daum.di.module.ViewModelAssistedFactory
-//import com.squareup.inject.assisted.Assisted
-//import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
-import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
  *
  * https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle
  */
-
 class SearchViewModel @AssistedInject constructor(
-    @Assisted private val stateHandle: SavedStateHandle,
-    private val config: Config,
-    private val daum: DaumSuggestService,
-    private val searchDao: SearchHistoryDao,
+    @Assisted private val stateHandle: SavedStateHandle, // stateHandle 이름 고정임 변경하면 컴파일 안됨
+    private val mConfig: Config,
+    private val mDaum: DaumSuggestService,
+    private val mSearchDao: SearchHistoryDao,
     private val mDisposable: CompositeDisposable,
     app: Application
 ) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
@@ -57,18 +51,31 @@ class SearchViewModel @AssistedInject constructor(
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
 
-    val searchKeyword          = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
-    val searchIconResId        = ObservableInt(config.SEARCH_ICON)
-    val toggleRecentSearchText = ObservableInt(R.string.search_turn_off_recent_search)
-    val toggleEmptyAreaText    = ObservableInt(R.string.search_empty_recent_search)
-    val editorAction           = ObservableField<(String?) -> Boolean>()
+    private val mSearchKeyword          = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
+    private val mSearchIconResId        = ObservableInt(mConfig.SEARCH_ICON)
+    private val mToggleRecentSearchText = ObservableInt(R.string.search_turn_off_recent_search)
+    private val mToggleEmptyAreaText    = ObservableInt(R.string.search_empty_recent_search)
 
-    var prefSearchRecycler     = prefs().getBoolean(K_RECENT_SEARCH, true)
-    val visibleSearchRecycler  = ObservableInt(View.VISIBLE)
-    val visibleBottomButtons   = ObservableInt(View.VISIBLE)
+    private var prefSearchRecycler = prefs().getBoolean(K_RECENT_SEARCH, true)
 
+    val viewSearchRecycler = ObservableInt(View.VISIBLE)
+    val viewBottomButtons  = ObservableInt(View.VISIBLE)
+
+    // EVENT OBSERVER
+    val editorAction = ObservableField<(String?) -> Boolean>()
     // https://stackoverflow.com/questions/29873859/how-to-implement-itemanimator-of-recyclerview-to-disable-the-animation-of-notify/30837162
-    val itemAnimator           = ObservableField<RecyclerView.ItemAnimator?>()
+    val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
+
+    // PUBLIC
+    val searchKeyword: ObservableField<String>
+        get() = mSearchKeyword
+    val searchIconResId: ObservableInt
+        get() = mSearchIconResId
+    val toggleRecentSearchText: ObservableInt
+        get() = mToggleRecentSearchText
+    val toggleEmptyAreaText: ObservableInt
+        get() = mToggleEmptyAreaText
+
 
     fun init() {
         editorAction.set {
@@ -81,8 +88,8 @@ class SearchViewModel @AssistedInject constructor(
         reloadHistoryData()
     }
 
-    fun reloadHistoryData() {
-        mDisposable.add(searchDao.search()
+    private fun reloadHistoryData() {
+        mDisposable.add(mSearchDao.search()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -93,7 +100,7 @@ class SearchViewModel @AssistedInject constructor(
 
     fun eventSearch(keyword: String?) {
         keyword?.let {
-            mDisposable.add(searchDao.insert(SearchHistory(
+            mDisposable.add(mSearchDao.insert(SearchHistory(
                 keyword = it,
                 date    = System.currentTimeMillis()))
                 .subscribeOn(Schedulers.io())
@@ -104,7 +111,7 @@ class SearchViewModel @AssistedInject constructor(
                     }
 
                     stateHandle.set(STS_KEYWORD, "")
-                    searchKeyword.set("")
+                    mSearchKeyword.set("")
                 }, { e ->
                     errorLog(e)
                     snackbar(e)
@@ -137,7 +144,7 @@ class SearchViewModel @AssistedInject constructor(
             mLog.debug("EXIST LIST $res, SHOW LAYOUT $prefSearchRecycler")
         }
 
-        visibleSearchRecycler.set(if (res && prefSearchRecycler) {
+        viewSearchRecycler.set(if (res && prefSearchRecycler) {
             View.VISIBLE
         } else {
             View.GONE
@@ -153,7 +160,7 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun eventDeleteHistory(item: SearchHistory) {
-        mDisposable.add(searchDao.delete(item)
+        mDisposable.add(mSearchDao.delete(item)
             .subscribeOn(Schedulers.io())
             .subscribe ({
                 if (mLog.isDebugEnabled) {
@@ -168,7 +175,7 @@ class SearchViewModel @AssistedInject constructor(
     fun eventDeleteAllHistory() {
         confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
             , listener = { res, _ -> if (res) {
-                mDisposable.add(Completable.fromAction { searchDao.deleteAll() }
+                mDisposable.add(Completable.fromAction { mSearchDao.deleteAll() }
                     .subscribeOn(Schedulers.io())
                     .subscribe ({
                         if (mLog.isDebugEnabled) {
@@ -183,7 +190,7 @@ class SearchViewModel @AssistedInject constructor(
     fun suggest(keyword: String) {
         stateHandle.set(STS_KEYWORD, keyword)
 
-        mDisposable.add(daum.suggest(keyword)
+        mDisposable.add(mDaum.suggest(keyword)
             .map {
                 mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 
@@ -213,9 +220,9 @@ class SearchViewModel @AssistedInject constructor(
             mLog.debug("TEXT CHANGED $s ($count)")
         }
 
-        visibleBottomButtons.set(if (count > 0) {
+        viewBottomButtons.set(if (count > 0) {
             suggest(s.toString())
-            visibleSearchRecycler.set(View.VISIBLE)
+            viewSearchRecycler.set(View.VISIBLE)
 
             View.GONE
         } else {

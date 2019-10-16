@@ -21,7 +21,6 @@ import javax.inject.Inject
  */
 
 class FavoriteFragment @Inject constructor(
-
 ): BaseDaggerFragment<FavoriteFragmentBinding, FavoriteViewModel>() {
     override val layoutId  = R.layout.favorite_fragment
     companion object {
