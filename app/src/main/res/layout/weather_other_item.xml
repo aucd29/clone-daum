@@ -22,7 +22,7 @@ icon 은 없어서 일단 데이터 타입은 주었으나 넣어두진 않음 �
 bindding adapter 를 이용하면 될듯
 -->
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"

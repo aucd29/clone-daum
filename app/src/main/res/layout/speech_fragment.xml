@@ -25,7 +25,7 @@
                 app:bindScaleY="@{model.bgScale}"
                 />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/speech_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 tools:ignore="ContentDescription"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/speech_back"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:padding="@dimen/speech_icon_pad"

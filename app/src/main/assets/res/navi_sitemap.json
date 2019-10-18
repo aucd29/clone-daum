@@ -1,23 +1,32 @@
 [
-  {"name":"mail", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035331895.png",
-    "url": "http://m.mail.daum.net/hanmailex/mobile/basic/Top.daum", "isApp": false}
-, {"name":"miznet", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160331025136769.png",
-  "url": "http://m.miznet.daum.net/", "isApp": false}
-, {"name":"cafe", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20161010114405648.png",
-  "url": "http://m.cafe.daum.net/", "isApp": false}
-, {"name":"tstory", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035815572.png",
-  "url": "http://www.tistory.com/m/", "isApp": false}
-, {"name":"tip", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316040100520.png",
-  "url": "http://m.tip.daum.net/", "isApp": false}
-, {"name":"webtoon", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160317083145697.png",
-  "url": "http://m.webtoon.daum.net", "isApp": false}
-, {"name":"finance", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160411012743629.png",
-  "url": "http://m.finance.daum.net/", "isApp": false}
-, {"name":"dic", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035953037.png",
-  "url": "net.daum.android.dictionary", "isApp": true}
-, {"name":"brunch", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035453251.png",
-  "url": "com.daumkakao.android.brunchapp", "isApp": true}
-, {"name":"map", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160919111944771.png",
-  "url": "net.daum.android.map", "isApp": true}
-]
 
+  {"name":"브런치", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160316035453251.png",
+  "url": "com.daumkakao.android.brunchapp", "isApp": true}
+, {"name":"티스토리", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160316035815572.png",
+  "url": "net.daum.android.tistoryapp", "isApp": true}
+, {"name":"금융", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160411012743629.png",
+  "url": "http://m.finance.daum.net/", "isApp": false}
+, {"name":"부동산", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20170404071621241.png",
+  "url": "net.daum.realestate", "isApp": true}
+
+
+, {"name":"웹툰", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160317083145697.png",
+  "url": "net.daum.android.webtoon", "isApp": true}
+, {"name":"자동차", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160317080639439.png",
+  "url": "http://m.auto.daum.net/index.daum", "isApp": false}
+, {"name":"카카오스토리", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160321033600710.png",
+  "url": "com.kakao.story", "isApp": true}
+, {"name":"카카오맵", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160919111944771.png",
+  "url": "net.daum.android.map", "isApp": true}
+
+
+, {"name":"메일", "icon":"https://t1.daumcdn.net/daumtop_chanel/op/20160316035331895.png",
+  "url": "net.daum.android.mail", "isApp": true}
+, {"name":"다음사전", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160316035953037.png",
+  "url": "net.daum.android.dictionary", "isApp": true}
+, {"name":"블로그", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160316035551388.png",
+  "url": "http://m.blog.daum.net/", "isApp": false}
+, {"name":"전체서비스", "icon":"http://t1.daumcdn.net/daumtop_chanel/op/20160321041654292.png",
+  "url": "http://m.daum.net/site.daum?tab=app", "isApp": false}
+
+]

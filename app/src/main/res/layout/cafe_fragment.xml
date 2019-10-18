@@ -5,7 +5,7 @@
 >
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel"/>
+<!--        <variable name="model" type="com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel"/>-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

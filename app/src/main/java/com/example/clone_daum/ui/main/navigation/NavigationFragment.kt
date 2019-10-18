@@ -5,23 +5,27 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.fragment.findNavController
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.common.Config
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import dagger.android.ContributesAndroidInjector
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
+import com.example.clone_daum.model.remote.Sitemap
 import com.example.clone_daum.ui.Navigator
+import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
+import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import dagger.Binds
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 20. <p/>
+ *
+ * 디자인이 변경되었었네 [aucd29][2019-10-16]
  */
 
 class NavigationFragment constructor(
@@ -29,9 +33,37 @@ class NavigationFragment constructor(
     , OnBackPressedListener, DrawerLayout.DrawerListener {
     override val layoutId = R.layout.navigation_fragment
 
+    companion object {
+        private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
+    }
+
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
-    @Inject lateinit var adapter: NavigationTabAdapter
+
+    private val mTranslationX: Float by lazy { -30f.dpToPx(requireContext()) }
+    private val mSitemapModel: SitemapViewModel by inject()
+    private val mFrequentlySiteModel: FrequentlySiteViewModel by inject()
+    private val mStackChanger: () -> Unit = {
+        val name = this@NavigationFragment.javaClass.simpleName
+        val currentName = activity?.supportFragmentManager?.current?.javaClass?.simpleName
+
+        if (name == currentName) {
+            translationRight()
+        }
+    }
+
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로
+        // injectOf 를 이용 한다.
+        mBinding.apply {
+            sitemapModel        = mSitemapModel
+            frequentlySiteModel = mFrequentlySiteModel
+        }
+
+        addCommandEventModels(mSitemapModel, mFrequentlySiteModel)
+    }
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
@@ -43,16 +75,18 @@ class NavigationFragment constructor(
         }
 
         naviView.layoutWidth(config.SCREEN.x)
-        naviViewpager.adapter = adapter
+        activity?.supportFragmentManager?.addOnBackStackChangedListener(mStackChanger)
+
+        Unit
     }
 
     override fun initViewModelEvents() {
+        mFrequentlySiteModel.init(disposable())
     }
 
     override fun onDestroyView() {
-        mBinding.apply {
-            naviContainer.removeDrawerListener(this@NavigationFragment)
-        }
+        activity?.supportFragmentManager?.removeOnBackStackChangedListener(mStackChanger)
+        mBinding.naviContainer.removeDrawerListener(this@NavigationFragment)
 
         super.onDestroyView()
     }
@@ -68,20 +102,26 @@ class NavigationFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        NavigationViewModel.apply {
-            when (cmd) {
-                CMD_SETTING             -> settingFragment()
-                CMD_MENU_POSITION       -> homeMenuFragment()
-                CMD_MENU_TEXT_SIZE      -> homeTextFragment()
-                CMD_ALARM               -> alarmFragment()
-                CMD_LOGIN               -> loginFragment()
-                CMD_BROWSER             -> browserFragment(data.toString())
-            }
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND EVENT $cmd = $data")
+        }
+
+        when (cmd) {
+            NavigationViewModel.CMD_SETTING        -> settingFragment()
+            NavigationViewModel.CMD_MENU_POSITION  -> homeMenuFragment()
+            NavigationViewModel.CMD_MENU_TEXT_SIZE -> homeTextFragment()
+            NavigationViewModel.CMD_ALARM          -> alarmFragment()
+            NavigationViewModel.CMD_LOGIN          -> loginFragment()
+            NavigationViewModel.CMD_BROWSER        -> browserFragment(data.toString())
+
+            SitemapViewModel.CMD_OPEN_APP          -> openApp(data as Sitemap)
         }
     }
 
-    private fun settingFragment() =
+    private fun settingFragment() {
         navigator.settingFragment()
+        translationLeft()
+    }
 
     private fun homeMenuFragment() =
         navigator.homeMenuFragment()
@@ -98,15 +138,38 @@ class NavigationFragment constructor(
     private fun browserFragment(url: String) =
         navigator.browserFragment(url)
 
+    private fun openApp(item: Sitemap) {
+        if (item.isApp) {
+            requireContext().launchApp(item.url)
+        } else {
+            navigator.browserFragment(item.url)
+        }
+    }
+
+    private fun translationLeft() {
+        mBinding.root.animate().translationX(mTranslationX).start()
+    }
+
+    private fun translationRight() {
+        with(mBinding.root) {
+            if (translationX == mTranslationX) {
+                animate().translationX(0f).start()
+            }
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // OnBackPressedListener
     //
     ////////////////////////////////////////////////////////////////////////////////////
-    
+
     override fun onBackPressed() = mBinding.run {
-        naviContainer.closeDrawer(GravityCompat.END)
+        if (naviContainer.isDrawerVisible(mBinding.naviView)) {
+            naviContainer.closeDrawer(GravityCompat.END)
+        } else {
+            finish()
+        }
 
         true
     }

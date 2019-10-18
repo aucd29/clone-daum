@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.navigation.mail.MailViewModel" />
+<!--        <variable name="model" type="com.example.clone_daum.ui.main.navigation.mail.MailViewModel" />-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

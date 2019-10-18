@@ -41,7 +41,7 @@
                 android:scaleY="1.1"
                 />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/music_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                 tools:ignore="ContentDescription"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/music_back"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:padding="@dimen/speech_icon_pad"

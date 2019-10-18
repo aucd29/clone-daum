@@ -17,41 +17,30 @@ import javax.inject.Inject
  */
 
 class FrequentlySiteViewModel @Inject constructor(
-    app: Application,
-    val frequentlySiteDao: FrequentlySiteDao
+    val frequentlySiteDao: FrequentlySiteDao,
+    app: Application
 ) : RecyclerViewModel<FrequentlySite>(app) {
     companion object {
-        const val DEFAULT_TITLE = "사이트이동"
+        const val CMD_BROWSER = "browser"
     }
 
     private lateinit var mDisposable: CompositeDisposable
 
-    val gridCount    = ObservableInt(5)
+    val gridCount    = ObservableInt(4)
     val brsOpenEvent = SingleLiveEvent<String>()
 
     fun init(disposable: CompositeDisposable) {
         mDisposable = disposable
         initAdapter(R.layout.frequently_item)
 
-        mDisposable.add(frequentlySiteDao.select().subscribe {
-            // 마지막 아이템에 기본 값을 추가 함
-            (it as ArrayList<FrequentlySite>).add(FrequentlySite(
-                title = DEFAULT_TITLE, url = "http://m.daum.net", count = 1))
-
-            items.set(it)
-        })
+        mDisposable.add(frequentlySiteDao.select()
+            .subscribe {
+                items.set(it)
+            })
     }
 
     fun eventIconText(item: FrequentlySite) =
-        if (item.title == DEFAULT_TITLE) {
-            "http"
-        } else {
-            item.url.replace("^(http|https)://".toRegex(), "")
-                .substring(0, 1)
-                .toUpperCase()
-        }
-
-    fun eventOpen(url: String) {
-        brsOpenEvent.value = url
-    }
+        item.url.replace("^(http|https)://".toRegex(), "")
+            .substring(0, 1)
+            .toUpperCase()
 }

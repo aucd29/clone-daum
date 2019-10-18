@@ -1,14 +1,13 @@
 package com.example.clone_daum.ui.main.navigation
 
 import android.app.Application
-import android.view.MenuItem
-import android.view.View
-import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
 import androidx.databinding.ObservableFloat
-import androidx.databinding.ObservableInt
+import brigitte.DialogParam
+import brigitte.IDialogAware
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
+import brigitte.viewmodel.app
+import com.example.clone_daum.R
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -18,35 +17,24 @@ import javax.inject.Inject
 
 class NavigationViewModel @Inject constructor(
     application: Application
-) : CommandEventViewModel(application) {
+) : CommandEventViewModel(application), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationViewModel::class.java)
 
-        const val URL_NOTIFICATION = "https://m.daum.net/channel/notice_an"
+        const val URL_NOTIFICATION    = "https://m.daum.net/channel/notice_an"
 
-        const val ITN_SHORTCUT = "shortcut"
-        const val ITN_MAIL     = "mail"
-        const val ITN_CAFE     = "cafe"
+        const val CMD_SETTING         = "setting"
+        const val CMD_MENU_POSITION   = "menu-position"
+        const val CMD_MENU_TEXT_SIZE  = "menu-text-size"
+        const val CMD_ALARM           = "alarm"
+        const val CMD_LOGIN           = "login"
+        const val CMD_BROWSER         = "browser"
 
-        const val CMD_SETTING           = "setting"
-        const val CMD_MENU_POSITION     = "menu-position"
-        const val CMD_MENU_TEXT_SIZE    = "menu-text-size"
-        const val CMD_ALARM             = "alarm"
-        const val CMD_LOGIN             = "login"
-
-        const val CMD_BROWSER           = "browser"
+        const val ITN_FREQUENTLY_INFO = "frequently-info"
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // AWARE
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
+    override val dialogEvent = SingleLiveEvent<DialogParam>()
 
-    val newIcon         = ObservableInt(View.GONE)
-    val currentItem     = ObservableInt(0)
-    val offsetPageLimit = ObservableInt(3)
-    val smoothScroll    = ObservableBoolean(false)
     val backgroundAlpha = ObservableFloat(1f)
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -57,10 +45,7 @@ class NavigationViewModel @Inject constructor(
 
     override fun command(cmd: String, data: Any) {
         when (cmd) {
-            ITN_SHORTCUT -> currentItem.set(0)
-            ITN_MAIL     -> currentItem.set(1)
-            ITN_CAFE     -> currentItem.set(2)
-
+            ITN_FREQUENTLY_INFO -> alert(app, R.string.shortcut_link_history)
             else -> super.command(cmd, data)
         }
     }

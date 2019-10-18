@@ -8,11 +8,8 @@ import com.example.clone_daum.ui.browser.BrowserViewModel
 import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
-import com.example.clone_daum.ui.main.alarm.AlarmFragment
 import com.example.clone_daum.ui.main.alarm.AlarmViewModel
-import com.example.clone_daum.ui.main.homemenu.HomeMenuFragment
 import com.example.clone_daum.ui.main.homemenu.HomeMenuViewModel
-import com.example.clone_daum.ui.main.hometext.HomeTextFragment
 import com.example.clone_daum.ui.main.hometext.HomeTextViewModel
 import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
@@ -23,8 +20,6 @@ import com.example.clone_daum.ui.main.mediasearch.music.MusicViewModel
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationViewModel
-import com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel
-import com.example.clone_daum.ui.main.navigation.mail.MailViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
@@ -32,8 +27,6 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
-import com.example.clone_daum.ui.search.SearchViewModel
-import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -116,15 +109,15 @@ abstract class ViewModelModule {
     @ViewModelKey(NavigationViewModel::class)
     abstract fun bindNavigationViewModel(vm: NavigationViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(CafeViewModel::class)
-    abstract fun bindCafeViewModel(vm: CafeViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MailViewModel::class)
-    abstract fun bindMailViewModel(vm: MailViewModel): ViewModel
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(CafeViewModel::class)
+//    abstract fun bindCafeViewModel(vm: CafeViewModel): ViewModel
+//
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(MailViewModel::class)
+//    abstract fun bindMailViewModel(vm: MailViewModel): ViewModel
 
     @Binds
     @IntoMap

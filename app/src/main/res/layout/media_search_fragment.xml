@@ -58,7 +58,7 @@
                         android:layout_weight="1"
                         android:onClick="@{() -> model.command(model.CMD_SEARCH_SPEECH)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_voice"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_mic_none_white_24dp"
@@ -88,7 +88,7 @@
                         android:layout_weight="1"
                         android:onClick="@{() -> model.command(model.CMD_SEARCH_MUSIC)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_music"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_music_note_white_24dp"
@@ -118,7 +118,7 @@
                         android:layout_weight="1"
                         android:onClick="@{() -> model.command(model.CMD_SEARCH_FLOWER)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_flower"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_spa_white_24dp"
@@ -148,7 +148,7 @@
                         android:layout_weight="1"
                         android:onClick="@{() -> model.command(model.CMD_SEARCH_BARCODE)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_code"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_visibility_white_24dp"
@@ -225,7 +225,7 @@
                 android:background="@drawable/shape_search_background"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/media_search_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -237,7 +237,7 @@
                 tools:ignore="ContentDescription"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/media_search_extend_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

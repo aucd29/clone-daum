@@ -55,12 +55,11 @@
     <string name="navi_tab_mail">메일</string>
     <string name="navi_tab_cafe">카페</string>
     <string name="navi_notice">공지사항</string>
+    <string name="navi_notice_message">개인정보 처리방침 개정 안내</string>
     <string name="navi_login">로그인</string>
     <string name="navi_require_login_check_mail">로그인하여\n내 메일 목록을 확인해 보세요</string>
     <string name="navi_require_login_check_cafe">로그인하여\n내 카페 목록을 확인해 보세요</string>
     <string name="navi_show_cafe">카페 둘러보기</string>
-
-    <!-- shortcut -->
     <string name="shortcut_link_history">앱을 통해 이동한 자주가는 사이트가 여기에 노출됨</string>
     <string name="shortcut_sitemap_title">전체서비스 &gt;</string>
     <string name="shortcut_favorite_title">자주가는 사이트</string>

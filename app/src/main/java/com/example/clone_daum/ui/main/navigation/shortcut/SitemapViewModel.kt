@@ -5,9 +5,7 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Sitemap
 import brigitte.RecyclerViewModel
-import brigitte.viewmodel.app
-import brigitte.arch.SingleLiveEvent
-import brigitte.launchApp
+import brigitte.dpToPx
 import com.example.clone_daum.R
 import javax.inject.Inject
 
@@ -20,19 +18,19 @@ class SitemapViewModel @Inject constructor(
     app: Application
 ) : RecyclerViewModel<Sitemap>(app) {
 
-    val gridCount    = ObservableInt(5)
-    val brsOpenEvent = SingleLiveEvent<String>()
+    companion object {
+        const val CMD_OPEN_APP = "open-app"
+    }
+
+    val gridCount = ObservableInt(4)
+
+    // 원래 대로라면 그냥 R값만 들어간 아이콘 형태는 아니고
+    // 이미지 마스크 처리를 해야할 터인데
+    // 귀차니즘... =_ = 으로 대체 [aucd29][2019-10-16]
+    val roundedCorners = ObservableInt(10.dpToPx(app))
 
     init {
         initAdapter(R.layout.sitemap_item)
         items.set(preConfig.naviSitemapList)
-    }
-
-    fun eventOpen(item: Sitemap) {
-        if (item.isApp) {
-            app.launchApp(item.url)
-        } else {
-            brsOpenEvent.value = item.url
-        }
     }
 }

@@ -3,6 +3,7 @@ package brigitte.bindingadapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.widget.ImageView
@@ -126,7 +127,14 @@ inline fun ImageView.glide(path: String, thumbnail: String?,
 
         // https://github.com/wasabeef/glide-transformations
         roundedCorners?.let { request.transform(CenterCrop(), RoundedCorners(it)) }
-        circleCrop?.let { if (it) { request.apply(RequestOptions.circleCropTransform()) }}
+        circleCrop?.let {
+            if (it) {
+                request.apply(RequestOptions.circleCropTransform())
+            }
+        }
+
+        // https://stackoverflow.com/questions/36652134/android-glide-load-picture-file-apply-overlay-and-set-to-imageview
+
 
         if (x != null && y != null && x > 0 && y > 0) {
             request.override(x, y)

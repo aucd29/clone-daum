@@ -44,7 +44,7 @@
                     tools:text="중구 명동"
             />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/weather_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                         android:visibility="@{model.visibleProgress ? View.GONE : View.VISIBLE}"
                 />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/weather_refresh_location_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
 
             <!-- WEAHTER INFO -->
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/weather_large_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

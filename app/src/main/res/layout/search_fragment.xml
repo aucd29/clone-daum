@@ -43,7 +43,7 @@
                 android:onTextChanged="@{model::onTextChanged}"
                 android:inputType="text"/>
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="@+id/search_edit"
                 app:layout_constraintEnd_toEndOf="@+id/search_edit"

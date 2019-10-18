@@ -21,7 +21,6 @@ import com.example.clone_daum.ui.main.mediasearch.flower.FlowerFragment
 import com.example.clone_daum.ui.main.mediasearch.music.MusicFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
-import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.setting.SettingFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import org.slf4j.LoggerFactory
@@ -92,7 +91,7 @@ class Navigator @Inject constructor(
 
     fun homeTextFragment() {
         if (mLog.isInfoEnabled) {
-            mLog.info("HomeTextFragment")
+            mLog.info("HOME TEXT FRAGMENT")
         }
 
         manager.showDialog(HomeTextFragment(), "home-text-fragment")
@@ -100,7 +99,7 @@ class Navigator @Inject constructor(
 
     fun loginFragment() {
         if (mLog.isInfoEnabled) {
-            mLog.info("LoginFragment")
+            mLog.info("LOGIN FRAGMENT")
         }
 
         manager.show<LoginFragment>(FragmentParams(CONTAINER))

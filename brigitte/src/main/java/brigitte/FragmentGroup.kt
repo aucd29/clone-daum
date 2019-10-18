@@ -146,9 +146,7 @@ inline fun Fragment.finish(animate: Boolean = true) {
         fragmentManager?.pop()
     } else {
         fragmentManager?.apply {
-            beginTransaction()
-                .setCustomAnimations(0, 0)
-                .commit()
+            beginTransaction().setCustomAnimations(0, 0).commit()
             pop()
         }
     }

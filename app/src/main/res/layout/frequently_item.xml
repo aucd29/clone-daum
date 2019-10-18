@@ -12,11 +12,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="6dp"
-            android:onClick="@{() -> model.eventOpen(item.url)}"
+            android:onClick="@{() -> model.command(model.CMD_BROWSER, item.url)}"
     >
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
-                android:layout_width="45dp" android:layout_height="45dp"
+                android:layout_width="@dimen/dp50" android:layout_height="@dimen/dp50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
