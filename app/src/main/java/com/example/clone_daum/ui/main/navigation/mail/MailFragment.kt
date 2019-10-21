@@ -18,48 +18,48 @@ import javax.inject.Inject
  * 디자인 변경으로 삭제 [aucd29][2019-10-17]
  */
 
-//class MailFragment @Inject constructor(
-//) : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
-//    override val layoutId = R.layout.mail_fragment
-//
-//    private val mLoginViewModel: NavigationLoginViewModel by inject()
-//    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
-//
-//    override fun initViewBinding() = mBinding.run {
-//        // LOGOUT STATUS
-//        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
-//        mLoginDataBinding.model = mLoginViewModel
-//
-//        mailContainer.addView(mLoginDataBinding.naviLoginContainer)
-//        mLoginDataBinding.naviLoginContainer.lpmm(mailContainer)
-//
-//        loginViewModelEvents()
-//    }
-//
-//    override fun initViewModelEvents() = mViewModel.run {
-//
-//    }
-//
-//    private fun loginViewModelEvents() = mLoginViewModel.run {
-//        message.set(R.string.navi_require_login_check_mail)
-//    }
-//
-//    ////////////////////////////////////////////////////////////////////////////////////
-//    //
-//    // MODULE
-//    //
-//    ////////////////////////////////////////////////////////////////////////////////////
-//
-//    @dagger.Module
-//    abstract class Module {
-//        @FragmentScope
-//        @ContributesAndroidInjector(modules = [MailFragmentModule::class])
-//        abstract fun contributeMailFragmentInjector(): MailFragment
-//    }
-//
-//    @dagger.Module
-//    abstract class MailFragmentModule {
-//        @Binds
-//        abstract fun bindSavedStateRegistryOwner(activity: MailFragment): SavedStateRegistryOwner
-//    }
-//}
+class MailFragment @Inject constructor(
+) : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
+    override val layoutId = R.layout.mail_fragment
+
+    private val mLoginViewModel: NavigationLoginViewModel by inject()
+    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
+
+    override fun initViewBinding() = mBinding.run {
+        // LOGOUT STATUS
+        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
+        mLoginDataBinding.model = mLoginViewModel
+
+        mailContainer.addView(mLoginDataBinding.naviLoginContainer)
+        mLoginDataBinding.naviLoginContainer.lpmm(mailContainer)
+
+        loginViewModelEvents()
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
+
+    }
+
+    private fun loginViewModelEvents() = mLoginViewModel.run {
+        message.set(R.string.navi_require_login_check_mail)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MODULE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @dagger.Module
+    abstract class Module {
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [MailFragmentModule::class])
+        abstract fun contributeMailFragmentInjector(): MailFragment
+    }
+
+    @dagger.Module
+    abstract class MailFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MailFragment): SavedStateRegistryOwner
+    }
+}

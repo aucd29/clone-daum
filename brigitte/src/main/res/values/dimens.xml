@@ -44,6 +44,7 @@
 
     <!--sp list-->
     <dimen name="sp8">8sp</dimen>
+    <dimen name="sp9">9sp</dimen>
     <dimen name="sp10">10sp</dimen>
     <dimen name="sp11">11sp</dimen>
     <dimen name="sp12">12sp</dimen>

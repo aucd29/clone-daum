@@ -10,7 +10,7 @@ import javax.inject.Inject
  * 디자인 변경으로 삭제 [aucd29][2019-10-17]
  */
 
-//class CafeViewModel @Inject constructor(application: Application)
-//    : AndroidViewModel(application) {
-//
-//}
+class CafeViewModel @Inject constructor(application: Application)
+    : AndroidViewModel(application) {
+
+}

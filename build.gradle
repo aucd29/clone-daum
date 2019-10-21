@@ -36,6 +36,8 @@ buildscript {
         firebase_core           = '16.0.1'
         firebase_msg            = '17.0.0'
         firebase_jobdispatcher  = '0.8.5'
+
+        KAKAO_SDK_VERSION = '1.24.0'
     }
 
     repositories {

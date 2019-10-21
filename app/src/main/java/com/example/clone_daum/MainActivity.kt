@@ -1,18 +1,23 @@
 package com.example.clone_daum
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
 import com.example.clone_daum.ui.Navigator
+import com.kakao.auth.ISessionCallback
+import com.kakao.auth.Session
+import com.kakao.util.exception.KakaoException
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>() {
+class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>(
+) {
     override val layoutId = R.layout.main_activity
 
     @Inject lateinit var navigator: Navigator

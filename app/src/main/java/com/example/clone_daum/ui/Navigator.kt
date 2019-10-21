@@ -21,6 +21,8 @@ import com.example.clone_daum.ui.main.mediasearch.flower.FlowerFragment
 import com.example.clone_daum.ui.main.mediasearch.music.MusicFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
+import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
+import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.setting.SettingFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import org.slf4j.LoggerFactory
@@ -82,7 +84,7 @@ class Navigator @Inject constructor(
 
     fun homeMenuFragment() {
         if (mLog.isInfoEnabled) {
-            mLog.info("HOME MENU FRAGMENT")
+            mLog.info("EDIT HOME MENU FRAGMENT")
         }
 
         manager.show<HomeMenuFragment>(FragmentParams(CONTAINER,
@@ -91,10 +93,28 @@ class Navigator @Inject constructor(
 
     fun homeTextFragment() {
         if (mLog.isInfoEnabled) {
-            mLog.info("HOME TEXT FRAGMENT")
+            mLog.info("RESIZE HOME TEXT FRAGMENT")
         }
 
-        manager.showDialog(HomeTextFragment(), "home-text-fragment")
+        manager.showDialog(HomeTextFragment(), HomeTextFragment::class.java.simpleName)
+    }
+
+    fun mailFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("MAIL FRAGMENT")
+        }
+
+        manager.show<MailFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
+    }
+
+    fun cafeFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("CAFE FRAGMENT")
+        }
+
+        manager.show<CafeFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
     }
 
     fun loginFragment() {

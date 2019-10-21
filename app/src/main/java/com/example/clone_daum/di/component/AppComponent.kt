@@ -2,6 +2,7 @@ package com.example.clone_daum.di.component
 
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.di.module.*
+import com.example.clone_daum.di.module.libs.KakaoModule
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule

@@ -20,6 +20,8 @@ import com.example.clone_daum.ui.main.mediasearch.music.MusicViewModel
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import com.example.clone_daum.ui.main.navigation.NavigationViewModel
+import com.example.clone_daum.ui.main.navigation.cafe.CafeViewModel
+import com.example.clone_daum.ui.main.navigation.mail.MailViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
@@ -109,15 +111,15 @@ abstract class ViewModelModule {
     @ViewModelKey(NavigationViewModel::class)
     abstract fun bindNavigationViewModel(vm: NavigationViewModel): ViewModel
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(CafeViewModel::class)
-//    abstract fun bindCafeViewModel(vm: CafeViewModel): ViewModel
-//
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(MailViewModel::class)
-//    abstract fun bindMailViewModel(vm: MailViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(CafeViewModel::class)
+    abstract fun bindCafeViewModel(vm: CafeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MailViewModel::class)
+    abstract fun bindMailViewModel(vm: MailViewModel): ViewModel
 
     @Binds
     @IntoMap

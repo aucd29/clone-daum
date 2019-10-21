@@ -63,7 +63,8 @@
     <string name="shortcut_link_history">앱을 통해 이동한 자주가는 사이트가 여기에 노출됨</string>
     <string name="shortcut_sitemap_title">전체서비스 &gt;</string>
     <string name="shortcut_favorite_title">자주가는 사이트</string>
-    <string name="shortcut_move_site">사이트이동</string>
+    <string name="shortcut_favorite_description">앱을 통해 이동한 방문기록 중\n자주가는 사이트가 이곳에 노출됩니다.</string>
+    <string name="shortcut_move_site">사이트이동 &gt;</string>
     <string name="shortcut_text_app">App</string>
 
     <!-- dlg -->

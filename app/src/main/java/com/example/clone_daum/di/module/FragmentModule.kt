@@ -17,6 +17,8 @@ import com.example.clone_daum.ui.main.mediasearch.flower.FlowerFragment
 import com.example.clone_daum.ui.main.mediasearch.music.MusicFragment
 import com.example.clone_daum.ui.main.mediasearch.speech.SpeechFragment
 import com.example.clone_daum.ui.main.navigation.NavigationFragment
+import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
+import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 //import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 //import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 //import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
@@ -48,8 +50,8 @@ import dagger.Module
 
     // NAVIGATION
     NavigationFragment.Module::class,
-//    CafeFragment.Module::class,
-//    MailFragment.Module::class,
+    CafeFragment.Module::class,
+    MailFragment.Module::class,
 //    ShortcutFragment.Module::class,
 
     // SETTING

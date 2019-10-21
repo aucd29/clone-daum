@@ -4,6 +4,7 @@ import brigitte.di.dagger.module.RxModule
 import brigitte.di.dagger.module.ViewModelFactoryModule
 import com.example.clone_daum.di.module.libs.CalligraphyModule
 import com.example.clone_daum.di.module.libs.ChipModule
+import com.example.clone_daum.di.module.libs.KakaoModule
 import com.example.clone_daum.di.module.libs.RxLocationModule
 import dagger.Module
 
@@ -18,6 +19,7 @@ import dagger.Module
     RxModule::class,
     DbModule::class,
     ViewModelModule::class,
-    ViewModelFactoryModule::class
+    ViewModelFactoryModule::class,
+    KakaoModule::class
 ])
 class UtilModule

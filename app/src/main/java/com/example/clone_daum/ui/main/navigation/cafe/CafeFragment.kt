@@ -20,48 +20,48 @@ import javax.inject.Inject
  * 디자인 변경으로 삭제 [aucd29][2019-10-17]
  */
 
-//class CafeFragment @Inject constructor(
-//) : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
-//    override val layoutId = R.layout.cafe_fragment
-//
-//    private val mLoginViewModel: NavigationLoginViewModel by inject()
-//    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
-//
-//
-//    override fun initViewBinding() = mBinding.run {
-//        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
-//        mLoginDataBinding.model = mLoginViewModel
-//
-//        cafeContainer.addView(mLoginDataBinding.naviLoginContainer)
-//        mLoginDataBinding.naviLoginContainer.lpmm(cafeContainer)
-//
-//        loginViewModelEvents()
-//    }
-//
-//    override fun initViewModelEvents() = mViewModel.run {
-//
-//    }
-//
-//    private fun loginViewModelEvents() = mLoginViewModel.run {
-//        message.set(R.string.navi_require_login_check_cafe)
-//    }
-//
-//    ////////////////////////////////////////////////////////////////////////////////////
-//    //
-//    // MODULE
-//    //
-//    ////////////////////////////////////////////////////////////////////////////////////
-//
-//    @dagger.Module
-//    abstract class Module {
-//        @FragmentScope
-//        @ContributesAndroidInjector(modules = [CafeFragmentModule::class])
-//        abstract fun contributeCafeFragmentInjector(): CafeFragment
-//    }
-//
-//    @dagger.Module
-//    abstract class CafeFragmentModule {
-//        @Binds
-//        abstract fun bindSavedStateRegistryOwner(activity: CafeFragment): SavedStateRegistryOwner
-//    }
-//}
+class CafeFragment @Inject constructor(
+) : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
+    override val layoutId = R.layout.cafe_fragment
+
+    private val mLoginViewModel: NavigationLoginViewModel by inject()
+    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
+
+
+    override fun initViewBinding() = mBinding.run {
+        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
+        mLoginDataBinding.model = mLoginViewModel
+
+        cafeContainer.addView(mLoginDataBinding.naviLoginContainer)
+        mLoginDataBinding.naviLoginContainer.lpmm(cafeContainer)
+
+        loginViewModelEvents()
+    }
+
+    override fun initViewModelEvents() = mViewModel.run {
+
+    }
+
+    private fun loginViewModelEvents() = mLoginViewModel.run {
+        message.set(R.string.navi_require_login_check_cafe)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // MODULE
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @dagger.Module
+    abstract class Module {
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [CafeFragmentModule::class])
+        abstract fun contributeCafeFragmentInjector(): CafeFragment
+    }
+
+    @dagger.Module
+    abstract class CafeFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: CafeFragment): SavedStateRegistryOwner
+    }
+}

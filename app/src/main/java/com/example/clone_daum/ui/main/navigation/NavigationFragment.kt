@@ -35,6 +35,8 @@ class NavigationFragment constructor(
 
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
+
+        private val URI_CAFE = "https://m.cafe.daum.net"
     }
 
     @Inject lateinit var navigator: Navigator
@@ -75,7 +77,7 @@ class NavigationFragment constructor(
         }
 
         naviView.layoutWidth(config.SCREEN.x)
-        activity?.supportFragmentManager?.addOnBackStackChangedListener(mStackChanger)
+        addStackChangeListener()
 
         Unit
     }
@@ -85,7 +87,7 @@ class NavigationFragment constructor(
     }
 
     override fun onDestroyView() {
-        activity?.supportFragmentManager?.removeOnBackStackChangedListener(mStackChanger)
+        removeStackChangeListener()
         mBinding.naviContainer.removeDrawerListener(this@NavigationFragment)
 
         super.onDestroyView()
@@ -94,6 +96,12 @@ class NavigationFragment constructor(
     override fun commandFinish() {
         mBinding.naviContainer.closeDrawer(GravityCompat.END)
     }
+
+    private fun addStackChangeListener() =
+        activity?.supportFragmentManager?.addOnBackStackChangedListener(mStackChanger)
+
+    private fun removeStackChangeListener() =
+        activity?.supportFragmentManager?.removeOnBackStackChangedListener(mStackChanger)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -107,14 +115,21 @@ class NavigationFragment constructor(
         }
 
         when (cmd) {
-            NavigationViewModel.CMD_SETTING        -> settingFragment()
-            NavigationViewModel.CMD_MENU_POSITION  -> homeMenuFragment()
-            NavigationViewModel.CMD_MENU_TEXT_SIZE -> homeTextFragment()
-            NavigationViewModel.CMD_ALARM          -> alarmFragment()
-            NavigationViewModel.CMD_LOGIN          -> loginFragment()
-            NavigationViewModel.CMD_BROWSER        -> browserFragment(data.toString())
+            NavigationViewModel.CMD_SETTING     -> settingFragment()
 
-            SitemapViewModel.CMD_OPEN_APP          -> openApp(data as Sitemap)
+            NavigationViewModel.CMD_LOGIN       -> loginFragment()
+            NavigationViewModel.CMD_ALARM       -> alarmFragment()
+            NavigationViewModel.CMD_URL_HISTORY -> urlHistoryFragment()
+
+            NavigationViewModel.CMD_MAIL        -> mailFragment()
+            NavigationViewModel.CMD_CAFE        -> cafeFragemnt()
+
+            NavigationViewModel.CMD_BROWSER     -> browserFragment(data.toString())
+
+            NavigationViewModel.CMD_EDIT_HOME_MENU -> editHomeMenuFragment()
+            NavigationViewModel.CMD_TEXT_SIZE      -> resizeTextFragment()
+
+            SitemapViewModel.CMD_OPEN_APP -> openApp(data as Sitemap)
         }
     }
 
@@ -123,11 +138,17 @@ class NavigationFragment constructor(
         translationLeft()
     }
 
-    private fun homeMenuFragment() =
+    private fun editHomeMenuFragment() =
         navigator.homeMenuFragment()
 
-    private fun homeTextFragment() =
+    private fun resizeTextFragment() =
         navigator.homeTextFragment()
+
+    private fun mailFragment() =
+        navigator.mailFragment()
+
+    private fun cafeFragemnt() =
+        navigator.browserFragment(URI_CAFE)
 
     private fun alarmFragment() =
         navigator.alarmFragment()
@@ -137,6 +158,9 @@ class NavigationFragment constructor(
 
     private fun browserFragment(url: String) =
         navigator.browserFragment(url)
+
+    private fun urlHistoryFragment() =
+        navigator.urlHistoryFragment()
 
     private fun openApp(item: Sitemap) {
         if (item.isApp) {
