@@ -10,8 +10,42 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/login_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            >
 
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/login_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="@dimen/dp15"
+                android:src="@drawable/ic_chevron_left_black_24dp"
+                android:onClick="@{() -> model.finish()}"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/login_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/app_name"
+                android:padding="@dimen/dp15"
+                android:textSize="@dimen/sp18"
+            />
+
+        <View
+                android:id="@+id/login_back_underline"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/login_back"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@color/tab_background"
+            />
 
         <com.kakao.usermgmt.LoginButton
                 android:id="@+id/com_kakao_login"

@@ -15,6 +15,7 @@ import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.clone_daum.ui.Navigator
+import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import dagger.Binds
@@ -37,14 +38,17 @@ class NavigationFragment constructor(
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
 
         private val URI_CAFE = "https://m.cafe.daum.net"
+        private val URI_MAIL = "https://m.mail.daum.net/"
     }
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
-    private val mTranslationX: Float by lazy { -30f.dpToPx(requireContext()) }
+    private val mTranslationX: Float by lazy { (-30f).dpToPx(requireContext()) }
     private val mSitemapModel: SitemapViewModel by inject()
     private val mFrequentlySiteModel: FrequentlySiteViewModel by inject()
+    private val mLoginViewModel: LoginViewModel by activityInject()
+
     private val mStackChanger: () -> Unit = {
         val name = this@NavigationFragment.javaClass.simpleName
         val currentName = activity?.supportFragmentManager?.current?.javaClass?.simpleName
@@ -62,6 +66,7 @@ class NavigationFragment constructor(
         mBinding.apply {
             sitemapModel        = mSitemapModel
             frequentlySiteModel = mFrequentlySiteModel
+            loginModel          = mLoginViewModel
         }
 
         addCommandEventModels(mSitemapModel, mFrequentlySiteModel)
@@ -78,12 +83,19 @@ class NavigationFragment constructor(
 
         naviView.layoutWidth(config.SCREEN.x)
         addStackChangeListener()
+        mLoginViewModel.checkIsLoginSession()
 
         Unit
     }
 
     override fun initViewModelEvents() {
         mFrequentlySiteModel.init(disposable())
+
+        observe(mLoginViewModel.status) {
+            if (mLog.isInfoEnabled) {
+                mLog.info("LOGIN STATUS : $it")
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -122,7 +134,7 @@ class NavigationFragment constructor(
             NavigationViewModel.CMD_URL_HISTORY -> urlHistoryFragment()
 
             NavigationViewModel.CMD_MAIL        -> mailFragment()
-            NavigationViewModel.CMD_CAFE        -> cafeFragemnt()
+            NavigationViewModel.CMD_CAFE        -> cafeFragment()
 
             NavigationViewModel.CMD_BROWSER     -> browserFragment(data.toString())
 
@@ -144,17 +156,27 @@ class NavigationFragment constructor(
     private fun resizeTextFragment() =
         navigator.homeTextFragment()
 
-    private fun mailFragment() =
-        navigator.mailFragment()
+    private fun mailFragment() {
+        if (mLoginViewModel.status.value == true) {
+            browserFragment(URI_MAIL)
+        } else {
+            loginFragment()
+        }
+    }
 
-    private fun cafeFragemnt() =
+    private fun cafeFragment() =
         navigator.browserFragment(URI_CAFE)
 
     private fun alarmFragment() =
         navigator.alarmFragment()
 
-    private fun loginFragment() =
+    private fun loginFragment() {
+        if (mLoginViewModel.status.value == true) {
+            return
+        }
+
         navigator.loginFragment()
+    }
 
     private fun browserFragment(url: String) =
         navigator.browserFragment(url)

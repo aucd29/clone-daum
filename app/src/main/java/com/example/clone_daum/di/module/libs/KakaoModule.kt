@@ -2,6 +2,7 @@ package com.example.clone_daum.di.module.libs
 
 import android.content.Context
 import com.kakao.auth.*
+import com.kakao.usermgmt.UserManagement
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -28,7 +29,8 @@ class KakaoModule {
 
                 // 로그인시 인증받을 타입을 지정한다. 지정하지 않을 시 가능한 모든 옵션이 지정된다
                 override fun getAuthTypes() =
-                    arrayOf(AuthType.KAKAO_ACCOUNT) // webview only
+                    arrayOf(AuthType.KAKAO_LOGIN_ALL) // all type
+//                arrayOf(AuthType.KAKAO_ACCOUNT) // webview only 일 경우 화면에 아무것도 나오지 않아 =_ =
 
                 // 로그인시 access token과 refresh token을 저장할 때의 암호화 여부를 결정한다.
                 override fun isSecureMode() =
@@ -44,4 +46,14 @@ class KakaoModule {
                     false
             }
         }
+
+    @Singleton
+    @Provides
+    fun provideUserManagement() =
+        UserManagement.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideAuthService() =
+        AuthService.getInstance()
 }

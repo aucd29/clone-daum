@@ -3,7 +3,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         package="com.example.clone_daum"
-        android:targetSandboxVersion="1"
         tools:ignore="UnusedAttribute">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -28,7 +27,7 @@
             android:name=".MainApp"
             android:largeHeap="true"
             android:hardwareAccelerated="true"
-            android:usesCleartextTraffic="true"
+            android:networkSecurityConfig="@xml/network_security_config"
             tools:ignore="GoogleAppIndexingWarning"
     >
         <!--
@@ -46,6 +45,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.main.login.LoginActivity" />
+
         <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="${applicationId}.fileprovider"
@@ -55,6 +56,10 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_paths" />
         </provider>
+
+<!--        <meta-data-->
+<!--                android:name="com.kakao.sdk.Phase"-->
+<!--                android:value="@string/kakao_phase" />-->
 
         <meta-data
                 android:name="com.kakao.sdk.AppKey"

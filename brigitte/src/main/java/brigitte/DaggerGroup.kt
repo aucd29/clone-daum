@@ -67,7 +67,9 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> constructor(
         mViewModelProviders.get(this, mViewModelClass)
 
     protected inline fun <reified T : ViewModel> inject() =
-        mViewModelProviders.get(this, T::class.java)
+        lazy(LazyThreadSafetyMode.NONE) {
+            mViewModelProviders.get(this, T::class.java)
+        }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////

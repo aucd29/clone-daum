@@ -35,6 +35,7 @@ class BrowserFragment constructor(
 
         private const val WEBVIEW_SLIDING = 3
 
+        const val K_FINISH_INCLUSIVE = "finish-inclusive"
         const val K_URL = "url"
     }
 
@@ -43,6 +44,9 @@ class BrowserFragment constructor(
 
     override val webview: WebView
         get() = mBinding.brsWebview
+
+    private val mFinishInclusive: Boolean
+        get() = arguments?.getBoolean(K_FINISH_INCLUSIVE) ?: false
 
     private var mScrollListener: () -> Unit = {
         if (webview.scrollY > config.SCREEN.y) {
@@ -203,7 +207,12 @@ class BrowserFragment constructor(
                 webview.goBack()
             } else {
                 endAnimation()
-                finishInclusive()
+
+                if (mFinishInclusive) {
+                    finishInclusive()
+                } else {
+                    finish()
+                }
             }
         }
 

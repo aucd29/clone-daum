@@ -9,6 +9,10 @@
                 type="com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel" />
         <variable name="frequentlySiteModel"
                 type="com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel"/>
+
+        <variable
+                name="loginModel"
+                type="com.example.clone_daum.ui.main.login.LoginViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -88,12 +92,14 @@
 
                         <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/navi_user_photo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="@dimen/dp72"
+                                android:layout_height="@dimen/dp72"
                                 android:padding="10dp"
-                                android:src="@drawable/ic_mood_black_24dp"
+                                android:layout_marginStart="@dimen/dp10"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/navi_setting"
+                                app:bindCircleCrop="@{model.circleCrop}"
+                                app:bindImage="@{loginModel.status ? loginModel.userInfo.thumbnail : model.defaultUserPhoto}"
                                 android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
                                 />
 
@@ -104,7 +110,7 @@
                                 app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
                                 app:layout_constraintStart_toEndOf="@+id/navi_user_photo"
                                 app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
-                                android:text="@string/navi_require_login"
+                                android:text="@{loginModel.status ? loginModel.userInfo.nickname : model.requireLogin}"
                                 android:textSize="@dimen/sp20"
                                 android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
                                 />
@@ -112,9 +118,9 @@
                         <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/navi_notification"
                                 style="@style/navi_icon"
-                                app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                                app:layout_constraintEnd_toEndOf="@+id/navi_bookmark"
                                 app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                                app:layout_constraintEnd_toStartOf="@+id/navi_bookmark"
+                                app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
                                 android:text="@string/fa_bell"
                                 android:onClick="@{() -> model.command(model.CMD_ALARM)}"
                                 />
@@ -123,7 +129,7 @@
                                 android:id="@+id/navi_bookmark"
                                 style="@style/navi_icon"
                                 app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                                app:layout_constraintEnd_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
                                 android:layout_marginEnd="10dp"
                                 android:text="@string/fa_bookmark"
@@ -360,10 +366,11 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            android:text="@string/navi_login"
                             android:drawableStart="@drawable/ic_mic_none_black_24dp"
                             android:background="?selectableItemBackgroundBorderless"
-                            android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
+                            android:layout_marginEnd="@dimen/dp10"
+                            android:text="@{loginModel.status ? @string/navi_logout : @string/navi_login}"
+                            android:onClick="@{() -> loginModel.status ? loginModel.logout() : model.command(model.CMD_LOGIN)}"
                             />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

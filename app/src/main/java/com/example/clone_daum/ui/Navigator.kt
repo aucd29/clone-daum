@@ -122,17 +122,17 @@ class Navigator @Inject constructor(
             mLog.info("LOGIN FRAGMENT")
         }
 
-        manager.show<LoginFragment>(FragmentParams(CONTAINER))
+        manager.show<LoginFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
     }
 
     fun alarmFragment() {
         if (mLog.isInfoEnabled) {
-            mLog.info("AlarmFragment")
+            mLog.info("ALARM FRAGMENT")
         }
 
         manager.show<AlarmFragment>(FragmentParams(CONTAINER))
     }
-
 
     fun mediaSearchFragment() {
         if (mLog.isInfoEnabled) {
@@ -142,7 +142,7 @@ class Navigator @Inject constructor(
         manager.show<MediaSearchFragment>(FragmentParams(CONTAINER))
     }
 
-    fun browserFragment(url: String?) {
+    fun browserFragment(url: String?, finishInclusive: Boolean = false) {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER FRAGMENT $url")
         }
@@ -157,6 +157,7 @@ class Navigator @Inject constructor(
             anim = FragmentAnim.ALPHA,
             bundle = Bundle().apply {
                 putString(BrowserFragment.K_URL, url)
+                putBoolean(BrowserFragment.K_FINISH_INCLUSIVE, finishInclusive)
             }))
     }
 

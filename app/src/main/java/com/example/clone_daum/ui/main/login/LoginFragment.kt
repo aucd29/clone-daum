@@ -2,23 +2,21 @@ package com.example.clone_daum.ui.main.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import brigitte.BaseDaggerFragment
-import brigitte.OnBackPressedListener
+import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
-import brigitte.finish
-import brigitte.toast
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.LoginFragmentBinding
 import com.kakao.auth.ISessionCallback
+import com.kakao.auth.KakaoSDK
 import com.kakao.auth.Session
+import com.kakao.auth.authorization.authcode.KakaoWebViewActivity
+import com.kakao.network.ServerProtocol
 import com.kakao.util.exception.KakaoException
+import com.kakao.util.helper.Utility
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -26,36 +24,49 @@ import javax.inject.Inject
  *
  * 카카오 로그인
  * https://developers.kakao.com/docs/android/user-management
+ *
+ * merge 된 android manifest xml 을 보면서 깜놀 왜????
+ * 이렇게 정리되지 않은 activity 목록들이 많은것인가?
+ * kakao sdk 하나만 넣었는데 =_ =? 온갖 activity 가...
  */
 
 class LoginFragment @Inject constructor(
-): BaseDaggerFragment<LoginFragmentBinding, LoginViewModel>(),
-   ISessionCallback, OnBackPressedListener {
+): BaseDaggerFragment<LoginFragmentBinding, LoginViewModel>() {
     override val layoutId = R.layout.login_fragment
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        Session.getCurrentSession().addCallback(this)
-        return super.onCreateView(inflater, container, savedInstanceState)
+    init {
+        mViewModelScope = SCOPE_ACTIVITY
     }
 
     override fun onDestroyView() {
-        Session.getCurrentSession().removeCallback(this)
+        Session.getCurrentSession().removeCallback(mViewModel)
         super.onDestroyView()
     }
 
     override fun initViewBinding() {
+        // 오타네?
+        mBinding.comKakaoLogin.setSuportFragment(this)
+
+        Session.getCurrentSession().addCallback(mViewModel)
     }
 
     override fun initViewModelEvents() {
+        observe(mViewModel.status) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("LOGIN STATUS : $it")
+            }
+
+            if (it) {
+                // 로그인 상태가 true 가 되면 Login Fragment 를 종료 시키고
+                // 변경된 정보를 화면에 반영한다.
+                finish()
+            }
+        }
     }
 
-    // h/w back pressed 가 동작하지 않도록 수정
-    override fun onBackPressed() =
-        true
+//    // h/w back pressed 가 동작하지 않도록 수정
+//    override fun onBackPressed() =
+//        true
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -64,22 +75,19 @@ class LoginFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (Session.getCurrentSession().handleActivityResult(requestCode, requestCode, data)) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ACTIVITY RESULT, REQUEST CODE: $requestCode, RESULT CODE: $resultCode")
+        }
+
+        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("HANDLE ACTIVITY RESULT : $requestCode, $resultCode")
+            }
+
             return
         }
 
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onSessionOpened() {
-        // 어떠한 윈도우를 열어야 함
-        finish()
-    }
-
-    override fun onSessionOpenFailed(exception: KakaoException?) {
-        exception?.let {
-            toast(exception.message?.run { this } ?: "Login Failed: Kakao")
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -103,5 +111,9 @@ class LoginFragment @Inject constructor(
         @dagger.Module
         companion object {
         }
+    }
+
+    companion object {
+        private val mLog = LoggerFactory.getLogger(LoginFragment::class.java)
     }
 }

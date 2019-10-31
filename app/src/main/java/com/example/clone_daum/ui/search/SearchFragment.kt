@@ -79,7 +79,7 @@ class SearchFragment @Inject constructor(
             mLog.debug("HIDE SEARCH FRAGMENT ${this}")
         }
 
-        navigator.browserFragment(url.toString())
+        navigator.browserFragment(url.toString(), true)
         mBinding.root.postDelayed({ hideKeyboard(mBinding.searchEdit) }, 100)
     }
 

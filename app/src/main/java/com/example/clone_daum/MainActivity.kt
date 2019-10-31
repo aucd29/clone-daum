@@ -8,6 +8,7 @@ import com.example.clone_daum.databinding.MainActivityBinding
 import brigitte.*
 import brigitte.viewmodel.SplashViewModel
 import com.example.clone_daum.ui.Navigator
+import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.kakao.auth.ISessionCallback
 import com.kakao.auth.Session
 import com.kakao.util.exception.KakaoException
@@ -21,6 +22,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>(
     override val layoutId = R.layout.main_activity
 
     @Inject lateinit var navigator: Navigator
+
+    private val mLoginViewModel: LoginViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
@@ -64,6 +67,8 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>(
         observe(closeEvent) {
             mBinding.root.removeView(mBinding.splash)
         }
+
+        mLoginViewModel.checkIsLoginSession()
     }
 
     companion object {

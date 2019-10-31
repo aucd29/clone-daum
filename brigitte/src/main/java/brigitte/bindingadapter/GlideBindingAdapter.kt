@@ -135,6 +135,29 @@ inline fun ImageView.glide(path: String, thumbnail: String?,
 
         // https://stackoverflow.com/questions/36652134/android-glide-load-picture-file-apply-overlay-and-set-to-imageview
 
+        if (x != null && y != null && x > 0 && y > 0) {
+            request.override(x, y)
+        }
+
+        request.into(this)
+
+        return
+    } else if (path.startsWith("drawable://")) {
+        val strId = path.replace("drawable://", "")
+        val id = context.resources.getIdentifier(strId, "drawable", context.packageName)
+        if (id == -1) {
+            return
+        }
+
+        val request = glide.load(id)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .error(R.drawable.ic_error_outline_black_24dp)
+            .transition(DrawableTransitionOptions.withCrossFade())
+
+        roundedCorners?.let { request.transform(CenterCrop(), RoundedCorners(it)) }
+        circleCrop?.let {
+            if (it) { request.apply(RequestOptions.circleCropTransform()) }
+        }
 
         if (x != null && y != null && x > 0 && y > 0) {
             request.override(x, y)
