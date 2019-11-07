@@ -206,12 +206,12 @@ class Navigator @Inject constructor(
             anim = FragmentAnim.RIGHT))
     }
 
-    fun browserSubFragment(callback: (String) -> Unit) {
+    fun browserSubFragment() {
         if (mLog.isInfoEnabled) {
             mLog.info("BROWSER SUBMENU FRAGMENT")
         }
 
-        manager.showDialog(BrowserSubmenuFragment(callback), "brs-submenu")
+        manager.showDialog(BrowserSubmenuFragment(), "brs-submenu")
     }
 
     fun favoriteFragment() {

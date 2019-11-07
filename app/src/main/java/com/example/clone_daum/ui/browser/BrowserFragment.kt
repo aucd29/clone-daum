@@ -42,6 +42,8 @@ class BrowserFragment constructor(
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
+    private val mBrowserSubmenuViewModel by activityInject<BrowserSubmenuViewModel>()
+
     override val webview: WebView
         get() = mBinding.brsWebview
 
@@ -64,6 +66,12 @@ class BrowserFragment constructor(
                 mViewModel.brsGoTop.set(AnimParams(0f, duration = 200))
             }
         }
+    }
+
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        addCommandEventModel(mBrowserSubmenuViewModel)
     }
 
     override fun initViewBinding() = mBinding.run {
@@ -236,20 +244,34 @@ class BrowserFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        BrowserViewModel.apply {
-            when (cmd) {
-                CMD_HOME,
-                CMD_BACK              -> onBackPressed()
-                CMD_SEARCH_FRAGMENT   -> navigator.searchFragment()
-                CMD_SUBMENU_FRAGMENT  -> subMenu()
-                CMD_SHARE_EVENT       -> shareLink(data.toString())
-                CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
-                CMD_NORMALSCREEN      -> fullscreen(false)
-                CMD_RELOAD            -> webview.reload()
-                CMD_INNER_SEARCH_PREV -> searchPrev()
-                CMD_INNER_SEARCH_NEXT -> searchNext()
-            }
+        when (cmd) {
+            BrowserViewModel.CMD_HOME,
+            BrowserViewModel.CMD_BACK              -> onBackPressed()
+            BrowserViewModel.CMD_SEARCH_FRAGMENT   -> navigator.searchFragment()
+            BrowserViewModel.CMD_SUBMENU_FRAGMENT  -> subMenu()
+            BrowserViewModel.CMD_SHARE_EVENT       -> shareLink(data.toString())
+            BrowserViewModel.CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
+            BrowserViewModel.CMD_NORMALSCREEN      -> fullscreen(false)
+            BrowserViewModel.CMD_RELOAD            -> webview.reload()
+            BrowserViewModel.CMD_INNER_SEARCH_PREV -> searchPrev()
+            BrowserViewModel.CMD_INNER_SEARCH_NEXT -> searchNext()
+
+            BrowserSubmenuViewModel.CMD_SUBMENU    -> subMenuOption(data.toString())
         }
+    }
+
+    private fun subMenu() {
+        navigator.browserSubFragment()
+    }
+
+    private fun shareLink(url: String) {
+        val message = string(R.string.brs_intent_app_for_sharing)
+
+        startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, message)
+            putExtra(Intent.EXTRA_TEXT, url)
+        }, message))
     }
 
     private fun searchPrev() {
@@ -266,32 +288,26 @@ class BrowserFragment constructor(
         }
     }
 
-    private fun subMenu() {
-        navigator.browserSubFragment { cmd ->
-            when (cmd) {
-                "즐겨찾기목록"   -> navigator.favoriteFragment()
-                "즐겨찾기추가"   -> addFavorite()
-                "방문기록"      -> urlHistory()
-                "URL 복사"     -> copyUrl()
-                "기타 브라우저"  -> showSystemBrowser()
-                "화면 내 검색"  -> searchWithInScreen()
-                "화면 캡쳐"     -> capture()
-                "글자 크기"     -> resizeText()
-                "홈 화면에 추가" -> addIconToHomeLauncher()
-                "전체화면 보기"  -> fullscreen(true)
-                "앱설정"       -> appSetting()
-            }
+    private fun subMenuOption(menu: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SUB MENU OPTION : $menu")
         }
-    }
 
-    private fun shareLink(url: String) {
-        val message = string(R.string.brs_intent_app_for_sharing)
+        when (menu) {
+            "즐겨찾기목록"   -> navigator.favoriteFragment()
+            "즐겨찾기추가"   -> addFavorite()
+            "방문기록"      -> urlHistory()
+            "URL 복사"     -> copyUrl()
+            "기타 브라우저"  -> showSystemBrowser()
+            "화면 내 검색"  -> searchWithInScreen()
+            "화면 캡쳐"     -> capture()
+            "글자 크기"     -> resizeText()
+            "홈 화면에 추가" -> addIconToHomeLauncher()
+            "전체화면 보기"  -> fullscreen(true)
+            "앱설정"       -> appSetting()
+        }
 
-        startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, message)
-            putExtra(Intent.EXTRA_TEXT, url)
-        }, message))
+        mBrowserSubmenuViewModel.dismiss.call()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -404,7 +420,9 @@ class BrowserFragment constructor(
     }
 
     private fun appSetting() {
-
+        if (mLog.isDebugEnabled) {
+            mLog.debug("APP SETTING")
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

@@ -308,7 +308,6 @@ inline fun FragmentManager.pop() {
 inline fun FragmentManager.showDialog(frgmt: DialogFragment, name: String) {
     val transaction = beginTransaction()
     findFragmentByTag(name)?.let { transaction.remove(it) }
-
     frgmt.show(transaction, name)
 }
 

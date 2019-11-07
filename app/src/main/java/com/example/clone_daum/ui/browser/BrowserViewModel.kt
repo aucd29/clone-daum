@@ -34,8 +34,8 @@ class BrowserViewModel @Inject constructor(
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
         const val CMD_BACK             = "back"
-        const val CMD_SEARCH_FRAGMENT  = "search"
-        const val CMD_SUBMENU_FRAGMENT = "submenu"
+        const val CMD_SEARCH_FRAGMENT  = "search-fragment"
+        const val CMD_SUBMENU_FRAGMENT = "submenu-fragment"
         const val CMD_SHARE_EVENT      = "share"
         const val CMD_HOME             = "home"
         const val CMD_GOTO_TOP         = "goto-top"

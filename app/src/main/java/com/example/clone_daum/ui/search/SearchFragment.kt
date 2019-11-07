@@ -25,7 +25,9 @@ import javax.inject.Inject
 
 class SearchFragment @Inject constructor(
 ) : BaseDaggerFragment<SearchFragmentBinding, PopularViewModel>() {
-    private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
+    companion object {
+        private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
+    }
 
     override val layoutId = R.layout.search_fragment
 

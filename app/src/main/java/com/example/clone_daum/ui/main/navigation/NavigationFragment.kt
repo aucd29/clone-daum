@@ -127,21 +127,21 @@ class NavigationFragment constructor(
         }
 
         when (cmd) {
-            NavigationViewModel.CMD_SETTING     -> settingFragment()
+            NavigationViewModel.CMD_SETTING        -> settingFragment()
 
-            NavigationViewModel.CMD_LOGIN       -> loginFragment()
-            NavigationViewModel.CMD_ALARM       -> alarmFragment()
-            NavigationViewModel.CMD_URL_HISTORY -> urlHistoryFragment()
+            NavigationViewModel.CMD_LOGIN          -> loginFragment()
+            NavigationViewModel.CMD_ALARM          -> alarmFragment()
+            NavigationViewModel.CMD_URL_HISTORY    -> urlHistoryFragment()
 
-            NavigationViewModel.CMD_MAIL        -> mailFragment()
-            NavigationViewModel.CMD_CAFE        -> cafeFragment()
+            NavigationViewModel.CMD_MAIL           -> mailFragment()
+            NavigationViewModel.CMD_CAFE           -> cafeFragment()
 
-            NavigationViewModel.CMD_BROWSER     -> browserFragment(data.toString())
+            NavigationViewModel.CMD_BROWSER        -> browserFragment(data.toString())
 
             NavigationViewModel.CMD_EDIT_HOME_MENU -> editHomeMenuFragment()
             NavigationViewModel.CMD_TEXT_SIZE      -> resizeTextFragment()
 
-            SitemapViewModel.CMD_OPEN_APP -> openApp(data as Sitemap)
+            SitemapViewModel.CMD_OPEN_APP          -> openApp(data as Sitemap)
         }
     }
 

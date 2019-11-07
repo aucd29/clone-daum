@@ -2,9 +2,11 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.local.BrowserSubMenu
 import brigitte.*
+import brigitte.arch.SingleLiveEvent
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
@@ -24,6 +26,7 @@ class BrowserSubmenuViewModel @Inject constructor(
     }
 
     val gridCount = ObservableInt(4)
+    val dismiss   = SingleLiveEvent<Void>()
 
     init {
         if (mLog.isDebugEnabled) {

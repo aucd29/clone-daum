@@ -130,6 +130,26 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     }
 
     webChromeClient = object: WebChromeClient() {
+        override fun onJsAlert(
+            view: WebView?,
+            url: String?,
+            message: String?,
+            result: JsResult?
+        ): Boolean {
+            // FIXME 변경 필요
+            return super.onJsAlert(view, url, message, result)
+        }
+
+        override fun onJsConfirm(
+            view: WebView?,
+            url: String?,
+            message: String?,
+            result: JsResult?
+        ): Boolean {
+            // FIXME 변경 필요
+            return super.onJsConfirm(view, url, message, result)
+        }
+
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             super.onProgressChanged(view, newProgress)
 
