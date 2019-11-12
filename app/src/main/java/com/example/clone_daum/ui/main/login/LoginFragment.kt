@@ -3,6 +3,7 @@ package com.example.clone_daum.ui.main.login
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
@@ -16,6 +17,7 @@ import com.kakao.util.exception.KakaoException
 import com.kakao.util.helper.Utility
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
+import kotlinx.android.synthetic.main.favorite_fragment.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -34,12 +36,19 @@ class LoginFragment @Inject constructor(
 ): BaseDaggerFragment<LoginFragmentBinding, LoginViewModel>() {
     override val layoutId = R.layout.login_fragment
 
+    var ob: Observer<Boolean>? = null
+
     init {
         mViewModelScope = SCOPE_ACTIVITY
     }
 
     override fun onDestroyView() {
         Session.getCurrentSession().removeCallback(mViewModel)
+
+        ob?.let {
+            mViewModel.status.removeObserver(it)
+        }
+
         super.onDestroyView()
     }
 
@@ -51,10 +60,20 @@ class LoginFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        observe(mViewModel.status) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("FRAGMENT MANAGER #1 = ${fragmentManager}")
+        }
+
+        ob = Observer {
             if (mLog.isDebugEnabled) {
-                mLog.debug("LOGIN STATUS : $it")
+                mLog.debug("FRAGMENT MANAGER #2 = ${fragmentManager}")
             }
+
+            if (mLog.isDebugEnabled) {
+                mLog.debug("IT = $it")
+            }
+
+//            fragmentManager?.popBackStack()
 
             if (it) {
                 // 로그인 상태가 true 가 되면 Login Fragment 를 종료 시키고
@@ -62,6 +81,14 @@ class LoginFragment @Inject constructor(
                 finish()
             }
         }
+
+        mViewModel.status.observe(requireActivity(), ob!!)
+
+//        observe(mViewModel.status) {
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("LOGIN STATUS : $it")
+//            }
+//        }
     }
 
 //    // h/w back pressed 가 동작하지 않도록 수정
@@ -107,10 +134,6 @@ class LoginFragment @Inject constructor(
     abstract class LoginFragmentModule {
         @Binds
         abstract fun bindLoginFragment(fragment: LoginFragment): Fragment
-
-        @dagger.Module
-        companion object {
-        }
     }
 
     companion object {

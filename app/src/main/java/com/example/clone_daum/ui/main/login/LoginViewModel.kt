@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
 import com.example.clone_daum.model.remote.kakao.AccessToken
 import com.example.clone_daum.model.remote.kakao.UserInfo
@@ -34,12 +35,13 @@ class LoginViewModel @Inject constructor(
         private val mLog = LoggerFactory.getLogger(LoginViewModel::class.java)
     }
 
-    private val mStatus   = MutableLiveData<Boolean>(false)
-    private val mUserInfo = MutableLiveData<UserInfo>()
-
     // public
-    val status: LiveData<Boolean> get()    = mStatus
-    val userInfo: LiveData<UserInfo> get() = mUserInfo
+    val status   = SingleLiveEvent<Boolean>()
+    val userInfo = MutableLiveData<UserInfo>()
+
+    init {
+        status.value = false
+    }
 
 
     fun checkIsLoginSession() {
@@ -59,7 +61,7 @@ class LoginViewModel @Inject constructor(
                     mLog.debug("COMPLETE LOGOUT")
                 }
 
-                mStatus.postValue(false)
+                status.postValue(false)
             }
         })
     }
@@ -79,8 +81,8 @@ class LoginViewModel @Inject constructor(
                         ObservableField(it.kakaoAccount.profile.nickname)
                     )
 
-                    mUserInfo.postValue(info)
-                    mStatus.postValue(true)
+                    userInfo.postValue(info)
+                    status.postValue(true)
 
                     info.run {
                         if (mLog.isDebugEnabled) {
@@ -96,7 +98,7 @@ class LoginViewModel @Inject constructor(
             override fun onSessionClosed(e: ErrorResult?) {
                 mLog.error("ERROR: SESSION CLOSED")
 
-                mStatus.postValue(false)
+                status.postValue(false)
                 e?.let {
                     mLog.error("${e.errorCode} : ${e.errorMessage}")
                     snackbar(e.errorMessage)
@@ -151,7 +153,7 @@ class LoginViewModel @Inject constructor(
         mLog.error("ERROR: SESSION OPEN FAILED ${e?.message}")
         e?.message?.let { snackbar(it) }
 
-        mStatus.postValue(false)
+        status.postValue(false)
     }
 
     override fun onSessionOpened() {

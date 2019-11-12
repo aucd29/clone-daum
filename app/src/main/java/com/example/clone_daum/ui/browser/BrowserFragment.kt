@@ -19,6 +19,10 @@ import brigitte.viewmodel.requireContext
 import brigitte.widget.*
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -388,15 +392,22 @@ class BrowserFragment constructor(
 
     private fun addIconToHomeLauncher() {
         // 커스텀 넣기가 귀차니즘... =_ =
-        dialog(DialogParam(messageId = R.string.brs_add_shortcut_to_home,
-            negativeId = android.R.string.cancel,
-            listener = { r, d ->
-                if (r) {
-                    shortcut(ShortcutParams(webview.url, R.mipmap.ic_launcher,
-                            webview.title, webview.title))
-                    snackbar(webview, R.string.brs_added_link)
-                }
-            }))
+        disposable().add(Single.just("")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                dialog(DialogParam(messageId = R.string.brs_add_shortcut_to_home,
+                    negativeId = android.R.string.cancel,
+                    listener = { r, _ ->
+                        if (r) {
+                            shortcut(ShortcutParams(webview.url, R.mipmap.ic_launcher,
+                                webview.title, webview.title))
+                            snackbar(webview, R.string.brs_added_link)
+                        }
+                    }))
+
+            }, { errorLog(it, mLog) }))
     }
 
     private fun fullscreen(fullscreen: Boolean) {

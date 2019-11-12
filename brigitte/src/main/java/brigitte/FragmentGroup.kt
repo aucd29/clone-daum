@@ -4,6 +4,7 @@ package brigitte
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -142,14 +143,23 @@ inline fun Fragment.hideKeyboard(view: View) =
  * fragment 를 종료 시키낟.
  */
 inline fun Fragment.finish(animate: Boolean = true) {
-    if (animate) {
-        fragmentManager?.pop()
-    } else {
-        fragmentManager?.apply {
+    fragmentManager?.run {
+        if (!animate) {
             beginTransaction().setCustomAnimations(0, 0).commit()
-            pop()
         }
-    }
+
+        pop()
+    } ?: Log.e("[BK]", "Fragment.finish() fragment manager == null")
+
+    // fixme fragmentManager 가 deprecated 되서 == 을 반환 함  삭제 함 [aucd29][2019-11-11]
+//    if (animate) {
+//        fragmentManager?.pop()
+//    } else {
+//        fragmentManager?.apply {
+//            beginTransaction().setCustomAnimations(0, 0).commit()
+//            pop()
+//        }
+//    }
 
 //    if (!animate) {
 //        fragmentManager?.beginTransaction()?.setCustomAnimations(0, 0)?.commitNow()

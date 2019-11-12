@@ -21,6 +21,7 @@ import androidx.lifecycle.*
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.viewpager.widget.PagerAdapter
+import brigitte.viewmodel.CommandEventViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.reactivex.disposables.CompositeDisposable
@@ -143,7 +144,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
     override fun onDestroy() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
-        mCommandEventModels.clear()
+        removeCommandEventObservers(this@BaseActivity)
 
         super.onDestroy()
     }
@@ -180,7 +181,7 @@ abstract class BaseActivity<T : ViewDataBinding, M: ViewModel>
 
     override val mCommandEventModels: ArrayList<ICommandEventAware> = arrayListOf()
     override fun disposable() = mDisposable
-    override fun activity() = this
+    override fun activity() = this@BaseActivity
     override fun rootView() = mBinding.root
 }
 
@@ -205,7 +206,8 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
 
 //    private var mOnBackPressedCallback: OnBackPressedCallback? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         mBinding = dataBinding(layoutId, container)
         mBinding.root.isClickable = true
 
@@ -216,7 +218,6 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
 //        initBackPressedDispatcher()
-
         super.onActivityCreated(savedInstanceState)
 
         addCommandEventModel(mViewModel)
@@ -230,7 +231,7 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
-        mCommandEventModels.clear()
+        removeCommandEventObservers(this@BaseFragment)
 
         super.onDestroyView()
     }
@@ -295,6 +296,8 @@ abstract class BaseFragment<T: ViewDataBinding, M: ViewModel>
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
     override fun commandFinish() = finish()
+    override fun lifecycle() = lifecycle
+    override fun lifecycleOwner() = this@BaseFragment
 }
 
 
@@ -341,7 +344,7 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> constructor(
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
-        mCommandEventModels.clear()
+        removeCommandEventObservers(this@BaseDialogFragment)
 
         super.onDestroyView()
     }
@@ -388,6 +391,8 @@ abstract class BaseDialogFragment<T: ViewDataBinding, M: ViewModel> constructor(
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
     override fun commandFinish() = dismiss()
+    override fun lifecycle() = lifecycle
+    override fun lifecycleOwner() = this@BaseDialogFragment
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -443,7 +448,7 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> c
     override fun onDestroyView() {
         // https://stackoverflow.com/questions/47057885/when-to-call-dispose-and-clear-on-compositedisposable
         mDisposable.dispose()
-        mCommandEventModels.clear()
+        removeCommandEventObservers(this@BaseBottomSheetDialogFragment)
 
         super.onDestroyView()
     }
@@ -517,6 +522,8 @@ abstract class BaseBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> c
     override fun disposable() = mDisposable
     override fun activity() = requireActivity()
     override fun rootView() = mBinding.root
+    override fun lifecycle() = lifecycle
+    override fun lifecycleOwner() = this@BaseBottomSheetDialogFragment
 }
 
 /**
@@ -530,7 +537,7 @@ interface BaseEventAware {
     fun rootView(): View
 
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
-        data.observe(activity(), Observer { observer(it) })
+        data.observe(lifecycleOwner(), Observer { observer(it) })
     }
 
     /**
@@ -564,7 +571,7 @@ interface BaseEventAware {
     fun addCommandEventModel(viewmodel: ViewModel) {
         if (viewmodel is ICommandEventAware) { mCommandEventModels.add(viewmodel) }
         if (viewmodel is LifecycleObserver) {
-            activity().lifecycle.addObserver(viewmodel)
+            lifecycle().addObserver(viewmodel)
         }
     }
 
@@ -573,9 +580,11 @@ interface BaseEventAware {
     }
 
     fun removeCommandEventModel(viewmodel: ViewModel) {
-        if (viewmodel is ICommandEventAware) { mCommandEventModels.remove(viewmodel) }
+        if (viewmodel is ICommandEventAware) {
+            mCommandEventModels.remove(viewmodel)
+        }
         if (viewmodel is LifecycleObserver) {
-            activity().lifecycle.removeObserver(viewmodel)
+            lifecycle().removeObserver(viewmodel)
         }
     }
 
@@ -583,9 +592,20 @@ interface BaseEventAware {
         viewmodels.forEach(::removeCommandEventModel)
     }
 
+    fun removeCommandEventObservers(owner: LifecycleOwner) {
+        mCommandEventModels.forEach {
+            if (it is CommandEventViewModel) {
+                it.commandEvent.removeObservers(owner)
+            }
+        }
+        mCommandEventModels.clear()
+    }
+
     fun onCommandEvent(cmd: String, data: Any) { }
     fun commandFinish() = activity().finish()
     fun commandToast(message: String) = activity().toast(message)
     fun commandSnackbar(message: String) =
         activity().snackbar(rootView(), message).show()
+    fun lifecycle() = activity().lifecycle
+    fun lifecycleOwner(): LifecycleOwner = activity()
 }

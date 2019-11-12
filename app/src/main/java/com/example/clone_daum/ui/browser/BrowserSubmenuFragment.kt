@@ -38,7 +38,7 @@ class BrowserSubmenuFragment
     override fun initViewModelEvents() {
         observe(mViewModel.dismiss) {
             if (mLog.isDebugEnabled) {
-                mLog.debug("FRAGMENT DISMISS")
+                mLog.debug("SUBMENU DISMISS")
             }
 
             dismiss()
