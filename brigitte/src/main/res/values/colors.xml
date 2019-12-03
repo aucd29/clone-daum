@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">@android:color/white</color>
+    <color name="black">@android:color/black</color>
+
+    <color name="gray_fa">#FAFAFA</color>
+    <color name="gray_ec">#ececec</color>
+
+    <color name="gray_75e0">#75E0E0E0</color>
+    <color name="gray_7531">#75313131</color>
+
+    <color name="black_5200">#52000000</color>
+</resources>

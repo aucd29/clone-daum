@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import com.example.clone_daum.common.camera.CameraPreview
-import com.example.smartlenskotlin.tf.detector.TfRecognition
+import com.example.clone_daum.common.tf.detector.TfRecognition
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 20. <p/>
@@ -43,7 +43,7 @@ class TensorflowView: CameraPreview {
         this.initLayout()
     }
 
-    fun initLayout() {
+    open fun initLayout() {
         mDecodeHandler = Handler(mDecodeCallback)
     }
 

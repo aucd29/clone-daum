@@ -1,29 +1,33 @@
 package com.example.clone_daum
 
 import android.content.Context
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.webkit.WebView
+import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
-import com.example.clone_daum.ui.ViewController
-import com.example.clone_daum.ui.main.SplashViewModel
-import com.example.common.*
+import brigitte.*
+import brigitte.viewmodel.SplashViewModel
+import com.example.clone_daum.ui.Navigator
+import com.example.clone_daum.ui.main.login.LoginViewModel
+import com.kakao.auth.ISessionCallback
+import com.kakao.auth.Session
+import com.kakao.util.exception.KakaoException
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
 import javax.inject.Inject
 
-class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel>() {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
-    }
+class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>(
+) {
+    override val layoutId = R.layout.main_activity
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
+
+    private val mLoginViewModel: LoginViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        exceptionCatcher()
+        chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
+        exceptionCatcher { mLog.error("ERROR: $it") }
         setTheme(R.style.AppTheme)
 
         super.onCreate(savedInstanceState)
@@ -32,10 +36,10 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
             mLog.debug("START ACTIVITY")
         }
 
-        chromeInspector()
+        initCookieManager()
 
         if (savedInstanceState == null) {
-            viewController.mainFragment()
+            navigator.mainFragment()
         }
     }
 
@@ -44,58 +48,40 @@ class MainActivity : BaseDaggerRuleActivity<MainActivityBinding, SplashViewModel
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-    override fun initViewBinding() {
+    override fun onResume() {
+        super.onResume()
 
+        startCookieSync()
+    }
+
+    override fun onPause() {
+        stopCookieSync()
+
+        super.onPause()
+    }
+
+    override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() = mViewModel.run {
         observe(closeEvent) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("GONE SPLASH")
-            }
-
-            // 만약을 위해 등록한 splash 쪽 composite disposable 를
-            // clear 하여 timer 가 explode 되지 않도록 한다.
-            disposable.clear()
-
-            visibleSplash.set(View.GONE)
-
-            // SPLASH 뷰 삭제
             mBinding.root.removeView(mBinding.splash)
         }
+
+        mLoginViewModel.checkIsLoginSession()
     }
 
-    private fun chromeInspector() {
-        if (BuildConfig.DEBUG) {
-            // enabled chrome inspector
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("ENABLED CHROME INSPECTOR")
-                }
-
-                WebView.setWebContentsDebuggingEnabled(true)
-            }
-        }
+    companion object {
+        private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
     }
 
-    private fun exceptionCatcher() {
-        // setting exception
-        val handler = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { t, e ->
-            val os = ByteArrayOutputStream()
-            val s  = PrintStream(os)
-            e.printStackTrace(s)
-            s.flush()
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // TEST
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
-            mLog.error("ERROR: $os")
-
-            if (handler != null) {
-                handler.uncaughtException(t, e)
-            } else {
-                mLog.error("ERROR: EXCEPTION HANDLER == null")
-
-                android.os.Process.killProcess(android.os.Process.myPid())
-            }
-        }
-    }
+    // https://github.com/chiuki/espresso-samples/tree/master/idling-resource-okhttp
+    @VisibleForTesting
+    @Inject lateinit var okhttp: OkHttpClient
 }

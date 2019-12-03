@@ -6,17 +6,20 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowNoTitle">false</item>
+        <!--<item name="android:windowFullscreen">false</item>-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <item name="android:background">@null</item>
     </style>
 
     <!-- splash -->
 
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash_background</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@drawable/splash_background</item>
+    </style>
+
+    <style name="dingbat">
+        <item name="android:textAppearance">@style/solid</item>
     </style>
 
     <!--
@@ -31,12 +34,12 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="brs_fullscreen_button">
+    <style name="brs_fullscreen_button" parent="dingbat">
         <item name="android:gravity">center</item>
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textAppearance">@style/solid</item>
+        <!--<item name="android:textAppearance">@style/solid</item>-->
         <item name="android:background">@drawable/selector_brs_button_background</item>
     </style>
 
@@ -117,8 +120,7 @@
      navigation
     -->
 
-    <style name="navi_icon">
-        <item name="android:textAppearance">@style/solid</item>
+    <style name="navi_icon" parent="dingbat">
         <item name="android:textSize">22sp</item>
         <item name="android:padding">10dp</item>
         <item name="android:layout_width">wrap_content</item>

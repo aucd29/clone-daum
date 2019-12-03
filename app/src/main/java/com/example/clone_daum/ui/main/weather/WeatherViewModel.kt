@@ -6,17 +6,12 @@ import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Weather
 import com.example.clone_daum.model.remote.WeatherDetail
-import com.example.common.ICommandEventAware
-import com.example.common.IFinishFragmentAware
-import com.example.common.RecyclerViewModel
-import com.example.common.arch.SingleLiveEvent
+import brigitte.RecyclerViewModel
 import com.patloew.rxlocation.RxLocation
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -29,13 +24,13 @@ import javax.inject.Inject
  */
 
 @SuppressLint("MissingPermission")
-class WeatherViewModel @Inject constructor(application: Application
-    , val config: Config
-    , val preConfig: PreloadConfig
-    , val disposable: CompositeDisposable
-    , val rxLocation: RxLocation
-) : RecyclerViewModel<WeatherDetail>(application), ICommandEventAware
-    , IFinishFragmentAware {
+class WeatherViewModel @Inject constructor(
+    application: Application,
+    val config: Config,
+    val preConfig: PreloadConfig,
+    val disposable: CompositeDisposable,
+    private val rxLocation: RxLocation
+) : RecyclerViewModel<WeatherDetail>(application) {
     companion object {
         private val mLog = LoggerFactory.getLogger(WeatherViewModel::class.java)
 
@@ -44,11 +39,8 @@ class WeatherViewModel @Inject constructor(application: Application
         const val CMD_CHECK_PERMISSION_AND_LOAD_GPS = "check-permission-and-load-gps"
     }
 
-    override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent  = SingleLiveEvent<Void>()
-
-    val currentLocation  = ObservableField<String>(config.DEFAULT_LOCATION)
-    val thoroughfare     = ObservableField<String>(config.DEFAULT_LOCATION)
+    val currentLocation  = ObservableField(config.DEFAULT_LOCATION)
+    val thoroughfare     = ObservableField(config.DEFAULT_LOCATION)
     val weather          = ObservableField<Weather>()
     val gridCount        = ObservableInt(3)
 
@@ -64,7 +56,7 @@ class WeatherViewModel @Inject constructor(application: Application
         if (config.HAS_PERMISSION_GPS) {
             disposable.add(rxLocation.location().lastLocation()
                 .flatMap { location -> rxLocation.geocoding().fromLocation(location) }
-                .subscribe {
+                .subscribe ({
                     if (mLog.isInfoEnabled) {
                         mLog.info("CURRENT LOCATION : ${it.locality} ${it.subLocality} ${it.thoroughfare}")
                     }
@@ -73,8 +65,8 @@ class WeatherViewModel @Inject constructor(application: Application
 
                     thoroughfare.set(it.thoroughfare)
                     currentLocation.set(current)
-                    commandEvent(CMD_REFRESH_LOCATION, current)
-                })
+                    command(CMD_REFRESH_LOCATION, current)
+                }, ::errorLog))
         }
     }
 
@@ -82,7 +74,7 @@ class WeatherViewModel @Inject constructor(application: Application
         visibleProgressFromMain.set(View.GONE)
 
         // 날씨 가져오는 OPEN API 들이 죄다 유료라서 이건 일단 생략
-        weather.set(Weather(R.drawable.ic_android_black_100dp
+        weather.set(Weather(R.drawable.ic_android_black
             , "눈"
             , "1℃"
             , "어제보다 낮음, 체감온도 낮음"
@@ -92,7 +84,7 @@ class WeatherViewModel @Inject constructor(application: Application
 
     fun initRecycler() {
         preConfig.weatherData {
-            initAdapter(arrayOf("weather_dust_item", "weather_other_item"))
+            initAdapter(R.layout.weather_dust_item, R.layout.weather_other_item)
             items.set(it)
         }
     }

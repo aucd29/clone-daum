@@ -19,20 +19,26 @@ import io.reactivex.Single
 
    예)
    mFavoriteDao.insert(MyFavorite(name, url, folder))
-     .subscribeOn(Schedulers.io())
-     .observeOn(AndroidSchedulers.mainThread())
-     .subscribe(::finishEvent) {
-         if (mLog.isDebugEnabled) {
-            it.printStackTrace()
-         }
-         mLog.error("ERROR: ${it.message}")
-         snackbar(it)
-   })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(::finish) {
+            if (mLog.isDebugEnabled) {
+                it.printStackTrace()
+            }
+            mLog.error("ERROR: ${it.message}")
+            snackbar(it)
+        })
 
-    Flowable 는 디비가 변경되면 자동으로 subscribe 됨
+ * Flowable 는 디비가 변경되면 자동으로 subscribe 됨
 
-    DELETE QUERY 는 Completable.fromAction 에서 동작 시키면 됨
+ * DELETE QUERY 는 Completable.fromAction 에서 동작 시키면 됨
+   예)
+    Completable.fromAction { mFavoriteDao.delete() }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe {
 
+        }
  */
 
 @Dao
@@ -81,7 +87,10 @@ interface ZzimDao {
 @Dao
 interface UrlHistoryDao {
     @Query("SELECT * FROM urlHistory ORDER BY _id DESC")
-    fun search(): Flowable<List<UrlHistory>>
+    fun select(): Flowable<List<UrlHistory>>
+
+    @Query("SELECT COUNT(*) FROM urlHistory WHERE url=:url")
+    fun hasUrl(url: String): Maybe<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data: UrlHistory): Completable
@@ -90,7 +99,7 @@ interface UrlHistoryDao {
     fun update(data: UrlHistory): Completable
 
     @Delete
-    fun delete(data: UrlHistory): Completable
+    fun delete(data: List<UrlHistory>): Completable
 
     @Query("DELETE FROM urlHistory")
     fun deleteAll()
@@ -99,20 +108,36 @@ interface UrlHistoryDao {
 
 @Dao
 interface MyFavoriteDao {
-    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY date ASC")
+    @Query("SELECT * FROM myFavorite WHERE folderId=0 ORDER BY date ASC")
     fun selectShowAllFlowable(): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder='' ORDER BY date ASC")
+    @Query("SELECT * FROM myFavorite WHERE folderId=0 ORDER BY date ASC")
     fun selectShowAll(): Single<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY date ASC")
-    fun selectShowFolder(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
 
-    @Query("SELECT * FROM myFavorite WHERE folder=:folderName ORDER BY date ASC")
-    fun selectByFolderName(folderName: String): Flowable<List<MyFavorite>>
+    // 폴더 타입만 전달
+    @Query("SELECT * FROM myFavorite WHERE favType=:favType ORDER BY date ASC")
+    fun selectShowFolderFlowable(favType: Int = MyFavorite.T_FOLDER): Flowable<List<MyFavorite>>
+
+
+    @Query("SELECT * FROM myFavorite WHERE folderId=:folderId ORDER BY date ASC")
+    fun selectByFolderIdFlowable(folderId: Int): Flowable<List<MyFavorite>>
+
+    @Query("SELECT * FROM myFavorite WHERE folderId=:folderId ORDER BY date ASC")
+    fun selectByFolderId(folderId: Int): Single<List<MyFavorite>>
+
+    @Query("SELECT name FROM myFavorite WHERE _id=:id")
+    fun selectFolderName(id: Int): Single<String>
+
 
     @Query("SELECT COUNT(*) FROM myFavorite WHERE url=:url")
     fun hasUrl(url: String): Maybe<Int>
+
+    @Query("SELECT COUNT(*) FROM myFavorite WHERE name=:folder AND favType=${MyFavorite.T_FOLDER}")
+    fun hasFolder(folder: String): Maybe<Int>
+
+    @Query("SELECT COUNT(*) FROM myFavorite WHERE name=:folder AND _id != :id")
+    fun hasFolder(folder: String, id: Int): Maybe<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data: MyFavorite): Completable
@@ -120,20 +145,24 @@ interface MyFavoriteDao {
     @Update
     fun update(vararg data: MyFavorite): Completable
 
+//    @Query("UPDATE myFavorite SET folder=:newName WHERE folder=:oldName")
+//    fun updateFolderName(newName: String, oldName: String)
+
     @Delete
     fun delete(data: MyFavorite): Completable
 
-//    @Delete
-//    fun delete(data: List<MyFavorite>): Completable
+    @Delete
+    fun delete(dataList: List<MyFavorite>): Completable
 
-    @Query("DELETE FROM myFavorite WHERE folder=:name")
+    @Query("DELETE FROM myFavorite WHERE name=:name")
     fun delete(name: String)
+
+    // https://stackoverflow.com/questions/48406228/room-select-query-with-in-condition
+    @Query("DELETE FROM myFavorite WHERE folderId IN(:ids)")
+    fun deleteByFolderIds(ids: List<Int>)
 
     @Query("DELETE FROM myFavorite WHERE _id=:index")
     fun deleteById(index: Int)
-
-//    @Query("DELETE FROM myFavorite")
-//    fun deleteAll()
 }
 
 @Dao

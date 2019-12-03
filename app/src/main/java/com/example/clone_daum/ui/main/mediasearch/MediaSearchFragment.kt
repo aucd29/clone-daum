@@ -4,12 +4,16 @@ import android.Manifest
 import android.animation.Animator
 import android.os.Build
 import android.view.animation.*
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.MediaSearchFragmentBinding
-import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
-import com.example.common.runtimepermission.PermissionParams
-import com.example.common.runtimepermission.runtimePermissions
+import com.example.clone_daum.ui.Navigator
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.scope.FragmentScope
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
+import com.example.clone_daum.R
+import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -18,8 +22,10 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 16. <p/>
  */
 
-class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>()
-    , OnBackPressedListener {
+class MediaSearchFragment @Inject constructor(
+) : BaseDaggerFragment<MediaSearchFragmentBinding, MediaSearchViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.media_search_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 
@@ -32,17 +38,15 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         private const val REQ_BARCODE       = 7814
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     private var mPauseAnimator: Animator? = null
-
 
     override fun initViewBinding() = mBinding.run {
         mediaSearchExtendMenuContainer.apply {
             globalLayoutListener {
                 translationY = height.toFloat() * -1
-                mBinding.mediaSearchButtonLayout.translationY =
-                        mBinding.mediaSearchButtonLayout.height.toFloat() * -1
+                mediaSearchButtonLayout.translationY = mediaSearchButtonLayout.height.toFloat() * -1
 
                 startAnimation()
 
@@ -56,7 +60,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
                 val newHeight = height + 20.dpToPx(requireContext())
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("MEDIA SEARCH HEIGHT : ${height} -> ${newHeight}")
+                    mLog.debug("MEDIA SEARCH HEIGHT : $height -> $newHeight")
                 }
 
                 layoutHeight(newHeight)
@@ -69,16 +73,6 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
     }
 
     override fun initViewModelEvents() {
-
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
-        }
-
-        endAnimation()
-        return true
     }
 
     private fun startAnimation() {
@@ -109,7 +103,7 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
         val searchExtendMenuHeight = mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
         val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
         val containerTransYAnim = AnimParams(searchExtendMenuHeight, duration = ANIM_DURATION
-            , endListener = {
+            , endListener = { anim ->
                 finish()
                 endCallback?.invoke()
             })
@@ -124,6 +118,30 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
             dimmingBgAlpha.set(dimmingBgAlphaAnim)
             containerTransY.set(containerTransYAnim)
         }
+    }
+
+    override fun onDestroyView() {
+        mViewModel.apply {
+            dimmingBgAlpha.set(null)
+            containerTransY.set(null)
+        }
+
+        super.onDestroyView()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BACK PRESSED")
+        }
+
+        endAnimation()
+        return true
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -143,28 +161,28 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
                 CMD_SEARCH_SPEECH  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { req, res -> if (res) { viewController.speechFragment() } }
+                        , { _, res -> if (res) { navigator.speechFragment() } }
                         , REQ_RECORD_SPEECH))
                 }
 
                 CMD_SEARCH_MUSIC   -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        , { req, res -> if (res) { viewController.musicFragment() } }
+                        , { _, res -> if (res) { navigator.musicFragment() } }
                         , REQ_RECORD_MUSIC))
                 }
 
                 CMD_SEARCH_FLOWER  -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { req, res -> if (res) { viewController.flowerFragment() } }
+                        , { _, res -> if (res) { navigator.flowerFragment() } }
                         , REQ_FLOWER))
                 }
 
                 CMD_SEARCH_BARCODE -> endAnimation {
                     runtimePermissions(PermissionParams(activity()
                         , arrayListOf(Manifest.permission.CAMERA)
-                        , { req, res -> if (res) { viewController.barcodeFragment() } }
+                        , { _, res -> if (res) { navigator.barcodeFragment() } }
                         , REQ_BARCODE))
                 }
             }
@@ -179,7 +197,14 @@ class MediaSearchFragment : BaseDaggerFragment<MediaSearchFragmentBinding, Media
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): MediaSearchFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [MediaSearchFragmentModule::class])
+        abstract fun contributeMediaSearchFragmentInjector(): MediaSearchFragment
+    }
+
+    @dagger.Module
+    abstract class MediaSearchFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MediaSearchFragment): SavedStateRegistryOwner
     }
 }

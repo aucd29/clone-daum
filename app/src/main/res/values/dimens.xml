@@ -101,7 +101,7 @@
     <dimen name="weather_current_temperature_description_maxwidth">180dp</dimen>
     <dimen name="weather_current_humidity_pad">85dp</dimen>
     <dimen name="weather_current_wind_mgn_t">6dp</dimen>
-    <dimen name="weather_dumy_line_mgn_t">20dp</dimen>
+    <dimen name="weather_dummy_line_mgn_t">20dp</dimen>
     <dimen name="weather_recycler_mgn_t">20dp</dimen>
     <dimen name="weather_item_pad">10dp</dimen>
 

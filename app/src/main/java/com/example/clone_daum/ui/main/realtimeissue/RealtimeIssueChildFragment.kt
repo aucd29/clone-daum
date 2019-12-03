@@ -1,10 +1,13 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.RealtimeIssueChildFragmentBinding
 import com.example.clone_daum.common.PreloadConfig
-import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerFragment
-import com.example.common.di.module.injectOfActivity
+import com.example.clone_daum.ui.Navigator
+import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
+import com.example.clone_daum.R
+import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -13,38 +16,31 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 9. <p/>
  */
 
-class RealtimeIssueChildFragment
-    : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
+class RealtimeIssueChildFragment @Inject constructor(
+) : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
+    override val layoutId = R.layout.realtime_issue_child_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
     }
 
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
-    // main fragment 와 공유
-    lateinit var mRealtimeIssueViewModel: RealtimeIssueViewModel
-
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mRealtimeIssueViewModel = mViewModelFactory.injectOfActivity(this, RealtimeIssueViewModel::class.java)
-    }
+    private val mRealtimeIssueViewModel: RealtimeIssueViewModel by activityInject()
+    private val mPosition: Int
+        get() = arguments?.getInt(RealtimeIssueTabAdapter.K_POS)!!
 
     override fun initViewBinding() {
-
     }
 
     override fun initViewModelEvents() {
-        arguments?.getInt("position")?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("POSITION : $it")
-            }
+        if (mLog.isDebugEnabled) {
+            mLog.debug("POSITION : $mPosition")
+        }
 
-            // main 에서 load 한 데이터를 읽어다가 출력
-            mRealtimeIssueViewModel.issueList(it)?.let {
-                mViewModel.initAdapter(it)
-            }
+        // main 에서 load 한 데이터를 읽어다가 출력
+        mRealtimeIssueViewModel.issueList(mPosition)?.let { list ->
+            mViewModel.initRealtimeIssueAdapter(list)
         }
     }
 
@@ -56,23 +52,32 @@ class RealtimeIssueChildFragment
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> data.let {
-                mRealtimeIssueViewModel.commandEvent(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
-
-                viewController.browserFragment(it.toString())
-            }
+            RealtimeIssueChildViewModel.CMD_BRS_OPEN -> showBrowser(data.toString())
         }
+    }
+
+    private fun showBrowser(url: String) {
+        mRealtimeIssueViewModel.command(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
+
+        navigator.browserFragment(url)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): RealtimeIssueChildFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [RealtimeIssueChildFragmentModule::class])
+        abstract fun contributeRealtimeIssueChildFragmentInjector(): RealtimeIssueChildFragment
+    }
+
+    @dagger.Module
+    abstract class RealtimeIssueChildFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: RealtimeIssueChildFragment): SavedStateRegistryOwner
     }
 }

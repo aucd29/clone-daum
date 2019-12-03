@@ -17,7 +17,6 @@ import androidx.room.*
 ], version = 1)
 abstract class LocalDb: RoomDatabase() {
     //    abstract fun popularKeywordDao(): PopularKeywordDao
-
     abstract fun searchHistoryDao(): SearchHistoryDao
     abstract fun myFavoriteDao(): MyFavoriteDao
     abstract fun frequentlySiteDao(): FrequentlySiteDao

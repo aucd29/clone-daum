@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <!--<variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>-->
-        <variable name="model" type="com.example.clone_daum.ui.main.MainWebViewViewModel" />
+        <variable name="model" type="com.example.clone_daum.ui.main.MainViewModel"/>
     </data>
 
-    <com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
+    <brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout
+            android:id="@+id/mainWebViewSwipeRefresh"
             android:fillViewport="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:bindSpinnerOffsetEnd="@{model.spinnerOffsetEnd}"
     >
-        <!-- 제대로 동작하지 않아 수정 -->
-        <!--app:bindSwipeRefreshListener="@{model.swipeRefreshListener}"-->
-        <!--app:bindSwipeRefreshingFalse="@{model.swipeRefreshingFalse}"-->
-        <!--app:bindSwipeIsRefreshing="@{model.swipeIsRefreshing}"-->
 
         <androidx.core.widget.NestedScrollView
                 android:id="@+id/scrollview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+            <!--<org.xwalk.core.XWalkView-->
+                    <!--android:id="@+id/webview"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="#000000"-->
+            <!--/>-->
+
             <WebView
                     android:id="@+id/webview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:bindWebViewEvent="@{model.webviewEvent}"
             />
 
         </androidx.core.widget.NestedScrollView>
-    </com.example.clone_daum.common.widget.VerticalSwipeRefreshLayout>
+    </brigitte.widget.swiperefresh.VerticalSwipeRefreshLayout>
 
 </layout>

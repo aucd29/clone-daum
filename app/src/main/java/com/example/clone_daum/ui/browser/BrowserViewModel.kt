@@ -2,16 +2,18 @@ package com.example.clone_daum.ui.browser
 
 import android.app.Application
 import android.view.View
-import androidx.annotation.StringRes
+import android.widget.SeekBar
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.*
-import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.bindingadapter.AnimParams
-import io.reactivex.Single
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
+import brigitte.viewmodel.CommandEventViewModel
+import brigitte.widget.IWebViewEventAware
+import brigitte.widget.WebViewEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -22,26 +24,33 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserViewModel @Inject constructor(app: Application
-    , var urlDao: UrlHistoryDao
-    , val zzimDao: ZzimDao
-    , val disposable: CompositeDisposable
-) : CommandEventViewModel(app), ISnackbarAware, IWebViewEventAware {
+class BrowserViewModel @Inject constructor(
+    private var mUrlHistoryDao: UrlHistoryDao,
+    private val mZzimDao: ZzimDao,
+    private val mDisposable: CompositeDisposable,
+    app: Application
+) : CommandEventViewModel(app), IWebViewEventAware, ISeekBarProgressChanged {
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
         const val CMD_BACK             = "back"
-        const val CMD_SEARCH_FRAGMENT  = "search"
-        const val CMD_SUBMENU_FRAGMENT = "submenu"
+        const val CMD_SEARCH_FRAGMENT  = "search-fragment"
+        const val CMD_SUBMENU_FRAGMENT = "submenu-fragment"
         const val CMD_SHARE_EVENT      = "share"
         const val CMD_HOME             = "home"
         const val CMD_GOTO_TOP         = "goto-top"
         const val CMD_NORMALSCREEN     = "normalscreen"
         const val CMD_RELOAD           = "reload"
+
+        const val CMD_INNER_SEARCH_PREV = "inner-search-prev"
+        const val CMD_INNER_SEARCH_NEXT = "inner-search-next"
+
+        const val SPF_FONT_SIZE        = "spf-text-size"
+
+        const val V_DEFAULT_TEXT_SIZE  = 50
     }
 
-    override val snackbarEvent = SingleLiveEvent<String>()
-    override val webviewEvent  = ObservableField<WebViewEvent>()
+    override val webviewEvent = ObservableField<WebViewEvent>()
 
     val urlString           = ObservableField<String>()
     val brsCount            = ObservableField<String>()
@@ -50,26 +59,57 @@ class BrowserViewModel @Inject constructor(app: Application
     val valProgress         = ObservableInt()
     val visibleProgress     = ObservableInt(View.VISIBLE)
     val visibleSslIcon      = ObservableInt(View.GONE)
+    val visibleInnerSearch  = ObservableInt(View.GONE)
     val enableForward       = ObservableBoolean(false)
     val isFullscreen        = ObservableBoolean(false)
 
-    val brsUrlBarAni    = ObservableField<AnimParams>()
-    val brsAreaAni      = ObservableField<AnimParams>()
-    val brsGoTop        = ObservableField<AnimParams>()
+    val brsUrlBarAni        = ObservableField<AnimParams>()
+    val brsAreaAni          = ObservableField<AnimParams>()
+    val brsGoTop            = ObservableField<AnimParams>()
+    val innerSearch         = ObservableField<String>()
+    val innerSearchCount    = ObservableField<String>()
 
-    fun applyUrl(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("APPLY URL : $url")
-        }
+    // fontsize
 
-        visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
+    val brsFontSizeProgress = ObservableInt(prefs().getInt(SPF_FONT_SIZE, 50))
+    val visibleBrsFontSize  = ObservableInt(View.GONE)
+    val brsFontSizeText     = ObservableField<String>()
+    val brsFontSizeLive     = MutableLiveData<Int>()
 
-        urlString.set(url)
-        urlDao.insert(UrlHistory(url = url, date = System.currentTimeMillis()))
-            .subscribeOn(Schedulers.io()).subscribe()
+    init {
+        applyWebViewFontSize()
     }
 
-    fun applyBrsCount(count: Int) {
+    fun applyUrl(url: String) {
+        visibleSslIcon.set(if (url.contains("https://")) View.VISIBLE else View.GONE)
+        urlString.set(url)
+    }
+
+    fun addHistory(url: String, title: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ADD HISTORY : $title ($url)")
+        }
+
+        mDisposable.add(mUrlHistoryDao.hasUrl(url)
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                if (it == 0) {
+                    mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
+                            if (mLog.isDebugEnabled) {
+                                mLog.debug("ADDED URL HISTORY : $title ($url)")
+                            }
+                        }, { e -> errorLog(e, mLog) })
+                } else {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("EXIST URL HISTORY : $title ($url)")
+                    }
+                }
+            }, { e -> errorLog(e, mLog) }))
+    }
+
+    fun applyBrowserCount(count: Int) {
         if (mLog.isDebugEnabled) {
             mLog.debug("BRS COUNT : $count")
         }
@@ -89,7 +129,7 @@ class BrowserViewModel @Inject constructor(app: Application
                 mLog.debug("RELOAD BROWSER $url")
             }
 
-            commandEvent(CMD_RELOAD)
+            command(CMD_RELOAD)
         }
     }
 
@@ -103,31 +143,27 @@ class BrowserViewModel @Inject constructor(app: Application
             mLog.error("ERROR: ${urlString.get()}")
         }
 
-        disposable.add(zzimDao.hasUrl(url)
+        mDisposable.add(mZzimDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (it > 0) {
+                if (it == 0) {
+                    insertZzim(url)
+                } else {
                     if (mLog.isInfoEnabled) {
                         mLog.info("EXIST URL : $url ($it)")
                     }
 
-                    snackbar(string(R.string.brs_exist_fav_url))
-                } else {
-                    insertZzim(url)
+                    snackbar(R.string.brs_exist_fav_url)
                 }
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-                snackbar(it.message)
+                errorLog(it, mLog)
+                snackbar(it)
             }))
     }
 
     private fun insertZzim(url: String) {
-        disposable.add(zzimDao.insert(Zzim(url = url
+        mDisposable.add(mZzimDao.insert(Zzim(url = url
             , title = "title"))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -136,14 +172,41 @@ class BrowserViewModel @Inject constructor(app: Application
                     mLog.debug("ZZIM URL : $url")
                 }
 
-                snackbar(string(R.string.brs_fav_url_ok))
+                snackbar(R.string.brs_fav_url_ok)
             }, {
-                if (mLog.isDebugEnabled) {
-                    it.printStackTrace()
-                }
-
-                mLog.error("ERROR: ${it.message}")
-                snackbar(it.message)
+                errorLog(it, mLog)
+                snackbar(it)
             }))
+    }
+
+    private fun applyWebViewFontSize() {
+        brsFontSizeText.set("${prefs().getInt(SPF_FONT_SIZE, 50) + V_DEFAULT_TEXT_SIZE} %")
+        brsFontSizeLive.value = brsFontSizeProgress.get()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ISeekBarProgressChanged
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean) {
+        if (mLog.isTraceEnabled) {
+            mLog.trace("CHANGED FONT SIZE : $value")
+        }
+
+        // view 에는 realtime 으로 현재 화면을 갱신해야 하고
+        brsFontSizeText.set("${value + V_DEFAULT_TEXT_SIZE} %")
+    }
+
+    override fun onStopTrackingTouch(seekbar: SeekBar) {
+        // 실제 반영은 tracking 이 종료 된 후에 반영한다.
+        val value = seekbar.progress
+        if (mLog.isDebugEnabled) {
+            mLog.debug("STOP TRACKING TOUCH : $value")
+        }
+
+        brsFontSizeLive.value = value
+        prefs().edit(false) { putInt(SPF_FONT_SIZE, value) }
     }
 }

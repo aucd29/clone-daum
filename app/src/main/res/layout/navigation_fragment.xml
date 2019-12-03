@@ -1,251 +1,377 @@
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.navigation.NavigationViewModel"/>
+        <variable name="model"
+            type="com.example.clone_daum.ui.main.navigation.NavigationViewModel" />
+        <variable name="sitemapModel"
+                type="com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel" />
+        <variable name="frequentlySiteModel"
+                type="com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel"/>
+
+        <variable
+                name="loginModel"
+                type="com.example.clone_daum.ui.main.login.LoginViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
-            android:id="@+id/navi_container"
+            android:id="@+id/naviContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-    >
+            android:clickable="true"
+            >
+
         <View
-                android:id="@+id/navi_background"
+                android:id="@+id/naviBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#0c000000"
-        />
+                android:alpha="@{model.backgroundAlpha}"
+                android:clickable="true"
+                />
 
         <com.google.android.material.navigation.NavigationView
-                android:id="@+id/navi_view"
+                android:id="@+id/naviView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:elevation="0dp"
                 android:background="@android:color/transparent"
                 android:layout_gravity="end"
-        >
+                app:elevation="0dp"
+                >
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/navi_layout"
+                    android:id="@+id/naviLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/white"
-            >
+                    android:background="@android:color/white">
 
-                <TextView
-                        android:id="@+id/nav_setting"
-                        style="@style/navi_icon"
-                        android:text="@string/fa_cog"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="X"
-                        android:onClick="@{() -> model.eventSetting()}"
-                />
-
-                <TextView
-                        android:id="@+id/nav_menu_position"
-                        style="@style/navi_icon"
-                        android:text="@string/fa_home"
-                        app:layout_constraintStart_toEndOf="@+id/nav_setting"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="X"
-                        android:onClick="@{() -> model.eventMenuPosition()}"
-                />
-
-                <TextView
-                        android:id="@+id/nav_text_size"
-                        style="@style/navi_icon"
-                        android:text="@string/fa_font"
-                        app:layout_constraintStart_toEndOf="@+id/nav_menu_position"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="X"
-                        android:onClick="@{() -> model.eventWebViewTextSize()}"
-                />
-
-                <TextView
-                        android:id="@+id/nav_exit"
-                        style="@style/navi_icon"
-                        android:text="@string/fa_times"
-                        android:layout_marginEnd="10dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="X"
-                        android:onClick="@{() -> model.finishEvent()}"
-                />
-
-                <!-- line 1 -->
-
-                <ImageView
-                        android:id="@+id/navi_user_photo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_mood_black_24dp"
-                        android:padding="10dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/nav_setting"
-                />
-
-                <TextView
-                        android:id="@+id/navi_require_login"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/navi_require_login"
-                        android:textSize="17sp"
-                        app:layout_constraintStart_toEndOf="@+id/navi_user_photo"
-                        app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
-                        app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                />
-
-                <TextView
-                        android:id="@+id/navi_notification"
-                        style="@style/navi_icon"
-                        android:text="@string/fa_bell"
-                        android:layout_marginEnd="10dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
-                        app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                        android:onClick="@{() -> model.eventReceivedNoti()}"
-                />
-
-                <TextView
-                        android:id="@+id/navi_bookmark"
-                        style="@style/navi_icon"
-                        android:text="@string/fa_bookmark"
-                        app:layout_constraintEnd_toStartOf="@+id/navi_notification"
-                        app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
-                        app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
-                        android:onClick="@{() -> model.eventBookMark()}"
-                />
-
-                <!-- line 2
-                radio group + checked button 으로 하면 원하는 ui 가 나올거 같긴하지만
-                그 구조가 그닥 이라서 일단 BottomNavigationView 으로 대체
-                -->
-
-                <com.google.android.material.bottomnavigation.BottomNavigationView
-                        android:id="@+id/navi_tab"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:menu="@menu/navigation"
-                        app:itemTextColor="@drawable/selector_navi_tab_bgcolor"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/navi_user_photo"
-                        app:layout_constraintEnd_toEndOf="parent"
-                />
-
-                <!-- line 3 -->
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/navi_tab_container"
+                <ScrollView
+                        android:id="@+id/naviScrollView"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/navi_tab"
+                        app:layout_constraintBottom_toTopOf="@+id/naviBottomContainer"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toTopOf="@+id/navi_bottom"
-                />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/naviScrollContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> model.command(model.ITN_FAV_DESC_HIDE)}"
+                            >
+
+                        <!-- line 0 -->
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/navi_setting"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/dp15"
+                                android:src="@drawable/ic_settings_black_24dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:onClick="@{() -> model.command(model.CMD_SETTING)}"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/navi_close"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:padding="@dimen/dp15"
+                                android:src="@drawable/ic_clear_black_24dp"
+                                android:background="?selectableItemBackgroundBorderless"
+                                android:onClick="@{() -> model.finish()}"
+                                />
+
+                        <!-- line 1 -->
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/navi_user_photo"
+                                android:layout_width="@dimen/dp72"
+                                android:layout_height="@dimen/dp72"
+                                android:padding="10dp"
+                                android:layout_marginStart="@dimen/dp10"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_setting"
+                                app:bindCircleCrop="@{model.circleCrop}"
+                                app:bindImage="@{loginModel.status ? loginModel.userInfo.thumbnail : model.defaultUserPhoto}"
+                                android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_require_login"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
+                                app:layout_constraintStart_toEndOf="@+id/navi_user_photo"
+                                app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                                android:text="@{loginModel.status ? loginModel.userInfo.nickname : model.requireLogin}"
+                                android:textSize="@dimen/sp20"
+                                android:onClick="@{() -> model.command(model.CMD_LOGIN)}"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_notification"
+                                style="@style/navi_icon"
+                                app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                                app:layout_constraintEnd_toStartOf="@+id/navi_bookmark"
+                                app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
+                                android:text="@string/fa_bell"
+                                android:onClick="@{() -> model.command(model.CMD_ALARM)}"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_bookmark"
+                                style="@style/navi_icon"
+                                app:layout_constraintBottom_toBottomOf="@+id/navi_user_photo"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/navi_user_photo"
+                                android:layout_marginEnd="10dp"
+                                android:text="@string/fa_bookmark"
+                                android:onClick="@{() -> model.command(model.CMD_BOOKMARK)}"
+                                />
+
+                        <!-- line 2 -->
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/navi_button_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_user_photo"
+                                android:layout_marginStart="@dimen/dp20"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp20"
+                                android:background="@drawable/shape_round_10_background"
+                                >
+
+                            <Button
+                                    android:id="@+id/navi_mail_button"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/dp50"
+                                    app:layout_constraintEnd_toStartOf="@+id/navi_cafe_button"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintHorizontal_bias=".5"
+                                    android:background="?selectableItemBackground"
+                                    android:text="@string/navi_tab_mail"
+                                    tools:text="MAIL"
+                                    android:onClick="@{() -> model.command(model.CMD_MAIL)}"
+                                    />
+
+                            <Button
+                                    android:id="@+id/navi_cafe_button"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/navi_mail_button"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintHorizontal_bias=".5"
+                                    android:background="?selectableItemBackground"
+                                    android:text="@string/navi_tab_cafe"
+                                    tools:text="CAFE"
+                                    android:onClick="@{() -> model.command(model.CMD_CAFE)}"
+                                    />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <!-- GRID -->
+
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/navi_sitemap"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_button_container"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginStart="@dimen/dp15"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp15"
+                                android:fillViewport="true"
+                                app:bindLockedGridLayoutManager="@{sitemapModel.gridCount}"
+                                app:bindAdapter="@{sitemapModel.adapter}"
+                                app:bindItems="@{sitemapModel.items}"
+                                />
+
+                        <View
+                                android:id="@+id/navi_sitemap_underline"
+                                style="@style/line1dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_sitemap"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginStart="@dimen/dp10"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp10"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_frequently_site_title"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_sitemap_underline"
+                                android:text="@string/shortcut_favorite_title"
+                                android:textStyle="bold"
+                                android:textSize="15sp"
+                                android:layout_marginStart="@dimen/dp15"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp15"
+                                android:onClick="@{() -> model.command(model.ITN_FAV_DESC_SHOW)}"
+                                />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_frequently_url_history"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_sitemap_underline"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp15"
+                                android:textSize="@dimen/sp14"
+                                android:textColor="#CFCFCF"
+                                android:text="@string/shortcut_move_site"
+                                android:onClick="@{() -> model.command(model.CMD_URL_HISTORY)}"
+                                />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_frequently_site_icon"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toEndOf="@+id/navi_frequently_site_title"
+                                app:layout_constraintTop_toTopOf="@+id/navi_frequently_site_title"
+                                app:layout_constraintBottom_toBottomOf="@+id/navi_frequently_site_title"
+                                android:textAppearance="@style/solid"
+                                android:textSize="12sp"
+                                android:layout_marginStart="@dimen/dp15"
+                                android:text="@string/fa_question_circle"
+                                android:gravity="center_vertical"
+                                android:padding="10dp"
+                                android:onClick="@{() -> model.command(model.ITN_FAV_DESC_SHOW)}"
+                                />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/navi_frequently_site"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_frequently_site_title"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginStart="@dimen/dp15"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp15"
+                                app:bindLockedGridLayoutManager="@{frequentlySiteModel.gridCount}"
+                                app:bindAdapter="@{frequentlySiteModel.adapter}"
+                                app:bindItems="@{frequentlySiteModel.items}"
+                                />
+
+                        <!-- POPUP MENU 이려나? -->
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_frequently_site_description"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="@+id/navi_frequently_site_title"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_frequently_site_title"
+                                android:text="@string/shortcut_favorite_description"
+                                android:textSize="@dimen/sp10"
+                                android:padding="@dimen/dp15"
+                                android:background="@drawable/shape_round_5_stroke_background"
+                                android:visibility="@{model.viewFavoriteDesc}"
+                                />
+                        <!-- /POPUP MENU 이려나? -->
+
+                        <View
+                                android:id="@+id/navi_frequently_site_underline"
+                                style="@style/line1dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_frequently_site"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginStart="@dimen/dp10"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp10"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_notice_title"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_frequently_site_underline"
+                                android:text="@string/navi_notice"
+                                android:textStyle="bold"
+                                android:textSize="15sp"
+                                android:layout_marginStart="@dimen/dp15"
+                                android:layout_marginTop="@dimen/dp10"
+                                />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/navi_notice_message"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                app:layout_constraintStart_toEndOf="@+id/navi_notice_title"
+                                app:layout_constraintTop_toBottomOf="@+id/navi_frequently_site_underline"
+                                android:text="@string/navi_notice_message"
+                                android:textSize="15sp"
+                                android:layout_marginStart="@dimen/dp15"
+                                android:layout_marginTop="@dimen/dp10"
+                                android:layout_marginEnd="@dimen/dp15"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                android:ellipsize="end"
+                                />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </ScrollView>
 
                 <!-- bottom area -->
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/navi_bottom"
+                        android:id="@+id/naviBottomContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/light_gray"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                >
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            style="@style/navi_bottom_button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:elevation="2dp"
+                        >
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/navi_edit_home_menu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/navi_vertical_bar"
-                            android:onClick="@{() -> model.eventNotification()}"
-                    >
+                            android:src="@drawable/ic_home_black_24dp"
+                            android:padding="@dimen/dp15"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:onClick="@{() -> model.command(model.CMD_EDIT_HOME_MENU)}"
+                            />
 
-                        <TextView
-                                style="@style/navi_icon"
-                                android:text="@string/fa_comment_alt"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/navi_notification_title"
-                        />
-
-                        <TextView
-                                android:id="@+id/navi_notification_title"
-                                android:text="@string/navi_notice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintHorizontal_bias="0.6"
-                                android:textSize="16sp"
-                        />
-
-                        <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/fa_plus_circle"
-                                android:textColor="@android:color/holo_red_dark"
-                                android:textAppearance="@style/solid"
-                                android:layout_marginStart="8dp"
-                                app:layout_constraintStart_toEndOf="@+id/navi_notification_title"
-                                app:layout_constraintTop_toTopOf="@+id/navi_notification_title"
-                                app:layout_constraintBottom_toBottomOf="@+id/navi_notification_title"
-                                android:visibility="@{model.newIcon}"
-                        />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                            style="@style/navi_bottom_button"
-                            app:layout_constraintStart_toEndOf="@+id/navi_vertical_bar"
+                    <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/navi_edit_font_size"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintStart_toEndOf="@+id/navi_edit_home_menu"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:onClick="@{() -> model.eventLogin()}"
-                    >
+                            android:src="@drawable/ic_visibility_black_24dp"
+                            android:padding="@dimen/dp15"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:onClick="@{() -> model.command(model.CMD_TEXT_SIZE)}"
+                            />
 
-                        <TextView
-                                style="@style/navi_icon"
-                                android:text="@string/fa_sign_in_alt"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toStartOf="@+id/navi_login_title"
-                        />
-
-                        <TextView
-                                android:id="@+id/navi_login_title"
-                                android:text="@string/navi_login"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintHorizontal_bias="0.6"
-                        />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                            android:id="@+id/navi_vertical_bar"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="|"
-                            android:textColor="#a4a4a4"
-                            android:paddingTop="10dp"
-                            android:layout_marginStart="2dp"
-                            android:layout_marginEnd="2dp"
-                            android:gravity="center|center_vertical"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                    <Button
+                            android:id="@+id/navi_login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
-                    />
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:drawableStart="@drawable/ic_mic_none_black_24dp"
+                            android:background="?selectableItemBackgroundBorderless"
+                            android:layout_marginEnd="@dimen/dp10"
+                            android:text="@{loginModel.status ? @string/navi_logout : @string/navi_login}"
+                            android:onClick="@{() -> loginModel.status ? loginModel.logout() : model.command(model.CMD_LOGIN)}"
+                            />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,7 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <import type="com.example.common.WebViewEvent"/>
+        <import type="brigitte.widget.WebViewEvent"/>
 
         <variable name="model" type="com.example.clone_daum.ui.browser.BrowserViewModel"/>
     </data>
@@ -28,48 +28,49 @@
                 app:layout_constraintEnd_toEndOf="parent"
         >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_back"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:src="@drawable/ic_arrow_back_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK)}"
+                    android:onClick="@{() -> model.command(model.CMD_BACK)}"
                     android:padding="@dimen/brs_back_pad"
                     android:background="?selectableItemBackgroundBorderless"
-            />
+                    tools:ignore="ContentDescription"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_ssl_icon"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintStart_toEndOf="@+id/brs_back"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="@dimen/brs_ssl_mgn_s"
+                    android:layout_marginStart="@dimen/dp5"
                     android:src="@{model.sslIconResId}"
                     android:visibility="@{model.visibleSslIcon}"
+                    tools:ignore="ContentDescription"
             />
 
-            <!--android:src="@drawable/ic_vpn_key_black_24dp"-->
-            <!--android:src="@{model.sslIconResId}"-->
-
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/brs_url"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
                     app:layout_constraintStart_toEndOf="@+id/brs_ssl_icon"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    tools:text="urlinfoasdfasdfassafdsaf dfasdfasdfa sdfasdaf"
-                    android:layout_marginStart="@dimen/brs_url_mgn_s"
-                    android:maxWidth="@dimen/brs_url_max_w"
+                    app:layout_constraintEnd_toStartOf="@+id/reload_icon"
+                    android:layout_marginStart="@dimen/dp5"
+                    android:layout_marginEnd="@dimen/dp5"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{model.urlString}"
+                    android:singleLine="true"
                     android:textColor="@android:color/black"
+                    android:text="@{model.urlString}"
+                    tools:text="urlinfoasdfasdfassafdsaf dfasdfasdfa sdfasdaf"
             />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/reload_icon"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/brs_stack"
@@ -78,9 +79,9 @@
                     android:layout_marginEnd="@dimen/brs_reload_mgn_e"
                     android:onClick="@{() -> model.eventReloadBrowser(model.urlString)}"
                     android:background="?selectableItemBackgroundBorderless"
-            />
+                    tools:ignore="ContentDescription"/>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/brs_stack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,6 +96,18 @@
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ViewStub
+                android:id="@+id/brs_inner_search"
+                android:layout_width="0dp" android:layout_height="0dp"
+                android:layout="@layout/browser_fragment_inner_search"
+                app:layout_constraintStart_toStartOf="@+id/brs_url_bar"
+                app:layout_constraintTop_toTopOf="@+id/brs_url_bar"
+                app:layout_constraintEnd_toEndOf="@+id/brs_url_bar"
+                app:layout_constraintBottom_toBottomOf="@+id/brs_url_bar"
+                app:model="@{model}"
+                android:visibility="@{model.visibleInnerSearch}"
+        />
 
         <View
                 android:id="@+id/brs_url_bar_underline"
@@ -124,9 +137,9 @@
 
         <ProgressBar
                 android:id="@+id/brs_progress"
-                android:layout_width="match_parent" android:layout_height="3dp"
-                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent" android:layout_height="2dp"
                 android:max="100"
+                style="?android:attr/progressBarStyleHorizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/brs_url_bar"
@@ -145,7 +158,7 @@
 
         <!--FULLSCREEN BUTTONS -->
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/brs_home"
                 style="@style/brs_fullscreen_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,10 +167,10 @@
                 android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
                 android:text="@string/fa_home"
                 android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_HOME)}"
+                android:onClick="@{() -> model.command(model.CMD_HOME)}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/brs_move_top"
                 style="@style/brs_fullscreen_button"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -166,11 +179,11 @@
                 android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
                 android:text="@string/fa_hand_point_up"
                 android:alpha="0"
-                android:onClick="@{() -> model.commandEvent(model.CMD_GOTO_TOP)}"
+                android:onClick="@{() -> model.command(model.CMD_GOTO_TOP)}"
                 app:bindAlpha="@{model.brsGoTop}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/brs_normal_screen"
                 style="@style/brs_fullscreen_button"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -179,8 +192,48 @@
                 android:layout_marginBottom="@dimen/brs_fullscreen_btn_mgn"
                 android:text="@string/fa_external_link_alt"
                 android:visibility="@{model.isFullscreen ? View.VISIBLE : View.GONE}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_NORMALSCREEN)}"
+                android:onClick="@{() -> model.command(model.CMD_NORMALSCREEN)}"
         />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/brs_font_size_layout"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/brs_bottom_layout"
+                android:visibility="@{model.visibleBrsFontSize}"
+                android:background="#C4505050"
+                android:layout_margin="10dp"
+            >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/brs_font_size_text"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:padding="20dp"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/white"
+                    android:text="@{model.brsFontSizeText}"
+            />
+
+            <SeekBar
+                    android:id="@+id/brs_font_size"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginEnd="10dp"
+                    android:max="200"
+                    android:progress="@={model.brsFontSizeProgress}"
+                    android:onProgressChanged="@{model::onProgressChanged}"
+                    android:onStopTrackingTouch="@{model::onStopTrackingTouch}"
+            />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- bottom buttons -->
         <LinearLayout
@@ -195,12 +248,12 @@
                 android:visibility="@{model.isFullscreen ? View.GONE : View.VISIBLE}"
         >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_bottom_back"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_chevron_left_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_BACK)}"
-            />
+                    android:onClick="@{() -> model.command(model.CMD_BACK)}"
+                    tools:ignore="ContentDescription"/>
 
             <ImageButton
                     android:id="@+id/brs_bottom_forward"
@@ -208,42 +261,45 @@
                     android:src="@drawable/selector_chevron_right_24dp"
                     android:onClick="@{() -> model.webviewEvent(WebViewEvent.FORWARD)}"
                     android:enabled="@{model.enableForward}"
-            />
+                    tools:ignore="ContentDescription"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_bottom_home"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_home_black_24dp"
-                    android:onClick="@{() -> model.finishEvent()}"
-            />
+                    android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_bottom_favorite"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_favorite_border_black_24dp"
-            />
+                    tools:ignore="ContentDescription"/>
 
             <!--android:onClick="@{() -> model.addZzim(model.urlString)}"-->
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_bottom_search"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_search_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FRAGMENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_SEARCH_FRAGMENT)}"
+                    tools:ignore="ContentDescription"
             />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_bottom_share"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_share_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SHARE_EVENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_SHARE_EVENT)}"
+                    tools:ignore="ContentDescription"
             />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/brs_bottom_menu"
                     style="@style/brs_bottom_button"
                     android:src="@drawable/ic_menu_black_24dp"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU_FRAGMENT)}"
+                    android:onClick="@{() -> model.command(model.CMD_SUBMENU_FRAGMENT)}"
+                    tools:ignore="ContentDescription"
             />
 
         </LinearLayout>

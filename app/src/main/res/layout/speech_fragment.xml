@@ -25,7 +25,7 @@
                 app:bindScaleY="@{model.bgScale}"
                 />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/speech_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,9 +37,10 @@
                 android:src="@drawable/ic_mic_white_60dp"
                 android:padding="@dimen/speech_icon_pad"
                 android:background="@drawable/shape_media_search_circle_1"
+                tools:ignore="ContentDescription"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/speech_back"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:padding="@dimen/speech_icon_pad"
@@ -47,10 +48,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
+                tools:ignore="ContentDescription"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/speech_message"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="25sp"
@@ -63,7 +65,7 @@
                 android:text="@{model.messageResId}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/speech_result"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="@dimen/speech_result_txt"
@@ -75,7 +77,7 @@
                 android:text="@{model.speechResult}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="@dimen/speech_kakao_txt"
                 android:gravity="center"

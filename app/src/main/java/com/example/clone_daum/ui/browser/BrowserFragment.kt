@@ -1,21 +1,28 @@
 package com.example.clone_daum.ui.browser
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.view.MotionEvent
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.webkit.WebView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserFragmentBinding
 import com.example.clone_daum.common.Config
-import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
-import com.google.android.material.snackbar.Snackbar
+import com.example.clone_daum.ui.Navigator
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
+import brigitte.di.dagger.scope.FragmentScope
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
+import brigitte.viewmodel.requireContext
+import brigitte.widget.*
+import dagger.Binds
 import dagger.android.ContributesAndroidInjector
-import kotlinx.android.synthetic.main.main_webview_fragment.*
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -23,19 +30,32 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
  */
 
-class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+class BrowserFragment constructor(
+) : BaseDaggerWebViewFragment<BrowserFragmentBinding, BrowserViewModel>(), OnBackPressedListener {
+    override val layoutId = R.layout.browser_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
 
         private const val WEBVIEW_SLIDING = 3
+
+        const val K_FINISH_INCLUSIVE = "finish-inclusive"
+        const val K_URL = "url"
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
-    private var mUrl: String? = null
+    private val mBrowserSubmenuViewModel by activityInject<BrowserSubmenuViewModel>()
+
+    override val webview: WebView
+        get() = mBinding.brsWebview
+
+    private val mFinishInclusive: Boolean
+        get() = arguments?.getBoolean(K_FINISH_INCLUSIVE) ?: false
+
     private var mScrollListener: () -> Unit = {
-        if (mBinding.brsWebview.scrollY > config.SCREEN.y) {
+        if (webview.scrollY > config.SCREEN.y) {
             if (mBinding.brsMoveTop.alpha == 0f) {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("SHOW BUTTON FOR MOVE TOP")
@@ -52,21 +72,19 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        addCommandEventModel(mBrowserSubmenuViewModel)
+    }
+
     override fun initViewBinding() = mBinding.run {
-        mUrl = arguments?.getString("url")
-
-        if (mUrl == null) {
-            mLog.error("ERROR: URL : $mUrl")
-            return@run
-        }
-
         startAnimation()
 
         mViewModel.apply {
-            brsWebview.defaultSetting(WebViewSettingParams(
+            webview.defaultSetting(WebViewSettingParams(
                 progress = {
-                    if (mLog.isTraceEnabled()) {
+                    if (mLog.isTraceEnabled) {
                         mLog.trace("BRS PROGRESS $it")
                     }
 
@@ -74,149 +92,74 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
                 }, receivedError = {
                     mLog.error("ERROR: $it")
 
-                    it?.let { snackbar(brsWebview, it, Snackbar.LENGTH_LONG)?.show() }
+                    it?.let { snackbar(it) }
                 }, sslError = {
                     mLog.error("ERROR: SSL ")
 
                     dialog(DialogParam(context = requireContext(),
-                        messageId  = R.string.brs_dlg_message_ssl_error,
-                        titleId    = R.string.brs_dlg_title_ssl_error,
-                        positiveId = R.string.dlg_btn_open,
-                        negativeId = R.string.dlg_btn_close,
-                        listener   = { res, _ ->
-                            if (res) {
-                                it?.proceed()
-                                sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
-                            } else it?.cancel()
-                        }))
-                }, pageStarted  = {
+                            messageId = R.string.brs_dlg_message_ssl_error,
+                            titleId = R.string.brs_dlg_title_ssl_error,
+                            positiveId = R.string.dlg_btn_open,
+                            negativeId = R.string.dlg_btn_close,
+                            listener = { res, _ ->
+                                if (res) {
+                                    it?.proceed()
+                                    sslIconResId.set(R.drawable.ic_vpn_key_red_24dp)
+                                } else it?.cancel()
+                            })
+                    )
+                }, pageStarted = {
                     visibleProgress.set(View.VISIBLE)
                     reloadIconResId.set(R.drawable.ic_clear_black_24dp)
                 }, pageFinished = {
                     visibleProgress.set(View.GONE)
                     reloadIconResId.set(R.drawable.ic_replay_black_24dp)
+
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("PAGE FINISHED ${System.currentTimeMillis()}")
+                    }
+
+                    syncCookie()
+                    addHistory()
                 }
                 , canGoForward = { enableForward.set(it) }
-                , userAgent    = { config.USER_AGENT }
+                , userAgent = { config.USER_AGENT }
             ))
         }
 
-        brsWebview.apply {
-            loadUrl(mUrl)
-            viewTreeObserver.addOnScrollChangedListener(mScrollListener)
+        loadUrl(mUrl)
+        webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
+        webview.setFindListener { active, count, _ ->
+            mViewModel.innerSearchCount.set("${active + 1}/$count")
         }
     }
 
     override fun initViewModelEvents() = mViewModel.run {
-        if (mUrl == null) {
-            return@run
-        }
-
-        applyUrl(mUrl!!)
-
-        // 임시 코드 추후 db 에서 얻어오도록 해야함
-        applyBrsCount(mBinding.brsArea.childCount)
+        applyUrl(mUrl)
+        // TODO 임시 코드 추후 db 에서 얻어오도록 해야함
+        applyBrowserCount(mBinding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
-    }
+        innerSearch.observe { findAllAsync(it.get()) }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-    //
-    // ICommandEventAware
-    //
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    override fun onCommandEvent(cmd: String, data: Any) {
-        BrowserViewModel.apply {
-            when (cmd) {
-                CMD_HOME,
-                CMD_BACK             -> onBackPressed()
-                CMD_SEARCH_FRAGMENT  -> viewController.searchFragment()
-                CMD_SUBMENU_FRAGMENT -> viewController.browserSubFragment { cmd ->
-                    when (cmd) {
-                        "즐겨찾기목록" -> viewController.favoriteFragment()
-                        "즐겨찾기추가" -> {
-                            // https://stackoverflow.com/questions/8193239/how-to-get-loaded-web-page-title-in-android-webview
-                            val title = mBinding.brsWebview.title
-                            val url   = mBinding.brsWebview.url
-
-                            viewController.favoriteAddFragment(title, url)
-                        }
-                        "방문기록" -> {
-
-                        }
-                        "URL 복사" -> mUrl?.let {
-                            context?.toast(R.string.brs_copied_url)
-                            requireContext().clipboard(it)
-                        }
-                        "기타 브라우저" -> {
-                            confirm(R.string.brs_using_base_brs, R.string.common_notify,
-                                listener = { res, dlg -> if (res) showDefaultBrowser() })
-                        }
-                        "화면 내 검색" -> {
-                            // https://code.i-harness.com/en/q/b5bb99
-                        }
-                        "화면 캡쳐" -> {
-
-                        }
-                        "글자 크기" -> {
-
-                        }
-                        "홈 화면에 추가" -> {
-
-                        }
-                        "전체화면 보기" -> internalFullscreen(true)
-                        "앱설정" -> {
-
-                        }
-                    }
-                }
-                CMD_SHARE_EVENT      -> shareLink(data.toString())
-                CMD_GOTO_TOP         -> mBinding.brsWebview.scrollTo(0, 0)
-                CMD_NORMALSCREEN     -> internalFullscreen(false)
-                CMD_RELOAD           -> mBinding.brsWebview.reload()
-            }
+        // livedata 로 observe
+        observe(brsFontSizeLive) {
+            webview.settings.textZoom = it + BrowserViewModel.V_DEFAULT_TEXT_SIZE
         }
     }
 
-    override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
-        }
-
-        mBinding.apply {
-            if (brsWebview.canGoBack()) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("BRS BACK")
-                }
-
-                brsWebview.goBack()
-            } else {
-                endAnimation()
-                finish()
-            }
-        }
-
-        return true
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        mBinding.brsWebview.pause()
+    private fun addHistory() {
+        mViewModel.addHistory(webview.url, webview.title)
     }
 
     override fun onResume() {
-        mBinding.brsWebview.resume()
-
-        activity?.let { internalFullscreen(it.isFullscreen()) }
+        activity?.let { fullscreen(it.isFullscreen()) }
 
         super.onResume()
     }
 
     override fun onDestroyView() {
-        mBinding.brsWebview.apply {
-            free()
+        webview.apply {
             viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
         }
 
@@ -233,24 +176,241 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed(): Boolean {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("BACK PRESSED")
+        }
+
+        mBinding.apply {
+            if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
+                brsInnerSearch.viewStub?.visibility = View.GONE
+
+                return@apply
+            }
+
+            with (mViewModel) {
+                if (visibleInnerSearch.isVisible()) {
+                    visibleInnerSearch.gone()
+
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("${visibleInnerSearch.get()}")
+                    }
+
+                    return@apply
+                }
+
+                if (visibleBrsFontSize.isVisible()) {
+                    visibleBrsFontSize.visibleToggle()
+                    return@apply
+                }
+            }
+
+            if (webview.canGoBack()) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("BRS BACK")
+                }
+
+                webview.goBack()
+            } else {
+                endAnimation()
+
+                if (mFinishInclusive) {
+                    finishInclusive()
+                } else {
+                    finish()
+                }
+            }
+        }
+
+        return true
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // PUBLIC METHODS
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    fun loadUrl(url: String) {
+        webview.loadUrl(url)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onCommandEvent(cmd: String, data: Any) {
+        when (cmd) {
+            BrowserViewModel.CMD_HOME,
+            BrowserViewModel.CMD_BACK              -> onBackPressed()
+            BrowserViewModel.CMD_SEARCH_FRAGMENT   -> navigator.searchFragment()
+            BrowserViewModel.CMD_SUBMENU_FRAGMENT  -> subMenu()
+            BrowserViewModel.CMD_SHARE_EVENT       -> shareLink(data.toString())
+            BrowserViewModel.CMD_GOTO_TOP          -> webview.scrollTo(0, 0)
+            BrowserViewModel.CMD_NORMALSCREEN      -> fullscreen(false)
+            BrowserViewModel.CMD_RELOAD            -> webview.reload()
+            BrowserViewModel.CMD_INNER_SEARCH_PREV -> searchPrev()
+            BrowserViewModel.CMD_INNER_SEARCH_NEXT -> searchNext()
+
+            BrowserSubmenuViewModel.CMD_SUBMENU    -> subMenuOption(data.toString())
+        }
+    }
+
+    private fun subMenu() {
+        navigator.browserSubFragment()
+    }
+
     private fun shareLink(url: String) {
         val message = string(R.string.brs_intent_app_for_sharing)
 
         startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
-            setType("text/plain")
+            type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, message)
             putExtra(Intent.EXTRA_TEXT, url)
         }, message))
     }
 
-    private fun showDefaultBrowser() {
-        startActivity(Intent(Intent.ACTION_VIEW).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            setData(Uri.parse(mUrl))
-        })
+    private fun searchPrev() {
+        try {
+            webview.findNext(false)
+        } catch (e: Exception) {
+        }
     }
 
-    private fun internalFullscreen(fullscreen: Boolean) {
+    private fun searchNext() {
+        try {
+            webview.findNext(true)
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun subMenuOption(menu: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SUB MENU OPTION : $menu")
+        }
+
+        when (menu) {
+            "즐겨찾기목록"   -> navigator.favoriteFragment()
+            "즐겨찾기추가"   -> addFavorite()
+            "방문기록"      -> urlHistory()
+            "URL 복사"     -> copyUrl()
+            "기타 브라우저"  -> showSystemBrowser()
+            "화면 내 검색"  -> searchWithInScreen()
+            "화면 캡쳐"     -> capture()
+            "글자 크기"     -> resizeText()
+            "홈 화면에 추가" -> addIconToHomeLauncher()
+            "전체화면 보기"  -> fullscreen(true)
+            "앱설정"       -> appSetting()
+        }
+
+        mBrowserSubmenuViewModel.dismiss.call()
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // browserSubFragment
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    private fun addFavorite() {
+        // https://stackoverflow.com/questions/8193239/how-to-get-loaded-web-page-title-in-android-webview
+        val title = webview.title
+        val url   = webview.url
+
+        navigator.favoriteProcessFragment(title, url)
+    }
+
+    private fun urlHistory() {
+        navigator.urlHistoryFragment()
+    }
+
+    private fun copyUrl() {
+        context?.toast(R.string.brs_copied_url)
+
+        requireContext().clipboard(mUrl)
+    }
+
+    private fun showSystemBrowser() {
+        confirm(R.string.brs_using_base_brs, R.string.common_notify,
+            listener = { res, _ ->
+                if (res) {
+                    startActivity(Intent(Intent.ACTION_VIEW).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        data = Uri.parse(mUrl)
+                    })
+                }
+            })
+    }
+
+    private fun searchWithInScreen() {
+        // https://code.i-harness.com/en/q/b5bb99
+        mViewModel.visibleInnerSearch.visible()
+    }
+
+    private fun findAllAsync(keyword: String?) {
+        try {
+            webview.findAllAsync(keyword)
+        } catch (e: Exception) {
+            webview.findAll(keyword)
+
+            if (mLog.isDebugEnabled) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun capture() {
+        runtimePermissions(PermissionParams(requireActivity(),
+            arrayListOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            { _, r ->
+               if (r) {
+                   // TODO api 29 부터는 이렇게 할 수 없기 때문에 코드 변경이 필요 함
+                   disposable().add(webview.capture(CaptureParams(
+                       "CLONE-DAUM_Screenshot-${System.currentTimeMillis()}.png"))
+                       .subscribe { res ->
+                           if (res.first) {
+                               toast("캡쳐 성공 : ${res.second?.absolutePath}")
+                           } else {
+                               toast("캡쳐 실패")
+                           }
+                       })
+               }
+            }))
+    }
+
+    private fun resizeText() {
+        mViewModel.visibleBrsFontSize.visible()
+    }
+
+    private fun addIconToHomeLauncher() {
+        // 커스텀 넣기가 귀차니즘... =_ =
+        disposable().add(Single.just("")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+
+                dialog(DialogParam(messageId = R.string.brs_add_shortcut_to_home,
+                    negativeId = android.R.string.cancel,
+                    listener = { r, _ ->
+                        if (r) {
+                            shortcut(ShortcutParams(webview.url, R.mipmap.ic_launcher,
+                                webview.title, webview.title))
+                            snackbar(webview, R.string.brs_added_link)
+                        }
+                    }))
+
+            }, { errorLog(it, mLog) }))
+    }
+
+    private fun fullscreen(fullscreen: Boolean) {
         activity?.apply {
             fullscreen(fullscreen)
             mViewModel.isFullscreen.set(fullscreen)
@@ -270,19 +430,28 @@ class BrowserFragment : BaseDaggerFragment<BrowserFragmentBinding, BrowserViewMo
         }
     }
 
-    fun loadUrl(url: String) {
-        mBinding.brsWebview.loadUrl(url)
+    private fun appSetting() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("APP SETTING")
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
     
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): BrowserFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [BrowserFragmentModule::class])
+        abstract fun contributeBrowserFragmentInjector(): BrowserFragment
+    }
+    
+    @dagger.Module
+    abstract class BrowserFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: BrowserFragment): SavedStateRegistryOwner
     }
 }

@@ -1,12 +1,21 @@
 package com.example.clone_daum.ui.search
 
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.SearchFragmentBinding
-import com.example.clone_daum.ui.ViewController
-import com.example.common.*
-import com.example.common.di.module.injectOfActivity
+import com.example.clone_daum.ui.Navigator
+import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
+import com.example.clone_daum.R
+import com.example.clone_daum.di.module.AssistedViewModelKey
+import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
+import com.example.clone_daum.di.module.ViewModelAssistedFactory
+import dagger.Binds
 import dagger.android.ContributesAndroidInjector
+import dagger.multibindings.IntoMap
+import io.reactivex.Single
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -14,45 +23,43 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 11. 29. <p/>
  */
 
-class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>() {
+class SearchFragment @Inject constructor(
+) : BaseDaggerFragment<SearchFragmentBinding, PopularViewModel>() {
     companion object {
         private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
+    override val layoutId = R.layout.search_fragment
+
+    init {
+        mViewModelScope = SCOPE_ACTIVITY
+    }
+
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var layoutManager: ChipsLayoutManager
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
-    private lateinit var mPopularViewModel: PopularViewModel
-
-
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        initPopularViewModel()
-    }
-
-    private fun initPopularViewModel() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INJECT POPULAR VIEW MODEL")
-        }
-
-        mPopularViewModel     = mViewModelFactory.injectOfActivity(this@SearchFragment, PopularViewModel::class.java)
-        mBinding.popularmodel = mPopularViewModel
-    }
+    private val mSearchViewModel: SearchViewModel by stateInject { factory }
 
     override fun initViewBinding() {
+    }
 
+    override fun bindViewModel() {
+        mBinding.model        = mSearchViewModel
+        mBinding.popularmodel = mViewModel
+
+        addCommandEventModel(mSearchViewModel)
     }
 
     override fun initViewModelEvents() {
         mViewModel.init()
-        mPopularViewModel.apply {
-            init()
-            chipLayoutManager.set(layoutManager)
+        mSearchViewModel.init()
+    }
 
-            observe(commandEvent) { onCommandEvent(it.first, it.second) }
-        }
+    override fun onDestroyView() {
+        mBinding.searchEdit.hideKeyboard()
+
+        super.onDestroyView()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -62,38 +69,47 @@ class SearchFragment: BaseDaggerFragment<SearchFragmentBinding, SearchViewModel>
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        mViewModel.finishEvent()
-
         when (cmd) {
-            SearchViewModel.CMD_BRS_OPEN -> {
-                viewController.browserFragment(data.toString())
-            }
-
-            PopularViewModel.CMD_BRS_SEARCH -> {
-                val url = "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H"
-                viewController.browserFragment(url)
-            }
+            SearchViewModel.CMD_BRS_OPEN    -> browserFragment(data.toString())
+            PopularViewModel.CMD_BRS_SEARCH -> browserFragment(
+                "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H")
         }
     }
 
-    override fun onDestroyView() {
-        mViewModel.dp.clear()
+    private fun browserFragment(url: Any) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("HIDE SEARCH FRAGMENT ${this}")
+        }
 
-        hideKeyboard(mBinding.searchEdit)
-        mPopularViewModel.dp.clear()
-
-        super.onDestroyView()
+        navigator.browserFragment(url.toString(), true)
+        mBinding.root.postDelayed({ hideKeyboard(mBinding.searchEdit) }, 100)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): SearchFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [SearchFragmentModule::class])
+        abstract fun contributeSearchFragmentInjector(): SearchFragment
+    }
+
+    @dagger.Module
+    abstract class SearchFragmentModule {
+        @Binds
+        abstract fun bindSearchFragment(fragment: SearchFragment): Fragment
+
+        @Binds
+        @IntoMap
+        @AssistedViewModelKey(SearchViewModel::class)
+        abstract fun bindSearchViewModelFactory(vm: SearchViewModel.Factory)
+                : ViewModelAssistedFactory<out ViewModel>
+
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(fragment: SearchFragment): SavedStateRegistryOwner
     }
 }

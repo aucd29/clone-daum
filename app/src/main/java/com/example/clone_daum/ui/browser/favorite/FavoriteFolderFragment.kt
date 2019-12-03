@@ -1,55 +1,78 @@
 package com.example.clone_daum.ui.browser.favorite
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.browser.BrowserFragment
-import com.example.common.*
-import dagger.Module
+import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
+import com.example.clone_daum.R
+import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
-class FavoriteFolderFragment
+class FavoriteFolderFragment @Inject constructor()
     : BaseDaggerFragment<FavoriteFolderFragmentBinding, FavoriteFolderViewModel>() {
+    override val layoutId = R.layout.favorite_folder_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
+
+        const val K_FOLDER = "folder"
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
-    override fun initViewBinding() {
-
-    }
+    override fun initViewBinding() { }
 
     override fun initViewModelEvents() {
-        val folder = arguments?.getString("folder")
+        arguments?.getInt(K_FOLDER)?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FOLDER ID : $it")
+            }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FOLDER NAME : $folder")
-        }
-
-        folder?.let {
-            mViewModel.initByFolder(it, mDisposable)
+            mViewModel.initByFolder(it, disposable())
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
         FavoriteFolderViewModel.apply {
             when (cmd) {
-                CMD_BRS_OPEN -> {
-                    finish()
-                    finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
-
-                    val frgmt = fragmentManager?.find(BrowserFragment::class.java)
-                    if (frgmt is BrowserFragment) {
-                        frgmt.loadUrl(data.toString())
-                    }
-                }
+                CMD_BRS_OPEN        -> showBrowser(data.toString())
+                CMD_FAVORITE_MODIFY -> modifyFavorite()
             }
+        }
+    }
+
+    private fun showBrowser(url: String) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("SHOW BROWSER $url")
+        }
+
+        finish()
+        finish()    // fragment 가 2개 쌓여 있어서 이를 2번 호출 해야 한다.
+
+        find<BrowserFragment>()?.loadUrl(url)
+    }
+
+    private fun modifyFavorite() {
+        arguments?.getInt(K_FOLDER)?.let {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("FOLDER ID : $it")
+            }
+
+            navigator.favoriteModifyFragment(it)
         }
     }
 
@@ -61,7 +84,14 @@ class FavoriteFolderFragment
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): FavoriteFolderFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [FavoriteFolderFragmentModule::class])
+        abstract fun contributeFavoriteFolderFragmentInjector(): FavoriteFolderFragment
+    }
+
+    @dagger.Module
+    abstract class FavoriteFolderFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: FavoriteFolderFragment): SavedStateRegistryOwner
     }
 }

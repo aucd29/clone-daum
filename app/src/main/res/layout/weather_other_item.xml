@@ -22,16 +22,17 @@ icon 은 없어서 일단 데이터 타입은 주었으나 넣어두진 않음 �
 bindding adapter 를 이용하면 될듯
 -->
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/ic_android_black_14dp"
+                tools:ignore="ContentDescription"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/description"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@{item.description}"
@@ -42,7 +43,7 @@ bindding adapter 를 이용하면 될듯
                 android:gravity="center"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/value"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@{item.value}"

@@ -4,7 +4,7 @@ import android.graphics.*
 import java.io.ByteArrayOutputStream
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 class SourceData
@@ -62,7 +62,7 @@ class SourceData
 
     init {
         if (dataWidth * dataHeight > data.size) {
-            throw IllegalArgumentException("Image data does not match the resolution. ${dataWidth} x ${dataHeight} > ${data.size}")
+            throw IllegalArgumentException("Image data does not match the resolution. $dataWidth x $dataHeight > ${data.size}")
         }
     }
 
@@ -134,14 +134,12 @@ class SourceData
 
     companion object {
         fun rotateCameraPreview(cameraRotation: Int, data: ByteArray, imageWidth: Int, imageHeight: Int): ByteArray {
-            when (cameraRotation) {
-                0    -> return data
-                90   -> return rotateCW(data, imageWidth, imageHeight)
-                180  -> return rotate180(data, imageWidth, imageHeight)
-                270  -> return rotateCCW(data, imageWidth, imageHeight)
-                else ->
-                    // Should not happen
-                    return data
+            return when (cameraRotation) {
+//                0    -> data
+                90   -> rotateCW(data, imageWidth, imageHeight)
+                180  -> rotate180(data, imageWidth, imageHeight)
+                270  -> rotateCCW(data, imageWidth, imageHeight)
+                else -> data
             }
         }
 

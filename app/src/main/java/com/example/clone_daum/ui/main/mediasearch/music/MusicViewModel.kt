@@ -2,10 +2,8 @@ package com.example.clone_daum.ui.main.mediasearch.music
 
 import android.app.Application
 import androidx.databinding.ObservableField
-import androidx.lifecycle.AndroidViewModel
-import com.example.common.IFinishFragmentAware
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.bindingadapter.AnimParams
+import brigitte.bindingadapter.AnimParams
+import brigitte.viewmodel.CommandEventViewModel
 import javax.inject.Inject
 
 /**
@@ -13,9 +11,7 @@ import javax.inject.Inject
  */
 
 class MusicViewModel @Inject constructor(app: Application)
-    : AndroidViewModel(app), IFinishFragmentAware {
-
-    override val finishEvent  = SingleLiveEvent<Void>()
+    : CommandEventViewModel(app) {
 
     val bgScale = ObservableField<AnimParams>()
 }

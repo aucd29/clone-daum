@@ -1,27 +1,29 @@
 package com.example.clone_daum.ui.main.navigation.mail
 
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.MailFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
-import com.example.common.*
-import com.example.common.di.module.injectOf
+import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
+import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
+ *
+ * 디자인 변경으로 삭제 [aucd29][2019-10-17]
  */
 
-class MailFragment: BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
-    private lateinit var mLoginViewModel: NavigationLoginViewModel
+class MailFragment @Inject constructor(
+) : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
+    override val layoutId = R.layout.mail_fragment
+
+    private val mLoginViewModel: NavigationLoginViewModel by inject()
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
-
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mLoginViewModel = mViewModelFactory.injectOf(this, NavigationLoginViewModel::class.java)
-    }
 
     override fun initViewBinding() = mBinding.run {
         // LOGOUT STATUS
@@ -44,13 +46,20 @@ class MailFragment: BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): MailFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [MailFragmentModule::class])
+        abstract fun contributeMailFragmentInjector(): MailFragment
+    }
+
+    @dagger.Module
+    abstract class MailFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: MailFragment): SavedStateRegistryOwner
     }
 }

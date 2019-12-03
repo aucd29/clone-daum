@@ -13,12 +13,12 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.commandEvent(model.CMD_SUBMENU, item.name)}"
+            android:onClick="@{() -> model.command(model.CMD_SUBMENU, item.name)}"
             android:paddingBottom="@dimen/brs_sub_item_pad_b"
             android:background="?selectableItemBackgroundBorderless"
     >
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="@dimen/brs_sub_item_ico"
@@ -31,7 +31,7 @@
                 tools:text="ICON"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"

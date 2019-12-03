@@ -4,7 +4,7 @@ import android.hardware.Camera
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 object OpenCameraInterface {
@@ -13,7 +13,7 @@ object OpenCameraInterface {
     /**
      * For [.open], means no preference for which camera to open.
      */
-    val NO_REQUESTED_CAMERA = -1
+    const val NO_REQUESTED_CAMERA = -1
 
     fun getCameraId(requestedId: Int): Int {
         val numCameras = Camera.getNumberOfCameras()

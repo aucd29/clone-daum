@@ -1,4 +1,4 @@
-package com.example.smartlenskotlin.tf.detector
+package com.example.clone_daum.common.tf.detector
 
 import android.graphics.Bitmap
 import java.io.IOException

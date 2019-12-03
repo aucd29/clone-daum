@@ -1,5 +1,6 @@
 package com.example.clone_daum.common.camera
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Matrix
@@ -7,15 +8,16 @@ import android.graphics.Rect
 import android.graphics.SurfaceTexture
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.TextureView
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.example.common.systemService
-import com.example.common.validateMainThread
+import brigitte.systemService
+import brigitte.validateMainThread
 import org.slf4j.LoggerFactory
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 18. <p/>
@@ -30,7 +32,7 @@ open class CameraPreview: ViewGroup {
 
     var mCameraInstance: CameraInstance? = null
     lateinit var mWindowManager: WindowManager
-    var mStateHandler: android.os.Handler? = null
+    var mStateHandler: Handler? = null
     lateinit var mTextureView: TextureView
 
     private var previewActive = false
@@ -64,7 +66,6 @@ open class CameraPreview: ViewGroup {
             field = on
             mCameraInstance?.setTorch(on)
         }
-        get() = field
 
     fun surfaceTextureListener(): TextureView.SurfaceTextureListener {
         return object: TextureView.SurfaceTextureListener {
@@ -82,15 +83,13 @@ open class CameraPreview: ViewGroup {
         }
     }
 
-    val mStateCallback = object: android.os.Handler.Callback {
-        override fun handleMessage(msg: Message): Boolean {
-            when (msg.what) {
-                CameraConst.K_PREVIEW_SIZE_READY ->
-                    previewSized(msg.obj as Size)
-            }
-
-            return false
+    val mStateCallback = Handler.Callback { msg ->
+        when (msg.what) {
+            CameraConst.K_PREVIEW_SIZE_READY ->
+                previewSized(msg.obj as Size)
         }
+
+        false
     }
 
 
@@ -117,7 +116,7 @@ open class CameraPreview: ViewGroup {
             mLog.debug("INIT LAYOUT")
         }
 
-        mWindowManager    = context.systemService(WindowManager::class.java)!!
+        mWindowManager    = context.systemService<WindowManager>()!!
         mStateHandler     = Handler(mStateCallback)
         mRotationListener = RotationListener()
     }
@@ -288,19 +287,20 @@ open class CameraPreview: ViewGroup {
             if (mTextureView != null && mTextureView.surfaceTexture != null) {
                 previewSize?.let {
                     val transform = calculateTextureTransform(
-                        Size(mTextureView.getWidth(), mTextureView.getHeight()), it)
+                        Size(mTextureView.width, mTextureView.height), it)
                     mTextureView.setTransform(transform)
                 }
             }
 
-            startCameraPreview(CameraSurface(mTextureView.getSurfaceTexture()))
+            startCameraPreview(CameraSurface(mTextureView.surfaceTexture))
         }
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         containerSized(Size(r - l, b - t))
 
-        mTextureView?.let { it.layout(0, 0, width, height) }
+        mTextureView?.layout(0, 0, width, height)
     }
 
     open fun resume() {
@@ -405,16 +405,15 @@ open class CameraPreview: ViewGroup {
         val intersection = Rect(container)
 
         framingRectSize?.let {
-            val hMargin = Math.max(0, (intersection.width() - it.width) / 2)
-            val vMargin = Math.max(0, (intersection.height() - it.height) / 2)
+            val hMargin = max(0, (intersection.width() - it.width) / 2)
+            val vMargin = max(0, (intersection.height() - it.height) / 2)
 
             intersection.inset(hMargin, vMargin)
 
             return intersection
         }
 
-        val margin = Math.min(intersection.width() * marginFraction,
-            intersection.height() * marginFraction).toInt()
+        val margin = min(intersection.width() * marginFraction, intersection.height() * marginFraction).toInt()
         intersection.inset(margin, margin)
 
         if (intersection.height() > intersection.width()) {

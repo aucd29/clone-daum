@@ -1,7 +1,7 @@
 package com.example.clone_daum.common.camera
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 class CameraSettings {
@@ -43,12 +43,12 @@ class CameraSettings {
         set(autoFocusEnabled) {
             field = autoFocusEnabled
 
-            if (autoFocusEnabled && isContinuousFocusEnabled) {
-                focusMode = FocusMode.CONTINUOUS
+            focusMode = if (autoFocusEnabled && isContinuousFocusEnabled) {
+                FocusMode.CONTINUOUS
             } else if (autoFocusEnabled) {
-                focusMode = FocusMode.AUTO
+                FocusMode.AUTO
             } else {
-                focusMode = FocusMode.AUTO  // 변경
+                FocusMode.AUTO  // 변경
             }
         }
     /**
@@ -60,12 +60,10 @@ class CameraSettings {
         set(continuousFocusEnabled) {
             field = continuousFocusEnabled
 
-            if (continuousFocusEnabled) {
-                focusMode = FocusMode.CONTINUOUS
-            } else if (isAutoFocusEnabled) {
-                focusMode = FocusMode.AUTO
-            } else {
-                focusMode = FocusMode.AUTO // 변경
+            focusMode = when {
+                continuousFocusEnabled -> FocusMode.CONTINUOUS
+                isAutoFocusEnabled -> FocusMode.AUTO
+                else -> FocusMode.AUTO // 변경
             }
         }
     /**

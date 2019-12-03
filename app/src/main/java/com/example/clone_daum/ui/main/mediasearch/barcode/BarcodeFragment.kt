@@ -4,10 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.View
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.BarcodeFragmentBinding
-import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerFragment
-import com.example.common.finish
+import com.example.clone_daum.ui.Navigator
+import brigitte.BaseDaggerFragment
+import brigitte.di.dagger.scope.FragmentScope
+import brigitte.finish
+import com.example.clone_daum.R
 import com.google.zxing.*
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -16,20 +19,22 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.zxing.common.HybridBinarizer
+import dagger.Binds
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 22. <p/>
  */
 
-class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>()
-    , BarcodeCallback {
+class BarcodeFragment @Inject constructor(
+) : BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>(), BarcodeCallback {
+    override val layoutId = R.layout.barcode_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(BarcodeFragment::class.java)
 
         const val REQ_FILE_OPEN = 7912
     }
 
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     override fun initViewBinding() {
         mBinding.barcodeScanner.apply {
@@ -68,15 +73,15 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
         BarcodeViewModel.apply {
             when (cmd) {
                 CMD_FILE_OPEN  -> fileOpen()
-                CMD_INPUT_CODE -> viewController.barcodeInputFragment()
+                CMD_INPUT_CODE -> navigator.barcodeInputFragment()
             }
         }
     }
 
     private fun fileOpen() {
         startActivityForResult(Intent().apply {
-            setType("image/*")
-            setAction(Intent.ACTION_GET_CONTENT)
+            type = "image/*"
+            action = Intent.ACTION_GET_CONTENT
             addCategory(Intent.CATEGORY_OPENABLE)
             putExtra(Intent.EXTRA_LOCAL_ONLY, true)
         }, REQ_FILE_OPEN)
@@ -96,20 +101,14 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
     }
 
     private fun parseBarcode(intent: Intent?): BarcodeResult? {
-        val uri = intent?.data
-        if (uri == null) {
-            return null
-        }
+        val uri = intent?.data ?: return null
 
         return context?.contentResolver?.openInputStream(uri)?.use {
-            val bmp = BitmapFactory.decodeStream(it)
-            if (bmp == null) {
-                return null
-            }
+            val bmp = BitmapFactory.decodeStream(it) ?: return null
 
             val width = bmp.width
             val height = bmp.height
-            val pixels: IntArray = IntArray(width * height)
+            val pixels = IntArray(width * height)
 
             bmp.getPixels(pixels, 0, width, 0, 0, width, height)
             bmp.recycle()
@@ -139,7 +138,7 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
 
             // 단순하게 http 만 했는데, sms, vcard, pdf 등등이 존재
             if (text.substring(0, 4).toLowerCase().startsWith("http")) {
-                v.postDelayed({ viewController.browserFragment(text) }, 800)
+                v.postDelayed({ navigator.browserFragment(text) }, 800)
             } else if (text.startsWith("MATMSG")) {
                 // MATMSG:TO:aucd29@gmail.com;SUB:hello ;BODY:world;;
                 val email = text.split(";")
@@ -177,7 +176,14 @@ class BarcodeFragment: BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewMod
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): BarcodeFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [BarcodeFragmentModule::class])
+        abstract fun contributeBarcodeFragmentInjector(): BarcodeFragment
+    }
+
+    @dagger.Module
+    abstract class BarcodeFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: BarcodeFragment): SavedStateRegistryOwner
     }
 }

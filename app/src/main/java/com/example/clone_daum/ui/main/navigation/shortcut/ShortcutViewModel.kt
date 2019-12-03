@@ -3,11 +3,10 @@ package com.example.clone_daum.ui.main.navigation.shortcut
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
-import com.example.common.DialogParam
-import com.example.common.IDialogAware
-import com.example.common.app
-import com.example.common.arch.SingleLiveEvent
-import com.example.common.string
+import brigitte.DialogParam
+import brigitte.IDialogAware
+import brigitte.viewmodel.app
+import brigitte.arch.SingleLiveEvent
 import javax.inject.Inject
 
 /**
@@ -18,6 +17,7 @@ class ShortcutViewModel @Inject constructor(application: Application)
     : AndroidViewModel(application), IDialogAware {
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
+
     val brsSitemapEvent      = SingleLiveEvent<String>()
 
     fun eventSitemap() {

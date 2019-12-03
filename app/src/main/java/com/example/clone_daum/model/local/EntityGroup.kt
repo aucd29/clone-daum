@@ -5,9 +5,8 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.example.clone_daum.model.*
-import com.example.common.IRecyclerDiff
-import com.example.common.IRecyclerItem
-import com.example.common.IRecyclerPosition
+import brigitte.*
+import java.io.Serializable
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 12. <p/>
@@ -20,8 +19,14 @@ data class SearchHistory (
     val keyword: String,
     val date: Long
 ) : ISearchRecyclerData {
-    override fun compare(item: IRecyclerDiff)= this._id == (item as SearchHistory)._id
-    override fun type() = SearchRecyclerType.T_HISTORY
+    @Ignore override var type: Int = SearchRecyclerType.T_HISTORY
+
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        if (item is SearchHistory) _id == item._id
+        else false
+
+    override fun contentsSame(item: IRecyclerDiff)=
+        this._id == (item as SearchHistory)._id
 }
 
 @Entity(tableName = "zzim")
@@ -34,87 +39,76 @@ data class Zzim (
     val tags: String = "",
     val locked: Boolean = false
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff) = this._id == (item as Zzim)._id
-}
-//
-//@Entity(tableName = "zzimTag")
-//data class ZzimTag (
-//    @PrimaryKey(autoGenerate = true)
-//    val _id: Int = 0,
-//    val parent: Int,
-//    val tag: String
-//) : IRecyclerDiff {
-//    override fun compare(item: IRecyclerDiff) = this._id == (item as ZzimTag)._id
-//}
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        _id == (item as Zzim)._id
 
-//// https://stackoverflow.com/questions/45059942/return-type-for-android-room-joins
-//data class ZzimAndTag (
-//    @Embedded
-//    val zzim: Zzim,
-//    @Relation(parentColumn = "Zzim._id", entityColumn = "ZzimTag._id")
-//    val tags: List<ZzimTag>
-//)
+    override fun contentsSame(item: IRecyclerDiff) =
+        this._id == (item as Zzim)._id
+}
 
 @Entity(tableName = "urlHistory")
 data class UrlHistory (
-    val url: String,
-    val date: Long,
+    val title: String,
+    val url: String?,
+    val date: Long?,
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0
-) : IRecyclerDiff, IRecyclerItem {
+) : IDateCalculator, IRecyclerExpandable<UrlHistory> {
     companion object {
         const val T_HISTORY   = 0
         const val T_SEPERATOR = 1
     }
 
-    override fun compare(item: IRecyclerDiff)= this._id == (item as UrlHistory)._id
-    override fun type() = T_HISTORY
+    @Ignore override var type           = T_HISTORY
+    @Ignore override var status         = ObservableBoolean(false)
+    @Ignore override var timeInMillis   = date?.let { it } ?: 0
+    @Ignore override var childList: List<UrlHistory> = arrayListOf()
+    @Ignore val check = ObservableBoolean(false)
+
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as UrlHistory)._id
+
+    override fun contentsSame(item: IRecyclerDiff)=
+        this._id == (item as UrlHistory)._id
 }
 
 @Entity(tableName = "myFavorite")
 data class MyFavorite (
     /** 링크 명 or 폴더 명 */
-    val name: String,
+    var name: String,
     /** 링크 (url) */
     val url: String = "",
     /** 링크일 때 사용 될 폴더 */
-    val folder: String = "",
+    var folderId: Int = 0,
     /** 타입 (링크: 0, 폴더: 1) */
     val favType: Int = T_DEFAULT,
     /** 날짜 인데 이를 기준으로 order 처리 한다. */
     var date: Long = System.currentTimeMillis(),
     /** id 값 */
     @PrimaryKey(autoGenerate = true)
-    val _id: Int       = 0
-) : IRecyclerDiff, IRecyclerItem, IRecyclerPosition {
-    @Ignore
-    var pos: Int   = 0
-
-    @Ignore
-    var check = ObservableBoolean(false)
+    var _id: Int       = 0
+) : IRecyclerDiff, IRecyclerItem, IRecyclerPosition, Serializable {
+    constructor(fav: MyFavorite)
+        : this(fav.name, fav.url, fav.folderId, fav.favType,fav.date, fav._id)
 
     companion object {
         const val T_FOLDER  = 0
         const val T_DEFAULT = 1
     }
 
-    override fun position(pos: Int) {
-        this.pos = pos
-    }
-    override fun position() = pos
+    @Ignore var check = ObservableBoolean(false)
+    @Ignore override var type: Int = favType
+    @Ignore override var position: Int = 0
 
-    override fun compare(item: IRecyclerDiff) = this._id == (item as MyFavorite)._id
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as MyFavorite)._id
 
-//    override fun compare(item: IRecyclerDiff): Boolean {
-//        val newItem = item as MyFavorite
-//        return _id == newItem._id
-//    }
-
-    override fun type() = favType
+    override fun contentsSame(item: IRecyclerDiff) =
+        this._id == (item as MyFavorite)._id
 
     fun swapDate(fav: MyFavorite) {
         val tmp = date
-        date = fav.date
+        date     = fav.date
         fav.date = tmp
     }
 }
@@ -127,6 +121,44 @@ data class FrequentlySite(
     @PrimaryKey(autoGenerate = true)
     val _id: Int = 0
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff)=
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as FrequentlySite)._id
+
+    override fun contentsSame(item: IRecyclerDiff)=
         this.url == (item as FrequentlySite).url
+}
+
+data class Setting(
+    val _id: Int,
+    val title: String
+) : IRecyclerDiff {
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as Setting)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.title == (item as Setting).title
+}
+
+data class HomeMenu(
+    val _id: Int,
+    val title: String,
+    val order: Int
+) : IRecyclerDiff {
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as HomeMenu)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.title == (item as HomeMenu).title && order == (item as HomeMenu).order
+}
+
+data class AlarmHistory(
+    val _id: Int,
+    val title: String,
+    val date: Long
+) : IRecyclerDiff {
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as AlarmHistory)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.title == (item as AlarmHistory).title && date == (item as AlarmHistory).date
 }

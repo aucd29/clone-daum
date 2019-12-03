@@ -1,12 +1,10 @@
 package com.example.clone_daum.di.component
 
-import android.app.Application
 import com.example.clone_daum.MainApp
 import com.example.clone_daum.di.module.*
-import com.example.clone_daum.di.module.common.AppModule
-import com.example.common.di.module.ViewModelFactoryModule
-import dagger.BindsInstance
+import com.example.clone_daum.di.module.libs.KakaoModule
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
@@ -22,19 +20,15 @@ import javax.inject.Singleton
 // 며칠 삽질을 했다..=_ =
 
 @Singleton
-@Component(modules = [AndroidSupportInjectionModule::class
-    , AppModule::class
-    , ChipModule::class
-    , DaumModule::class
-    , ActivityBindingModule::class
+@Component(modules = [
+    AndroidSupportInjectionModule::class,
+    AppModule::class,
+    ActivityModule::class,
+    ViewModelAssistedFactoriesModule::class,
+    UtilModule::class,
+    NetworkModule::class
 ])
-interface AppComponent {
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(app: Application): Builder
-        fun build(): AppComponent
-    }
-
-    fun inject(app: MainApp)
+interface AppComponent: AndroidInjector<MainApp> {
+    @Component.Factory
+    interface Factory : AndroidInjector.Factory<MainApp>
 }

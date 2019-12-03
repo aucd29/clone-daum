@@ -1,6 +1,6 @@
 package com.example.clone_daum.model.remote
 
-import com.example.common.*
+import brigitte.*
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.slf4j.LoggerFactory
@@ -30,10 +30,27 @@ import org.slf4j.LoggerFactory
 //    }]
 //}]
 
+//"type": "news",
+//"list": [{
+//    "linkurl_mobile": "https://m.search.daum.net/search?w=tot&q=%EC%B4%9B%EB%B6%88%EC%A7%91%ED%9A%8C",
+//    "linkurl_pc": "https://search.daum.net/search?w=tot&q=%EC%B4%9B%EB%B6%88%EC%A7%91%ED%9A%8C",
+//    "param": "pin=news",
+//    "param_pc": "f=news&rtmaxcoll=EOA,1TH",
+//    "utf8Keyword": "%EC%B4%9B%EB%B6%88%EC%A7%91%ED%9A%8C",
+//    "rank": "1",
+//    "param_mobile": "pin=news",
+//    "linkurl": "https://m.search.daum.net/search?w=tot&q=%EC%B4%9B%EB%B6%88%EC%A7%91%ED%9A%8C&amp;DA=QWG&amp;pin=news",
+//    "keyword": "촛불집회",
+//    "type": "+",
+//    "value": "61",
+//    "euckrKeyword": "%C3%D0%BA%D2%C1%FD%C8%B8"
+//}
+
+
 @JsonIgnoreProperties
 data class RealtimeIssue (
     @JsonProperty("rank")
-    val index: Int,
+    val index: String,
     @JsonProperty("linkurl")
     val url: String,
     @JsonProperty("keyword")
@@ -41,7 +58,10 @@ data class RealtimeIssue (
     val type: String,
     val value: String
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this.index == (item as RealtimeIssue).index
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as RealtimeIssue
         return url == newItem.url && text == newItem.text
     }

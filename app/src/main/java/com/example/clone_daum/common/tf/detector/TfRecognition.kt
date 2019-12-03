@@ -1,7 +1,7 @@
-package com.example.smartlenskotlin.tf.detector
+package com.example.clone_daum.common.tf.detector
 
 import android.graphics.RectF
-import com.example.common.IRecyclerDiff
+import brigitte.IRecyclerDiff
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 12. <p/>
@@ -28,7 +28,12 @@ data class TfRecognition(
      */
     var location: RectF?
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean {
+        val newItem = item as TfRecognition
+        return id == newItem.id
+    }
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as TfRecognition
 //        return id == newItem.id && title == newItem.title
         return title == newItem.title

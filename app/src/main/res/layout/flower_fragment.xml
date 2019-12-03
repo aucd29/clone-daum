@@ -36,7 +36,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/flower_back"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:padding="@dimen/speech_icon_pad"
@@ -44,10 +44,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:src="@drawable/ic_arrow_back_white_24dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.finishEvent()}"
+                android:onClick="@{() -> model.finish()}"
+                tools:ignore="ContentDescription"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/flower_message"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +60,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 tools:text="MESSAGE"
-                android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, model.message)}"
+                android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, model.message)}"
                 android:padding="10dp"
                 android:background="@drawable/selector_button_bgcolor"
         />

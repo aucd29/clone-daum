@@ -14,10 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?selectableItemBackgroundBorderless"
-            android:onClick="@{() -> model.commandEvent(model.CMD_BRS_OPEN, item.url)}"
+            android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, item.url)}"
     >
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
                 android:layout_width="30dp" android:layout_height="30dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -30,13 +30,10 @@
                 android:textSize="9sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical|center_horizontal"
-                app:bindFrequentlySiteUrl="@{item.url}"
-                app:bindFrequentlySiteTitle="@{``}"
-        />
-        <!--app:bindFrequentlySiteUrl="@{item.url}"-->
-        <!--android:text="@{model.firstUrl(item.url)}"-->
+                app:bindUrlToChar="@{item.url}"
+                tools:ignore="SmallSp"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@+id/icon"

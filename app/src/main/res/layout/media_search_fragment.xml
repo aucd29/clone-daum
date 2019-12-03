@@ -22,7 +22,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:background="#8F000000"
                 app:bindAlpha="@{model.dimmingBgAlpha}"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
+                android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
                 android:alpha="0"
                 />
 
@@ -50,15 +50,15 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:bindTranslateY="@{model.overshootTransY}"
                     android:translationY="-400dp"
-            >
+                    tools:ignore="DisableBaselineAlignment">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_SPEECH)}"
+                        android:onClick="@{() -> model.command(model.CMD_SEARCH_SPEECH)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_voice"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_mic_none_white_24dp"
@@ -67,8 +67,9 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/search_voice_text"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
@@ -85,9 +86,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_MUSIC)}"
+                        android:onClick="@{() -> model.command(model.CMD_SEARCH_MUSIC)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_music"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_music_note_white_24dp"
@@ -96,8 +97,9 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/search_music_text"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
@@ -114,9 +116,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_FLOWER)}"
+                        android:onClick="@{() -> model.command(model.CMD_SEARCH_FLOWER)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_flower"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_spa_white_24dp"
@@ -125,8 +127,9 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/search_flower_text"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
@@ -143,9 +146,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:onClick="@{() -> model.commandEvent(model.CMD_SEARCH_BARCODE)}"
+                        android:onClick="@{() -> model.command(model.CMD_SEARCH_BARCODE)}"
                 >
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/search_code"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:src="@drawable/ic_visibility_white_24dp"
@@ -154,8 +157,9 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription"
                     />
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/search_code_text"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +185,7 @@
                     android:layout_marginEnd="20dp"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/media_search_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -207,7 +211,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/media_search"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_search_height"
@@ -221,7 +225,7 @@
                 android:background="@drawable/shape_search_background"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/media_search_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -230,9 +234,10 @@
                 app:layout_constraintTop_toTopOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
                 android:layout_marginStart="@dimen/main_search_logo_pad_se"
+                tools:ignore="ContentDescription"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/media_search_extend_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -241,7 +246,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/media_search"
                 app:layout_constraintBottom_toBottomOf="@+id/media_search"
                 android:padding="@dimen/main_search_extend_pad"
-                android:onClick="@{() -> model.commandEvent(model.CMD_ANIM_FINISH)}"
+                android:onClick="@{() -> model.command(model.CMD_ANIM_FINISH)}"
+                tools:ignore="ContentDescription"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

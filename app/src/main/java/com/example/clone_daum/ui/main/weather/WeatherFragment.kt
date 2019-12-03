@@ -3,15 +3,19 @@ package com.example.clone_daum.ui.main.weather
 import android.Manifest
 import android.os.Bundle
 import android.view.View
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
-import com.example.clone_daum.ui.ViewController
-import com.example.common.BaseDaggerBottomSheetDialogFragment
-import com.example.common.runtimepermission.PermissionParams
-import com.example.common.runtimepermission.runtimePermissions
+import com.example.clone_daum.ui.Navigator
+import brigitte.BaseDaggerBottomSheetDialogFragment
+import brigitte.SCOPE_ACTIVITY
+import brigitte.di.dagger.scope.FragmentScope
+import brigitte.runtimepermission.PermissionParams
+import brigitte.runtimepermission.runtimePermissions
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,6 +31,7 @@ import javax.inject.Inject
 
 class WeatherFragment
     : BaseDaggerBottomSheetDialogFragment<WeatherFragmentBinding, WeatherViewModel>() {
+    override val layoutId = R.layout.weather_fragment
     companion object {
         private val mLog = LoggerFactory.getLogger(WeatherFragment::class.java)
 
@@ -41,7 +46,7 @@ class WeatherFragment
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var viewController: ViewController
+    @Inject lateinit var navigator: Navigator
 
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
@@ -62,6 +67,12 @@ class WeatherFragment
         initRecycler()
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEventAware
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
     override fun onCommandEvent(cmd: String, data: Any) {
         if (mLog.isDebugEnabled) {
             mLog.debug("COMMAND EVENT : $cmd")
@@ -70,7 +81,7 @@ class WeatherFragment
         WeatherViewModel.apply {
             when (cmd) {
                 CMD_MORE_DETAIL -> {
-                    viewController.browserFragment(MORE_DETAIL_URL)
+                    navigator.browserFragment(MORE_DETAIL_URL)
 
                     dismiss()
                 }
@@ -89,7 +100,7 @@ class WeatherFragment
                         .take(1)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            runtimePermissions(PermissionParams(activity()
+                            runtimePermissions(PermissionParams(requireActivity()
                                 , arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION)
                                 , listener = { req, res ->
                                     config.HAS_PERMISSION_GPS = res
@@ -106,13 +117,20 @@ class WeatherFragment
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): WeatherFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [WeatherFragmentModule::class])
+        abstract fun contributeWeatherFragmentInjector(): WeatherFragment
+    }
+
+    @dagger.Module
+    abstract class WeatherFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: WeatherFragment): SavedStateRegistryOwner
     }
 }

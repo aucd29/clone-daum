@@ -1,16 +1,17 @@
 package com.example.clone_daum.di.module
 
 import androidx.lifecycle.ViewModel
+import brigitte.di.dagger.module.ViewModelKey
+import brigitte.viewmodel.SplashViewModel
 import com.example.clone_daum.ui.browser.BrowserSubmenuViewModel
-import com.example.common.di.module.ViewModelKey
 import com.example.clone_daum.ui.browser.BrowserViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteAddViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteFolderViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteModifyViewModel
-import com.example.clone_daum.ui.browser.favorite.FavoriteViewModel
+import com.example.clone_daum.ui.browser.favorite.*
+import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
-import com.example.clone_daum.ui.main.MainWebViewViewModel
-import com.example.clone_daum.ui.main.SplashViewModel
+import com.example.clone_daum.ui.main.alarm.AlarmViewModel
+import com.example.clone_daum.ui.main.homemenu.HomeMenuViewModel
+import com.example.clone_daum.ui.main.hometext.HomeTextViewModel
+import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.mediasearch.MediaSearchViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeInputViewModel
 import com.example.clone_daum.ui.main.mediasearch.barcode.BarcodeViewModel
@@ -26,9 +27,8 @@ import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
-import com.example.clone_daum.ui.main.weather.WeatherViewModel
+import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
-import com.example.clone_daum.ui.search.SearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,6 +36,7 @@ import dagger.multibindings.IntoMap
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 6. <p/>
  */
+
 @Module
 abstract class ViewModelModule {
     ////////////////////////////////////////////////////////////////////////////////////
@@ -53,11 +54,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(vm: MainViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(MainWebViewViewModel::class)
-    abstract fun bindMainWebViewViewModel(vm: MainWebViewViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -104,10 +100,9 @@ abstract class ViewModelModule {
     @ViewModelKey(BarcodeInputViewModel::class)
     abstract fun bindBarcodeInputViewModel(vm: BarcodeInputViewModel): ViewModel
 
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // NAVIATION
+    // NAVIGATION
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,19 +143,51 @@ abstract class ViewModelModule {
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // SEARCH
+    // SETTING
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @Binds
     @IntoMap
-    @ViewModelKey(SearchViewModel::class)
-    abstract fun bindSearchViewModel(vm: SearchViewModel): ViewModel
+    @ViewModelKey(SettingViewModel::class)
+    abstract fun bindSettingViewModel(vm: SettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeMenuViewModel::class)
+    abstract fun bindHomeMenuFragment(vm: HomeMenuViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HomeTextViewModel::class)
+    abstract fun bindHomeTextViewModel(vm: HomeTextViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LoginViewModel::class)
+    abstract fun bindLoginViewModel(vm: LoginViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AlarmViewModel::class)
+    abstract fun bindAlarmViewModel(vm: AlarmViewModel): ViewModel
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // SEARCH
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(SearchViewModel::class)
+//    abstract fun bindSearchViewModel(vm: SearchViewModel): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(PopularViewModel::class)
     abstract fun bindPopularViewModel(vm: PopularViewModel): ViewModel
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -201,6 +228,22 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FavoriteAddViewModel::class)
-    abstract fun bindFavoriteAddViewModel(vm: FavoriteAddViewModel): ViewModel
+    @ViewModelKey(FavoriteProcessViewModel::class)
+    abstract fun bindFavoriteAddViewModel(vm: FavoriteProcessViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FolderViewModel::class)
+    abstract fun bindFolderViewModel(vm: FolderViewModel): ViewModel
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // URL HISTORY
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UrlHistoryViewModel::class)
+    abstract fun bindUrlHistoryViewModel(vm: UrlHistoryViewModel): ViewModel
 }

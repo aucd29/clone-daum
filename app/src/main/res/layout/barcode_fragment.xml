@@ -23,7 +23,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/barcode_back"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/barcode_qr_barcode_search"
@@ -37,14 +37,15 @@
                 android:textSize="@dimen/barcode_back_text"
         />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:src="@drawable/ic_arrow_back_white_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:padding="@dimen/barcode_back_icon_pad"
-                android:onClick="@{() -> model.finishEvent()}"
-        />
+                android:onClick="@{() -> model.finish()}"
+                tools:ignore="ContentDescription"
+                />
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/barcode_bottom_area"
@@ -56,17 +57,17 @@
                 android:background="@color/barcode_finder_background"
         >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:src="@drawable/ic_attach_file_white_24dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:padding="@dimen/barcode_back_icon_pad"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_FILE_OPEN)}"
-            />
+                    android:onClick="@{() -> model.command(model.CMD_FILE_OPEN)}"
+                    tools:ignore="ContentDescription"/>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/barcode_insert_code"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:background="@drawable/selector_barcode_input_background"
@@ -81,22 +82,22 @@
                     android:paddingBottom="@dimen/barcode_input_pad_tb"
                     android:layout_margin="@dimen/barcode_input_mgn"
                     android:text="@string/barcode_input"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_INPUT_CODE)}"
+                    android:onClick="@{() -> model.command(model.CMD_INPUT_CODE)}"
             />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_white_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-        />
+                tools:ignore="ContentDescription"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/barcode_book_search_only"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +109,7 @@
         />
 
         <!-- l t -->
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:src="@drawable/ic_keyboard_arrow_down_white_34dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -116,37 +117,37 @@
                 android:layout_marginTop="@dimen/barcode_finder_pad"
                 android:layout_marginStart="@dimen/barcode_finder_pad"
                 android:rotation="135"
-        />
+                tools:ignore="ContentDescription"/>
 
         <!-- r t -->
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
                    android:src="@drawable/ic_keyboard_arrow_down_white_34dp"
                    app:layout_constraintTop_toBottomOf="@+id/barcode_back"
                    app:layout_constraintEnd_toEndOf="parent"
                    android:layout_marginTop="@dimen/barcode_finder_pad"
                    android:layout_marginEnd="@dimen/barcode_finder_pad"
                    android:rotation="-135"
-        />
+                   tools:ignore="ContentDescription"/>
 
         <!-- l b -->
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
                    android:src="@drawable/ic_keyboard_arrow_down_white_34dp"
                    app:layout_constraintStart_toStartOf="parent"
                    app:layout_constraintBottom_toTopOf="@+id/barcode_bottom_area"
                    android:layout_marginStart="@dimen/barcode_finder_pad"
                    android:layout_marginBottom="@dimen/barcode_finder_pad"
                    android:rotation="45"
-        />
+                   tools:ignore="ContentDescription"/>
 
         <!-- r b -->
-        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
                    android:src="@drawable/ic_keyboard_arrow_down_white_34dp"
                    app:layout_constraintEnd_toEndOf="parent"
                    app:layout_constraintBottom_toTopOf="@+id/barcode_bottom_area"
                    android:layout_marginEnd="@dimen/barcode_finder_pad"
                    android:layout_marginBottom="@dimen/barcode_finder_pad"
                    android:rotation="-45"
-        />
+                   tools:ignore="ContentDescription"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

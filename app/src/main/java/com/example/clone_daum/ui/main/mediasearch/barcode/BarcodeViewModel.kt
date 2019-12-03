@@ -4,8 +4,9 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import com.example.clone_daum.R
-import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
+import brigitte.*
+import brigitte.arch.SingleLiveEvent
+import brigitte.viewmodel.CommandEventViewModel
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -26,8 +27,6 @@ class BarcodeViewModel @Inject constructor(application: Application)
     // http://www.barcode-generator.org/
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BarcodeViewModel::class.java)
-
         const val CMD_FILE_OPEN  = "file-open"
         const val CMD_INPUT_CODE = "input-code"
     }

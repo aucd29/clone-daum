@@ -6,7 +6,7 @@ import android.os.HandlerThread
 import android.os.Message
 import com.example.clone_daum.common.camera.CameraInstance
 import com.example.clone_daum.common.camera.SourceData
-import com.example.common.validateMainThread
+import brigitte.validateMainThread
 import org.slf4j.LoggerFactory
 
 /**
@@ -75,9 +75,9 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     private fun requestNextPreview() {
         mCameraInstance.let {
             if (it.isOpen) {
-                it.requestPreview {
+                it.requestPreview { src ->
                     if (mRunning) {
-                        mHandler.obtainMessage(TfConst.DECODE_DECODING, it).sendToTarget()
+                        mHandler.obtainMessage(TfConst.DECODE_DECODING, src).sendToTarget()
                     }
                 }
             }

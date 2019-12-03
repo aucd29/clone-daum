@@ -1,7 +1,7 @@
 package com.example.clone_daum.common.camera
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 class Size constructor(val width: Int, val height: Int) : Comparable<Size> {
@@ -66,7 +66,7 @@ class Size constructor(val width: Int, val height: Int) : Comparable<Size> {
     }
 
     override fun toString(): String {
-        return "${width}x${height}"
+        return "${width}x$height"
     }
 
     override fun equals(other: Any?): Boolean {

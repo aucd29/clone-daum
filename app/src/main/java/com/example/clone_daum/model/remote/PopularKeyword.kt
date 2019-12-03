@@ -1,6 +1,6 @@
 package com.example.clone_daum.model.remote
 
-import com.example.common.IRecyclerDiff
+import brigitte.IRecyclerDiff
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 21. <p/>
@@ -9,7 +9,10 @@ import com.example.common.IRecyclerDiff
 data class PopularKeyword (val keyword: String
     , val url: String
 ) : IRecyclerDiff {
-    override fun compare(item: IRecyclerDiff): Boolean {
+    override fun itemSame(item: IRecyclerDiff): Boolean  =
+        this == (item as PopularKeyword)
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean {
         val newItem = item as PopularKeyword
         return keyword == newItem.keyword && url == newItem.url
     }

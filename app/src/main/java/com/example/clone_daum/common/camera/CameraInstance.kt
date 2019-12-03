@@ -3,7 +3,7 @@ package com.example.clone_daum.common.camera
 import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
-import com.example.common.validateMainThread
+import brigitte.validateMainThread
 import org.slf4j.LoggerFactory
 
 /**

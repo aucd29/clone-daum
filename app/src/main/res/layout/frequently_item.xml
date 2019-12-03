@@ -1,6 +1,5 @@
 <layout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -13,22 +12,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="6dp"
-            android:onClick="@{() -> model.eventOpen(item.url)}"
+            android:onClick="@{() -> model.command(model.CMD_BROWSER, item.url)}"
     >
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/icon"
-                android:layout_width="45dp" android:layout_height="45dp"
+                android:layout_width="@dimen/dp50" android:layout_height="@dimen/dp50"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center|center_vertical"
                 android:textSize="30sp"
                 android:textColor="@android:color/white"
-                app:bindFrequentlySiteUrl="@{item.url}"
-                app:bindFrequentlySiteTitle="@{item.title}"
+                app:bindUrlToText="@{item.url}"
+                app:bindIsMoveUrl="@{item.title}"
         />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"

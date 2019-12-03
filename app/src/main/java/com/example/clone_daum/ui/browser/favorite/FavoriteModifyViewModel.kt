@@ -1,14 +1,16 @@
 package com.example.clone_daum.ui.browser.favorite
 
-import android.annotation.SuppressLint
 import android.app.Application
+import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableInt
 import com.example.clone_daum.databinding.FavoriteModifyItemBinding
 import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
-import com.example.common.*
-import com.example.common.arch.SingleLiveEvent
+import brigitte.*
+import brigitte.viewmodel.app
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -18,70 +20,87 @@ import com.example.clone_daum.R
 import io.reactivex.Completable
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 3. 4. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
 class FavoriteModifyViewModel @Inject constructor(application: Application
-    , private val favoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), ICommandEventAware, IFinishFragmentAware
-    , ISnackbarAware {
+    , private val mFavoriteDao: MyFavoriteDao
+) : RecyclerViewModel<MyFavorite>(application), IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyViewModel::class.java)
 
-        const val CMD_SELECT_ALL    = "select-all"
-        const val CMD_CHOOSE_DELETE = "choose-delete"
-        const val CMD_POPUP_MENU    = "popup-menu"
+        const val CMD_SELECT_ALL      = "select-all"
+        const val CMD_SELECTED_DELETE = "selected-delete"
+        const val CMD_POPUP_MENU      = "popup-menu"
     }
 
-    override val commandEvent  = SingleLiveEvent<Pair<String, Any>>()
-    override val finishEvent   = SingleLiveEvent<Void>()
-    override val snackbarEvent = SingleLiveEvent<String>()
+    private lateinit var mDisposable: CompositeDisposable
+    private var mFolderId: Int = 0
 
-    lateinit var dp: CompositeDisposable
+    val selectedList = arrayListOf<MyFavorite>()
+    val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
+    val enableDelete = ObservableBoolean(false)
 
-    private fun initItems() {
+
+    private fun initItems(folderId: Int, notify: (() -> Unit)? = null) {
         if (mLog.isDebugEnabled) {
             mLog.debug("INIT ITEMS")
         }
 
+        val fav = if (folderId == 0) {
+            mFavoriteDao.selectShowAll()
+        } else {
+            mFavoriteDao.selectByFolderId(folderId)
+        }
+
         // flowable 로 하면 디비 갱신 다시 쿼리를 전달 받아서 해주긴 하는데
         // touch helper 구조상 처음에만 쿼리를 전달 받도록 함
-        dp.add(favoriteDao.selectShowAll()
+        mDisposable.add(fav
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE MODIFY COUNT : ${it.size}")
+                    mLog.debug("FAVORITE MODIFY COUNT : ${it.size} ${it.hashCode()}")
                 }
 
+                visibleEmpty.set(if (it.isNotEmpty()) View.GONE else View.VISIBLE)
                 items.set(it)
-            }, ::snackbar))
+
+                notify?.invoke()
+            }, {
+                errorLog(it)
+                snackbar(it)
+            }))
     }
 
-    fun initShowAll(dp: CompositeDisposable) {
-        this.dp = dp
+    fun init(folderId: Int, dp: CompositeDisposable) {
+        mDisposable = dp
+        mFolderId   = folderId
 
-        initAdapter(arrayOf("favorite_modify_item_folder", "favorite_modify_item"))
-        initItems()
+        initAdapter(R.layout.favorite_modify_item_folder, R.layout.favorite_modify_item)
+        initItems(folderId)
         initItemTouchHelper(ItemMovedCallback { from, to ->
             items.get()?.let {
                 if (mLog.isDebugEnabled) {
                     mLog.debug("SWAP INDEX $from -> $to")
                 }
 
-                val fromData = it.get(from)
-                val toData   = it.get(to)
+                val fromData = it[from]
+                val toData   = it[to]
 
                 fromData.swapDate(toData)
 
-                dp.add(favoriteDao.update(fromData, toData)
+                mDisposable.add(mFavoriteDao.update(fromData, toData)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe ({
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("UPDATED DATE")
-                    }
-                }, ::snackbar))
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("UPDATED DATE")
+                        }
+                    }, { e ->
+                        errorLog(e)
+                        snackbar(e)
+                    }))
             }
             // 디비 수정
         }) { binding ->
@@ -97,8 +116,8 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FIRST WORD : $firstWord")
+        if (mLog.isTraceEnabled) {
+            mLog.trace("FIRST WORD : $firstWord")
         }
 
         return firstWord
@@ -107,73 +126,171 @@ class FavoriteModifyViewModel @Inject constructor(application: Application
     fun rowColor(state: Boolean) = if (state) {
         ContextCompat.getColor(app, R.color.alpha_orange)
     } else {
-        ContextCompat.getColor(app, android.R.color.white)
+        ContextCompat.getColor(app, R.color.alpha_white)
     }
 
-    override fun commandEvent(cmd: String, data: Any) {
+    fun toggleCheckbox(fav: MyFavorite) {
+        fav.check.set(!fav.check.get())
+    }
+
+    // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
+//    fun onCheckedChanged(view: CompoundButton, isChecked: Boolean) {
+//        if (mLog.isDebugEnabled) {
+//            mLog.debug("CHECKED CHANGED : ${view.id} = $isChecked")
+//        }
+//    }
+
+    // https://stackoverflow.com/questions/37582267/how-to-perform-two-way-data-binding-with-a-togglebutton
+    fun deleteList(state: Boolean, item: MyFavorite) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("ITEM state : $state, id: ${item._id} ($item)")
+        }
+
+        if (state) {
+            selectedList.add(item)
+        } else {
+            selectedList.remove(item)
+        }
+
+        enableDelete.set(selectedList.size > 0)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // ICommandEvent
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun command(cmd: String, data: Any) {
         when (cmd) {
-            CMD_SELECT_ALL -> {
-                items.get()?.let {
-                    // 하나라도 true 가 아니라면
-                    var changeAllTrue = false
+            CMD_SELECT_ALL      -> selectAll()
+            CMD_SELECTED_DELETE -> deleteSelectedItem()
+            else                -> super.command(cmd, data)
+        }
+    }
 
-                    for (item in it) {
-                        if (item.check.get() == false) {
-                            changeAllTrue = true
-                            break
-                        }
-                    }
+    private fun selectAll() {
+        items.get()?.toggleItems { it.check }
+    }
 
-                    if (changeAllTrue) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("CHECKBOX CHECKED ALL")
-                        }
+    private fun deleteSelectedItem() {
+        enableDelete.set(false)
 
-                        it.forEach { it.check.set(true) }
-                    } else {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("CHECKBOX TOGGLE")
-                        }
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DELETE SELECTED ITEMS (${selectedList.size})")
+        }
 
-                        it.forEach { it.check.set(!it.check.get()) }
-                    }
-                }
+        // 폴더의 경우 폴더명을 찾아서 해당 폴더를 가진 fav 를 모두 삭제 한다.
+        val folderIdList = arrayListOf<Int>()
+        selectedList.forEach {
+            if (it.type == MyFavorite.T_FOLDER) {
+                folderIdList.add(it._id)
             }
+        }
 
-            CMD_CHOOSE_DELETE -> {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETE CHOOSE ITEMS")
-                }
+        //  TODO zip 처리 필요
 
-                items.get()?.forEach {
-                    if (it.check.get()) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("DELETE ITEM : ${it._id}")
-                        }
-
-                        dp.add(favoriteDao.delete(it)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("DELETE ID ${it._id}")
-                                }
-                            })
-
-                        dp.add(Completable.fromAction { favoriteDao.delete(it.name) }
-                            .subscribeOn(Schedulers.io())
-                            .subscribe {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("DELETE FOLDER : ${it.name}")
-                                }
-                            })
+        if (folderIdList.size > 0) {
+            mDisposable.add(Completable.fromAction { mFavoriteDao.deleteByFolderIds(folderIdList) }
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("DELETE FAVORITE FOLDER LIST : $folderIdList")
                     }
+                })
+        }
+
+        mDisposable.add(mFavoriteDao.delete(selectedList)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("DELETED FAVORITE ITEMS")
                 }
 
                 // modify fragment 에서는 single 로 call 하고 있으므로
                 // 화면을 갱신 시켜줘야 한다.
-                initItems()
-            }
-            else -> super.commandEvent(cmd, data)
+
+                initItems(mFolderId) {
+                    adapter.get()?.notifyDataSetChanged()
+                }
+            }, ::errorLog))
+    }
+
+    fun updateFavorite(fav: MyFavorite, callback: (Boolean) -> Unit) {
+        mDisposable.add(mFavoriteDao.update(fav)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("UPDATED FAVORITE FOLDER : ${fav.name}")
+                }
+
+                callback.invoke(true)
+            }, {
+                errorLog(it)
+                snackbar(it)
+
+                callback.invoke(false)
+            }))
+    }
+
+//    private fun updateFolderName(newName: String, oldName: String, callback: (Boolean) -> Unit) {
+//        mDisposable.add(Completable.fromAction { mFavoriteDao.updateFolderName(newName, oldName) }
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({
+//                callback.invoke(true)
+//            }, {
+//                errorLog(it)
+//                callback.invoke(false)
+//            }))
+//    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // IFolder
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun processFolder(data: Any) {
+        val pair = data as Pair<String, MyFavorite>
+        if (mLog.isDebugEnabled) {
+            mLog.debug("UPDATE FAVORITE (OLD: ${pair.first}, NEW: ${pair.second.name})")
         }
+
+//        val oldName = pair.first
+//        val newName = pair.second.name
+        val fav = pair.second
+
+        updateFavorite(fav) {
+//            if (fav.favType == MyFavorite.T_FOLDER) {
+//                // 폴더 변경시 하위의 favorite link 를 수정한다.
+//                // 이렇게 안하려면 폴더에 별도의 table 을 생성하고 참조를 _id 값을 참조해서 join 하면 되긴하는데
+//                // 데이터 양이 많지 않을거라 생각해서 이리 생성..
+//                // 그리고 swap 도 하려면 한개의 테이블이 편함
+//                updateFolderName(oldName, newName) {
+                    finish(false)
+//                }
+//            }
+        }
+    }
+
+    override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
+        mDisposable.add(mFavoriteDao.hasFolder(name, id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if (mLog.isDebugEnabled) {
+                    if (it > 0) {
+                        mLog.debug("HAS FAVORITE FOLDER : $name ($it)")
+                    }
+                }
+
+                callback(it > 0)
+            }, {
+                errorLog(it)
+                callback(false)
+            }))
     }
 }

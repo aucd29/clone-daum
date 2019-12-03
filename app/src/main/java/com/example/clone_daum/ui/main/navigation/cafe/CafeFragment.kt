@@ -1,30 +1,32 @@
 package com.example.clone_daum.ui.main.navigation.cafe
 
-import android.os.Bundle
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.CafeFragmentBinding
 import com.example.clone_daum.databinding.NavigationLoginViewBinding
 import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
-import com.example.common.BaseDaggerFragment
-import com.example.common.dataBinding
-import com.example.common.di.module.injectOf
-import com.example.common.lpmm
+import brigitte.BaseDaggerFragment
+import brigitte.dataBinding
+import brigitte.di.dagger.scope.FragmentScope
+import brigitte.lpmm
+import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 28. <p/>
+ *
+ * 디자인 변경으로 삭제 [aucd29][2019-10-17]
  */
 
-class CafeFragment: BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
-    private lateinit var mLoginViewModel: NavigationLoginViewModel
+class CafeFragment @Inject constructor(
+) : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
+    override val layoutId = R.layout.cafe_fragment
+
+    private val mLoginViewModel: NavigationLoginViewModel by inject()
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
-    override fun bindViewModel() {
-        super.bindViewModel()
-
-        mLoginViewModel = mViewModelFactory.injectOf(this, NavigationLoginViewModel::class.java)
-    }
 
     override fun initViewBinding() = mBinding.run {
         mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
@@ -46,13 +48,20 @@ class CafeFragment: BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): CafeFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [CafeFragmentModule::class])
+        abstract fun contributeCafeFragmentInjector(): CafeFragment
+    }
+
+    @dagger.Module
+    abstract class CafeFragmentModule {
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: CafeFragment): SavedStateRegistryOwner
     }
 }

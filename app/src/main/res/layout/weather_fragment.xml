@@ -32,7 +32,7 @@
 
             <!-- TOP -->
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/weather_current_location"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@{model.currentLocation}"
@@ -44,7 +44,7 @@
                     tools:text="중구 명동"
             />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/weather_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,7 +52,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.finishEvent()}"
+                    android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
             />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,13 +61,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:onClick="@{() -> model.commandEvent(model.CMD_CHECK_PERMISSION_AND_LOAD_GPS)}"
+                    android:onClick="@{() -> model.command(model.CMD_CHECK_PERMISSION_AND_LOAD_GPS)}"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/weather_close"
                     app:layout_constraintBottom_toBottomOf="@+id/weather_current_location"
             >
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/weather_current_position"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
@@ -79,7 +80,7 @@
                         android:visibility="@{model.visibleProgress ? View.GONE : View.VISIBLE}"
                 />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/weather_refresh_location_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -89,6 +90,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:layout_marginStart="@dimen/weather_refresh_location_icon"
                         android:visibility="@{model.visibleProgress ? View.GONE : View.VISIBLE}"
+                        tools:ignore="ContentDescription"
                 />
 
                 <ProgressBar
@@ -105,7 +107,7 @@
 
             <!-- WEAHTER INFO -->
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/weather_large_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,9 +116,10 @@
                     app:layout_constraintTop_toBottomOf="@+id/weather_current_location"
                     android:layout_marginTop="@dimen/weather_large_icon_mgn_t"
                     android:layout_marginStart="@dimen/weather_large_icon_mgn_s"
+                    tools:ignore="ContentDescription"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/weather_current_text"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@{model.weather.weatherText}"
@@ -129,7 +132,7 @@
                     android:textColor="@android:color/black"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/weather_current_temperature"
                     android:layout_width="wrap_content" android:layout_height="0dp"
                     android:text="@{model.weather.temperature}"
@@ -142,7 +145,7 @@
                     android:gravity="center_vertical"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/weather_current_temperature_description"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@{model.weather.temperatureDescription}"
@@ -157,7 +160,7 @@
                     android:textColor="@android:color/black"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/weather_current_humidity"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@{model.weather.humidity}"
@@ -168,7 +171,7 @@
                     android:layout_marginStart="@dimen/weather_current_humidity_pad"
             />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/weather_current_wind"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@{model.weather.wind}"
@@ -179,19 +182,19 @@
             />
 
             <View
-                    android:id="@+id/weather_dumy_line"
+                    android:id="@+id/weather_dummy_line"
                     style="@style/line1dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/weather_current_temperature_description"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="@dimen/weather_dumy_line_mgn_t"
+                    android:layout_marginTop="@dimen/weather_dummy_line_mgn_t"
             />
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/weather_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/weather_dumy_line"
+                    app:layout_constraintTop_toBottomOf="@+id/weather_dummy_line"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/weather_recycler_mgn_t"
@@ -201,16 +204,16 @@
             />
 
             <View
-                    android:id="@+id/weather_dumy_line2"
+                    android:id="@+id/weather_dummy_line2"
                     style="@style/line1dp"
                     app:layout_constraintTop_toBottomOf="@+id/weather_recycler"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="@dimen/weather_dumy_line_mgn_t"
+                    android:layout_marginTop="@dimen/weather_dummy_line_mgn_t"
             />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/weather_detail"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:text="@string/main_weather_more"
@@ -220,7 +223,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/weather_area"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="?selectableItemBackgroundBorderless"
-                android:onClick="@{() -> model.commandEvent(model.CMD_MORE_DETAIL)}"
+                android:onClick="@{() -> model.command(model.CMD_MORE_DETAIL)}"
                 android:textColor="@android:color/black"
         />
 

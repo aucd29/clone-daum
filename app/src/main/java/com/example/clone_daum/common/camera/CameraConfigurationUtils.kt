@@ -8,9 +8,13 @@ import android.util.Log
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 object CameraConfigurationUtils {
@@ -18,11 +22,11 @@ object CameraConfigurationUtils {
 
     private val SEMICOLON = Pattern.compile(";")
 
-    private val MAX_EXPOSURE_COMPENSATION = 1.5f
-    private val MIN_EXPOSURE_COMPENSATION = 0.0f
-    private val MIN_FPS = 10
-    private val MAX_FPS = 20
-    private val AREA_PER_1000 = 400
+    private const val MAX_EXPOSURE_COMPENSATION = 1.5f
+    private const val MIN_EXPOSURE_COMPENSATION = 0.0f
+    private const val MIN_FPS = 10
+    private const val MAX_FPS = 20
+    private const val AREA_PER_1000 = 400
 
     fun setFocus(
         parameters: Camera.Parameters,
@@ -83,15 +87,15 @@ object CameraConfigurationUtils {
     fun setTorch(parameters: Camera.Parameters, on: Boolean) {
         val supportedFlashModes = parameters.supportedFlashModes
         val flashMode: String?
-        if (on) {
-            flashMode = findSettableValue(
+        flashMode = if (on) {
+            findSettableValue(
                 "flash mode",
                 supportedFlashModes,
                 Camera.Parameters.FLASH_MODE_TORCH,
                 Camera.Parameters.FLASH_MODE_ON
             )
         } else {
-            flashMode = findSettableValue(
+            findSettableValue(
                 "flash mode",
                 supportedFlashModes,
                 Camera.Parameters.FLASH_MODE_OFF
@@ -118,10 +122,10 @@ object CameraConfigurationUtils {
         if ((minExposure != 0 || maxExposure != 0) && step > 0.0f) {
             // Set low when light is on
             val targetCompensation = if (lightOn) MIN_EXPOSURE_COMPENSATION else MAX_EXPOSURE_COMPENSATION
-            var compensationSteps = Math.round(targetCompensation / step)
+            var compensationSteps = (targetCompensation / step).roundToInt()
             val actualCompensation = step * compensationSteps
             // Clamp value:
-            compensationSteps = Math.max(Math.min(compensationSteps, maxExposure), minExposure)
+            compensationSteps = max(min(compensationSteps, maxExposure), minExposure)
             if (parameters.exposureCompensation == compensationSteps) {
                 if (mLog.isInfoEnabled) {
                     mLog.info("Exposure compensation already set to $compensationSteps / $actualCompensation")
@@ -147,7 +151,7 @@ object CameraConfigurationUtils {
             mLog.info("Supported FPS ranges: ${toString(supportedPreviewFpsRanges)}")
         }
 
-        if (supportedPreviewFpsRanges != null && !supportedPreviewFpsRanges.isEmpty()) {
+        if (supportedPreviewFpsRanges != null && supportedPreviewFpsRanges.isNotEmpty()) {
             var suitableFPSRange: IntArray? = null
             for (fpsRange in supportedPreviewFpsRanges) {
                 val thisMin = fpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX]
@@ -298,7 +302,7 @@ object CameraConfigurationUtils {
         var smallestDiff = java.lang.Double.POSITIVE_INFINITY
         var closestIndex = 0
         for (i in ratios.indices) {
-            val diff = Math.abs(ratios[i] - target100)
+            val diff = abs(ratios[i] - target100)
             if (diff < smallestDiff) {
                 smallestDiff = diff
                 closestIndex = i

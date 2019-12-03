@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Module
 class DbModule {
     companion object {
-        val DB_NAME = "local.db"
+        const val DB_NAME = "local.db"
     }
 
     @Singleton
@@ -33,11 +33,6 @@ class DbModule {
     @Provides
     fun provideZzimDao(db: LocalDb)=
         db.zzimDao()
-
-//    @Singleton
-//    @Provides
-//    fun providePopularKeywordDao(db: LocalDb) =
-//        db.popularKeywordDao()
 
     @Singleton
     @Provides

@@ -2,9 +2,10 @@ package com.example.clone_daum.common.camera
 
 import android.graphics.Rect
 import java.util.*
+import kotlin.math.pow
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019. 2. 21. <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 21. <p/>
  */
 
 
@@ -12,7 +13,7 @@ abstract class PreviewScalingStrategy {
     fun getBestPreviewSize(sizes: List<Size>, desired: Size): Size {
         val ordered = getBestPreviewOrder(sizes, desired)
 
-        return ordered.get(0)
+        return ordered[0]
     }
 
     fun getBestPreviewOrder(sizes: List<Size>, desired: Size): List<Size> {
@@ -48,7 +49,7 @@ class CenterCropStrategy: PreviewScalingStrategy() {
         val scaleRatio = scaled.width * 1f / size.width
 
         val scaleScore = if (scaleRatio > 1f) {
-            Math.pow((1f / scaleRatio).toDouble(), 1.1).toFloat()
+            (1f / scaleRatio).toDouble().pow(1.1).toFloat()
         } else {
             scaleRatio
         }
@@ -85,7 +86,7 @@ class FitCenterStrategy: PreviewScalingStrategy() {
         val scaleRatio = scaled.width * 1f / size.width
 
         val scaleScore = if (scaleRatio > 1f) {
-            Math.pow(1f / scaleRatio.toDouble(), 1.1).toFloat()
+            (1f / scaleRatio.toDouble()).pow(1.1).toFloat()
         } else {
             scaleRatio
         }

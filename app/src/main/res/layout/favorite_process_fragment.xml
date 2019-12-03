@@ -1,0 +1,273 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable name="model" type="com.example.clone_daum.ui.browser.favorite.FavoriteProcessViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/favorite_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            tools:context=".MainActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/favorite_bar"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:padding="@dimen/brs_urlbar_pad"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+        >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/favorite_back"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:padding="@dimen/brs_back_pad"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:onClick="@{() -> model.finish()}"
+                    tools:ignore="ContentDescription"
+            />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/favorite_title"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/favorite_back"
+                    app:layout_constraintTop_toTopOf="@+id/favorite_back"
+                    app:layout_constraintBottom_toBottomOf="@+id/favorite_back"
+                    tools:text="FAVORITE"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/favorite_title_add"
+                    android:textColor="@android:color/black"
+            />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+                android:id="@+id/favorite_bar_underline"
+                style="@style/line1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+        />
+
+        <!-- name -->
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/favorite_label_name"
+                style="@style/favorite_edit"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_bar_underline"
+                android:padding="16dp"
+                android:textColor="@android:color/black"
+                tools:name="NAME"
+                android:text="@string/folder_name"
+        />
+
+        <EditText
+                android:id="@+id/favorite_name"
+                style="@style/favorite_edit"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/favorite_label_name"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_bar_underline"
+                app:layout_constraintBottom_toBottomOf="@+id/favorite_label_name"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_name_reset"
+                android:maxLines="1"
+                android:focusable="true"
+                android:inputType="text"
+                android:text="@={model.name}"
+                android:onTextChanged="@{model::onTextChanged}"
+                tools:ignore="LabelFor"
+        />
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/favorite_name_reset"
+                android:layout_width="wrap_content" android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_bar_underline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/favorite_name_underline"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:src="@drawable/ic_clear_black_24dp"
+                android:background="@android:color/transparent"
+                android:onClick="@{() -> model.command(model.CMD_NAME_RESET)}"
+                tools:ignore="ContentDescription"
+        />
+
+        <View
+                android:id="@+id/favorite_name_underline"
+                style="@style/line1dp"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toStartOf="@+id/favorite_name"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_label_name"
+                app:layout_constraintEnd_toEndOf="parent"
+        />
+
+        <!-- address -->
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/favorite_label_address"
+                style="@style/favorite_edit"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_label_name"
+                android:padding="16dp"
+                android:textColor="@android:color/black"
+                tools:name="NAME"
+                android:text="@string/folder_addr"
+        />
+
+        <EditText
+                android:id="@+id/favorite_address"
+                style="@style/favorite_edit"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/favorite_label_address"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_name_underline"
+                app:layout_constraintBottom_toBottomOf="@+id/favorite_label_address"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_address_reset"
+                android:maxLines="1"
+                android:inputType="text"
+                android:text="@={model.url}"
+                android:onTextChanged="@{model::onTextChanged}"
+                tools:ignore="LabelFor"
+        />
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/favorite_address_reset"
+                android:layout_width="wrap_content" android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_label_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/favorite_label_address"
+                android:src="@drawable/ic_clear_black_24dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:background="@android:color/transparent"
+                android:onClick="@{() -> model.command(model.CMD_ADDRESS_RESET)}"
+                tools:ignore="ContentDescription"
+        />
+
+        <View
+                android:id="@+id/favorite_address_underline"
+                style="@style/line1dp"
+                android:layout_width="0dp"
+                app:layout_constraintStart_toEndOf="@+id/favorite_label_address"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_label_address"
+                app:layout_constraintEnd_toEndOf="parent"
+        />
+
+        <!-- folder -->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/favorite_folder_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_label_address"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:onClick="@{() -> model.command(model.CMD_FOLDER_DETAIL)}"
+                android:background="@drawable/selector_button_bgcolor"
+        >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/favorite_label_folder"
+                    style="@style/favorite_edit"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="16dp"
+                    android:textColor="@android:color/black"
+                    tools:name="NAME"
+                    android:text="@string/folder_folder"
+            />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/favorite_folder"
+                    style="@style/favorite_edit"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    app:layout_constraintStart_toEndOf="@+id/favorite_label_folder"
+                    app:layout_constraintTop_toTopOf="@+id/favorite_label_folder"
+                    app:layout_constraintBottom_toBottomOf="@+id/favorite_label_folder"
+                    app:layout_constraintEnd_toStartOf="@+id/favorite_folder_detail"
+                    android:textColor="@color/colorAccent"
+                    tools:name="NAME"
+                    android:text="@{model.folder}"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+            />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/favorite_folder_detail"
+                    android:layout_width="wrap_content" android:layout_height="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/favorite_folder"
+                    android:src="@drawable/ic_chevron_right_black_24dp"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:background="@android:color/transparent"
+                    tools:ignore="ContentDescription"
+            />
+
+            <View
+                    android:id="@+id/favorite_folder_underline"
+                    style="@style/line1dp"
+                    android:layout_width="0dp"
+                    app:layout_constraintStart_toEndOf="@+id/favorite_label_folder"
+                    app:layout_constraintTop_toBottomOf="@+id/favorite_label_folder"
+                    app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+                style="@style/line1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/favorite_cancel"
+        />
+        
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/favorite_cancel"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:text="@android:string/cancel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_ok"
+                app:layout_constraintHorizontal_bias="0.5"
+                android:padding="20dp"
+                android:gravity="center"
+                android:onClick="@{() -> model.finish()}"
+        />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/favorite_ok"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:text="@android:string/ok"
+                app:layout_constraintStart_toEndOf="@+id/favorite_cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                android:padding="20dp"
+                android:gravity="center"
+                android:enabled="@{model.enabledOk}"
+                android:onClick="@{() -> model.command(model.CMD_FAVORITE_PROCESS)}"
+        />
+
+        <View
+                android:layout_width="1dp" android:layout_height="0dp"
+                android:background="#efefef"
+                app:layout_constraintStart_toEndOf="@+id/favorite_cancel"
+                app:layout_constraintTop_toTopOf="@+id/favorite_cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+              />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

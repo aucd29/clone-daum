@@ -3,90 +3,221 @@ package com.example.clone_daum.ui.main.navigation
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.common.Config
-import com.example.common.*
+import brigitte.*
+import brigitte.di.dagger.scope.FragmentScope
 import dagger.android.ContributesAndroidInjector
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.example.clone_daum.R
-import com.example.clone_daum.ui.ViewController
+import com.example.clone_daum.model.remote.Sitemap
+import com.example.clone_daum.ui.Navigator
+import com.example.clone_daum.ui.main.login.LoginViewModel
+import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
+import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
+import dagger.Binds
+import dagger.Provides
+import io.reactivex.android.schedulers.AndroidSchedulers
+import org.slf4j.LoggerFactory
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 20. <p/>
+ *
+ * 디자인이 변경되었었네 [aucd29][2019-10-16]
  */
 
-class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
+class NavigationFragment constructor(
+) : BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
     , OnBackPressedListener, DrawerLayout.DrawerListener {
+    override val layoutId = R.layout.navigation_fragment
+
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
+
+        private val URI_CAFE = "https://m.cafe.daum.net"
+        private val URI_MAIL = "https://m.mail.daum.net/"
     }
 
+    @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
-    @Inject lateinit var viewController: ViewController
+
+    private val mTranslationX: Float by lazy { (-30f).dpToPx(requireContext()) }
+    private val mSitemapModel: SitemapViewModel by inject()
+    private val mFrequentlySiteModel: FrequentlySiteViewModel by inject()
+    private val mLoginViewModel: LoginViewModel by activityInject()
+
+    private val mStackChanger: () -> Unit = {
+        val name = this@NavigationFragment.javaClass.simpleName
+        val currentName = activity?.supportFragmentManager?.current?.javaClass?.simpleName
+
+        if (name == currentName) {
+            translationRight()
+        }
+    }
+
+    override fun bindViewModel() {
+        super.bindViewModel()
+
+        // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로
+        // injectOf 를 이용 한다.
+        mBinding.apply {
+            sitemapModel        = mSitemapModel
+            frequentlySiteModel = mFrequentlySiteModel
+            loginModel          = mLoginViewModel
+        }
+
+        addCommandEventModels(mSitemapModel, mFrequentlySiteModel)
+    }
 
     override fun initViewBinding() = mBinding.run {
         naviContainer.apply {
-            postDelayed({ openDrawer(GravityCompat.END) }, 50)
+            singleTimer(50)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { _ -> openDrawer(GravityCompat.END) }
+
             addDrawerListener(this@NavigationFragment)
         }
 
         naviView.layoutWidth(config.SCREEN.x)
-        naviTab.setOnNavigationItemSelectedListener {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("ITEM ID : ${it.title} : ${it.itemId}\n")
-            }
+        addStackChangeListener()
+        mLoginViewModel.checkIsLoginSession()
 
-            // R.id.mnu_navi_shortcut 입력 시 unresolved reference 오류가 발생되면
-            // R 경로를 수동으로 입력해주면 된다.
-            when (it.itemId) {
-                R.id.mnu_navi_shortcut -> {
-                    viewController.shortcutFragment(childFragmentManager)
-                    true
-                }
-                R.id.mnu_navi_mail -> {
-                    viewController.mailFragment(childFragmentManager)
-                    true
-                }
-                R.id.mnu_navi_cafe -> {
-                    viewController.cafeFragment(childFragmentManager)
-                    true
-                }
-                else -> false
-            }
-        }
-
-        viewController.shortcutFragment(childFragmentManager, true)
+        Unit
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
-        observe(brsOpenEvent) {
-            viewController.browserFragment(it)
+    override fun initViewModelEvents() {
+        mFrequentlySiteModel.init(disposable())
+
+        observe(mLoginViewModel.status) {
+            if (mLog.isInfoEnabled) {
+                mLog.info("LOGIN STATUS : $it")
+            }
         }
-    }
-
-    override fun onBackPressed() = mBinding.run {
-        naviContainer.closeDrawer(GravityCompat.END)
-
-        true
     }
 
     override fun onDestroyView() {
-        mBinding.apply {
-            naviContainer.removeDrawerListener(this@NavigationFragment)
-        }
+        removeStackChangeListener()
+        mBinding.naviContainer.removeDrawerListener(this@NavigationFragment)
 
         super.onDestroyView()
     }
 
+    override fun commandFinish() {
+        mBinding.naviContainer.closeDrawer(GravityCompat.END)
+    }
+
+    private fun addStackChangeListener() =
+        activity?.supportFragmentManager?.addOnBackStackChangedListener(mStackChanger)
+
+    private fun removeStackChangeListener() =
+        activity?.supportFragmentManager?.removeOnBackStackChangedListener(mStackChanger)
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // AWARE
+    // COMMAND
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun finishFragmentAware()  = mViewModel.run {
-        observe(finishEvent) { onBackPressed() }
+    override fun onCommandEvent(cmd: String, data: Any) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("COMMAND EVENT $cmd = $data")
+        }
+
+        when (cmd) {
+            NavigationViewModel.CMD_SETTING        -> settingFragment()
+
+            NavigationViewModel.CMD_LOGIN          -> loginFragment()
+            NavigationViewModel.CMD_ALARM          -> alarmFragment()
+            NavigationViewModel.CMD_URL_HISTORY    -> urlHistoryFragment()
+
+            NavigationViewModel.CMD_MAIL           -> mailFragment()
+            NavigationViewModel.CMD_CAFE           -> cafeFragment()
+
+            NavigationViewModel.CMD_BROWSER        -> browserFragment(data.toString())
+
+            NavigationViewModel.CMD_EDIT_HOME_MENU -> editHomeMenuFragment()
+            NavigationViewModel.CMD_TEXT_SIZE      -> resizeTextFragment()
+
+            SitemapViewModel.CMD_OPEN_APP          -> openApp(data as Sitemap)
+        }
+    }
+
+    private fun settingFragment() {
+        navigator.settingFragment()
+        translationLeft()
+    }
+
+    private fun editHomeMenuFragment() =
+        navigator.homeMenuFragment()
+
+    private fun resizeTextFragment() =
+        navigator.homeTextFragment()
+
+    private fun mailFragment() {
+        if (mLoginViewModel.status.value == true) {
+            browserFragment(URI_MAIL)
+        } else {
+            loginFragment()
+        }
+    }
+
+    private fun cafeFragment() =
+        navigator.browserFragment(URI_CAFE)
+
+    private fun alarmFragment() =
+        navigator.alarmFragment()
+
+    private fun loginFragment() {
+        if (mLoginViewModel.status.value == true) {
+            return
+        }
+
+        navigator.loginFragment()
+    }
+
+    private fun browserFragment(url: String) =
+        navigator.browserFragment(url)
+
+    private fun urlHistoryFragment() =
+        navigator.urlHistoryFragment()
+
+    private fun openApp(item: Sitemap) {
+        if (item.isApp) {
+            requireContext().launchApp(item.url)
+        } else {
+            navigator.browserFragment(item.url)
+        }
+    }
+
+    private fun translationLeft() {
+        mBinding.root.animate().translationX(mTranslationX).start()
+    }
+
+    private fun translationRight() {
+        with(mBinding.root) {
+            if (translationX == mTranslationX) {
+                animate().translationX(0f).start()
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // OnBackPressedListener
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onBackPressed() = mBinding.run {
+        if (naviContainer.isDrawerVisible(mBinding.naviView)) {
+            naviContainer.closeDrawer(GravityCompat.END)
+        } else {
+            finish()
+        }
+
+        true
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -95,28 +226,42 @@ class NavigationFragment: BaseDaggerFragment<NavigationFragmentBinding, Navigati
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun onDrawerClosed(drawerView: View) { finish() }
+    override fun onDrawerClosed(drawerView: View) {
+        finish()
+    }
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-        mBinding.naviBackground.alpha = slideOffset
+        mViewModel.backgroundAlpha.set(slideOffset)
     }
     override fun onDrawerStateChanged(newState: Int) { }
     override fun onDrawerOpened(drawerView: View) { }
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
-    // Module
+    // MODULE
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
     @dagger.Module
     abstract class Module {
-        @ContributesAndroidInjector
-        abstract fun contributeInjector(): NavigationFragment
+        @FragmentScope
+        @ContributesAndroidInjector(modules = [NavigationFragmentModule::class])
+        abstract fun contributeNavigationFragmentInjector(): NavigationFragment
+    }
+
+    @dagger.Module
+    abstract class NavigationFragmentModule {
+        @Binds
+        abstract fun bindNavigationFragment(fragment: NavigationFragment): Fragment
+
+        @Binds
+        abstract fun bindSavedStateRegistryOwner(activity: NavigationFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideNavigationFragmentManager(fragment: Fragment): FragmentManager =
+                fragment.childFragmentManager
+        }
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////
-//
-// 시간 날때 대거 소스를 분석해봐야 할듯 -_-
-//
-////////////////////////////////////////////////////////////////////////////////////

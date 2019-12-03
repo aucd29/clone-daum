@@ -1,23 +1,25 @@
 package com.example.clone_daum.ui.main.realtimeissue
 
 import android.app.Application
-import android.text.Spanned
 import android.view.View
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
-import androidx.viewpager.widget.ViewPager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.RealtimeIssue
-//import com.example.clone_daum.model.remote.RealtimeIssueParser
 import com.example.clone_daum.model.remote.RealtimeIssueType
-import com.example.common.*
-import com.example.common.bindingadapter.AnimParams
+import brigitte.*
+import brigitte.bindingadapter.AnimParams
+import brigitte.viewmodel.LifecycleCommandEventViewModel
+import com.google.android.material.tabs.TabLayout
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -26,56 +28,113 @@ import javax.inject.Inject
  * ApiHub.class 에 RealTimeIssueService 가 존재하는데 보이질 않네 그려
  */
 
-class RealtimeIssueViewModel @Inject constructor(app: Application
-    , val preConfig: PreloadConfig
-) : CommandEventViewModel(app) {
+class RealtimeIssueViewModel @Inject constructor(
+    val preConfig: PreloadConfig,
+    app: Application
+) : LifecycleCommandEventViewModel(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
         const val ANIM_DURATION     = 300L
-        const val INTERVAL          = 7L
+        const val INTERVAL          = 7000L
 
         const val CMD_BRS_OPEN      = "brs-open"
-        const val CMD_ANIM_FINISH   = "anim-finish"
-        const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
         const val CMD_CLOSE_ISSUE   = "close-realtime-issue"
+        const val CMD_LOADED_ISSUE  = "loaded-realtime-issue"
+        const val ITN_RELOAD_ISSUE  = "reload-realtime-issue"
+
+        const val ITN_ERROR_ISSUE   = "error-realtime-issue"
     }
 
     private var mAllIssueList: List<RealtimeIssue>? = null
-    private var mRealtimeCount = 0
+    private val mDisposable = CompositeDisposable()
 
     var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
 
+    val tabChangedCallback = ObservableField<TabSelectedCallback>()
+    var tabChangedLive     = MutableLiveData<TabLayout.Tab?>()
+    val currentIssue       = ObservableField<RealtimeIssue>()
 
-    val dp              = CompositeDisposable()
-    val tabAdapter      = ObservableField<RealtimeIssueTabAdapter>()
-    val viewpager       = ObservableField<ViewPager>()
-    val currentIssue    = ObservableField<RealtimeIssue>()
-    val visibleProgress = ObservableInt(View.VISIBLE)
+    val containerTransY    = ObservableField<AnimParams>()
+    val tabMenuRotation    = ObservableField<AnimParams>()
+    val tabAlpha           = ObservableField<AnimParams>()
+    val bgAlpha            = ObservableField<AnimParams>()
+    val backgroundAlpha    = ObservableField<AnimParams>()
 
-    val containerTransY = ObservableField<AnimParams>()
-    val dimmingBgAlpha  = ObservableField<AnimParams>()
-    val tabMenuRotation = ObservableField<AnimParams>()
-    val tabAlpha        = ObservableField<AnimParams>()
+    val layoutTranslationY = ObservableField<Float>()
+    val enableClick        = ObservableBoolean(false)
 
-    val visibleDetail   = ObservableInt(View.GONE)
-    val viewPagerLoaded = ObservableField<(() -> Unit)?>()
+    val viewIssueProgress  = ObservableInt(View.VISIBLE)
+    val viewRealtimeIssue  = ObservableInt(View.GONE)
+    val viewRetry          = ObservableInt(View.GONE)
+
+    val htmlDataLive       = MutableLiveData<String>()
+
+    init {
+        tabChangedCallback.set(TabSelectedCallback {
+            if (mLog.isDebugEnabled) {
+                mLog.debug("CHANGED ISSUE TAB ${it?.position}")
+            }
+
+            tabChangedLive.value = it
+        })
+    }
+
+    fun loadData() {
+        mDisposable.add(preConfig.daumMain()
+            .subscribe({ html ->
+                htmlDataLive.postValue(html)
+                load(html)
+            }, { errorLog(it, mLog) }))
+    }
 
     fun load(html: String) {
-        dp.add(Observable.just(html)
-            .observeOn(Schedulers.io())
+        if (mLog.isDebugEnabled) {
+            mLog.debug("LOAD REALTIME ISSUE")
+        }
+
+        if (html.isEmpty()) {
+            mLog.error("ERROR: INVALID REALTIME ISSUE DATA")
+
+            command(ITN_ERROR_ISSUE)
+            return
+        }
+
+        mDisposable.add(Observable.just(html)
+            .subscribeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                visibleProgress.set(View.GONE)
+            .filter {
+                if (it.isEmpty()) {
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("PARSING ERROR")
+                    }
+
+                    command(ITN_ERROR_ISSUE)
+
+                    false
+                } else true
+            }
+            .subscribe ({
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("SUBSCRIBE REALTIME ISSUE")
+                }
+
+                viewIssueProgress.gone()
+                viewRetry.gone()
 
                 mRealtimeIssueList = it
-                mAllIssueList      = it.get(0).second
+                mAllIssueList      = it[0].second
 
-                commandEvent(CMD_LOADED_ISSUE)
+                enableClick.set(true)
                 startRealtimeIssue()
-            })
+
+                command(CMD_LOADED_ISSUE)
+            }, {
+                errorLog(it, mLog)
+
+                command(ITN_ERROR_ISSUE)
+            }))
     }
 
     private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {
@@ -88,7 +147,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         val f = main.indexOf(fText) + fText.length
         val e = main.indexOf(eText, f)
 
-        val issueList: ArrayList<Pair<String, List<RealtimeIssue>>> = arrayListOf()
+        val issueList = arrayListOf<Pair<String, List<RealtimeIssue>>>()
         if (f == fText.length || e == -1) {
             mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
 
@@ -96,7 +155,7 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
         }
 
         val issue = main.substring(f, e)
-            .replace("(\n|\t)".toRegex(), "")
+            .replace("(\n\t)".toRegex(), "")
             .replace("  ", "")
 
         val realtimeIssueList: List<RealtimeIssueType> = issue.jsonParse()
@@ -127,50 +186,91 @@ class RealtimeIssueViewModel @Inject constructor(app: Application
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun startRealtimeIssue() {
+    private fun startRealtimeIssue() {
         if (mLog.isDebugEnabled) {
             mLog.debug("START REALTIME ISSUE")
         }
 
         mAllIssueList?.let { list ->
-            val index = mRealtimeCount % list.size
-            val issue = list.get(index)
+            mDisposable.clear()
+            mDisposable.add(interval(INTERVAL, initDelay = 0)
+                .map {
+                    if (mLog.isTraceEnabled) {
+                        mLog.trace("REALTIME ISSUE INTERVAL $it")
+                    }
 
-            currentIssue.set(issue)
-
-            dp.add(Observable.interval(INTERVAL, TimeUnit.SECONDS).repeat().subscribe {
-                val index = mRealtimeCount % list.size
-                val issue = list.get(index)
-
-                currentIssue.set(issue)
-                ++mRealtimeCount
-
-                if (mLog.isTraceEnabled) {
-                    mLog.trace("TIMER EXPLODE $mRealtimeCount ${issue.text} ")
+                    list[(it % list.size).toInt()]
                 }
-            })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { currentIssue.set(it) })
         }
     }
 
-    fun stopRealtimeIssue() {
+    private fun stopRealtimeIssue() {
         if (mLog.isDebugEnabled) {
             mLog.debug("STOP REALTIME ISSUE")
         }
 
-        dp.clear()
+        mDisposable.clear()
+    }
+
+    private fun disposeRealtimeIssue() {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("DISPOSE REALTIME ISSUE")
+        }
+
+        mDisposable.dispose()
     }
 
     fun titleConvert(issue: RealtimeIssue?): String {
-        return issue?.run { "${index} ${text}" } ?: ""
+        return issue?.run { "$index $text" } ?: ""
     }
 
-    fun typeConvert(issue: RealtimeIssue?): Spanned {
-        return issue?.run {
+    fun typeConvert(issue: RealtimeIssue?) = issue?.run {
             when (type) {
-                "+" -> "<font color='red'>↑</font> $value"
-                "-" -> "<font color='blue'>↓</font> $value"
-                else -> "<font color='red'>NEW</font> $value"
+                "+"  -> "<font color='red'>↑</font> $value"
+                "-"  -> "<font color='blue'>↓</font> $value"
+                else -> "<font color='red'>NEW</font>"
             }.html()
         } ?: "".html()
+
+    fun layoutTranslationY(h: Float) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("REALTIME ISSUE VIEWPAGER TRANSLATON Y : $h")
+        }
+
+        layoutTranslationY.set(h)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // LifecycleCommandEventViewModel
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_PAUSE   -> stopRealtimeIssue()
+            Lifecycle.Event.ON_RESUME  -> startRealtimeIssue()
+            Lifecycle.Event.ON_DESTROY -> disposeRealtimeIssue()
+        }
+    }
+
+    override fun command(cmd: String, data: Any) {
+        when (cmd) {
+            ITN_ERROR_ISSUE -> {
+                viewIssueProgress.gone()
+                viewRetry.visible()
+            }
+            ITN_RELOAD_ISSUE -> {
+                viewIssueProgress.visible()
+                viewRetry.gone()
+
+                loadData()
+            }
+            else -> {
+                super.command(cmd, data)
+            }
+        }
     }
 }
