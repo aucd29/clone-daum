@@ -31,11 +31,11 @@ class ConfigTest: BaseRoboTest() {
 
     @Test
     fun userAgentTest() {
-        val release = Build.VERSION.RELEASE
-        val country = Locale.getDefault().country
-        val language= Locale.getDefault().language
-        val param          = "service"   // LoginActorDeleteToken
-        val version = BuildConfig.VERSION_NAME
+        val release  = Build.VERSION.RELEASE
+        val country  = Locale.getDefault().country
+        val language = Locale.getDefault().language
+        val param    = "service"   // LoginActorDeleteToken
+        val version  = BuildConfig.VERSION_NAME
 
         val USER_AGENT = "DaumMobileApp (Linux; U; Android $release; $country-$language) $param/$version"
 
