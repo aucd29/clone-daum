@@ -1,3 +1,4 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
 import androidx.annotation.IdRes

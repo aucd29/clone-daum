@@ -9,6 +9,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.robolectric.RobolectricTestRunner
+import javax.inject.Provider
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-05 <p/>
@@ -20,7 +21,8 @@ class PopularViewModelTest: BaseRoboViewModelTest<PopularViewModel>() {
     fun setup() {
         initMock()
 
-        viewmodel = PopularViewModel(CompositeDisposable(), layoutmanager, app)
+        val dp = CompositeDisposable()
+        viewmodel = PopularViewModel(dp, layoutmanager, app)
     }
 
     @Test
@@ -39,5 +41,5 @@ class PopularViewModelTest: BaseRoboViewModelTest<PopularViewModel>() {
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    @Mock lateinit var layoutmanager: ChipsLayoutManager
+    @Mock lateinit var layoutmanager: Provider<ChipsLayoutManager>
 }

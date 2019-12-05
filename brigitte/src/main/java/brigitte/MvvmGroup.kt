@@ -49,14 +49,14 @@ annotation class ViewModelScope
 
 inline fun <T : ViewDataBinding> Fragment.dataBinding(@LayoutRes layoutid: Int, parent: ViewGroup? = null,
                                                       attachToParent: Boolean = false): T =
-        DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
+    DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
 
 inline fun <T : ViewDataBinding> Activity.dataBinding(@LayoutRes layoutid: Int, parent: ViewGroup? = null,
                                                       attachToParent: Boolean = false): T =
-        DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
+    DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
 
 inline fun <T : ViewDataBinding> Activity.dataBindingView(@LayoutRes layoutid: Int): T =
-        DataBindingUtil.setContentView(this, layoutid)
+    DataBindingUtil.setContentView(this, layoutid)
 
 inline fun <T: ViewDataBinding> PagerAdapter.dataBinding(@LayoutRes resid: Int, parent: ViewGroup? = null,
                                                          attachToParent: Boolean = false): T =

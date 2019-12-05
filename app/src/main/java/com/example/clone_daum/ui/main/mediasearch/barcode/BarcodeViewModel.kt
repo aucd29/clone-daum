@@ -1,21 +1,16 @@
 package com.example.clone_daum.ui.main.mediasearch.barcode
 
 import android.app.Application
-import androidx.databinding.ObservableField
-import androidx.lifecycle.AndroidViewModel
-import com.example.clone_daum.R
-import brigitte.*
-import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 23. <p/>
  */
 
-class BarcodeViewModel @Inject constructor(application: Application)
-    : CommandEventViewModel(application) {
+class BarcodeViewModel @Inject constructor(
+    app: Application
+) : CommandEventViewModel(app) {
 
     // REFERENCE
     // https://zxing.github.io/zxing/

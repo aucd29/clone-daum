@@ -43,7 +43,6 @@ class LoginViewModel @Inject constructor(
         status.value = false
     }
 
-
     fun checkIsLoginSession() {
         if (Session.getCurrentSession().checkAndImplicitOpen()) {
             accessTokenInfo()

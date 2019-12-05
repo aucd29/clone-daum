@@ -3,11 +3,11 @@ package brigitte.viewmodel
 
 import android.app.Application
 import androidx.annotation.StringRes
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import brigitte.ICommandEventAware
 import brigitte.arch.SingleLiveEvent
+import brigitte.string
 import org.slf4j.Logger
 
 /**
@@ -15,8 +15,8 @@ import org.slf4j.Logger
  */
 
 open class CommandEventViewModel constructor (
-    app: Application
-) : AndroidViewModel(app), ICommandEventAware {
+    val app: Application
+) : ViewModel(), ICommandEventAware {
 
     override val commandEvent = SingleLiveEvent<Pair<String, Any>>()
 
@@ -29,6 +29,8 @@ open class CommandEventViewModel constructor (
 
         logger.error("ERROR: ${e.message}")
     }
+
+    inline fun string(@StringRes resid: Int) = app.string(resid)
 }
 
 abstract class LifecycleCommandEventViewModel constructor(

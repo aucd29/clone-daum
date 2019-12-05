@@ -69,8 +69,9 @@ inline val FragmentManager.count: Int
 inline fun <reified T: Fragment> FragmentManager.find() =
     findFragmentByTag(T::class.java.name) as T?
 
+// FIXME 기존에 fragmentManager 가 depreacated 됨에 따라 이를 parentFragmentManager 로 변경 한다. [aucd29][2019-12-05]
 inline fun <reified F: Fragment> Fragment.find() =
-    fragmentManager?.find<F>()
+    parentFragmentManager.find<F>()
 
 /**
  * 다이얼로그를 띄우기 위한 옵저버 로 view model 에 선언되어 있는 single live event 의 값의 변화를 인지 하여 dialog 을 띄운다.
@@ -113,8 +114,8 @@ inline fun Fragment.errorLog(e: Throwable, logger: Logger) {
 /**
  * alert 형태의 다이얼로그를 띄운다.
  */
-inline fun Fragment.alert(messageId: Int, titleId: Int? = null
-    , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+inline fun Fragment.alert(messageId: Int, titleId: Int? = null,
+                          noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = requireContext()
         , messageId = messageId
         , titleId   = titleId
@@ -124,8 +125,8 @@ inline fun Fragment.alert(messageId: Int, titleId: Int? = null
 /**
  * confirm 형태의 다이얼로그를 띄운다.
  */
-inline fun Fragment.confirm(messageId: Int, titleId: Int? = null
-    , noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
+inline fun Fragment.confirm(messageId: Int, titleId: Int? = null,
+                            noinline listener: ((Boolean, DialogInterface) -> Unit)? = null) {
     dialog(DialogParam(context = requireContext()
         , messageId  = messageId
         , titleId    = titleId
@@ -143,7 +144,8 @@ inline fun Fragment.hideKeyboard(view: View) =
  * fragment 를 종료 시키낟.
  */
 inline fun Fragment.finish(animate: Boolean = true) {
-    fragmentManager?.run {
+    // FIXME 기존에 fragmentManager 가 depreacated 됨에 따라 이를 parentFragmentManager 로 변경 한다. [aucd29][2019-12-05]
+    parentFragmentManager.run {
         if (!animate) {
             beginTransaction().setCustomAnimations(0, 0).commit()
         }
@@ -168,8 +170,9 @@ inline fun Fragment.finish(animate: Boolean = true) {
 //    findNavController().popBackStack()
 }
 
+// FIXME 기존에 fragmentManager 가 depreacated 됨에 따라 이를 parentFragmentManager 로 변경 한다. [aucd29][2019-12-05]
 inline fun Fragment.finishInclusive() =
-    fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+    parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 
 /**
  * 화면을 ON / OFF 시킨다.

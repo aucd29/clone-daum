@@ -71,7 +71,7 @@ class BrowserViewModel @Inject constructor(
 
     // fontsize
 
-    val brsFontSizeProgress = ObservableInt(prefs().getInt(SPF_FONT_SIZE, 50))
+    val brsFontSizeProgress = ObservableInt(app.prefs().getInt(SPF_FONT_SIZE, 50))
     val visibleBrsFontSize  = ObservableInt(View.GONE)
     val brsFontSizeText     = ObservableField<String>()
     val brsFontSizeLive     = MutableLiveData<Int>()
@@ -180,7 +180,7 @@ class BrowserViewModel @Inject constructor(
     }
 
     private fun applyWebViewFontSize() {
-        brsFontSizeText.set("${prefs().getInt(SPF_FONT_SIZE, 50) + V_DEFAULT_TEXT_SIZE} %")
+        brsFontSizeText.set("${app.prefs().getInt(SPF_FONT_SIZE, 50) + V_DEFAULT_TEXT_SIZE} %")
         brsFontSizeLive.value = brsFontSizeProgress.get()
     }
 
@@ -207,6 +207,6 @@ class BrowserViewModel @Inject constructor(
         }
 
         brsFontSizeLive.value = value
-        prefs().edit(false) { putInt(SPF_FONT_SIZE, value) }
+        app.prefs().edit(false) { putInt(SPF_FONT_SIZE, value) }
     }
 }

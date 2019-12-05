@@ -9,9 +9,7 @@ import androidx.databinding.ObservableInt
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
-import brigitte.viewmodel.app
 import com.example.clone_daum.R
-import kotlinx.android.synthetic.main.navigation_fragment.view.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -20,8 +18,8 @@ import javax.inject.Inject
  */
 
 class NavigationViewModel @Inject constructor(
-    application: Application
-) : CommandEventViewModel(application), IDialogAware {
+    app: Application
+) : CommandEventViewModel(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(NavigationViewModel::class.java)
 
@@ -51,7 +49,7 @@ class NavigationViewModel @Inject constructor(
     val viewFavoriteDesc = ObservableInt(View.GONE)
     val circleCrop       = ObservableBoolean(true)
     val defaultUserPhoto = ObservableField("drawable://ic_mood_black_24dp")
-    val requireLogin     = ObservableField(app.string(R.string.navi_require_login))
+    val requireLogin     = ObservableField(this.app.string(R.string.navi_require_login))
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

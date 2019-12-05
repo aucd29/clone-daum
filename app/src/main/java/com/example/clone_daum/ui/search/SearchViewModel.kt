@@ -15,7 +15,6 @@ import com.example.clone_daum.model.local.SearchHistoryDao
 import com.example.clone_daum.model.remote.SuggestItem
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
-import brigitte.viewmodel.app
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -56,7 +55,7 @@ class SearchViewModel @AssistedInject constructor(
     private val mToggleRecentSearchText = ObservableInt(R.string.search_turn_off_recent_search)
     private val mToggleEmptyAreaText    = ObservableInt(R.string.search_empty_recent_search)
 
-    private var prefSearchRecycler = prefs().getBoolean(K_RECENT_SEARCH, true)
+    private var prefSearchRecycler = app.prefs().getBoolean(K_RECENT_SEARCH, true)
 
     val viewSearchRecycler = ObservableInt(View.VISIBLE)
     val viewBottomButtons  = ObservableInt(View.VISIBLE)
@@ -99,26 +98,30 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun eventSearch(keyword: String?) {
-        keyword?.let {
-            mDisposable.add(mSearchDao.insert(SearchHistory(
-                keyword = it,
-                date    = System.currentTimeMillis()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("INSERTED DATA $it")
-                    }
+        if (keyword.isNullOrEmpty()) {
+            snackbar(R.string.error_empty_keyword)
+        } else {
+            keyword.let {
+                mDisposable.add(mSearchDao.insert(SearchHistory(
+                    keyword = it,
+                    date    = System.currentTimeMillis()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("INSERTED DATA $it")
+                        }
 
-                    stateHandle.set(STS_KEYWORD, "")
-                    mSearchKeyword.set("")
-                }, { e ->
-                    errorLog(e)
-                    snackbar(e)
-                }))
+                        stateHandle.set(STS_KEYWORD, "")
+                        mSearchKeyword.set("")
+                    }, { e ->
+                        errorLog(e)
+                        snackbar(e)
+                    }))
 
-            command(CMD_BRS_SEARCH, it)
-        } ?: snackbar(R.string.error_empty_keyword)
+                command(CMD_BRS_SEARCH, it)
+            }
+        }
     }
 
     fun eventToggleRecentSearch() {
@@ -134,7 +137,7 @@ class SearchViewModel @AssistedInject constructor(
     private fun toggleSearchRecyclerLayout() {
         prefSearchRecycler = !prefSearchRecycler
 
-        prefs().edit { putBoolean(K_RECENT_SEARCH, prefSearchRecycler) }
+        app.prefs().edit { putBoolean(K_RECENT_SEARCH, prefSearchRecycler) }
 
         visibleSearchRecycler(items.get()!!.isNotEmpty())
     }

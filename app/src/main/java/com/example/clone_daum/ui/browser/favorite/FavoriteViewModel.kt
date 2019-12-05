@@ -19,9 +19,9 @@ import com.example.clone_daum.R
  */
 
 class FavoriteViewModel @Inject constructor(
-    application: Application,
+    app: Application,
     private val mFavoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), IDialogAware, IFolder {
+) : RecyclerViewModel<MyFavorite>(app), IDialogAware, IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
 

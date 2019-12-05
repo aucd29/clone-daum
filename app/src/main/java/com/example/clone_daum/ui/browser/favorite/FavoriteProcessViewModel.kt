@@ -21,8 +21,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
-class FavoriteProcessViewModel @Inject constructor(app: Application
-    , private val mFavoriteDao: MyFavoriteDao
+class FavoriteProcessViewModel @Inject constructor(
+    app: Application,
+    private val mFavoriteDao: MyFavoriteDao
 ) : CommandEventViewModel(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteProcessViewModel::class.java)

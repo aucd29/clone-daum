@@ -10,7 +10,6 @@ import com.example.clone_daum.databinding.FavoriteModifyItemFolderBinding
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import brigitte.*
-import brigitte.viewmodel.app
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,9 +22,10 @@ import io.reactivex.Completable
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
-class FavoriteModifyViewModel @Inject constructor(application: Application
-    , private val mFavoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application), IFolder {
+class FavoriteModifyViewModel @Inject constructor(
+    app: Application,
+    private val mFavoriteDao: MyFavoriteDao
+) : RecyclerViewModel<MyFavorite>(app), IFolder {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteModifyViewModel::class.java)
 

@@ -11,6 +11,7 @@ import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.alarm.AlarmFragment
+import com.example.clone_daum.ui.main.bookmark.BookmarkFragment
 import com.example.clone_daum.ui.main.homemenu.HomeMenuFragment
 import com.example.clone_daum.ui.main.hometext.HomeTextFragment
 import com.example.clone_daum.ui.main.login.LoginFragment
@@ -131,7 +132,17 @@ class Navigator @Inject constructor(
             mLog.info("ALARM FRAGMENT")
         }
 
-        manager.show<AlarmFragment>(FragmentParams(CONTAINER))
+        manager.show<AlarmFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
+    }
+
+    fun bookmarkFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("BOOKMARK FRAGMENT")
+        }
+
+        manager.show<BookmarkFragment>(FragmentParams(CONTAINER,
+            anim = FragmentAnim.RIGHT))
     }
 
     fun mediaSearchFragment() {

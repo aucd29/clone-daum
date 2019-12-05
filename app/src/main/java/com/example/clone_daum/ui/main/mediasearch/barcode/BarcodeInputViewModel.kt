@@ -6,7 +6,6 @@ import com.example.clone_daum.R
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
-import brigitte.viewmodel.app
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -14,8 +13,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 23. <p/>
  */
 
-class BarcodeInputViewModel @Inject constructor(application: Application)
-    : CommandEventViewModel(application), IDialogAware {
+class BarcodeInputViewModel @Inject constructor(
+    app: Application
+) : CommandEventViewModel(app), IDialogAware {
     companion object {
         private val mLog = LoggerFactory.getLogger(BarcodeInputViewModel::class.java)
 
@@ -42,7 +42,7 @@ class BarcodeInputViewModel @Inject constructor(application: Application)
                 command(CMD_HIDE_KEYBOARD)
 //                command(CMD_BARCODE, it!!)
             } else {
-                alert(app, R.string.barcode_not_matched_info, R.string.barcode_not_detacted)
+                alert(this.app, R.string.barcode_not_matched_info, R.string.barcode_not_detacted)
             }
 
             true

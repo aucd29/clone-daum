@@ -1,5 +1,6 @@
 package com.example.clone_daum.config
 
+import android.content.pm.PackageManager
 import android.os.Build
 import brigitte.actionBarSize
 import brigitte.shield.BaseRoboTest
@@ -27,6 +28,11 @@ class ConfigTest: BaseRoboTest() {
         initMock()
 
         config = Config(app)
+
+        val info = app.packageManager.getPackageInfo(app.packageName, PackageManager.GET_SIGNATURES)
+
+        println("info = $info")
+
     }
 
     @Test

@@ -18,6 +18,7 @@ import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
+import com.google.android.material.navigation.NavigationView
 import dagger.Binds
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -30,8 +31,8 @@ import org.slf4j.LoggerFactory
  */
 
 class NavigationFragment constructor(
-) : BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>()
-    , OnBackPressedListener, DrawerLayout.DrawerListener {
+) : BaseDaggerFragment<NavigationFragmentBinding, NavigationViewModel>(),
+    OnBackPressedListener, DrawerLayout.DrawerListener {
     override val layoutId = R.layout.navigation_fragment
 
     companion object {
@@ -126,15 +127,20 @@ class NavigationFragment constructor(
             mLog.debug("COMMAND EVENT $cmd = $data")
         }
 
+        if (checkRequireLogin(cmd)) {
+            return
+        }
+
         when (cmd) {
             NavigationViewModel.CMD_SETTING        -> settingFragment()
 
             NavigationViewModel.CMD_LOGIN          -> loginFragment()
             NavigationViewModel.CMD_ALARM          -> alarmFragment()
-            NavigationViewModel.CMD_URL_HISTORY    -> urlHistoryFragment()
+            NavigationViewModel.CMD_BOOKMARK       -> bookmarkFragment()
 
             NavigationViewModel.CMD_MAIL           -> mailFragment()
             NavigationViewModel.CMD_CAFE           -> cafeFragment()
+            NavigationViewModel.CMD_URL_HISTORY    -> urlHistoryFragment()
 
             NavigationViewModel.CMD_BROWSER        -> browserFragment(data.toString())
 
@@ -143,32 +149,37 @@ class NavigationFragment constructor(
 
             SitemapViewModel.CMD_OPEN_APP          -> openApp(data as Sitemap)
         }
-    }
 
-    private fun settingFragment() {
-        navigator.settingFragment()
-        translationLeft()
-    }
-
-    private fun editHomeMenuFragment() =
-        navigator.homeMenuFragment()
-
-    private fun resizeTextFragment() =
-        navigator.homeTextFragment()
-
-    private fun mailFragment() {
-        if (mLoginViewModel.status.value == true) {
-            browserFragment(URI_MAIL)
-        } else {
-            loginFragment()
+        NavigationViewModel.run {
+            when(cmd) {
+                CMD_SETTING,
+                CMD_LOGIN,
+                CMD_ALARM,
+                CMD_BOOKMARK,
+                CMD_MAIL,
+                CMD_CAFE,
+                CMD_URL_HISTORY,
+                CMD_EDIT_HOME_MENU -> translationLeft()
+            }
         }
     }
 
-    private fun cafeFragment() =
-        navigator.browserFragment(URI_CAFE)
+    private fun checkRequireLogin(cmd: String) = when(cmd) {
+        // TODO 로그인이 필요한 항목의 경우 이곳에서 정의 한다.
+        NavigationViewModel.CMD_BOOKMARK,
+        NavigationViewModel.CMD_MAIL->
+            if (mLoginViewModel.status.value == true) {
+                loginFragment()
 
-    private fun alarmFragment() =
-        navigator.alarmFragment()
+                true
+            } else {
+                false
+            }
+        else -> false
+    }
+
+    private fun settingFragment() =
+        navigator.settingFragment()
 
     private fun loginFragment() {
         if (mLoginViewModel.status.value == true) {
@@ -178,11 +189,29 @@ class NavigationFragment constructor(
         navigator.loginFragment()
     }
 
-    private fun browserFragment(url: String) =
-        navigator.browserFragment(url)
+    private fun alarmFragment() =
+        navigator.alarmFragment()
+
+    private fun bookmarkFragment() =
+        navigator.bookmarkFragment()
+
+    private fun mailFragment() =
+        browserFragment(URI_MAIL)
+
+    private fun cafeFragment() =
+        navigator.cafeFragment()
 
     private fun urlHistoryFragment() =
         navigator.urlHistoryFragment()
+
+    private fun editHomeMenuFragment() =
+        navigator.homeMenuFragment()
+
+    private fun resizeTextFragment() =
+        navigator.homeTextFragment()
+
+    private fun browserFragment(url: String) =
+        navigator.browserFragment(url)
 
     private fun openApp(item: Sitemap) {
         if (item.isApp) {
@@ -191,6 +220,12 @@ class NavigationFragment constructor(
             navigator.browserFragment(item.url)
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    //
+    // BACKGROUND TRANSLATION
+    //
+    ////////////////////////////////////////////////////////////////////////////////////
 
     private fun translationLeft() {
         mBinding.root.animate().translationX(mTranslationX).start()

@@ -12,8 +12,9 @@ import javax.inject.Inject
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 1. 31. <p/>
  */
 
-class FlowerViewModel @Inject constructor(app: Application)
-    : CommandEventViewModel(app) {
+class FlowerViewModel @Inject constructor(
+    app: Application
+) : CommandEventViewModel(app) {
     companion object {
         const val CMD_BRS_OPEN = "brs-open"
     }

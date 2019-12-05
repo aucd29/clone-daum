@@ -17,6 +17,7 @@
             android:paddingEnd="15dp"
             android:paddingBottom="8dp"
             android:onClick="@{() -> model.command(model.CMD_BRS_OPEN, item.url)}"
+            android:background="?selectableItemBackground"
     >
 
         <androidx.appcompat.widget.AppCompatTextView

@@ -7,6 +7,7 @@ import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryFragment
 import com.example.clone_daum.ui.main.MainFragment
 import com.example.clone_daum.ui.main.MainWebviewFragment
 import com.example.clone_daum.ui.main.alarm.AlarmFragment
+import com.example.clone_daum.ui.main.bookmark.BookmarkFragment
 import com.example.clone_daum.ui.main.homemenu.HomeMenuFragment
 import com.example.clone_daum.ui.main.hometext.HomeTextFragment
 import com.example.clone_daum.ui.main.login.LoginFragment
@@ -52,6 +53,7 @@ import dagger.Module
     NavigationFragment.Module::class,
     CafeFragment.Module::class,
     MailFragment.Module::class,
+    BookmarkFragment.Module::class,
 //    ShortcutFragment.Module::class,
 
     // SETTING

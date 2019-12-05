@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.core.widget.NestedScrollView
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

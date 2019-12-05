@@ -10,7 +10,6 @@ import javax.inject.Inject
  */
 
 class HomeTextViewModel @Inject constructor(
-
     app: Application
 ) : CommandEventViewModel(app) {
 

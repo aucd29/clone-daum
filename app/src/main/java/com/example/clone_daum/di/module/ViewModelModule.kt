@@ -9,6 +9,7 @@ import com.example.clone_daum.ui.browser.favorite.*
 import com.example.clone_daum.ui.browser.urlhistory.UrlHistoryViewModel
 import com.example.clone_daum.ui.main.MainViewModel
 import com.example.clone_daum.ui.main.alarm.AlarmViewModel
+import com.example.clone_daum.ui.main.bookmark.BookmarkViewModel
 import com.example.clone_daum.ui.main.homemenu.HomeMenuViewModel
 import com.example.clone_daum.ui.main.hometext.HomeTextViewModel
 import com.example.clone_daum.ui.main.login.LoginViewModel
@@ -140,6 +141,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(NavigationLoginViewModel::class)
     abstract fun bindNavigationLoginViewModel(vm: NavigationLoginViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BookmarkViewModel::class)
+    abstract fun bindBookmarkViewModel(vm: BookmarkViewModel): ViewModel
 
     ////////////////////////////////////////////////////////////////////////////////////
     //

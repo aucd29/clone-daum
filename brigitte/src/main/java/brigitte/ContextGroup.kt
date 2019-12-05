@@ -4,6 +4,7 @@ package brigitte
 import android.app.ActivityManager
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Environment
 import android.view.View
@@ -13,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ArrayRes
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import java.io.File
@@ -123,6 +125,7 @@ inline fun Context.forceHideKeyboard(window: Window?) {
 inline fun Context.string(@StringRes resid: Int): String = getString(resid)
 inline fun Context.stringArray(@ArrayRes resid: Int): Array<String> = resources.getStringArray(resid)
 inline fun Context.intArray(@ArrayRes resid: Int): IntArray = resources.getIntArray(resid)
+inline fun Context.drawable(@DrawableRes resid: Int) = ContextCompat.getDrawable(this, resid)
 
 /**
  * 문자열 데이터를 얻는다.
@@ -132,6 +135,12 @@ inline fun Context.string(resid: String) =
 
 inline fun Context.stringId(resid: String) =
     resources.getIdentifier(resid, "string", packageName)
+
+inline fun Context.drawable(strid: String) =
+    drawable(drawableId(strid))
+
+inline fun Context.drawableId(strid: String) =
+    resources.getIdentifier(strid, "drawable", packageName)
 
 
 ////////////////////////////////////////////////////////////////////////////////////

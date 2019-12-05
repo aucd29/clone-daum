@@ -6,8 +6,6 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
 import brigitte.*
-import brigitte.viewmodel.string
-import brigitte.viewmodel.stringArray
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -21,8 +19,8 @@ import javax.inject.Inject
 
 class UrlHistoryViewModel @Inject constructor(
     private val mUrlHistoryDao: UrlHistoryDao,
-    application: Application
-) : RecyclerViewModel<UrlHistory>(application) {
+    app: Application
+) : RecyclerViewModel<UrlHistory>(app) {
 
     companion object {
         private val mLog = LoggerFactory.getLogger(UrlHistoryViewModel::class.java)
@@ -56,7 +54,7 @@ class UrlHistoryViewModel @Inject constructor(
     }
 
     fun initItems() {
-        val historyLabels = stringArray(R.array.history_labels)
+        val historyLabels = app.stringArray(R.array.history_labels)
 
         mDisposable.add(mUrlHistoryDao.select()
             .subscribeOn(Schedulers.io())
@@ -137,7 +135,7 @@ class UrlHistoryViewModel @Inject constructor(
     }
 
     private fun toggle(data: UrlHistory) {
-        vibrate(10L)
+        app.vibrate(10L)
 
         items.get()?.let {
             data.toggle(it, adapter.get())

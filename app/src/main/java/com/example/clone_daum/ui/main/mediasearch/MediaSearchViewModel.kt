@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.Config
-import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.viewmodel.CommandEventViewModel
 import javax.inject.Inject
@@ -14,9 +13,9 @@ import javax.inject.Inject
  */
 
 class MediaSearchViewModel @Inject constructor(
-    application: Application,
+    app: Application,
     val config: Config
-) : CommandEventViewModel(application) {
+) : CommandEventViewModel(app) {
     companion object {
         const val CMD_ANIM_FINISH    = "anim-finish"
         const val CMD_SEARCH_SPEECH  = "search-speech"

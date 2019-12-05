@@ -19,6 +19,7 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.zxing.common.HybridBinarizer
+import com.journeyapps.barcodescanner.DecoderFactory
 import dagger.Binds
 
 /**

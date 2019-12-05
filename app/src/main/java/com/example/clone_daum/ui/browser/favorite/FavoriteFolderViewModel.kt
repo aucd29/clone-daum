@@ -15,9 +15,10 @@ import com.example.clone_daum.R
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
  */
 
-class FavoriteFolderViewModel @Inject constructor(application: Application
-    , private val mFavoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(application) {
+class FavoriteFolderViewModel @Inject constructor(
+    app: Application,
+    private val mFavoriteDao: MyFavoriteDao
+) : RecyclerViewModel<MyFavorite>(app) {
     companion object {
         private val mLog = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
 

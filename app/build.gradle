@@ -55,6 +55,10 @@ android {
             returnDefaultValues = true
         }
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 //googleServices { disableVersionCheck = false }

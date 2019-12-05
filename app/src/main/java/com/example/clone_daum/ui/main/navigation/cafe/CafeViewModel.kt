@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.navigation.cafe
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
 /**
@@ -10,7 +11,8 @@ import javax.inject.Inject
  * 디자인 변경으로 삭제 [aucd29][2019-10-17]
  */
 
-class CafeViewModel @Inject constructor(application: Application)
-    : AndroidViewModel(application) {
+class CafeViewModel @Inject constructor(
+    val app: Application
+) : ViewModel() {
 
 }

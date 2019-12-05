@@ -10,10 +10,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableField
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.viewpager.widget.PagerAdapter
-import brigitte.viewmodel.drawable
+import brigitte.drawable
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 
@@ -26,8 +25,8 @@ interface IBannerItem
 abstract class IBannerPagerAdapter : PagerAdapter()
 
 open class BannerViewModel<T: IBannerItem> constructor(
-    application: Application
-) : AndroidViewModel(application) {
+    val app: Application
+) : ViewModel() {
 
     val items              = ObservableField<List<T>>()
     val adapter            = ObservableField<IBannerPagerAdapter>()
@@ -43,7 +42,7 @@ open class BannerViewModel<T: IBannerItem> constructor(
     }
 
     fun convertColor(str: String) = Color.parseColor(str)
-    fun convertImage(str: String) = drawable(str)
+    fun convertImage(str: String) = app.drawable(str)
 }
 
 class BannerPagerAdapter <T: IBannerItem> (

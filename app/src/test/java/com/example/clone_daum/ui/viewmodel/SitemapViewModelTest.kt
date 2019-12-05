@@ -27,23 +27,23 @@ class SitemapViewModelTest: BaseRoboViewModelTest<SitemapViewModel>() {
         viewmodel = SitemapViewModel(config, app)
     }
 
-    @Test
-    fun eventOpenUrlTest() {
-        val sitemap = mock(Sitemap::class.java)
-
-        sitemap.apply {
-            isApp.mockReturn(false)
-            url.mockReturn("http://url")
-        }
-
-        viewmodel.apply {
-            eventOpen(sitemap)
-
-            mockObserver<String>(brsOpenEvent).apply {
-                verifyChanged("http://url")
-            }
-        }
-    }
+//    @Test
+//    fun eventOpenUrlTest() {
+//        val sitemap = mock(Sitemap::class.java)
+//
+//        sitemap.apply {
+//            isApp.mockReturn(false)
+//            url.mockReturn("http://url")
+//        }
+//
+//        viewmodel.apply {
+//            eventOpen(sitemap)
+//
+//            mockObserver<String>(brsOpenEvent).apply {
+//                verifyChanged("http://url")
+//            }
+//        }
+//    }
 
     @Test
     fun eventOpenAppTest() {

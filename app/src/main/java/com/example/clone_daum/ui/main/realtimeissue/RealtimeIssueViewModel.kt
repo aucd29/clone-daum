@@ -253,6 +253,7 @@ class RealtimeIssueViewModel @Inject constructor(
             Lifecycle.Event.ON_PAUSE   -> stopRealtimeIssue()
             Lifecycle.Event.ON_RESUME  -> startRealtimeIssue()
             Lifecycle.Event.ON_DESTROY -> disposeRealtimeIssue()
+            else -> {}
         }
     }
 

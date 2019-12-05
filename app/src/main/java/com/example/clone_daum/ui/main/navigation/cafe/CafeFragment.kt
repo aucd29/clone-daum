@@ -27,7 +27,6 @@ class CafeFragment @Inject constructor(
     private val mLoginViewModel: NavigationLoginViewModel by inject()
     private lateinit var mLoginDataBinding: NavigationLoginViewBinding
 
-
     override fun initViewBinding() = mBinding.run {
         mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
         mLoginDataBinding.model = mLoginViewModel

@@ -1,8 +1,12 @@
 package com.example.clone_daum.ui.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import com.example.clone_daum.common.Config
 import com.example.clone_daum.ui.search.SearchViewModel
 import brigitte.shield.BaseRoboViewModelTest
+import com.example.clone_daum.model.local.SearchHistoryDao
+import com.example.clone_daum.model.remote.DaumSuggestService
+import io.reactivex.disposables.CompositeDisposable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +23,8 @@ class SearchViewModelTest: BaseRoboViewModelTest<SearchViewModel>() {
     fun setup() {
         initMock()
 
-        viewmodel = SearchViewModel(app, config)
+        val dp = CompositeDisposable()
+        viewmodel = SearchViewModel(stateHandle, config, daum, searchDao, dp, app)
     }
 
     @Test
@@ -64,5 +69,9 @@ class SearchViewModelTest: BaseRoboViewModelTest<SearchViewModel>() {
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
+    @Mock lateinit var stateHandle: SavedStateHandle
     @Mock lateinit var config: Config
+    @Mock lateinit var daum: DaumSuggestService
+    @Mock lateinit var searchDao: SearchHistoryDao
+
 }

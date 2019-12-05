@@ -26,6 +26,7 @@ fun Long.toTimeAgoString(): String {
         return "in the future"
     }
 
+    // TODO 하드코딩한 문자열은 추후 string.xml 을 통해서 변경해야 함
     val diff = now - this
     return when {
         diff < MINUTE_MILLIS      -> "moments ago"

@@ -4,11 +4,11 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="model" type="com.example.clone_daum.ui.main.alarm.AlarmViewModel" />
+        <variable name="model" type="com.example.clone_daum.ui.main.bookmark.BookmarkViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/alarm_container"
+            android:id="@+id/bookmark_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
@@ -18,7 +18,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ALARM FRAGMENT"
+                android:text="BOOKMARK FRAGMENT"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

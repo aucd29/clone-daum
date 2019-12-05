@@ -27,7 +27,7 @@ class MailFragment @Inject constructor(
 
     override fun initViewBinding() = mBinding.run {
         // LOGOUT STATUS
-        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
+        mLoginDataBinding       = dataBinding(R.layout.navigation_login_view)
         mLoginDataBinding.model = mLoginViewModel
 
         mailContainer.addView(mLoginDataBinding.naviLoginContainer)
