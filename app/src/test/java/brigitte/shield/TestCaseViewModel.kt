@@ -7,7 +7,7 @@ import org.mockito.Mockito
 import org.mockito.verification.VerificationMode
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-23 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-23 <p/>
  */
 
 inline fun <VM: CommandEventViewModel> Observer<Pair<String, Any>>.verifyCommandChanged(viewmodel: VM, vararg cmds: Pair<String, Any>) {

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-22 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-22 <p/>
  */
 
 @SuppressLint("WrongConstant")

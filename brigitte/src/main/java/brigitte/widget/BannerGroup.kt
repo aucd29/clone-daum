@@ -18,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-03 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-03 <p/>
  */
 
 interface IBannerItem

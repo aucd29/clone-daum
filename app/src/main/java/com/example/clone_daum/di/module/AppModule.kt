@@ -7,7 +7,7 @@ import dagger.Module
 import dagger.Provides
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-30 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-30 <p/>
  */
 
 // lib 단에서 context 를 이용하기 위해 ContextModule 은 하위로 내림

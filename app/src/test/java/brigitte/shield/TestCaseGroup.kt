@@ -4,7 +4,7 @@ package brigitte.shield
 import junit.framework.TestCase
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-08 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-08 <p/>
  */
 
 inline fun <T> T.assertNotNull() {

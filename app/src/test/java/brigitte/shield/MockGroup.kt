@@ -13,7 +13,7 @@ import java.io.IOException
 import java.net.SocketException
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-06 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-06 <p/>
  *
  * https://github.com/mockito/mockito/wiki/Mockito-features-in-Korean
  *

@@ -6,7 +6,7 @@ import javax.inject.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-27 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-27 <p/>
  */
 
 @Qualifier

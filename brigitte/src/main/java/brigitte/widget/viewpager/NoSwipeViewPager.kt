@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import androidx.core.view.MotionEventCompat
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-09 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-09 <p/>
  *
  * https://gogorchg.tistory.com/entry/Android-Viewpager-swipe-disable
  */

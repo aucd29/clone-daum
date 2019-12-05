@@ -14,7 +14,7 @@ import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-05 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-05 <p/>
  */
 @RunWith(RobolectricTestRunner::class)
 class ShortcutViewModelTest: BaseRoboViewModelTest<ShortcutViewModel>()  {

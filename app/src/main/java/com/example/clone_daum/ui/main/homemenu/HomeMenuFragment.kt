@@ -11,7 +11,7 @@ import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-09-20 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-09-20 <p/>
  */
 
 class HomeMenuFragment @Inject constructor(

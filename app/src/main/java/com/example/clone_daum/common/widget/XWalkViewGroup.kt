@@ -8,7 +8,7 @@ package com.example.clone_daum.common.widget
 //import org.xwalk.core.*
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-18 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-18 <p/>
  *
  * https://www.mobibrw.com/2015/1934
  *

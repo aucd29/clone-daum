@@ -11,7 +11,7 @@ import javax.inject.Inject
 import kotlin.reflect.KClass
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-09-10 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-09-10 <p/>
  */
 
 @AssistedModule

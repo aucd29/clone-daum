@@ -14,9 +14,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- safe browsing (https://safebrowsing.google.com/) -->
-    <!--<meta-data android:name="android.webkit.WebView.EnableSafeBrowsing" android:value="true"/>-->
-
     <application
             android:allowBackup="false"
             android:icon="@mipmap/ic_launcher"
@@ -30,10 +27,6 @@
             android:networkSecurityConfig="@xml/network_security_config"
             tools:ignore="GoogleAppIndexingWarning"
     >
-        <!--
-        android:targetSandboxVersion="1" 와 android:usesCleartextTraffic="true" 을 넣는다면
-        android:networkSecurityConfig="@xml/network_security_config" 를 넣지 않아도 된다.
-        -->
 
         <activity
                 android:screenOrientation="portrait"
@@ -54,10 +47,6 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_paths" />
         </provider>
-
-<!--        <meta-data-->
-<!--                android:name="com.kakao.sdk.Phase"-->
-<!--                android:value="@string/kakao_phase" />-->
 
         <meta-data
                 android:name="com.kakao.sdk.AppKey"

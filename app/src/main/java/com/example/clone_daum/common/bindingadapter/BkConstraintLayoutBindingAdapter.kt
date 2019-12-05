@@ -6,7 +6,7 @@ import brigitte.widget.constraint.ConstraintLayout
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-08-02 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-08-02 <p/>
  */
 
 object ConstraintLayoutBindingAdapter {

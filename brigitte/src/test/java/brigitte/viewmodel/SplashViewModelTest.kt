@@ -13,7 +13,7 @@ import org.robolectric.RobolectricTestRunner
 
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-23 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-23 <p/>
  *
  * https://github.com/fabioCollini/DaggerMock
  * https://stackoverflow.com/questions/50950654/androidviewmodel-and-unit-tests

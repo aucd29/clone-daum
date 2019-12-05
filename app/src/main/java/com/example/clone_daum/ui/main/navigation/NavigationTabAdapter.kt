@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-09-16 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-09-16 <p/>
  */
 // fixme 디지인 변경으로 더 이상 사용하지 않음 [aucd29][2019-10-16]
 //class NavigationTabAdapter @Inject constructor(

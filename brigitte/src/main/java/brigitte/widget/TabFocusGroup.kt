@@ -9,7 +9,7 @@ import brigitte.string
 import com.google.android.material.tabs.TabLayout
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-26 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-26 <p/>
  */
 
 interface ITabFocus {

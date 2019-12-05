@@ -8,7 +8,7 @@ import com.squareup.inject.assisted.AssistedInject
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-09-10 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-09-10 <p/>
  */
 
 class AssignedInjectTestViewModel @AssistedInject constructor(

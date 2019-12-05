@@ -9,7 +9,6 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewPropertyAnimatorListener
-import androidx.lifecycle.ViewModel
 import org.slf4j.LoggerFactory
 
 /**

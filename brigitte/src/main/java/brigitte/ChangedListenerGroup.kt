@@ -3,7 +3,7 @@ package brigitte
 import android.widget.SeekBar
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-06-26 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-06-26 <p/>
  */
 
 /**

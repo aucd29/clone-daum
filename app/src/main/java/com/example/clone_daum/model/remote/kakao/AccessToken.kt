@@ -1,7 +1,7 @@
 package com.example.clone_daum.model.remote.kakao
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-10-31 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-10-31 <p/>
  */
 
 data class AccessToken(

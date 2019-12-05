@@ -8,7 +8,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-10-21 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-10-21 <p/>
  *
  * https://developers.kakao.com/docs/android/user-management
  */

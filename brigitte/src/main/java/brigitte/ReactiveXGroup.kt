@@ -6,7 +6,7 @@ import io.reactivex.Single
 import java.util.concurrent.TimeUnit
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-31 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-31 <p/>
  *
  * 기본적으로 스케쥴러는 computation 으로 설정 되어 있음
  */

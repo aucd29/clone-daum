@@ -1,3 +1,4 @@
+@file:Suppress("NOTHING_TO_INLINE", "unused")
 package brigitte
 
 import androidx.databinding.ViewDataBinding
@@ -14,7 +15,7 @@ import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-05-22 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-05-22 <p/>
  *
  *
  * https://github.com/InsertKoinIO/koin/issues/56

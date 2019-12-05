@@ -5,7 +5,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-23 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-23 <p/>
  *
  * android-architecture 참조
  * 먼가 빌드 실행 시 과거 정보가 남아서 제대로 동작 안되는 듯한 현상이 자주 일어난다.. 망했다..

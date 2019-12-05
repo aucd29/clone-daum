@@ -1,7 +1,7 @@
 package com.example.clone_daum.config
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-31 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-31 <p/>
  */
 
 import androidx.room.Room
@@ -23,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-07-31 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-07-31 <p/>
  */
 @RunWith(RobolectricTestRunner::class)
 class PreloadConfigTest: BaseRoboTest() {

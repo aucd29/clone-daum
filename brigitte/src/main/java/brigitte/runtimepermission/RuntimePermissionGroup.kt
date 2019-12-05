@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory
 object RuntimePermission {
     const val REQ_MAIN = 99
 
+    @JvmStatic
     fun check(params: PermissionParams) {
         if (!checkPermissions(params.activity, params.permissions)) {
             instanceFragment(params).apply {
@@ -35,6 +36,7 @@ object RuntimePermission {
         params.listener.invoke(params.reqCode, true)
     }
 
+    @JvmStatic
     fun checkPermissions(context: Context, permissions: ArrayList<String>): Boolean {
         var result = true
         var i = 0
@@ -97,9 +99,8 @@ data class PermissionParams(
     var reqCode     : Int = RuntimePermission.REQ_MAIN
 ) {
     // 마치 builder pattern 처럼.. add 할 수 있도록
-    fun permission(permission: String): PermissionParams {
+    fun permission(permission: String) = apply {
         permissions.add(permission)
-        return this
     }
 }
 

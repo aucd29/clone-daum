@@ -1,7 +1,6 @@
 package com.example.clone_daum
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.VisibleForTesting
 import com.example.clone_daum.databinding.MainActivityBinding
@@ -9,9 +8,6 @@ import brigitte.*
 import brigitte.viewmodel.SplashViewModel
 import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.login.LoginViewModel
-import com.kakao.auth.ISessionCallback
-import com.kakao.auth.Session
-import com.kakao.util.exception.KakaoException
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory

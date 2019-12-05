@@ -6,7 +6,7 @@ import brigitte.ScrollChangeListener
 import org.slf4j.LoggerFactory
 
 /**
- * Created by <a href="mailto:aucd29@hanwha.com">Burke Choi</a> on 2019-06-29 <p/>
+ * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019-06-29 <p/>
  */
 
 object ScrollViewBindingAdapter {
