@@ -29,6 +29,7 @@ import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.setting.SettingViewModel
+//import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import dagger.Binds
 import dagger.Module

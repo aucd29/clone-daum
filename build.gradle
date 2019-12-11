@@ -50,7 +50,7 @@ buildscript {
 //        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
 //        classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:1.0.0"

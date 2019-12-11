@@ -160,4 +160,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
     </style>
+
+    <!-- preference -->
+
+    <style name="Preference.Category">
+
+    </style>
 </resources>

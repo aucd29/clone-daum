@@ -124,8 +124,11 @@ class MainWebviewFragment @Inject constructor(
         if (mLog.isDebugEnabled) {
             mLog.debug("DESTROY VIEW = ")
         }
-        mBinding.mainWebViewSwipeRefresh.isEnabled = false
-        mBinding.mainWebViewSwipeRefresh.removeAllViews()
+
+        mBinding.mainWebViewSwipeRefresh.run {
+            isEnabled = false
+            removeAllViews()
+        }
 
         super.onDestroyView()
     }

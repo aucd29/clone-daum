@@ -107,6 +107,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$recycler"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     kapt "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+    implementation 'androidx.preference:preference:1.1.0'
 
     implementation "androidx.multidex:multidex:$multidex"
     implementation "androidx.room:room-runtime:$room"
