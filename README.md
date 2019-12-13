@@ -9,3 +9,6 @@ Kotlin + Rxjava2 + MVVM + Dagger2 + Retrofit + Jackson + Room + Glide + Tensorfl
 구조
 -------------
 One Activity + Some Fragments + AndroidX
+
+
+[![Video Label](http://img.youtube.com/vi/xphsGHXpRPc/0.jpg)](https://youtu.be/xphsGHXpRPc)
