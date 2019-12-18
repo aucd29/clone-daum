@@ -25,9 +25,13 @@ import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 //import com.example.clone_daum.ui.main.navigation.shortcut.ShortcutFragment
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildFragment
 import com.example.clone_daum.ui.main.setting.SettingFragment
+import com.example.clone_daum.ui.main.setting.alarmpreference.AlarmPreferenceFragment
+import com.example.clone_daum.ui.main.setting.alarmsetting.AlarmSettingFragment
+import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoFragment
+import com.example.clone_daum.ui.main.setting.privacypolicy.PrivacyPolicyFragment
+import com.example.clone_daum.ui.main.setting.research.ResearchFragment
 import com.example.clone_daum.ui.main.weather.WeatherFragment
 import com.example.clone_daum.ui.search.SearchFragment
-import dagger.Binds
 import dagger.Module
 
 /**
@@ -58,6 +62,11 @@ import dagger.Module
 
     // SETTING
     SettingFragment.Module::class,
+    PrivacyPolicyFragment.Module::class,
+    AlarmSettingFragment.Module::class,
+    AlarmPreferenceFragment.Module::class,
+    DaumAppInfoFragment.Module::class,
+    ResearchFragment.Module::class,
 
     // HOME MENU
     HomeMenuFragment.Module::class,

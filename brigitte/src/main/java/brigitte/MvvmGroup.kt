@@ -46,7 +46,6 @@ annotation class ViewModelScope
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-
 inline fun <T : ViewDataBinding> Fragment.dataBinding(@LayoutRes layoutid: Int, parent: ViewGroup? = null,
                                                       attachToParent: Boolean = false): T =
     DataBindingUtil.inflate(layoutInflater, layoutid, parent, attachToParent)
@@ -538,6 +537,26 @@ interface BaseEventAware {
 
     fun <T> observe(data: LiveData<T>, observer: (T) -> Unit) {
         data.observe(lifecycleOwner(), Observer { observer(it) })
+    }
+
+    fun <T> editPreference(data: LiveData<T>, key: String, observer: (T) -> Unit) {
+        if (data.hasObservers()) {
+            return
+        }
+
+        data.observe(lifecycleOwner(), Observer {
+            activity().prefs().edit {
+                when (it) {
+                    is String  -> putString(key, it)
+                    is Int     -> putInt(key, it)
+                    is Boolean -> putBoolean(key, it)
+                    is Float   -> putFloat(key, it)
+                    is Long    -> putLong(key, it)
+                }
+
+                observer(it)
+            }
+        })
     }
 
     /**

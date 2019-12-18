@@ -1,0 +1,85 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="model" type="com.example.clone_daum.ui.main.setting.SettingViewModel" />
+        <variable name="item" type="com.example.clone_daum.model.local.SettingType" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/setting_normal_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dp70"
+            android:paddingTop="@dimen/dp14"
+            android:paddingBottom="@dimen/dp14"
+            android:background="?selectableItemBackground"
+            android:onClick="@{() -> model.command(model.CMD_SETTING_EVENT, item)}"
+            android:enabled="@{item.enabled}"
+            >
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/setting_normal_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/setting_normal_summary"
+                android:paddingStart="@dimen/dp18"
+                android:textSize="@dimen/sp17"
+                android:textColor="@{item.enabled == false ? @color/gray_97 : @android:color/black}"
+                android:text="@{item.title}"
+                />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/setting_normal_summary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/setting_normal_title"
+                app:layout_constraintEnd_toStartOf="@+id/setting_normal_chevron"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:paddingStart="@dimen/dp18"
+                android:paddingTop="@dimen/dp5"
+                android:paddingEnd="@dimen/dp10"
+                android:textSize="@dimen/sp11"
+                android:textColor="@color/gray_97"
+                android:maxLines="20"
+                android:textAllCaps="true"
+                android:text="@{item.summary}"
+                android:visibility="@{item.summary.length() == 0 ? View.GONE : View.VISIBLE}"
+                />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/setting_normal_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/setting_normal_chevron"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="@dimen/sp17"
+                android:textColor="@android:color/black"
+                android:layout_marginEnd="@dimen/dp10"
+                android:text="@{item.option}"
+                android:visibility="@{item.option.length() == 0 ? View.GONE : View.VISIBLE}"
+                />
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/setting_normal_chevron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="@dimen/dp18"
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
+
+
+

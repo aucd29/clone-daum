@@ -25,12 +25,15 @@ import com.example.clone_daum.ui.main.navigation.NavigationFragment
 import com.example.clone_daum.ui.main.navigation.cafe.CafeFragment
 import com.example.clone_daum.ui.main.navigation.mail.MailFragment
 import com.example.clone_daum.ui.main.setting.SettingFragment
+import com.example.clone_daum.ui.main.setting.alarmpreference.AlarmPreferenceFragment
+import com.example.clone_daum.ui.main.setting.alarmsetting.AlarmSettingFragment
+import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoFragment
+import com.example.clone_daum.ui.main.setting.privacypolicy.PrivacyPolicyFragment
+import com.example.clone_daum.ui.main.setting.research.ResearchFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Provider
-import javax.inject.Singleton
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 13. <p/>
@@ -81,6 +84,46 @@ class Navigator @Inject constructor(
 
         manager.show<SettingFragment>(FragmentParams(CONTAINER,
             anim = FragmentAnim.RIGHT))
+    }
+
+    fun privacyPolicyFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("PrivacyPolicyFragment")
+        }
+
+        manager.show<PrivacyPolicyFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun alarmSettingFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("AlarmSettingFragment")
+        }
+
+        manager.show<AlarmSettingFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun alarmPreferenceFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("AlarmPreferenceFragment")
+        }
+
+        manager.show<AlarmPreferenceFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun daumAppInfoFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("DaumAppInfoFragment")
+        }
+
+        manager.show<DaumAppInfoFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun researchFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("ResearchFragment")
+        }
+
+        manager.show<ResearchFragment>(FragmentParams(CONTAINER))
     }
 
     fun homeMenuFragment() {

@@ -1,6 +1,9 @@
 package com.example.clone_daum.model.local
 
+import androidx.annotation.IntDef
 import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
@@ -128,15 +131,39 @@ data class FrequentlySite(
         this.url == (item as FrequentlySite).url
 }
 
-data class Setting(
+
+@IntDef(value = [SettingType.T_CATEGORY, SettingType.T_NORMAL, SettingType.T_COLOR,
+    SettingType.T_SWITCH, SettingType.T_CHECK, SettingType.T_DEPTH, SettingType.T_DAUM])
+annotation class SettingTypeDef
+
+data class SettingType(
     val _id: Int,
-    val title: String
-) : IRecyclerDiff {
+    val title: String,
+    val summary: String? = null,
+    val checked: MutableLiveData<Boolean> = MutableLiveData(true),
+    val enabled: MutableLiveData<Boolean> = MutableLiveData(true),
+    val option: MutableLiveData<String>? = null,
+    @SettingTypeDef override var type: Int = T_NORMAL
+): IRecyclerDiff, IRecyclerItem {
+    companion object {
+        const val T_CATEGORY = 0
+        const val T_NORMAL   = 1
+        const val T_COLOR    = 2
+        const val T_SWITCH   = 3
+        const val T_CHECK    = 4
+        const val T_DEPTH    = 5
+        const val T_DAUM     = 6
+    }
+
     override fun itemSame(item: IRecyclerDiff): Boolean =
-        _id == (item as Setting)._id
+        _id == (item as SettingType)._id
 
     override fun contentsSame(item: IRecyclerDiff): Boolean =
-        this.title == (item as Setting).title
+        this.title         == (item as SettingType).title &&
+        this.summary       == item.summary &&
+        this.checked.value == item.checked.value &&
+        this.enabled.value == item.enabled.value &&
+        this.option?.value == item.option?.value
 }
 
 data class HomeMenu(

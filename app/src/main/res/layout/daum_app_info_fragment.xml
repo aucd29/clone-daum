@@ -1,0 +1,151 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="model" type="com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/daum_app_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            >
+
+        <!-- TITLE -->
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/daum_app_info_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> model.finish()}"
+                android:padding="@dimen/dp15"
+                android:src="@drawable/ic_chevron_left_black_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="?selectableItemBackgroundBorderless"
+                />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/daum_app_info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp15"
+                android:paddingBottom="@dimen/dp15"
+                android:text="@string/setting_daumapp_info"
+                android:textSize="@dimen/sp20"
+                android:textColor="@android:color/black"
+                app:layout_constraintStart_toEndOf="@+id/daum_app_info_back"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+        <View
+                android:id="@+id/daum_app_info_dummy_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp1"
+                android:background="#949494"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daum_app_info_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/daum_app_info_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daum_app_info_dummy_line"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="#DBDBDB"
+                android:paddingTop="@dimen/dp30"
+                android:paddingBottom="@dimen/dp30"
+                >
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/daum_app_info_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:src="@drawable/ic_android_black_14dp"
+                    />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/daum_app_info_current_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/daum_app_info_icon"
+                    app:layout_constraintEnd_toStartOf="@+id/daum_app_info_bar"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:layout_marginEnd="@dimen/dp10"
+                    android:text="@{model.currentVersion}"
+                    />
+
+            <View
+                    android:id="@+id/daum_app_info_bar"
+                    android:layout_width="1dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/daum_app_info_current_version"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/daum_app_info_current_version"
+                    android:background="@color/gray_7531"
+                    android:layout_marginStart="@dimen/dp10"
+                    android:layout_marginEnd="@dimen/dp10"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/daum_app_info_new_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/daum_app_info_bar"
+                    app:layout_constraintTop_toTopOf="@+id/daum_app_info_current_version"
+                    android:layout_marginStart="@dimen/dp10"
+                    android:text="@{model.lastestVersion}"
+                    />
+
+            <Button
+                    android:id="@+id/daum_app_info_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/daum_app_info_new_version"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:text="@string/setting_daumapp_update"
+                    android:onClick="@{() -> model.command(model.CMD_UPDATE)}"
+                    />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/daum_app_info_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daum_app_info_detail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/daum_app_info_copyright"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:bindItems="@{model.items}"
+                app:bindAdapter="@{model.adapter}"
+                app:bindItemDecoration="@{model.itemDecoration}"
+                />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/daum_app_info_copyright"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daum_app_info_recycler"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@string/setting_daumapp_kakaocorp"
+                />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

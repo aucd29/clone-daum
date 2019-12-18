@@ -80,15 +80,16 @@
     <string name="setting_login_info">로그인 정보</string>
     <string name="setting_pls_login">로그인 하세요</string>
     <string name="setting_auto_login">자동로그인</string>
+    <string name="setting_auto_login_summary">카카오계정 로그인 및 간편아이디 이용 중에는 자동로그인 상태가 유지됩니다.</string>
     <string name="setting_privacy">개인정보 설정</string>
 
     <string name="setting_alarm_item">알림 항목 설정</string>
-    <string name="setting_alarm_item_description">다음이 추천하는 인기 콘텐츠 및 생활 정보를 받아볼 수 있습니다.</string>
+    <string name="setting_alarm_item_summary">다음이 추천하는 인기 콘텐츠 및 생활 정보를 받아볼 수 있습니다.</string>
     <string name="setting_alarm_preference">알림 환경 설정</string>
-    <string name="setting_alarm_preference_description">알림 모드, 에티켓 시간 등 알림에 대한 환경 설정을 할 수 있습니다.</string>
+    <string name="setting_alarm_preference_summary">알림 모드, 에티켓 시간 등 알림에 대한 환경 설정을 할 수 있습니다.</string>
 
     <string name="setting_popup_blocking">팝업 차단</string>
-    <string name="setting_popup_blocking_description">팝업 차단을 사용하면 볼 필요한 팝업 노출 없이 쾌적하게 인터넷을 이용할 수 있습니다.</string>
+    <string name="setting_popup_blocking_summary">팝업 차단을 사용하면 볼 필요한 팝업 노출 없이 쾌적하게 인터넷을 이용할 수 있습니다.</string>
     <string name="setting_character_set">문자 인코딩</string>
 
     <string name="setting_character_set_euckr">한국어(EUC-KR)</string>
@@ -99,17 +100,31 @@
     <string name="setting_character_set_jap_euc">일본어(EUC-JP)</string>
 
     <string name="setting_media_autoplay">미디어 자동재생</string>
-    <string name="setting_media_autoplay_description">웹 페이지 내 동영상과 음악의 자동재생 여부를 선택합니다.\n라이브 및 동영상 광고 자동재생 역시 해당 설정을 기반으로 재생됩니다.</string>
+    <string name="setting_media_autoplay_summary">웹 페이지 내 동영상과 음악의 자동재생 여부를 선택합니다.\n라이브 및 동영상 광고 자동재생 역시 해당 설정을 기반으로 재생됩니다.</string>
     <string name="setting_media_autoplay_always">항상</string>
     <string name="setting_media_autoplay_wifi_only">Wi-Fi 연결 시에만</string>
     <string name="setting_media_autoplay_not_used">사용 안 함</string>
 
     <string name="setting_used_location">위치 정보 사용</string>
-    <string name="setting_used_location_description">위치정보를 기반으로 위치확인, 날씨 검색결과, 콘텐츠 추천 및 광고를 제공 합니다.</string>
+    <string name="setting_used_location_summary">위치정보를 기반으로 위치확인, 날씨 검색결과, 콘텐츠 추천 및 광고를 제공 합니다.</string>
     <string name="setting_simple_search">간편 검색 설정</string>
-    <string name="setting_simple_search_description">휴대폰 상단의 알림 영역을 통해 간편하게 다음 검색을 사용할 수 있습니다.</string>
+    <string name="setting_simple_search_summary">휴대폰 상단의 알림 영역을 통해 간편하게 다음 검색을 사용할 수 있습니다.</string>
 
-<!--    daum app-->
+    <!-- setting privacy policy -->
+    <string name="setting_privacy_policy_save_keyword">검색어 저장</string>
+    <string name="setting_privacy_policy_save_history">방문기록 저장</string>
+    <string name="setting_privacy_policy_remove_history">사용기록 지우기</string>
+    <string name="setting_privacy_policy_set_download_path">다운로드 경로 설정</string>
+    <string name="setting_privacy_policy_manage_downloaded_file">다운로드 파일 관리</string>
+
+    <!-- setting remove history -->
+    <string name="setting_remove_history_history">방문기록</string>
+    <string name="setting_remove_history_cache">캐시</string>
+    <string name="setting_remove_history_auto_complete">양식 데이터 자동완성</string>
+    <string name="setting_remove_history_multi_browser_tab">멀티 브라우저 탭</string>
+    <string name="setting_remove_history_recent_keyword">최근 검색어</string>
+
+    <!-- daum app-->
     <string name="setting_daumapp_info">다음앱 정보</string>
     <string name="setting_daumapp_use_lastest_app">최신버전 사용 중</string>
     <string name="setting_daumapp_current_version">"현재 버전 %s"</string>
@@ -121,11 +136,12 @@
     <string name="setting_daumapp_terms_of_use">이용약관</string>
     <string name="setting_daumapp_privacy_policy">개인정보처리방침</string>
     <string name="setting_daumapp_contact_us">고객센터 문의하기</string>
+    <string name="setting_daumapp_kakaocorp">"@ Kakao Corp"</string>
 
-<!--search-->
+    <!--search-->
     <string name="setting_research">실험실</string>
     <string name="setting_research_fixed_address_bar">주소창 고정</string>
-    <string name="setting_research_fixed_address_bar_description">브라우저 진입 시 주소창이 화면 상단에 항상 고정 됩니다.</string>
+    <string name="setting_research_fixed_address_bar_summary">브라우저 진입 시 주소창이 화면 상단에 항상 고정 됩니다.</string>
 
     <!-- setting my info -->
     <string name="setting_save_keyword">검색어 저장</string>
@@ -143,23 +159,35 @@
     <string name="setting_remove">지우기</string>
 
     <!-- setting alarm -->
-    <string name="setting_alarm_news">뉴스속보</string>
-    <string name="setting_alarm_news_description">뉴스속보를 알려드립니다.</string>
+    <string name="setting_breaking_news">뉴스속보</string>
+    <string name="setting_breaking_news_summary">뉴스속보를 알려드립니다.</string>
     <string name="setting_today_pick">"Today's Pick"</string>
-    <string name="setting_alarm_pick_description">화제의 소식과 재미있는 이야기들</string>
+    <string name="setting_today_pick_summary">화제의 소식과 재미있는 이야기들</string>
     <string name="setting_weather">날씨</string>
-    <string name="setting_weather_description">꼭 필요한 날씨 정보들을 알려드립니다.</string>
+    <string name="setting_weather_summary">꼭 필요한 날씨 정보들을 알려드립니다.</string>
     <string name="setting_lotte">로또</string>
-    <string name="setting_lotte_description">매주 로또 당첨 번호를 알려드립니다.</string>
+    <string name="setting_lotte_summary">매주 로또 당첨 번호를 알려드립니다.</string>
     <string name="setting_event_alarm">이벤트 알림</string>
-    <string name="setting_event_alarm_description">다음앱 이벤트 소식과 당첨내역 알림</string>
+    <string name="setting_event_alarm_summary">다음앱 이벤트 소식과 당첨내역 알림</string>
     <string name="setting_fortune">운세</string>
-    <string name="setting_fortune_description">운세를 알려드립니다.</string>
-
-    <!-- service alarm -->
+    <string name="setting_fortune_summary">운세를 알려드립니다.</string>
     <string name="setting_mail">메일</string>
+    <string name="setting_mail_all_alarm">전체알림 / 지인알림 선택</string>
     <string name="setting_cafe">카페</string>
+    <string name="setting_cafe_new_article_alarm">활동알림 / 새글알림</string>
 
+    <!-- alarm environment setting -->
+    <string name="setting_alarm_env_set_alarm_mode">알림모드</string>
+    <string name="setting_alarm_env_set_enable_screen">알림 도착시 화면 활성화</string>
+    <string name="setting_alarm_env_set_enable_screen_summary">알림이 오면 화면이 켜집니다.</string>
+    <string name="setting_alarm_env_set_etiquette">에티켓 시간설정</string>
+    <string name="setting_alarm_env_set_etiquette_summary">알림수신 제한 시간을 설정할 수 있습니다.</string>
+
+    <!-- setting alarm mode -->
+    <string name="setting_alarmmode_mute">무음</string>
+    <string name="setting_alarmmode_sound">사운드</string>
+    <string name="setting_alarmmode_vibrate">진동</string>
+    <string name="setting_alarmmode_sound_vibrate">사운드+진동</string>
 
     <!-- dlg -->
     <string name="dlg_title_stop_using_recent_search">최근 검색어 끄기</string>

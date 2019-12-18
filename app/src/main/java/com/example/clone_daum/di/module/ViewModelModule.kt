@@ -29,6 +29,7 @@ import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.setting.SettingViewModel
+import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoViewModel
 //import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import dagger.Binds
@@ -158,6 +159,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingViewModel::class)
     abstract fun bindSettingViewModel(vm: SettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DaumAppInfoViewModel::class)
+    abstract fun bindDaumAppInfoViewModel(vm: DaumAppInfoViewModel): ViewModel
 
     @Binds
     @IntoMap

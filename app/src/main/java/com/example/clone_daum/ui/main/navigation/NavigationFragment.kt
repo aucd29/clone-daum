@@ -18,6 +18,7 @@ import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
+import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.Binds
 import dagger.Provides
@@ -91,10 +92,20 @@ class NavigationFragment constructor(
 
     override fun initViewModelEvents() {
         mFrequentlySiteModel.init(disposable())
+        mLoginViewModel.run {
+            observe(status) {
+                if (mLog.isInfoEnabled) {
+                    mLog.info("LOGIN STATUS : $it")
+                }
 
-        observe(mLoginViewModel.status) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("LOGIN STATUS : $it")
+                // 로그인/로그아웃 시 닉네임을 저장하여 사용이 쉽게 한다.
+                prefs().edit {
+                    if (it) {
+                        putString(SettingViewModel.PREF_NICK_NAME, userInfo.value?.nickname?.get())
+                    } else {
+                        remove(SettingViewModel.PREF_NICK_NAME)
+                    }
+                }
             }
         }
     }
