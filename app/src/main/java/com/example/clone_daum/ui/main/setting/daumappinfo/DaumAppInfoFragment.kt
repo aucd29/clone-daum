@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import brigitte.BaseDaggerFragment
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.string
+import brigitte.toast
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.DaumAppInfoFragmentBinding
 import com.example.clone_daum.model.local.SettingType
@@ -60,6 +61,8 @@ class DaumAppInfoFragment @Inject constructor(
                 if (mLog.isDebugEnabled) {
                     mLog.debug("UPDATE DAUM APP")
                 }
+
+                toast(R.string.setting_daumapp_update_daumapp)
             }
         }
     }

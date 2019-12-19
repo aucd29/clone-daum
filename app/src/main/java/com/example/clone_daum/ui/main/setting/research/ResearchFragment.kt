@@ -24,7 +24,7 @@ class ResearchFragment @Inject constructor(
     override fun initViewModelEvents() {
         mViewModel.apply {
             title(R.string.setting_research)
-
+            researchSettingType()
         }
     }
 
@@ -45,9 +45,5 @@ class ResearchFragment @Inject constructor(
     abstract class ResearchFragmentModule {
         @Binds
         abstract fun bindResearchFragment(fragment: ResearchFragment): Fragment
-
-        @dagger.Module
-        companion object {
-        }
     }
 }

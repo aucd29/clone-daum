@@ -539,7 +539,7 @@ interface BaseEventAware {
         data.observe(lifecycleOwner(), Observer { observer(it) })
     }
 
-    fun <T> editPreference(data: LiveData<T>, key: String, observer: (T) -> Unit) {
+    fun <T> editPreference(data: LiveData<T>, key: String, observer: ((T) -> Unit)?) {
         if (data.hasObservers()) {
             return
         }
@@ -554,7 +554,7 @@ interface BaseEventAware {
                     is Long    -> putLong(key, it)
                 }
 
-                observer(it)
+                observer?.invoke(it)
             }
         })
     }

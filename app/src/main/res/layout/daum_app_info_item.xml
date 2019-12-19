@@ -12,7 +12,9 @@
             android:id="@+id/daum_app_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> model.command(model.CMD_DAUMAPP_INFO_EVENT, item)"
+            android:paddingTop="@dimen/dp5"
+            android:paddingBottom="@dimen/dp5"
+            android:onClick="@{() -> model.command(model.CMD_DAUMAPP_INFO_EVENT, item)}"
             >
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -25,7 +27,7 @@
                 android:paddingTop="@dimen/dp10"
                 android:paddingBottom="@dimen/dp10"
                 android:paddingStart="@dimen/dp14"
-                android:textSize="@dimen/sp11"
+                android:textSize="@dimen/sp13"
                 android:text="@{item.title}"
                 />
 

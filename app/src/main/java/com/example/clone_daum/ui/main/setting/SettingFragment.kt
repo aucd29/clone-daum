@@ -1,5 +1,7 @@
 package com.example.clone_daum.ui.main.setting
 
+import android.content.DialogInterface
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import brigitte.BaseDaggerFragment
@@ -46,17 +48,17 @@ class SettingFragment @Inject constructor(
                 val title = type.title
 
                 when (title) {
-                    string(R.string.setting_login_info)       -> setLoginInfo()
-                    string(R.string.setting_privacy)          -> setPrivacy()
-                    string(R.string.setting_alarm_item)       -> setAlarmItem()
+                    string(R.string.setting_login_info)   -> setLoginInfo()
+                    string(R.string.setting_privacy)  -> setPrivacy()
+                    string(R.string.setting_alarm_item) -> setAlarmItem()
                     string(R.string.setting_alarm_preference) -> setAlarmPreference()
-                    string(R.string.setting_popup_blocking)   -> setBlockingPopup(type)
+                    string(R.string.setting_popup_blocking)     -> setBlockingPopup(type)
                     string(R.string.setting_character_set)    -> setCharacterSet(type)
-                    string(R.string.setting_media_autoplay)   -> setMediaAutoPlay(type)
-                    string(R.string.setting_used_location)    -> setUsedLocation(type)
-                    string(R.string.setting_simple_search)    -> setSimpleSearch(type)
-                    string(R.string.setting_daumapp_info)     -> setDaumAppInfo()
-                    string(R.string.setting_research)         -> setResearch()
+                    string(R.string.setting_media_autoplay) -> setMediaAutoPlay(type)
+                    string(R.string.setting_used_location) -> setUsedLocation(type)
+                    string(R.string.setting_simple_search) -> setSimpleSearch(type)
+                    string(R.string.setting_daumapp_info)   -> setDaumAppInfo()
+                    string(R.string.setting_research)       -> setResearch()
                 }
             }
         }
@@ -83,11 +85,11 @@ class SettingFragment @Inject constructor(
     }
 
     private fun setBlockingPopup(type: SettingType) {
-        editPreference(type.checked, SettingViewModel.PREF_BLOCKING_POPUP) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("PREFERENCE BLOCKING POPUP : $it")
-            }
-        }
+//        editPreference(type.checked, SettingViewModel.PREF_BLOCKING_POPUP) {
+//            if (mLog.isDebugEnabled) {
+//                mLog.debug("PREFERENCE BLOCKING POPUP : $it")
+//            }
+//        }
     }
 
     private fun setCharacterSet(type: SettingType) {
@@ -98,6 +100,48 @@ class SettingFragment @Inject constructor(
                 }
             }
         }
+
+        var i = 0
+        val data = arrayOf(
+            string(R.string.setting_character_set_euckr),
+            string(R.string.setting_character_set_latin),
+            string(R.string.setting_character_set_unicode),
+            string(R.string.setting_character_set_jap_iso),
+            string(R.string.setting_character_set_jap_jis),
+            string(R.string.setting_character_set_jap_euc)
+        )
+
+        val defaultString = type.option?.value!!
+        while (i < data.size) {
+            if (defaultString == data[i]) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("DEFAULT STRING : $defaultString ($i)")
+                }
+                break
+            }
+
+            ++i
+        }
+
+        val defaultItem = i
+        val dlg = AlertDialog.Builder(requireActivity())
+            .setTitle(R.string.setting_character_set)
+            .setSingleChoiceItems(data, defaultItem) { dlg, which ->
+                val chooseItem = data[which]
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("CHARACTER SET: WHICH $chooseItem($which)")
+                }
+
+                type.option.value = chooseItem
+                mViewModel.notifyItemChanged(type.position)
+
+                dlg.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel) { dlg, _ ->
+                dlg.dismiss()
+            }
+
+        dlg.show()
     }
 
     private fun setMediaAutoPlay(type: SettingType) {
@@ -108,6 +152,45 @@ class SettingFragment @Inject constructor(
                 }
             }
         }
+
+        var i = 0
+        val data = arrayOf(
+            string(R.string.setting_media_autoplay_always),
+            string(R.string.setting_media_autoplay_wifi_only),
+            string(R.string.setting_media_autoplay_not_used)
+        )
+
+        val defaultString = type.option?.value!!
+        while (i < data.size) {
+            if (defaultString == data[i]) {
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("DEFAULT STRING : $defaultString ($i)")
+                }
+                break
+            }
+
+            ++i
+        }
+
+        val defaultItem = i
+        val dlg = AlertDialog.Builder(requireActivity())
+            .setTitle(R.string.setting_media_autoplay)
+            .setSingleChoiceItems(data, defaultItem) { dlg, which ->
+                val chooseItem = data[which]
+                if (mLog.isDebugEnabled) {
+                    mLog.debug("MEDIA AUTO PLAY : WHICH $chooseItem($which)")
+                }
+
+                type.option.value = chooseItem
+                mViewModel.notifyItemChanged(type.position)
+
+                dlg.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel) { dlg, _ ->
+                dlg.dismiss()
+            }
+
+        dlg.show()
     }
 
     private fun setUsedLocation(type: SettingType) {
@@ -116,6 +199,10 @@ class SettingFragment @Inject constructor(
                 mLog.debug("PREFERENCE USE LOCATION INFO : $it")
             }
         }
+
+        type.checked.value = !type.checked.value!!
+
+        mViewModel.notifyItemChanged(type.position)
     }
 
     private fun setSimpleSearch(type: SettingType) {

@@ -28,8 +28,10 @@ import com.example.clone_daum.ui.main.setting.SettingFragment
 import com.example.clone_daum.ui.main.setting.alarmpreference.AlarmPreferenceFragment
 import com.example.clone_daum.ui.main.setting.alarmsetting.AlarmSettingFragment
 import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoFragment
+import com.example.clone_daum.ui.main.setting.filemanager.DownloadPathFragment
 import com.example.clone_daum.ui.main.setting.privacypolicy.PrivacyPolicyFragment
 import com.example.clone_daum.ui.main.setting.research.ResearchFragment
+import com.example.clone_daum.ui.main.setting.userhistory.UserHistoryFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -108,6 +110,22 @@ class Navigator @Inject constructor(
         }
 
         manager.show<AlarmPreferenceFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun userHistoryFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("UserHistoryFragment")
+        }
+
+        manager.show<UserHistoryFragment>(FragmentParams(CONTAINER))
+    }
+
+    fun downloadPathFragment() {
+        if (mLog.isInfoEnabled) {
+            mLog.info("DownloadPathFragment")
+        }
+
+        manager.show<DownloadPathFragment>(FragmentParams(CONTAINER))
     }
 
     fun daumAppInfoFragment() {

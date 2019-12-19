@@ -9,18 +9,18 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/privacy_policy_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        >
-
-        <include
-            layout="@layout/setting_layout"
+            android:id="@+id/privacy_policy_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:model="@{model}"
-            />
+            android:background="@color/white"
+            >
+
+        <include
+                android:id="@+id/privacy_policy_layout"
+                layout="@layout/setting_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:model="@{model}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

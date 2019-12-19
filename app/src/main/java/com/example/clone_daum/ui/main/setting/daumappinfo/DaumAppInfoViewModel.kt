@@ -62,6 +62,6 @@ class DaumAppInfoViewModel @Inject constructor(
         private val mLog = LoggerFactory.getLogger(DaumAppInfoViewModel::class.java)
 
         const val CMD_DAUMAPP_INFO_EVENT = "daumappinfo-event"
-        const val CMD_UPDATE             = "daumapp-update"
+        const val CMD_UPDATE             = "daumappinfo-update"
     }
 }

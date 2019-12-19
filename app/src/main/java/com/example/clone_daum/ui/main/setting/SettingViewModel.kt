@@ -5,6 +5,7 @@ import android.os.Environment
 import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.RecyclerView
 import brigitte.RecyclerViewModel
 import brigitte.prefs
 import brigitte.string
@@ -127,19 +128,23 @@ class SettingViewModel @Inject constructor(
             mLog.debug("PRIVACY POLICY TYPE")
         }
 
-        var idx = 0
-        val downloadPath = Environment.getExternalStoragePublicDirectory(
+        val envDownloadPath = Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_DOWNLOADS).toString()
-        val historyPath = app.prefs().getString(PREF_DOWNLOADPATH, downloadPath)
+        val downloadPath = app.prefs().getString(PREF_DOWNLOADPATH, envDownloadPath)
+        val saveKeyword = app.prefs().getBoolean(PREF_SAVE_KEYWORD, true)
+        val saveHistory = app.prefs().getBoolean(PREF_SAVE_HISTORY, true)
 
+        var idx = 0
         val data = arrayListOf(
             SettingType(idx++, string(R.string.setting_privacy_policy_save_keyword),
-                checked = MutableLiveData(true)),
+                checked = MutableLiveData(saveKeyword),
+                type = SettingType.T_SWITCH),
             SettingType(idx++, string(R.string.setting_privacy_policy_save_history),
-                checked = MutableLiveData(true)),
+                checked = MutableLiveData(saveHistory),
+                type = SettingType.T_SWITCH),
             SettingType(idx++, string(R.string.setting_privacy_policy_remove_history)),
             SettingType(idx++, string(R.string.setting_privacy_policy_set_download_path),
-                summary = historyPath),
+                summary = downloadPath),
             SettingType(idx, string(R.string.setting_privacy_policy_manage_downloaded_file))
         )
 
@@ -310,6 +315,59 @@ class SettingViewModel @Inject constructor(
         return data
     }
 
+    fun userHistorySettingType(): ArrayList<SettingType>  {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("USER HISTORY SETTING TYPE")
+        }
+
+        var idx = 0
+        var userHistory: Boolean
+        var cache: Boolean
+        var autoComplete: Boolean
+        var multiTab: Boolean
+        var recentKeyword: Boolean
+
+        app.prefs().run {
+            userHistory   = getBoolean(PREF_REMOVE_HISTORY, true)
+            cache         = getBoolean(PREF_REMOVE_CACHE, true)
+            autoComplete  = getBoolean(PREF_AUTOCOMPLETE_DATA, true)
+            multiTab      = getBoolean(PREF_MULTI_BRS_TAB, false)
+            recentKeyword = getBoolean(PREF_RECENT_KEYWORD, false)
+        }
+
+        val data = arrayListOf(
+            SettingType(idx++, string(R.string.setting_remove_history_history),
+                checked = MutableLiveData(userHistory),
+                type = SettingType.T_CHECK),
+            SettingType(idx++, string(R.string.setting_remove_history_cache),
+                checked = MutableLiveData(cache),
+                type = SettingType.T_CHECK),
+            SettingType(idx++, string(R.string.setting_remove_history_auto_complete),
+                checked = MutableLiveData(autoComplete),
+                type = SettingType.T_CHECK),
+            SettingType(idx++, string(R.string.setting_remove_history_multi_browser_tab),
+                checked = MutableLiveData(multiTab),
+                type = SettingType.T_CHECK),
+            SettingType(idx, string(R.string.setting_remove_history_recent_keyword),
+                checked = MutableLiveData(recentKeyword),
+                type = SettingType.T_CHECK)
+        )
+
+        items.set(data)
+
+        return data
+    }
+
+    fun notifyItemChanged(pos: Int) {
+        if (mLog.isDebugEnabled) {
+            mLog.debug("INVALIDATE $pos")
+        }
+
+        adapter.get()?.notifyItemChanged(pos)
+    }
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////
     //
     //
@@ -317,18 +375,10 @@ class SettingViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun command(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND : $cmd")
-        }
-
         when (cmd) {
             CMD_SETTING_EVENT -> if (data is SettingType) {
                 if (data.enabled != null && data.enabled.value == false) {
                     return
-                }
-
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("$cmd = ${data.title}")
                 }
 
                 super.command(cmd, data)
@@ -352,7 +402,10 @@ class SettingViewModel @Inject constructor(
         const val PREF_SIMPLE_SEARCH     = "pref-set-simple-search"
         const val PREF_DAUMAPP_INFO      = "pref-set-daumapp-info"
 
+        const val PREF_SAVE_KEYWORD      = "pref-set-save-keyword"
+        const val PREF_SAVE_HISTORY      = "pref-set-save-history"
         const val PREF_DOWNLOADPATH      = "pref-set-download-path"
+
 
         const val PREF_REMOVE_HISTORY    = "pref-set-remove-history"
         const val PREF_REMOVE_CACHE      = "pref-set-remove-cache"
@@ -372,7 +425,6 @@ class SettingViewModel @Inject constructor(
         const val PREF_ALARM_MODE        = "pref-set-alarm-mode"
         const val PREF_ENABLE_SCREEN     = "pref-set-enable-screen"
         const val PREF_ETIQUETTE         = "pref-set-etiquette"
-
 
         const val PREF_SEARCH_FIXED_ADDR = "pref-set-search_fixed_addr"
     }

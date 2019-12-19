@@ -28,8 +28,10 @@ import com.example.clone_daum.ui.main.setting.SettingFragment
 import com.example.clone_daum.ui.main.setting.alarmpreference.AlarmPreferenceFragment
 import com.example.clone_daum.ui.main.setting.alarmsetting.AlarmSettingFragment
 import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoFragment
+import com.example.clone_daum.ui.main.setting.filemanager.DownloadPathFragment
 import com.example.clone_daum.ui.main.setting.privacypolicy.PrivacyPolicyFragment
 import com.example.clone_daum.ui.main.setting.research.ResearchFragment
+import com.example.clone_daum.ui.main.setting.userhistory.UserHistoryFragment
 import com.example.clone_daum.ui.main.weather.WeatherFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import dagger.Module
@@ -67,6 +69,8 @@ import dagger.Module
     AlarmPreferenceFragment.Module::class,
     DaumAppInfoFragment.Module::class,
     ResearchFragment.Module::class,
+    UserHistoryFragment.Module::class,
+    DownloadPathFragment.Module::class,
 
     // HOME MENU
     HomeMenuFragment.Module::class,

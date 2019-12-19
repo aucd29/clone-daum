@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:minHeight="@dimen/dp70"
             android:background="?selectableItemBackground"
-            android:duplicateParentState="true"
             android:onClick="@{() -> model.command(model.CMD_SETTING_EVENT, item)}"
             >
 
@@ -25,7 +24,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:paddingTop="@dimen/dp14"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:paddingStart="@dimen/dp18"
                 android:textSize="@dimen/sp17"
                 android:textColor="@{item.enabled == false ? @color/gray_97 : @android:color/black}"

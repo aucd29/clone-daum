@@ -116,6 +116,7 @@
     <string name="setting_privacy_policy_remove_history">사용기록 지우기</string>
     <string name="setting_privacy_policy_set_download_path">다운로드 경로 설정</string>
     <string name="setting_privacy_policy_manage_downloaded_file">다운로드 파일 관리</string>
+    <string name="setting_privacy_policy_up">위로</string>
 
     <!-- setting remove history -->
     <string name="setting_remove_history_history">방문기록</string>
@@ -137,6 +138,7 @@
     <string name="setting_daumapp_privacy_policy">개인정보처리방침</string>
     <string name="setting_daumapp_contact_us">고객센터 문의하기</string>
     <string name="setting_daumapp_kakaocorp">"@ Kakao Corp"</string>
+    <string name="setting_daumapp_update_daumapp">update daumapp</string>
 
     <!--search-->
     <string name="setting_research">실험실</string>

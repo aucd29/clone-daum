@@ -9,6 +9,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.example.clone_daum.model.*
 import brigitte.*
+import java.io.File
 import java.io.Serializable
 
 /**
@@ -144,7 +145,7 @@ data class SettingType(
     val enabled: MutableLiveData<Boolean> = MutableLiveData(true),
     val option: MutableLiveData<String>? = null,
     @SettingTypeDef override var type: Int = T_NORMAL
-): IRecyclerDiff, IRecyclerItem {
+): IRecyclerDiff, IRecyclerItem, IRecyclerPosition {
     companion object {
         const val T_CATEGORY = 0
         const val T_NORMAL   = 1
@@ -154,6 +155,8 @@ data class SettingType(
         const val T_DEPTH    = 5
         const val T_DAUM     = 6
     }
+
+    override var position: Int = 0
 
     override fun itemSame(item: IRecyclerDiff): Boolean =
         _id == (item as SettingType)._id
@@ -175,7 +178,7 @@ data class HomeMenu(
         _id == (item as HomeMenu)._id
 
     override fun contentsSame(item: IRecyclerDiff): Boolean =
-        this.title == (item as HomeMenu).title && order == (item as HomeMenu).order
+        this.title == (item as HomeMenu).title && order == item.order
 }
 
 data class AlarmHistory(
@@ -187,5 +190,22 @@ data class AlarmHistory(
         _id == (item as AlarmHistory)._id
 
     override fun contentsSame(item: IRecyclerDiff): Boolean =
-        this.title == (item as AlarmHistory).title && date == (item as AlarmHistory).date
+        this.title == (item as AlarmHistory).title && date == item.date
+}
+
+data class FileInfo(
+    val _id: Int,
+    val fp: File,
+    override var type: Int = T_DIR
+) : IRecyclerDiff, IRecyclerItem {
+    companion object {
+        const val T_UP  = 0
+        const val T_DIR = 1
+    }
+
+    override fun itemSame(item: IRecyclerDiff): Boolean =
+        _id == (item as FileInfo)._id
+
+    override fun contentsSame(item: IRecyclerDiff): Boolean =
+        this.fp.name == (item as FileInfo).fp.name
 }

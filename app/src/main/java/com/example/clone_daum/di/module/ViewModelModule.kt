@@ -30,6 +30,7 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueChildViewModel
 import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoViewModel
+import com.example.clone_daum.ui.main.setting.filemanager.DownloadPathViewModel
 //import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import dagger.Binds
@@ -184,6 +185,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AlarmViewModel::class)
     abstract fun bindAlarmViewModel(vm: AlarmViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DownloadPathViewModel::class)
+    abstract fun bindDownloadPathViewModel(vm: DownloadPathViewModel): ViewModel
+
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
