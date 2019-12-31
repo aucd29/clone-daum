@@ -33,6 +33,7 @@ import com.example.clone_daum.ui.main.setting.privacypolicy.PrivacyPolicyFragmen
 import com.example.clone_daum.ui.main.setting.research.ResearchFragment
 import com.example.clone_daum.ui.main.setting.userhistory.UserHistoryFragment
 import com.example.clone_daum.ui.main.weather.WeatherFragment
+import com.example.clone_daum.ui.map.DaummapFragment
 import com.example.clone_daum.ui.search.SearchFragment
 import dagger.Module
 
@@ -103,6 +104,8 @@ import dagger.Module
 
     // MAIN
     MainFragment.Module::class,
-    MainWebviewFragment.Module::class
+    MainWebviewFragment.Module::class,
+
+    DaummapFragment.Module::class
 ])
 abstract class FragmentModule

@@ -31,6 +31,7 @@ class MainViewModel @Inject constructor(
 
         const val CMD_REALTIME_ISSUE = "realtime-issue"
         const val CMD_BRS_OPEN       = "brs-open"
+        const val CMD_MAP            = "map-open"
 
         const val ITN_GOTO_NEWS = "goto-news"
     }

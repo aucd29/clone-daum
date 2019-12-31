@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp5"
-            android:background="#dfd"
             android:onClick="@{() -> model.command(model.CMD_LEAVE_DIR)}"
             >
 
@@ -29,6 +28,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_margin="@dimen/dp10"
+                android:src="@drawable/ic_expand_less_black_24dp"
             />
 
         <androidx.appcompat.widget.AppCompatTextView

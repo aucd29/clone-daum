@@ -238,15 +238,17 @@ inline fun FragmentManager.showBy(params: FragmentParams) {
     fragment?.let { internalShow(it, params) }
 }
 
-inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams) {
+inline fun <reified T: Fragment> FragmentManager.show(params: FragmentParams): Fragment? {
     val existFragment = findFragmentByTag(T::class.java.name)
     if (existFragment != null && existFragment.isVisible) {
         // manager 내에 해당 fragment 가 이미 존재하면 해당 fragment 를 반환 한다
-        return
+        return existFragment
     }
 
     val fragment =  T::class.java.newInstance() as Fragment
     internalShow(fragment, params)
+
+    return fragment
 }
 
 inline fun FragmentManager.internalShow(fragment: Fragment, params: FragmentParams) {

@@ -13,7 +13,7 @@
             android:background="@color/white">
 
         <include
-                android:id="@+id/userhistory_include"
+                android:id="@+id/userhistory_layout"
                 layout="@layout/setting_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -31,8 +31,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/userhistory_include"
+                app:layout_constraintTop_toBottomOf="@+id/userhistory_layout"
                 android:text="@string/setting_remove_history"
+                android:onClick="@{() -> model.command(model.CMD_REMOVE_USER_HISTORY)}"
                 />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

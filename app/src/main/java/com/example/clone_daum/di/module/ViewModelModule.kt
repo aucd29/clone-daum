@@ -31,6 +31,7 @@ import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
 import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.main.setting.daumappinfo.DaumAppInfoViewModel
 import com.example.clone_daum.ui.main.setting.filemanager.DownloadPathViewModel
+import com.example.clone_daum.ui.map.DaummapViewModel
 //import com.example.clone_daum.ui.main.setting.SettingViewModel
 import com.example.clone_daum.ui.search.PopularViewModel
 import dagger.Binds
@@ -266,4 +267,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UrlHistoryViewModel::class)
     abstract fun bindUrlHistoryViewModel(vm: UrlHistoryViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DaummapViewModel::class)
+    abstract fun bindMapViewModel(vm: DaummapViewModel): ViewModel
 }

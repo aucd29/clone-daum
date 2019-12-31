@@ -18,6 +18,8 @@ class DownloadPathFragment @Inject constructor(
 ): BaseDaggerFragment<DownloadPathFragmentBinding, DownloadPathViewModel>() {
     override val layoutId = R.layout.download_path_fragment
 
+    var closeCallback: ((String) -> Unit)? = null
+
     override fun initViewBinding() {
     }
 
@@ -27,6 +29,12 @@ class DownloadPathFragment @Inject constructor(
                 loadFileList()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        closeCallback?.invoke(mViewModel.currentRoot.value!!)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +54,5 @@ class DownloadPathFragment @Inject constructor(
     abstract class DownloadPathFragmentModule {
         @Binds
         abstract fun bindDownloadPathFragment(fragment: DownloadPathFragment): Fragment
-
-        @dagger.Module
-        companion object {
-        }
     }
 }

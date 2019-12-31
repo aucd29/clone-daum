@@ -324,6 +324,19 @@
             <!--app:bindViewPagerLoaded="@{issueModel.viewPagerLoaded}"-->
         </FrameLayout>
 
+        <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/dp20"
+                android:layout_marginBottom="@dimen/dp20"
+                android:text="MAP"
+                android:padding="@dimen/dp20"
+                android:background="@color/gray_ec"
+                android:onClick="@{() -> model.command(model.CMD_MAP)}"
+            />
+
 <!--        <androidx.appcompat.widget.AppCompatImageView-->
 <!--                android:id="@+id/over_back"-->
 <!--                android:layout_width="wrap_content" android:layout_height="wrap_content"-->

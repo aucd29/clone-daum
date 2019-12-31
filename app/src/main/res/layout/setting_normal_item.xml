@@ -48,10 +48,10 @@
                 android:textSize="@dimen/sp11"
                 android:textColor="@color/gray_97"
                 android:maxLines="20"
-                android:textAllCaps="true"
                 android:text="@{item.summary}"
                 android:visibility="@{item.summary.length() == 0 ? View.GONE : View.VISIBLE}"
                 />
+<!--        android:textAllCaps="true"-->
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/setting_normal_option"

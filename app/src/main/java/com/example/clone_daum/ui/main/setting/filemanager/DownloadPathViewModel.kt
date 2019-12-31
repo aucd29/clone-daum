@@ -30,11 +30,8 @@ class DownloadPathViewModel @Inject constructor(
             R.drawable.shape_divider_gray,  0, 0))
 
     init {
-//        val envDownloadPath = Environment.getExternalStoragePublicDirectory(
-//            Environment.DIRECTORY_DOWNLOADS).toString()
-
-        val envDownloadPath = "/storage/emulated/0/"
-
+        val envDownloadPath = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOWNLOADS).toString()
         val downloadPath = app.prefs().getString(SettingViewModel.PREF_DOWNLOADPATH, envDownloadPath)
 
         currentRoot.value = downloadPath
@@ -47,10 +44,6 @@ class DownloadPathViewModel @Inject constructor(
         val itemList = arrayListOf<FileInfo>()
         val current = currentRoot.value!!
         itemList.add(FileInfo(0, File(""), FileInfo.T_UP))
-        itemList.add(FileInfo(1, File("/storage/emulated/0/Pictures")))
-        itemList.add(FileInfo(2, File("/storage/emulated/0/DCIM")))
-        itemList.add(FileInfo(3, File("/storage/emulated/0/Downloads")))
-
 
         if (mLog.isDebugEnabled) {
             mLog.debug("LOAD FILE LIST $current")
@@ -75,8 +68,14 @@ class DownloadPathViewModel @Inject constructor(
         when (cmd) {
             CMD_CHOOSE_DOWNLOAD_PATH -> {
                 app.prefs().edit {
-                    putString(CMD_CHOOSE_DOWNLOAD_PATH, currentRoot.value!!)
+                    if (mLog.isDebugEnabled) {
+                        mLog.debug("CMD_CHOOSE_DOWNLOAD_PATH ${currentRoot.value}")
+                    }
+
+                    putString(SettingViewModel.PREF_DOWNLOADPATH, currentRoot.value!!)
                 }
+
+                finish()
             }
             CMD_LEAVE_DIR -> {
                 val root = currentRoot.value!!
@@ -85,10 +84,9 @@ class DownloadPathViewModel @Inject constructor(
             }
             CMD_ENTER_DIR -> {
                 val root = currentRoot.value!!
-//                root += File.separator
-//                root += data as String
+                val file = data as FileInfo
 
-                currentRoot.value = File(root, data as String).absolutePath
+                currentRoot.value = File(root, file.fp.name).absolutePath
             }
 
             else -> super.command(cmd, data)

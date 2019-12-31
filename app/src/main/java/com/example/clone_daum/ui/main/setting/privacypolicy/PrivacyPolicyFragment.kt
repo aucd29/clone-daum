@@ -6,19 +6,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import androidx.fragment.app.Fragment
-import brigitte.BaseDaggerFragment
-import brigitte.RecyclerHolder
+import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
-import brigitte.prefs
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
-import brigitte.string
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.PrivacyPolicyFragmentBinding
+import com.example.clone_daum.databinding.SettingNormalItemBinding
 import com.example.clone_daum.databinding.SettingSwitchItemBinding
 import com.example.clone_daum.model.local.SettingType
 import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.setting.SettingViewModel
+import com.example.clone_daum.ui.main.setting.filemanager.DownloadPathFragment
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
@@ -34,54 +33,74 @@ class PrivacyPolicyFragment @Inject constructor(
 ): BaseDaggerFragment<PrivacyPolicyFragmentBinding, SettingViewModel>() {
     override val layoutId = R.layout.privacy_policy_fragment
 
-    private var mSettingType: List<SettingType>? = null
-
     @Inject lateinit var navigator: Navigator
 
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
-        mViewModel.title(R.string.setting_privacy)
-        mSettingType = mViewModel.privacyPolicySettingType()
+        mViewModel.apply {
+            title(R.string.setting_privacy)
+            privacyPolicySettingType()
+            livePreference()
+        }
+    }
+
+    private fun livePreference() {
+        mViewModel.items.get()?.forEach {
+            when (it.title) {
+                string(R.string.setting_privacy_policy_save_keyword) -> {
+                    editPreference(it.checked, SettingViewModel.PREF_SAVE_KEYWORD) {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("PREF_SAVE_KEYWORD : $it")
+                        }
+                    }
+                }
+
+                string(R.string.setting_privacy_policy_save_history) -> {
+                    editPreference(it.checked, SettingViewModel.PREF_SAVE_HISTORY) {
+                        if (mLog.isDebugEnabled) {
+                            mLog.debug("PREF_SAVE_HISTORY : $it")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onCommandEvent(cmd: String, data: Any) {
         when (cmd) {
-            SettingViewModel.CMD_SETTING_EVENT -> {
-                val type = data as SettingType
+            SettingViewModel.CMD_SETTING_EVENT ->
+                settingEvent(data as SettingType)
+        }
+    }
 
-                when (type.title) {
-                    string(R.string.setting_save_keyword) -> {
-                        editPreference(type.checked, SettingViewModel.PREF_SAVE_KEYWORD) {
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("PREF_SAVE_KEYWORD : $it")
+    private fun settingEvent(type: SettingType) {
+        when (type.title) {
+            string(R.string.setting_privacy_policy_save_keyword) ->
+                switchPerformClick(type)
+
+            string(R.string.setting_privacy_policy_save_history) ->
+                switchPerformClick(type)
+
+            string(R.string.setting_privacy_policy_remove_history) ->
+                navigator.userHistoryFragment()
+
+            string(R.string.setting_privacy_policy_set_download_path) ->
+                runtimePermissions(PermissionParams(requireActivity(),
+                    arrayListOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), { _, res ->
+                        if (res) {
+                            navigator.downloadPathFragment()?.closeCallback = {
+                                if (mLog.isDebugEnabled) {
+                                    mLog.debug("CLOSE CALLBACK $it")
+                                }
+                                summaryChange(type, it)
                             }
                         }
+                    }, 0))
 
-                        switchPerformClick(type)
-                    }
-                    string(R.string.setting_save_history) -> {
-                        editPreference(type.checked, SettingViewModel.PREF_SAVE_HISTORY) {
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("PREF_SAVE_HISTORY : $it")
-                            }
-                        }
-
-                        switchPerformClick(type)
-                    }
-                    string(R.string.setting_privacy_policy_remove_history) -> navigator.userHistoryFragment()
-                    string(R.string.setting_privacy_policy_set_download_path) -> {
-                        runtimePermissions(PermissionParams(requireActivity(),
-                            arrayListOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            { _, res ->
-                                if (res) navigator.downloadPathFragment()
-                            }, 0))
-                    }
-                    string(R.string.setting_privacy_policy_manage_downloaded_file) ->
-                        fileManager()
-                }
-            }
+            string(R.string.setting_privacy_policy_manage_downloaded_file) ->
+                fileManager()
         }
     }
 
@@ -99,13 +118,23 @@ class PrivacyPolicyFragment @Inject constructor(
         }
     }
 
+    inline private fun summaryChange(type: SettingType, summary: String) {
+        val vh = viewHolder(type.position)
+        if (vh is RecyclerHolder) {
+            val binding = vh.mBinding
+            if (binding is SettingNormalItemBinding) {
+                binding.settingNormalSummary.text = summary
+            }
+        }
+    }
+
     private fun fileManager() {
-        startActivity(Intent(Intent.ACTION_GET_CONTENT).apply {
-            val dnPath = prefs().getString(SettingViewModel.PREF_DOWNLOADPATH,
-                Environment.getExternalStorageDirectory().toString())!!
-            val file = File(dnPath)
-            setDataAndType(Uri.fromFile(file), "*/*")
-        })
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "*/*"
+        }
+
+        startActivity(Intent.createChooser(intent, "Choose a file"), null)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

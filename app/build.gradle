@@ -186,6 +186,7 @@ dependencies {
     // local lib
     implementation project(path: ':brigitte')
     implementation project(path: ':dingbat')
+    implementation files('libs/libDaumMapAndroid.jar')
 }
 
 // fabric 이 편한대 굳이 구글이 인수를 해버려서 =_ = 귀찮게 시리..

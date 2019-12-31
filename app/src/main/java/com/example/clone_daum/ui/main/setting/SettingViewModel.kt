@@ -5,7 +5,6 @@ import android.os.Environment
 import androidx.annotation.StringRes
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.RecyclerView
 import brigitte.RecyclerViewModel
 import brigitte.prefs
 import brigitte.string
@@ -366,8 +365,6 @@ class SettingViewModel @Inject constructor(
         adapter.get()?.notifyItemChanged(pos)
     }
 
-
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
     //
@@ -391,7 +388,8 @@ class SettingViewModel @Inject constructor(
     companion object {
         private val mLog = LoggerFactory.getLogger(SettingViewModel::class.java)
 
-        const val CMD_SETTING_EVENT      = "setting-event"
+        const val CMD_SETTING_EVENT       = "setting-event"
+        const val CMD_REMOVE_USER_HISTORY = "remove-user-history"
 
         const val PREF_NICK_NAME         = "pref-set-nick-name"
 

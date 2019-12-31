@@ -152,6 +152,7 @@ class MainFragment constructor(
                     CMD_MEDIA_SEARCH_FRAGMENT -> navigateMediaSearchFragment()
                     CMD_REALTIME_ISSUE        -> toggleIssueLayout()
                     CMD_BRS_OPEN              -> navigateBrowserFragment(data)
+                    CMD_MAP                   -> navigator.mapFragment()
                 }
             }
         }
