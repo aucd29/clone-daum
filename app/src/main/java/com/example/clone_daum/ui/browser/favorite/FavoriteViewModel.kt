@@ -33,12 +33,10 @@ class FavoriteViewModel @Inject constructor(
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
 
-    private lateinit var mDisposable: CompositeDisposable
+    private val mDisposable = CompositeDisposable()
     val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
 
-    fun init(dp: CompositeDisposable) {
-        this.mDisposable = dp
-
+    fun init() {
         initAdapter(R.layout.favorite_item_folder, R.layout.favorite_item)
         adapter.get()?.run { isScrollToPosition = false }
     }
@@ -128,5 +126,10 @@ class FavoriteViewModel @Inject constructor(
                 snackbar(it)
                 callback(false)
             }))
+    }
+
+    override fun onCleared() {
+        mDisposable.dispose()
+        super.onCleared()
     }
 }

@@ -32,7 +32,7 @@ class UrlHistoryViewModel @Inject constructor(
         const val CMD_CHECKBOX_TOGGLE   = "url-history-checkbox-toggle"
     }
 
-    private lateinit var mDisposable: CompositeDisposable
+    private val mDisposable = CompositeDisposable()
     private val dateCal   = DateCalculator<UrlHistory>()
     private var blockingFlag = true
 
@@ -44,8 +44,7 @@ class UrlHistoryViewModel @Inject constructor(
         dateCal.dateFormat(string(R.string.history_date_format))
     }
 
-    fun init(dp: CompositeDisposable) {
-        mDisposable = dp
+    fun init() {
         initAdapter(R.layout.url_history_item, R.layout.url_history_expandable_item)
     }
 
@@ -165,5 +164,10 @@ class UrlHistoryViewModel @Inject constructor(
                     mLog.debug("DELETED OK")
                 }
             }, ::errorLog))
+    }
+
+    override fun onCleared() {
+        mDisposable.dispose()
+        super.onCleared()
     }
 }

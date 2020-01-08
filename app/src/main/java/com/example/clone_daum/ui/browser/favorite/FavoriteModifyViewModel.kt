@@ -34,13 +34,12 @@ class FavoriteModifyViewModel @Inject constructor(
         const val CMD_POPUP_MENU      = "popup-menu"
     }
 
-    private lateinit var mDisposable: CompositeDisposable
+    private var mDisposable = CompositeDisposable()
     private var mFolderId: Int = 0
 
     val selectedList = arrayListOf<MyFavorite>()
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
     val enableDelete = ObservableBoolean(false)
-
 
     private fun initItems(folderId: Int, notify: (() -> Unit)? = null) {
         if (mLog.isDebugEnabled) {
@@ -73,9 +72,8 @@ class FavoriteModifyViewModel @Inject constructor(
             }))
     }
 
-    fun init(folderId: Int, dp: CompositeDisposable) {
-        mDisposable = dp
-        mFolderId   = folderId
+    fun init(folderId: Int) {
+        mFolderId = folderId
 
         initAdapter(R.layout.favorite_modify_item_folder, R.layout.favorite_modify_item)
         initItems(folderId)
@@ -235,18 +233,6 @@ class FavoriteModifyViewModel @Inject constructor(
             }))
     }
 
-//    private fun updateFolderName(newName: String, oldName: String, callback: (Boolean) -> Unit) {
-//        mDisposable.add(Completable.fromAction { mFavoriteDao.updateFolderName(newName, oldName) }
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({
-//                callback.invoke(true)
-//            }, {
-//                errorLog(it)
-//                callback.invoke(false)
-//            }))
-//    }
-
     ////////////////////////////////////////////////////////////////////////////////////
     //
     // IFolder
@@ -292,5 +278,11 @@ class FavoriteModifyViewModel @Inject constructor(
                 errorLog(it)
                 callback(false)
             }))
+    }
+
+    override fun onCleared() {
+        mDisposable.dispose()
+
+        super.onCleared()
     }
 }

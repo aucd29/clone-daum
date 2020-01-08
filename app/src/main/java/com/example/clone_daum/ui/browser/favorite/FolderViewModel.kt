@@ -29,7 +29,7 @@ class FolderViewModel @Inject constructor(
         const val CMD_CHANGE_FOLDER      = "change-folder"
     }
 
-    private lateinit var mDisposable: CompositeDisposable
+    private val mDisposable = CompositeDisposable()
     private var mCurrentFolderId: Int = 0
 
     var selectedPosition: Int = 0
@@ -42,8 +42,7 @@ class FolderViewModel @Inject constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    fun initFolder(dp: CompositeDisposable, currentFolderId: Int) {
-        this.mDisposable      = dp
+    fun initFolder(currentFolderId: Int) {
         this.mCurrentFolderId = currentFolderId
 
         initAdapter(R.layout.folder_item)
@@ -160,5 +159,10 @@ class FolderViewModel @Inject constructor(
         }
 
         super.command(cmd, data)
+    }
+
+    override fun onCleared() {
+        mDisposable.dispose()
+        super.onCleared()
     }
 }

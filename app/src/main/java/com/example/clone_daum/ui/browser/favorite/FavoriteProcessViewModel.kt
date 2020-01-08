@@ -37,7 +37,7 @@ class FavoriteProcessViewModel @Inject constructor(
 
     override val dialogEvent   = SingleLiveEvent<DialogParam>()
 
-    private lateinit var mDisposable: CompositeDisposable
+    private val mDisposable = CompositeDisposable()
 
     val name      = ObservableField<String>()
     val url       = ObservableField<String>()
@@ -49,9 +49,6 @@ class FavoriteProcessViewModel @Inject constructor(
     val title     = ObservableInt(R.string.favorite_title_add)
     var _id       = 0
 
-    fun init(disposable: CompositeDisposable) {
-        mDisposable = disposable
-    }
 
     fun favorite(fav: MyFavorite) {
         _id = fav._id
@@ -164,5 +161,11 @@ class FavoriteProcessViewModel @Inject constructor(
                 errorLog(it, mLog)
                 snackbar(it)
             }))
+    }
+
+    override fun onCleared() {
+        mDisposable.dispose()
+
+        super.onCleared()
     }
 }

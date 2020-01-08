@@ -85,7 +85,9 @@ class RealtimeIssueViewModel @Inject constructor(
             .subscribe({ html ->
                 htmlDataLive.postValue(html)
                 load(html)
-            }, { errorLog(it, mLog) }))
+            }, {
+                errorLog(it, mLog)
+            }))
     }
 
     fun load(html: String) {
@@ -214,12 +216,9 @@ class RealtimeIssueViewModel @Inject constructor(
         mDisposable.clear()
     }
 
-    private fun disposeRealtimeIssue() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("DISPOSE REALTIME ISSUE")
-        }
-
+    override fun onCleared() {
         mDisposable.dispose()
+        super.onCleared()
     }
 
     fun titleConvert(issue: RealtimeIssue?): String {
@@ -252,7 +251,6 @@ class RealtimeIssueViewModel @Inject constructor(
         when (event) {
             Lifecycle.Event.ON_PAUSE   -> stopRealtimeIssue()
             Lifecycle.Event.ON_RESUME  -> startRealtimeIssue()
-            Lifecycle.Event.ON_DESTROY -> disposeRealtimeIssue()
             else -> {}
         }
     }

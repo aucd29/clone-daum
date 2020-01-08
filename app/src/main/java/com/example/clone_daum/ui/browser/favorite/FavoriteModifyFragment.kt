@@ -41,7 +41,7 @@ class FavoriteModifyFragment @Inject constructor(
                 mLog.debug("FOLDER : $it")
             }
 
-            mViewModel.init(it, disposable())
+            mViewModel.init(it)
         }
     }
 

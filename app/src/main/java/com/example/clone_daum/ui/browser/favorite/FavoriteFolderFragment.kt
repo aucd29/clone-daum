@@ -36,7 +36,7 @@ class FavoriteFolderFragment @Inject constructor()
                 mLog.debug("FOLDER ID : $it")
             }
 
-            mViewModel.initByFolder(it, disposable())
+            mViewModel.initByFolder(it)
         }
     }
 

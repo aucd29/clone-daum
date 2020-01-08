@@ -32,7 +32,7 @@ class FolderFragment @Inject constructor(
     override fun initViewModelEvents() {
         val currentFolderId = arguments?.getInt(K_CURRENT_FOLDER, 0) ?: 0
 
-        mViewModel.initFolder(disposable(), currentFolderId)
+        mViewModel.initFolder(currentFolderId)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

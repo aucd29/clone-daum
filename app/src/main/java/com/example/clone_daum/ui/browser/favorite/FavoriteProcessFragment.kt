@@ -35,8 +35,6 @@ class FavoriteProcessFragment @Inject constructor()
 
     override fun initViewModelEvents() {
         arguments?.let { mViewModel.run {
-            init(disposable())
-
             val fav = it.getSerializable(K_MODIFY)
             if (fav is MyFavorite) {
                 if (mLog.isDebugEnabled) {

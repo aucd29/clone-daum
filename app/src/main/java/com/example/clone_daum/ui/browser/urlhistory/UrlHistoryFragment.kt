@@ -31,7 +31,7 @@ class UrlHistoryFragment @Inject constructor(
 
     override fun initViewModelEvents() {
         mViewModel.apply {
-            init(disposable())
+            init()
             initItems()
         }
 

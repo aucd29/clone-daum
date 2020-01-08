@@ -39,7 +39,7 @@ class FavoriteFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init(disposable())
+        mViewModel.init()
         mViewModel.initItems()
     }
 

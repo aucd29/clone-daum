@@ -22,5 +22,119 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
+        <TextView
+                android:id="@+id/daummap_tile_mode_standard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="STANDARD"
+                android:onClick="@{() -> model.command(model.CMD_TILE_MODE_STANDARD)}"
+                />
+
+        <TextView
+                android:id="@+id/daummap_tile_mode_hd2x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/daummap_tile_mode_standard"
+                app:layout_constraintTop_toTopOf="@+id/daummap_tile_mode_standard"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="HD 2X"
+                android:onClick="@{() -> model.command(model.CMD_TILE_MODE_HD2X)}"
+                />
+
+        <TextView
+                android:id="@+id/daummap_tile_mode_hd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/daummap_tile_mode_hd2x"
+                app:layout_constraintTop_toTopOf="@+id/daummap_tile_mode_hd2x"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="HD"
+                android:onClick="@{() -> model.command(model.CMD_TILE_MODE_HD)}"
+                />
+
+<!--        -->
+
+        <TextView
+                android:id="@+id/daummap_map_move_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daummap_tile_mode_standard"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="MOVE TO"
+                android:onClick="@{() -> model.command(model.CMD_MAP_MOVETO)}"
+                />
+
+        <TextView
+                android:id="@+id/daummap_zoom_level_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/daummap_map_move_to"
+                app:layout_constraintTop_toTopOf="@+id/daummap_map_move_to"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="ZOOM LEVEL 7"
+                android:onClick="@{() -> model.command(model.CMD_ZOOM_LEVEL_7)}"
+                />
+
+        <TextView
+                android:id="@+id/daummap_map_move_to_zoom_level_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/daummap_zoom_level_7"
+                app:layout_constraintTop_toTopOf="@+id/daummap_map_move_to"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="MOVE TO AND ZOOM"
+                android:onClick="@{() -> model.command(model.CMD_CMD_MAP_MOVETO_AND_ZOOM_LEVEL_7)}"
+                />
+
+<!--        -->
+
+        <TextView
+                android:id="@+id/daummap_rotate_60"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daummap_map_move_to"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="ROTATE 60"
+                android:onClick="@{() -> model.command(model.CMD_ROTATE_60)}"
+                />
+
+        <TextView
+                android:id="@+id/daummap_rotate_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/daummap_rotate_60"
+                app:layout_constraintTop_toTopOf="@+id/daummap_rotate_60"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="ROTATE 0"
+                android:onClick="@{() -> model.command(model.CMD_ROTATE_0)}"
+                />
+
+<!--        -->
+
+        <TextView
+                android:id="@+id/daummap_internal_polyline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/daummap_rotate_60"
+                android:padding="@dimen/dp20"
+                android:background="@color/alpha_white"
+                android:text="POLYLINE"
+                android:onClick="@{() -> model.command(model.ITN_POLYLINE)}"
+                />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

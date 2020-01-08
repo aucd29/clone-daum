@@ -26,11 +26,9 @@ class FavoriteFolderViewModel @Inject constructor(
         const val CMD_FAVORITE_MODIFY = "favorite-modify"
     }
 
-    private lateinit var mDisposable: CompositeDisposable
+    private val mDisposable = CompositeDisposable()
 
-    fun initByFolder(folderId: Int, dp: CompositeDisposable) {
-        mDisposable = dp
-
+    fun initByFolder(folderId: Int) {
         // folder 형태의 index 값이 0
         initAdapter(R.layout.favorite_item_from_folder, R.layout.favorite_item_from_folder)
         mDisposable.add(mFavoriteDao.selectByFolderIdFlowable(folderId)
@@ -43,5 +41,11 @@ class FavoriteFolderViewModel @Inject constructor(
 
                 items.set(it)
             }, ::errorLog))
+    }
+
+    override fun onCleared() {
+        mDisposable.dispose()
+
+        super.onCleared()
     }
 }
