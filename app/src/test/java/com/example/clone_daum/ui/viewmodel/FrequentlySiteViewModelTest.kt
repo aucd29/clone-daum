@@ -52,8 +52,8 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
 //        val url = "http://test.net"
 //
 //        viewmodel.apply {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("EVENT URL : $url")
+//            if (logger.isDebugEnabled) {
+//                logger.debug("EVENT URL : $url")
 //            }
 //
 //            eventOpen(url)
@@ -61,8 +61,8 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
 //            mockObserver<String>(brsOpenEvent).apply {
 //                verifyChanged(url)
 //
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("OBSERVE URL : ${brsOpenEvent.value}")
+//                if (logger.isDebugEnabled) {
+//                    logger.debug("OBSERVE URL : ${brsOpenEvent.value}")
 //                }
 //            }
 //        }
@@ -75,7 +75,7 @@ class FrequentlySiteViewModelTest: BaseRoboViewModelTest<FrequentlySiteViewModel
     ////////////////////////////////////////////////////////////////////////////////////
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(FrequentlySiteViewModelTest::class.java)
+        private val logger = LoggerFactory.getLogger(FrequentlySiteViewModelTest::class.java)
     }
 
     @Mock lateinit var dao: FrequentlySiteDao

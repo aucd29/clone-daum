@@ -21,22 +21,26 @@ class FavoriteFolderFragment @Inject constructor()
     override val layoutId = R.layout.favorite_folder_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
 
         const val K_FOLDER = "folder"
     }
 
     @Inject lateinit var navigator: Navigator
 
-    override fun initViewBinding() { }
+    override fun initViewBinding() {
+        viewModel.initAdapter(
+            R.layout.favorite_item_from_folder,
+            R.layout.favorite_item_from_folder)
+    }
 
     override fun initViewModelEvents() {
         arguments?.getInt(K_FOLDER)?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER ID : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("FOLDER ID : $it")
             }
 
-            mViewModel.initByFolder(it)
+            viewModel.initByFolder(it)
         }
     }
 
@@ -56,8 +60,8 @@ class FavoriteFolderFragment @Inject constructor()
     }
 
     private fun showBrowser(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHOW BROWSER $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("SHOW BROWSER $url")
         }
 
         finish()
@@ -68,8 +72,8 @@ class FavoriteFolderFragment @Inject constructor()
 
     private fun modifyFavorite() {
         arguments?.getInt(K_FOLDER)?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER ID : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("FOLDER ID : $it")
             }
 
             navigator.favoriteModifyFragment(it)

@@ -17,26 +17,24 @@ import com.example.clone_daum.R
 
 class FavoriteFolderViewModel @Inject constructor(
     app: Application,
-    private val mFavoriteDao: MyFavoriteDao
+    private val favoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteFolderViewModel::class.java)
 
         const val CMD_BRS_OPEN        = "brs-open"
         const val CMD_FAVORITE_MODIFY = "favorite-modify"
     }
 
-    private val mDisposable = CompositeDisposable()
+    private val dp = CompositeDisposable()
 
     fun initByFolder(folderId: Int) {
-        // folder 형태의 index 값이 0
-        initAdapter(R.layout.favorite_item_from_folder, R.layout.favorite_item_from_folder)
-        mDisposable.add(mFavoriteDao.selectByFolderIdFlowable(folderId)
+        dp.add(favoriteDao.selectByFolderIdFlowable(folderId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE COUNT (BY FOLDER NAME) : ${it.size}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("FAVORITE COUNT (BY FOLDER NAME) : ${it.size}")
                 }
 
                 items.set(it)
@@ -44,7 +42,7 @@ class FavoriteFolderViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
 
         super.onCleared()
     }

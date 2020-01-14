@@ -23,7 +23,7 @@ class FolderViewModel @Inject constructor(
     app: Application
 ) : RecyclerViewModel<MyFavorite>(app), IFolder {
     companion object {
-        private val mLog = LoggerFactory.getLogger(FolderViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(FolderViewModel::class.java)
 
         const val CMD_SHOW_FOLDER_DIALOG = "show-folder-dialog"
         const val CMD_CHANGE_FOLDER      = "change-folder"
@@ -45,21 +45,20 @@ class FolderViewModel @Inject constructor(
     fun initFolder(currentFolderId: Int) {
         this.mCurrentFolderId = currentFolderId
 
-        initAdapter(R.layout.folder_item)
         reloadFolderItems()
     }
 
     fun reloadFolderItems() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RELOAD FOLDER LIST")
+        if (logger.isDebugEnabled) {
+            logger.debug("RELOAD FOLDER LIST")
         }
 
         mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .filter { it.isNotEmpty() }
             .map {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FOLDER COUNT : ${it.size}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("FOLDER COUNT : ${it.size}")
                 }
 
                 // 첫 번째 항목에 기본 위치인 '즐겨찾기' 를 추가 (0)
@@ -99,8 +98,8 @@ class FolderViewModel @Inject constructor(
             , favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("INSERTED FAVORITE FOLDER")
+                if (logger.isDebugEnabled) {
+                    logger.debug("INSERTED FAVORITE FOLDER")
                 }
             }, {
                 errorLog(it)
@@ -113,9 +112,9 @@ class FolderViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (mLog.isDebugEnabled) {
+                if (logger.isDebugEnabled) {
                     if (it > 0) {
-                        mLog.debug("HAS FAVORITE FOLDER : $name ($it)")
+                        logger.debug("HAS FAVORITE FOLDER : $name ($it)")
                     }
                 }
 
@@ -131,8 +130,8 @@ class FolderViewModel @Inject constructor(
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("FIRST WORD : $firstWord")
+        if (logger.isTraceEnabled) {
+            logger.trace("FIRST WORD : $firstWord")
         }
 
         return firstWord

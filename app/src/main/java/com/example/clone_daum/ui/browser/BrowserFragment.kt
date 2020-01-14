@@ -15,11 +15,9 @@ import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
-import brigitte.viewmodel.requireContext
 import brigitte.widget.*
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
-import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,7 +33,7 @@ class BrowserFragment constructor(
     override val layoutId = R.layout.browser_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BrowserFragment::class.java)
+        private val logger = LoggerFactory.getLogger(BrowserFragment::class.java)
 
         private const val WEBVIEW_SLIDING = 3
 
@@ -49,25 +47,25 @@ class BrowserFragment constructor(
     private val mBrowserSubmenuViewModel by activityInject<BrowserSubmenuViewModel>()
 
     override val webview: WebView
-        get() = mBinding.brsWebview
+        get() = binding.brsWebview
 
     private val mFinishInclusive: Boolean
         get() = arguments?.getBoolean(K_FINISH_INCLUSIVE) ?: false
 
     private var mScrollListener: () -> Unit = {
         if (webview.scrollY > config.SCREEN.y) {
-            if (mBinding.brsMoveTop.alpha == 0f) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("SHOW BUTTON FOR MOVE TOP")
+            if (binding.brsMoveTop.alpha == 0f) {
+                if (logger.isDebugEnabled) {
+                    logger.debug("SHOW BUTTON FOR MOVE TOP")
                 }
-                mViewModel.brsGoTop.set(AnimParams(1f, duration = 200))
+                viewModel.brsGoTop.set(AnimParams(1f, duration = 200))
             }
         } else {
-            if (mBinding.brsMoveTop.alpha == 1f) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("HIDE BUTTON FOR MOVE TOP")
+            if (binding.brsMoveTop.alpha == 1f) {
+                if (logger.isDebugEnabled) {
+                    logger.debug("HIDE BUTTON FOR MOVE TOP")
                 }
-                mViewModel.brsGoTop.set(AnimParams(0f, duration = 200))
+                viewModel.brsGoTop.set(AnimParams(0f, duration = 200))
             }
         }
     }
@@ -78,23 +76,23 @@ class BrowserFragment constructor(
         addCommandEventModel(mBrowserSubmenuViewModel)
     }
 
-    override fun initViewBinding() = mBinding.run {
+    override fun initViewBinding() = binding.run {
         startAnimation()
 
-        mViewModel.apply {
+        viewModel.apply {
             webview.defaultSetting(WebViewSettingParams(
                 progress = {
-                    if (mLog.isTraceEnabled) {
-                        mLog.trace("BRS PROGRESS $it")
+                    if (logger.isTraceEnabled) {
+                        logger.trace("BRS PROGRESS $it")
                     }
 
                     valProgress.set(it)
                 }, receivedError = {
-                    mLog.error("ERROR: $it")
+                    logger.error("ERROR: $it")
 
                     it?.let { snackbar(it) }
                 }, sslError = {
-                    mLog.error("ERROR: SSL ")
+                    logger.error("ERROR: SSL ")
 
                     dialog(DialogParam(context = requireContext(),
                             messageId = R.string.brs_dlg_message_ssl_error,
@@ -115,8 +113,8 @@ class BrowserFragment constructor(
                     visibleProgress.set(View.GONE)
                     reloadIconResId.set(R.drawable.ic_replay_black_24dp)
 
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("PAGE FINISHED ${System.currentTimeMillis()}")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("PAGE FINISHED ${System.currentTimeMillis()}")
                     }
 
                     syncCookie()
@@ -130,14 +128,14 @@ class BrowserFragment constructor(
         loadUrl(mUrl)
         webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
         webview.setFindListener { active, count, _ ->
-            mViewModel.innerSearchCount.set("${active + 1}/$count")
+            viewModel.innerSearchCount.set("${active + 1}/$count")
         }
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
+    override fun initViewModelEvents() = viewModel.run {
         applyUrl(mUrl)
         // TODO 임시 코드 추후 db 에서 얻어오도록 해야함
-        applyBrowserCount(mBinding.brsArea.childCount)
+        applyBrowserCount(binding.brsArea.childCount)
 
         sslIconResId.set(R.drawable.ic_vpn_key_black_24dp)
         innerSearch.observe { findAllAsync(it.get()) }
@@ -149,7 +147,7 @@ class BrowserFragment constructor(
     }
 
     private fun addHistory() {
-        mViewModel.addHistory(webview.url, webview.title)
+        viewModel.addHistory(webview.url, webview.title)
     }
 
     override fun onResume() {
@@ -166,12 +164,12 @@ class BrowserFragment constructor(
         super.onDestroyView()
     }
 
-    private fun startAnimation() = mViewModel.run {
+    private fun startAnimation() = viewModel.run {
         brsUrlBarAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(0f, config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }
 
-    private fun endAnimation() = mViewModel.run {
+    private fun endAnimation() = viewModel.run {
         brsUrlBarAni.set(AnimParams(config.ACTION_BAR_HEIGHT * -1))
         brsAreaAni.set(AnimParams(config.ACTION_BAR_HEIGHT * WEBVIEW_SLIDING))
     }
@@ -183,23 +181,23 @@ class BrowserFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
+        if (logger.isDebugEnabled) {
+            logger.debug("BACK PRESSED")
         }
 
-        mBinding.apply {
+        binding.apply {
             if (brsInnerSearch.viewStub?.visibility == View.VISIBLE) {
                 brsInnerSearch.viewStub?.visibility = View.GONE
 
                 return@apply
             }
 
-            with (mViewModel) {
+            with (viewModel) {
                 if (visibleInnerSearch.isVisible()) {
                     visibleInnerSearch.gone()
 
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("${visibleInnerSearch.get()}")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("${visibleInnerSearch.get()}")
                     }
 
                     return@apply
@@ -212,8 +210,8 @@ class BrowserFragment constructor(
             }
 
             if (webview.canGoBack()) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("BRS BACK")
+                if (logger.isDebugEnabled) {
+                    logger.debug("BRS BACK")
                 }
 
                 webview.goBack()
@@ -293,8 +291,8 @@ class BrowserFragment constructor(
     }
 
     private fun subMenuOption(menu: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SUB MENU OPTION : $menu")
+        if (logger.isDebugEnabled) {
+            logger.debug("SUB MENU OPTION : $menu")
         }
 
         when (menu) {
@@ -352,7 +350,7 @@ class BrowserFragment constructor(
 
     private fun searchWithInScreen() {
         // https://code.i-harness.com/en/q/b5bb99
-        mViewModel.visibleInnerSearch.visible()
+        viewModel.visibleInnerSearch.visible()
     }
 
     private fun findAllAsync(keyword: String?) {
@@ -361,7 +359,7 @@ class BrowserFragment constructor(
         } catch (e: Exception) {
             webview.findAll(keyword)
 
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
         }
@@ -387,7 +385,7 @@ class BrowserFragment constructor(
     }
 
     private fun resizeText() {
-        mViewModel.visibleBrsFontSize.visible()
+        viewModel.visibleBrsFontSize.visible()
     }
 
     private fun addIconToHomeLauncher() {
@@ -407,17 +405,17 @@ class BrowserFragment constructor(
                         }
                     }))
 
-            }, { errorLog(it, mLog) }))
+            }, { errorLog(it, logger) }))
     }
 
     private fun fullscreen(fullscreen: Boolean) {
         activity?.apply {
             fullscreen(fullscreen)
-            mViewModel.isFullscreen.set(fullscreen)
+            viewModel.isFullscreen.set(fullscreen)
         }
 
         // https://www.techotopia.com/index.php/Managing_Constraints_using_ConstraintSet
-        mBinding.apply {
+        binding.apply {
             ConstraintSet().apply {
                 clone(brsContainer)
                 connect(brsMoveTop.id, ConstraintSet.BOTTOM, if (fullscreen) {
@@ -431,8 +429,8 @@ class BrowserFragment constructor(
     }
 
     private fun appSetting() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("APP SETTING")
+        if (logger.isDebugEnabled) {
+            logger.debug("APP SETTING")
         }
     }
 

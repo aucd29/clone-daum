@@ -33,7 +33,7 @@ class RealtimeIssueViewModel @Inject constructor(
     app: Application
 ) : LifecycleCommandEventViewModel(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(RealtimeIssueViewModel::class.java)
 
         const val ANIM_DURATION     = 300L
         const val INTERVAL          = 7000L
@@ -72,8 +72,8 @@ class RealtimeIssueViewModel @Inject constructor(
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("CHANGED ISSUE TAB ${it?.position}")
+            if (logger.isDebugEnabled) {
+                logger.debug("CHANGED ISSUE TAB ${it?.position}")
             }
 
             tabChangedLive.value = it
@@ -86,17 +86,17 @@ class RealtimeIssueViewModel @Inject constructor(
                 htmlDataLive.postValue(html)
                 load(html)
             }, {
-                errorLog(it, mLog)
+                errorLog(it, logger)
             }))
     }
 
     fun load(html: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("LOAD REALTIME ISSUE")
+        if (logger.isDebugEnabled) {
+            logger.debug("LOAD REALTIME ISSUE")
         }
 
         if (html.isEmpty()) {
-            mLog.error("ERROR: INVALID REALTIME ISSUE DATA")
+            logger.error("ERROR: INVALID REALTIME ISSUE DATA")
 
             command(ITN_ERROR_ISSUE)
             return
@@ -108,8 +108,8 @@ class RealtimeIssueViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .filter {
                 if (it.isEmpty()) {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("PARSING ERROR")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("PARSING ERROR")
                     }
 
                     command(ITN_ERROR_ISSUE)
@@ -118,8 +118,8 @@ class RealtimeIssueViewModel @Inject constructor(
                 } else true
             }
             .subscribe ({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("SUBSCRIBE REALTIME ISSUE")
+                if (logger.isDebugEnabled) {
+                    logger.debug("SUBSCRIBE REALTIME ISSUE")
                 }
 
                 viewIssueProgress.gone()
@@ -133,15 +133,15 @@ class RealtimeIssueViewModel @Inject constructor(
 
                 command(CMD_LOADED_ISSUE)
             }, {
-                errorLog(it, mLog)
+                errorLog(it, logger)
 
                 command(ITN_ERROR_ISSUE)
             }))
     }
 
     private fun parseRealtimeIssue(main: String): List<Pair<String, List<RealtimeIssue>>> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("PARSE REALTIME ISSUE")
+        if (logger.isDebugEnabled) {
+            logger.debug("PARSE REALTIME ISSUE")
         }
 
         val fText = "var hotissueData = include("
@@ -151,7 +151,7 @@ class RealtimeIssueViewModel @Inject constructor(
 
         val issueList = arrayListOf<Pair<String, List<RealtimeIssue>>>()
         if (f == fText.length || e == -1) {
-            mLog.error("ERROR: INVALID HTML DATA f = $f, e = $e")
+            logger.error("ERROR: INVALID HTML DATA f = $f, e = $e")
 
             return issueList
         }
@@ -169,8 +169,8 @@ class RealtimeIssueViewModel @Inject constructor(
                 else       -> "스포츠"
             }
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("ISSUE : $type (${it.list.size})")
+            if (logger.isDebugEnabled) {
+                logger.debug("ISSUE : $type (${it.list.size})")
             }
 
             issueList.add(type to it.list)
@@ -189,16 +189,16 @@ class RealtimeIssueViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     private fun startRealtimeIssue() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("START REALTIME ISSUE")
+        if (logger.isDebugEnabled) {
+            logger.debug("START REALTIME ISSUE")
         }
 
         mAllIssueList?.let { list ->
             mDisposable.clear()
             mDisposable.add(interval(INTERVAL, initDelay = 0)
                 .map {
-                    if (mLog.isTraceEnabled) {
-                        mLog.trace("REALTIME ISSUE INTERVAL $it")
+                    if (logger.isTraceEnabled) {
+                        logger.trace("REALTIME ISSUE INTERVAL $it")
                     }
 
                     list[(it % list.size).toInt()]
@@ -209,8 +209,8 @@ class RealtimeIssueViewModel @Inject constructor(
     }
 
     private fun stopRealtimeIssue() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("STOP REALTIME ISSUE")
+        if (logger.isDebugEnabled) {
+            logger.debug("STOP REALTIME ISSUE")
         }
 
         mDisposable.clear()
@@ -234,8 +234,8 @@ class RealtimeIssueViewModel @Inject constructor(
         } ?: "".html()
 
     fun layoutTranslationY(h: Float) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("REALTIME ISSUE VIEWPAGER TRANSLATON Y : $h")
+        if (logger.isDebugEnabled) {
+            logger.debug("REALTIME ISSUE VIEWPAGER TRANSLATON Y : $h")
         }
 
         layoutTranslationY.set(h)

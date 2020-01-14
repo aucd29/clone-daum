@@ -47,19 +47,11 @@ class DaumAppInfoViewModel @Inject constructor(
         currentVersion.set(current)
         lastestVersion.set(lastest)
 
-        initAdapter(R.layout.setting_category_item,
-            R.layout.setting_normal_item,
-            R.layout.setting_color_item,
-            R.layout.setting_switch_item,
-            R.layout.setting_check_item,
-            R.layout.setting_depth_item,
-            R.layout.daum_app_info_item)
-
         items.set(data)
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DaumAppInfoViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(DaumAppInfoViewModel::class.java)
 
         const val CMD_DAUMAPP_INFO_EVENT = "daumappinfo-event"
         const val CMD_UPDATE             = "daumappinfo-update"

@@ -18,7 +18,7 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     , private val mResultHandler: Handler?) {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(TfDecoderThread::class.java)
+        private val logger = LoggerFactory.getLogger(TfDecoderThread::class.java)
     }
 
     lateinit var cropRect: Rect
@@ -85,8 +85,8 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
     }
 
     private fun decode(srcData: SourceData) {
-        if (mLog.isTraceEnabled) {
-            mLog.trace("DECODE START")
+        if (logger.isTraceEnabled) {
+            logger.trace("DECODE START")
         }
 
         val start = System.currentTimeMillis()
@@ -97,8 +97,8 @@ class TfDecoderThread(private val mCameraInstance: CameraInstance
         mResultHandler?.let {
             Message.obtain(it, if (result != null) {
                 val end = System.currentTimeMillis()
-                if (mLog.isTraceEnabled) {
-                    mLog.trace("FOUND IN ${(end - start)} ms")
+                if (logger.isTraceEnabled) {
+                    logger.trace("FOUND IN ${(end - start)} ms")
                 }
 
                 TfConst.DECODE_SUCCEEDED

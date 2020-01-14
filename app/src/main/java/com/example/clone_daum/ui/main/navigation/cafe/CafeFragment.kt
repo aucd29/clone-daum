@@ -10,7 +10,6 @@ import brigitte.dataBinding
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.lpmm
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -24,24 +23,24 @@ class CafeFragment @Inject constructor(
 ) : BaseDaggerFragment<CafeFragmentBinding, CafeViewModel>() {
     override val layoutId = R.layout.cafe_fragment
 
-    private val mLoginViewModel: NavigationLoginViewModel by inject()
-    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
+    private val loginViewModel: NavigationLoginViewModel by inject()
+    private lateinit var loginDataBinding: NavigationLoginViewBinding
 
-    override fun initViewBinding() = mBinding.run {
-        mLoginDataBinding = dataBinding(R.layout.navigation_login_view)
-        mLoginDataBinding.model = mLoginViewModel
+    override fun initViewBinding() = binding.run {
+        loginDataBinding = dataBinding(R.layout.navigation_login_view)
+        loginDataBinding.model = loginViewModel
 
-        cafeContainer.addView(mLoginDataBinding.naviLoginContainer)
-        mLoginDataBinding.naviLoginContainer.lpmm(cafeContainer)
+        cafeContainer.addView(loginDataBinding.naviLoginContainer)
+        loginDataBinding.naviLoginContainer.lpmm(cafeContainer)
 
         loginViewModelEvents()
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
+    override fun initViewModelEvents() = viewModel.run {
 
     }
 
-    private fun loginViewModelEvents() = mLoginViewModel.run {
+    private fun loginViewModelEvents() = loginViewModel.run {
         message.set(R.string.navi_require_login_check_cafe)
     }
 

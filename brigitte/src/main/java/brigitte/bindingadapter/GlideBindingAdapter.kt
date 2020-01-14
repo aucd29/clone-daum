@@ -39,13 +39,13 @@ import java.io.File
  */
 
 object GlideBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(GlideBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(GlideBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("android:src")
     fun imageSrc(view: ImageView, @DrawableRes resid: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND IMAGE : $resid")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND IMAGE : $resid")
         }
 
         view.setImageResource(resid)
@@ -54,8 +54,8 @@ object GlideBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindImageRes")
     fun glideSource(view: ImageView, @DrawableRes resid: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND IMAGE : $resid")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND IMAGE : $resid")
         }
 
         view.glide(resid)
@@ -69,8 +69,8 @@ object GlideBindingAdapter {
     fun glideImage(view: ImageView, path: String?, thumbnail: String?,
                    x: Int?, y: Int?,
                    roundedCorners: Int?, circleCrop: Boolean?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND IMAGE : $path THUMBNAIL : $thumbnail")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND IMAGE : $path THUMBNAIL : $thumbnail")
         }
 
         if (path == null) {

@@ -10,7 +10,6 @@ import com.example.clone_daum.model.local.MyFavoriteDao
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
-import brigitte.viewmodel.string
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,10 +22,10 @@ import javax.inject.Inject
 
 class FavoriteProcessViewModel @Inject constructor(
     app: Application,
-    private val mFavoriteDao: MyFavoriteDao
+    private val favoriteDao: MyFavoriteDao
 ) : CommandEventViewModel(app), IDialogAware {
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteProcessViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteProcessViewModel::class.java)
 
         const val CMD_NAME_RESET       = "name-reset"
         const val CMD_ADDRESS_RESET    = "address-reset"
@@ -37,7 +36,7 @@ class FavoriteProcessViewModel @Inject constructor(
 
     override val dialogEvent   = SingleLiveEvent<DialogParam>()
 
-    private val mDisposable = CompositeDisposable()
+    private val dp = CompositeDisposable()
 
     val name      = ObservableField<String>()
     val url       = ObservableField<String>()
@@ -55,12 +54,12 @@ class FavoriteProcessViewModel @Inject constructor(
 
         // MODIFY
 
-        mDisposable.add(mFavoriteDao.selectFolderName(fav.folderId)
+        dp.add(favoriteDao.selectFolderName(fav.folderId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 folder.set(it)
-            }, { errorLog(it, mLog) }))
+            }, { errorLog(it, logger) }))
 
         folderId = fav.folderId
 
@@ -70,8 +69,8 @@ class FavoriteProcessViewModel @Inject constructor(
     }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("TEXT CHANGED")
+        if (logger.isDebugEnabled) {
+            logger.debug("TEXT CHANGED")
         }
 
         // 데이터 변화 시 ok 버튼을 활성화 또는 비활화 시켜야 함
@@ -99,16 +98,16 @@ class FavoriteProcessViewModel @Inject constructor(
         val folder = folder.get()!!
         val stateAdd = _id == 0
 
-        if (mLog.isDebugEnabled) {
+        if (logger.isDebugEnabled) {
             if (stateAdd) {
-                mLog.debug("ADD FAVORITE\n$name\n$url\n$folder")
+                logger.debug("ADD FAVORITE\n$name\n$url\n$folder")
             } else {
-                mLog.debug("MODIFY FAVORITE\n$name\n$url\n$folder")
+                logger.debug("MODIFY FAVORITE\n$name\n$url\n$folder")
             }
         }
 
         if (stateAdd) {
-            mDisposable.add(mFavoriteDao.hasUrl(url)
+            dp.add(favoriteDao.hasUrl(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe ({
@@ -116,14 +115,14 @@ class FavoriteProcessViewModel @Inject constructor(
                         //insertFavorite(name, url, if (folder == string(R.string.folder_favorite)) "" else folder)
                         insertFavorite(name, url, folderId)
                     } else {
-                        if (mLog.isInfoEnabled) {
-                            mLog.info("EXIST FAVORITE $url")
+                        if (logger.isInfoEnabled) {
+                            logger.info("EXIST FAVORITE $url")
                         }
 
                         snackbar(R.string.brs_exist_fav_url)
                     }
                 }, {
-                    errorLog(it, mLog)
+                    errorLog(it, logger)
                     snackbar(it)
                 })
             )
@@ -131,40 +130,40 @@ class FavoriteProcessViewModel @Inject constructor(
             val modifyData = MyFavorite(name, url, folderId)
             modifyData._id = _id
 
-            mDisposable.add(mFavoriteDao.update(modifyData)
+            dp.add(favoriteDao.update(modifyData)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("MODIFIED FAVORITE URL : $url")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("MODIFIED FAVORITE URL : $url")
                     }
 
                     finish()
                 }, {
-                    errorLog(it, mLog)
+                    errorLog(it, logger)
                     snackbar(it)
                 }))
         }
     }
 
     private fun insertFavorite(name: String, url: String, folderId: Int) {
-        mDisposable.add(mFavoriteDao.insert(MyFavorite(name, url, folderId))
+        dp.add(favoriteDao.insert(MyFavorite(name, url, folderId))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ADDED FAVORITE URL : $url")
+                if (logger.isDebugEnabled) {
+                    logger.debug("ADDED FAVORITE URL : $url")
                 }
 
                 finish()
             }, {
-                errorLog(it, mLog)
+                errorLog(it, logger)
                 snackbar(it)
             }))
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
 
         super.onCleared()
     }

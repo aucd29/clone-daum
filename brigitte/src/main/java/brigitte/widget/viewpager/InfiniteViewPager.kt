@@ -55,7 +55,7 @@ class InfiniteViewPager constructor(
     attr: AttributeSet? = null
 ) : WrapContentViewPager(context, attr) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(InfiniteViewPager::class.java)
+        private val logger = LoggerFactory.getLogger(InfiniteViewPager::class.java)
 
         const val H_START_SCROLL  = 0
 
@@ -157,8 +157,8 @@ class InfiniteViewPager constructor(
                 item % it.count
             }
 
-            if (mLog.isTraceEnabled) {
-                mLog.trace("NEW ITEM : $newItem")
+            if (logger.isTraceEnabled) {
+                logger.trace("NEW ITEM : $newItem")
             }
 
             super.setCurrentItem(newItem, smoothScroll)
@@ -179,8 +179,8 @@ class InfiniteViewPager constructor(
         if (mPageChangeListener == null) {
             mPageChangeListener = object: SimpleOnPageChangeListener() {
                 override fun onPageSelected(position: Int) {
-                    if (mLog.isTraceEnabled) {
-                        mLog.trace("PAGE SELECTED : $position")
+                    if (logger.isTraceEnabled) {
+                        logger.trace("PAGE SELECTED : $position")
                     }
 
                     if (!mIsScroll) {
@@ -191,8 +191,8 @@ class InfiniteViewPager constructor(
                 }
             }
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("ADD PAGE LISTENER $mPageChangeListener")
+            if (logger.isDebugEnabled) {
+                logger.debug("ADD PAGE LISTENER $mPageChangeListener")
             }
 
             mPageChangeListener?.let { addOnPageChangeListener(it) }

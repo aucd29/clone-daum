@@ -190,7 +190,7 @@ fun AssetManager.totalLength(srcPath: String): Long {
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class FileListener {
-    private val log = LoggerFactory.getLogger(FileListener::class.java)
+    private val logger = LoggerFactory.getLogger(FileListener::class.java)
 
     companion object {
         const val DONE = 1
@@ -211,8 +211,8 @@ abstract class FileListener {
     }
 
     fun trace() {
-        if (log.isTraceEnabled) {
-            log.trace("$percent% (${current.toFileSizeString()} / ${total.toFileSizeString()})")
+        if (logger.isTraceEnabled) {
+            logger.trace("$percent% (${current.toFileSizeString()} / ${total.toFileSizeString()})")
         }
     }
 

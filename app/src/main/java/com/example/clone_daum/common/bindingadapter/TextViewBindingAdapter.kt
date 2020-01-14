@@ -13,14 +13,14 @@ import org.slf4j.LoggerFactory
  */
 
 object TextViewBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(TextViewBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(TextViewBindingAdapter::class.java)
 
     // 이건 common 으로 이동 해야 할 듯
     @JvmStatic
     @BindingAdapter("bindUrlToChar")
     fun bindUrlToChar(view: TextView, url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("URL : $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("URL : $url")
         }
 
         urlToCharAndBackground(view, url)
@@ -30,8 +30,8 @@ object TextViewBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindUrlToText", "bindIsMoveUrl")
     fun bindIsMoveUrl(view: TextView, url: String, data: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("URL : $url, DATA : $data")
+        if (logger.isDebugEnabled) {
+            logger.debug("URL : $url, DATA : $data")
         }
 
         if (data.isNotEmpty() && data != "사이트이동") {
@@ -56,8 +56,8 @@ object TextViewBindingAdapter {
         val char = splited[splited.size - 2].substring(0, 1).toUpperCase()
         val domain = char.toCharArray()[0].toInt()
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("CHAR : $char, MOD : ${domain % 2}")
+        if (logger.isTraceEnabled) {
+            logger.trace("CHAR : $char, MOD : ${domain % 2}")
         }
 
         view.apply {

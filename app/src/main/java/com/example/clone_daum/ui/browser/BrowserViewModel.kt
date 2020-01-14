@@ -25,13 +25,13 @@ import javax.inject.Inject
  */
 
 class BrowserViewModel @Inject constructor(
-    private var mUrlHistoryDao: UrlHistoryDao,
-    private val mZzimDao: ZzimDao,
-    private val mDisposable: CompositeDisposable,
+    private var urlHistoryDao: UrlHistoryDao,
+    private val zzimDao: ZzimDao,
+    private val dp: CompositeDisposable,
     app: Application
 ) : CommandEventViewModel(app), IWebViewEventAware, ISeekBarProgressChanged {
     companion object {
-        private val mLog = LoggerFactory.getLogger(BrowserViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(BrowserViewModel::class.java)
 
         const val CMD_BACK             = "back"
         const val CMD_SEARCH_FRAGMENT  = "search-fragment"
@@ -86,32 +86,32 @@ class BrowserViewModel @Inject constructor(
     }
 
     fun addHistory(url: String, title: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ADD HISTORY : $title ($url)")
+        if (logger.isDebugEnabled) {
+            logger.debug("ADD HISTORY : $title ($url)")
         }
 
-        mDisposable.add(mUrlHistoryDao.hasUrl(url)
+        dp.add(urlHistoryDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (it == 0) {
-                    mUrlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
+                    urlHistoryDao.insert(UrlHistory(title, url, System.currentTimeMillis()))
                         .subscribeOn(Schedulers.io())
                         .subscribe({
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("ADDED URL HISTORY : $title ($url)")
+                            if (logger.isDebugEnabled) {
+                                logger.debug("ADDED URL HISTORY : $title ($url)")
                             }
-                        }, { e -> errorLog(e, mLog) })
+                        }, { e -> errorLog(e, logger) })
                 } else {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("EXIST URL HISTORY : $title ($url)")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("EXIST URL HISTORY : $title ($url)")
                     }
                 }
-            }, { e -> errorLog(e, mLog) }))
+            }, { e -> errorLog(e, logger) }))
     }
 
     fun applyBrowserCount(count: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BRS COUNT : $count")
+        if (logger.isDebugEnabled) {
+            logger.debug("BRS COUNT : $count")
         }
 
         brsCount.set("$count")
@@ -119,14 +119,14 @@ class BrowserViewModel @Inject constructor(
 
     fun eventReloadBrowser(url : String) {
         if (reloadIconResId.get() == R.drawable.ic_clear_black_24dp) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("STOP")
+            if (logger.isDebugEnabled) {
+                logger.debug("STOP")
             }
 
             webviewEvent(WebViewEvent.STOP_LOADING)
         } else {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("RELOAD BROWSER $url")
+            if (logger.isDebugEnabled) {
+                logger.debug("RELOAD BROWSER $url")
             }
 
             command(CMD_RELOAD)
@@ -134,47 +134,47 @@ class BrowserViewModel @Inject constructor(
     }
 
     fun addZzim(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ADD ZZIM $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("ADD ZZIM $url")
         }
 
         if (url != urlString.get()) {
-            mLog.error("ERROR: $url")
-            mLog.error("ERROR: ${urlString.get()}")
+            logger.error("ERROR: $url")
+            logger.error("ERROR: ${urlString.get()}")
         }
 
-        mDisposable.add(mZzimDao.hasUrl(url)
+        dp.add(zzimDao.hasUrl(url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (it == 0) {
                     insertZzim(url)
                 } else {
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("EXIST URL : $url ($it)")
+                    if (logger.isInfoEnabled) {
+                        logger.info("EXIST URL : $url ($it)")
                     }
 
                     snackbar(R.string.brs_exist_fav_url)
                 }
             }, {
-                errorLog(it, mLog)
+                errorLog(it, logger)
                 snackbar(it)
             }))
     }
 
     private fun insertZzim(url: String) {
-        mDisposable.add(mZzimDao.insert(Zzim(url = url
+        dp.add(zzimDao.insert(Zzim(url = url
             , title = "title"))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ZZIM URL : $url")
+                if (logger.isDebugEnabled) {
+                    logger.debug("ZZIM URL : $url")
                 }
 
                 snackbar(R.string.brs_fav_url_ok)
             }, {
-                errorLog(it, mLog)
+                errorLog(it, logger)
                 snackbar(it)
             }))
     }
@@ -191,8 +191,8 @@ class BrowserViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onProgressChanged(seekbar: SeekBar, value: Int, fromUser: Boolean) {
-        if (mLog.isTraceEnabled) {
-            mLog.trace("CHANGED FONT SIZE : $value")
+        if (logger.isTraceEnabled) {
+            logger.trace("CHANGED FONT SIZE : $value")
         }
 
         // view 에는 realtime 으로 현재 화면을 갱신해야 하고
@@ -202,8 +202,8 @@ class BrowserViewModel @Inject constructor(
     override fun onStopTrackingTouch(seekbar: SeekBar) {
         // 실제 반영은 tracking 이 종료 된 후에 반영한다.
         val value = seekbar.progress
-        if (mLog.isDebugEnabled) {
-            mLog.debug("STOP TRACKING TOUCH : $value")
+        if (logger.isDebugEnabled) {
+            logger.debug("STOP TRACKING TOUCH : $value")
         }
 
         brsFontSizeLive.value = value

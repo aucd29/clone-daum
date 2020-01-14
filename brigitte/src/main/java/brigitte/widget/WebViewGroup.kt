@@ -55,12 +55,12 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
     }
 
     webViewClient = object : WebViewClient() {
-        private val mLog = LoggerFactory.getLogger(WebView::class.java)
+        private val logger = LoggerFactory.getLogger(WebView::class.java)
         var redirectFlag = false
 
         override fun shouldOverrideUrlLoading(view: WebView?, loadingUrl: String?): Boolean {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("URL LOADING #1($this) : $loadingUrl")
+            if (logger.isDebugEnabled) {
+                logger.debug("URL LOADING #1($this) : $loadingUrl")
             }
 
             urlLoading?.invoke(view, loadingUrl) ?: view?.loadUrl(loadingUrl)
@@ -71,8 +71,8 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("URL LOADING #2($this, $view) : ${request?.url.toString()}")
+            if (logger.isDebugEnabled) {
+                logger.debug("URL LOADING #2($this, $view) : ${request?.url.toString()}")
             }
 
             request?.let { r ->
@@ -89,8 +89,8 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
             super.onPageStarted(view, url, favicon)
 
             if (!redirectFlag) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("PAGE STARTED : $url")
+                if (logger.isInfoEnabled) {
+                    logger.info("PAGE STARTED : $url")
                 }
 
                 view?.let { canGoForward?.invoke(it.canGoForward()) }
@@ -105,8 +105,8 @@ inline fun WebView.defaultSetting(params: WebViewSettingParams) = params.run {
 
             // 어래 수정한다고 했는데 callback 이 2번 나가서 다시 수정 =_ = [aucd29][2019. 4. 17.]
             if (!redirectFlag) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("PAGE FINISHED")
+                if (logger.isInfoEnabled) {
+                    logger.info("PAGE FINISHED")
                 }
 
                 view?.let { canGoForward?.invoke(it.canGoForward()) }

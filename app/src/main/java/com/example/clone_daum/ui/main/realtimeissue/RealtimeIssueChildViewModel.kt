@@ -17,17 +17,16 @@ class RealtimeIssueChildViewModel @Inject constructor(
     app: Application
 ) : RecyclerViewModel<RealtimeIssue>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(RealtimeIssueChildViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(RealtimeIssueChildViewModel::class.java)
 
         const val CMD_BRS_OPEN = "brs-open"
     }
 
     fun initRealtimeIssueAdapter(list: List<RealtimeIssue>) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT REALTIME RECYCLER ADAPTER")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT REALTIME RECYCLER ADAPTER")
         }
 
-        initAdapter(R.layout.realtime_issue_child_item)
         items.set(list)
     }
 

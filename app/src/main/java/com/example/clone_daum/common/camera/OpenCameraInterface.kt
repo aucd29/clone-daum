@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
  */
 
 object OpenCameraInterface {
-    private val mLog = LoggerFactory.getLogger(OpenCameraInterface::class.java)
+    private val logger = LoggerFactory.getLogger(OpenCameraInterface::class.java)
 
     /**
      * For [.open], means no preference for which camera to open.
@@ -18,7 +18,7 @@ object OpenCameraInterface {
     fun getCameraId(requestedId: Int): Int {
         val numCameras = Camera.getNumberOfCameras()
         if (numCameras == 0) {
-            mLog.error("ERROR: No cameras!")
+            logger.error("ERROR: No cameras!")
             return -1
         }
 

@@ -23,7 +23,7 @@ class MainApp : DaggerApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        mLog.error("START APP ${BuildConfig.APPLICATION_ID} (${BuildConfig.VERSION_NAME})")
+        logger.error("START APP ${BuildConfig.APPLICATION_ID} (${BuildConfig.VERSION_NAME})")
 
         ViewPump.init(viewPump)
         KakaoSDK.init(kakaoAdapter)
@@ -55,6 +55,6 @@ class MainApp : DaggerApplication() {
 
 //    https://developers.kakao.com/docs/android/user-management
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainApp::class.java)
+        private val logger = LoggerFactory.getLogger(MainApp::class.java)
     }
 }

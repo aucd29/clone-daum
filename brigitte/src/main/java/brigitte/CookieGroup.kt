@@ -63,7 +63,7 @@ class CookieManagerProxy(
     store: CookieStore? = null,
     policy: CookiePolicy = CookiePolicy.ACCEPT_ALL
 ): java.net.CookieManager(store, policy), CookieJar {
-    private val mCookieManager = CookieManager.getInstance()
+    private val cookieManager = CookieManager.getInstance()
 
     override fun put(uri: URI?, responseHeaders: MutableMap<String, MutableList<String>>?) {
         if (uri == null || responseHeaders == null) {
@@ -81,10 +81,10 @@ class CookieManagerProxy(
             }
 
             responseHeaders.get(key)?.forEach {
-                mCookieManager.setCookie(uri.toString(), it)
+                cookieManager.setCookie(uri.toString(), it)
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("SET COOKIE: $it ($url)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("SET COOKIE: $it ($url)")
                 }
             }
         }
@@ -111,7 +111,7 @@ class CookieManagerProxy(
 
         val url = uri.toString()
         val result = mutableMapOf<String, MutableList<String>>()
-        val cookie = mCookieManager.getCookie(url)
+        val cookie = cookieManager.getCookie(url)
         cookie?.let { result.put(COOKIE, Collections.singletonList(cookie)) }
 
         return result
@@ -131,11 +131,11 @@ class CookieManagerProxy(
         try {
             put(url.uri(), responseHeaders)
         } catch (e: IOException) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
     }
 
@@ -154,18 +154,18 @@ class CookieManagerProxy(
                 }
             }
         } catch (e: IOException) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
 
         return responseCookieList
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(CookieManagerProxy::class.java)
+        private val logger = LoggerFactory.getLogger(CookieManagerProxy::class.java)
 
         private const val SET_COOKIE  = "Set-Cookie"
         private const val SET_COOKIE2 = "Set-Cookie2"

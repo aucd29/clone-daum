@@ -25,7 +25,7 @@ class MusicFragment @Inject constructor(
 ) : BaseDaggerFragment<MusicFragmentBinding, MusicViewModel>(), OnBackPressedListener {
     override val layoutId = R.layout.music_fragment
     companion object {
-        private val mLog = LoggerFactory.getLogger(MusicFragment::class.java)
+        private val logger = LoggerFactory.getLogger(MusicFragment::class.java)
 
         private const val V_SCALE          = 1.2F
         private const val V_SCALE_DURATION = 500L
@@ -34,7 +34,7 @@ class MusicFragment @Inject constructor(
     @Inject lateinit var navigator: Navigator
 
     // https://code.i-harness.com/ko-kr/q/254ae5
-    private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
+    private val animList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
 
     override fun initViewBinding() {
         keepScreen(true)
@@ -55,8 +55,8 @@ class MusicFragment @Inject constructor(
 
         val current           = 100f
         val animationDuration = 10000 // limit time
-        mBinding.musicProgress.setProgressWithAnimation(current, animationDuration)
-        mBinding.musicProgress.setOnProgressChangedListener {
+        binding.musicProgress.setProgressWithAnimation(current, animationDuration)
+        binding.musicProgress.setOnProgressChangedListener {
             if (it == 100f) {
                 dialog(DialogParam("대충 찾았다고 하고", context = context, listener = { _, _ ->
                     finish()
@@ -77,7 +77,7 @@ class MusicFragment @Inject constructor(
         super.onDestroyView()
     }
 
-    private fun startAnimation()  = mViewModel.run {
+    private fun startAnimation()  = viewModel.run {
         bgScale.set(AnimParams(V_SCALE, objAniCallback = {
             it.apply {
                 repeatMode  = ValueAnimator.REVERSE
@@ -85,18 +85,18 @@ class MusicFragment @Inject constructor(
                 duration    = V_SCALE_DURATION
                 start()
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("START SCALE ANIM")
+                if (logger.isDebugEnabled) {
+                    logger.debug("START SCALE ANIM")
                 }
 
-                mAnimList.add(this)
+                animList.add(this)
             }
         }))
     }
 
     private fun endAnimation() {
-        mAnimList.forEach { it.cancel() }
-        mAnimList.clear()
+        animList.forEach { it.cancel() }
+        animList.clear()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

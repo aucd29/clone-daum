@@ -3,8 +3,6 @@ package com.example.clone_daum.ui.main.setting.privacypolicy
 
 import android.Manifest
 import android.content.Intent
-import android.net.Uri
-import android.os.Environment
 import androidx.fragment.app.Fragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
@@ -17,11 +15,9 @@ import com.example.clone_daum.databinding.SettingSwitchItemBinding
 import com.example.clone_daum.model.local.SettingType
 import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.setting.SettingViewModel
-import com.example.clone_daum.ui.main.setting.filemanager.DownloadPathFragment
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
-import java.io.File
 import javax.inject.Inject
 
 
@@ -39,7 +35,16 @@ class PrivacyPolicyFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
+            initAdapter(R.layout.setting_category_item,
+                R.layout.setting_normal_item,
+                R.layout.setting_color_item,
+                R.layout.setting_switch_item,
+                R.layout.setting_check_item,
+                R.layout.setting_depth_item,
+                R.layout.daum_app_info_item
+            )
+
             title(R.string.setting_privacy)
             privacyPolicySettingType()
             livePreference()
@@ -47,20 +52,20 @@ class PrivacyPolicyFragment @Inject constructor(
     }
 
     private fun livePreference() {
-        mViewModel.items.get()?.forEach {
+        viewModel.items.get()?.forEach {
             when (it.title) {
                 string(R.string.setting_privacy_policy_save_keyword) -> {
                     editPreference(it.checked, SettingViewModel.PREF_SAVE_KEYWORD) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("PREF_SAVE_KEYWORD : $it")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("PREF_SAVE_KEYWORD : $it")
                         }
                     }
                 }
 
                 string(R.string.setting_privacy_policy_save_history) -> {
                     editPreference(it.checked, SettingViewModel.PREF_SAVE_HISTORY) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("PREF_SAVE_HISTORY : $it")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("PREF_SAVE_HISTORY : $it")
                         }
                     }
                 }
@@ -91,8 +96,8 @@ class PrivacyPolicyFragment @Inject constructor(
                     arrayListOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), { _, res ->
                         if (res) {
                             navigator.downloadPathFragment()?.closeCallback = {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("CLOSE CALLBACK $it")
+                                if (logger.isDebugEnabled) {
+                                    logger.debug("CLOSE CALLBACK $it")
                                 }
                                 summaryChange(type, it)
                             }
@@ -105,13 +110,13 @@ class PrivacyPolicyFragment @Inject constructor(
     }
 
     inline private fun viewHolder(pos: Int) =
-        mBinding.privacyPolicyLayout.settingRecycler
+        binding.privacyPolicyLayout.settingRecycler
             .findViewHolderForLayoutPosition(pos)
 
     inline private fun switchPerformClick(type: SettingType) {
         val vh = viewHolder(type.position)
         if (vh is RecyclerHolder) {
-            val binding = vh.mBinding
+            val binding = vh.binding
             if (binding is SettingSwitchItemBinding) {
                 binding.settingSwitchOption.performClick()
             }
@@ -121,7 +126,7 @@ class PrivacyPolicyFragment @Inject constructor(
     inline private fun summaryChange(type: SettingType, summary: String) {
         val vh = viewHolder(type.position)
         if (vh is RecyclerHolder) {
-            val binding = vh.mBinding
+            val binding = vh.binding
             if (binding is SettingNormalItemBinding) {
                 binding.settingNormalSummary.text = summary
             }
@@ -157,6 +162,6 @@ class PrivacyPolicyFragment @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(PrivacyPolicyFragment::class.java)
+        private val logger = LoggerFactory.getLogger(PrivacyPolicyFragment::class.java)
     }
 }

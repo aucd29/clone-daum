@@ -32,7 +32,7 @@ class WeatherViewModel @Inject constructor(
     private val rxLocation: RxLocation
 ) : RecyclerViewModel<WeatherDetail>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(WeatherViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(WeatherViewModel::class.java)
 
         const val CMD_MORE_DETAIL                   = "more-detail"
         const val CMD_REFRESH_LOCATION              = "refresh-location"
@@ -57,8 +57,8 @@ class WeatherViewModel @Inject constructor(
             disposable.add(rxLocation.location().lastLocation()
                 .flatMap { location -> rxLocation.geocoding().fromLocation(location) }
                 .subscribe ({
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("CURRENT LOCATION : ${it.locality} ${it.subLocality} ${it.thoroughfare}")
+                    if (logger.isInfoEnabled) {
+                        logger.info("CURRENT LOCATION : ${it.locality} ${it.subLocality} ${it.thoroughfare}")
                     }
 
                     val current = "${it.subLocality} ${it.thoroughfare}"
@@ -84,7 +84,6 @@ class WeatherViewModel @Inject constructor(
 
     fun initRecycler() {
         preConfig.weatherData {
-            initAdapter(R.layout.weather_dust_item, R.layout.weather_other_item)
             items.set(it)
         }
     }

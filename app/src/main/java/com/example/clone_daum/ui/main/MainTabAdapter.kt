@@ -27,10 +27,10 @@ import javax.inject.Provider
 @SuppressLint("WrongConstant")
 class MainTabAdapter @Inject constructor(
     fm: FragmentManager,
-    private val mPreConfig: PreloadConfig
+    private val preConfig: PreloadConfig
 ) : FragmentPagerAdapter(fm) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainTabAdapter::class.java)
+        private val logger = LoggerFactory.getLogger(MainTabAdapter::class.java)
 
         const val K_POSITION = "position"
     }
@@ -39,11 +39,11 @@ class MainTabAdapter @Inject constructor(
     @Inject lateinit var webViewFragment: Provider<MainWebviewFragment>
 
     private val items: List<TabData>
-        get() = mPreConfig.tabLabelList
+        get() = preConfig.tabLabelList
 
     override fun getItem(position: Int): Fragment {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CREATE TAB ($position) ${url(position)}")
+        if (logger.isDebugEnabled) {
+            logger.debug("CREATE TAB ($position) ${url(position)}")
         }
 
         return webViewFragment.get().apply {
@@ -58,8 +58,8 @@ class MainTabAdapter @Inject constructor(
         super.destroyItem(container, position, obj)
 
         if (obj is MainWebviewFragment) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("DESTROY ITEM")
+            if (logger.isDebugEnabled) {
+                logger.debug("DESTROY ITEM")
             }
             obj.disableSwipeRefresh()
             obj.fragmentManager?.beginTransaction()?.apply {

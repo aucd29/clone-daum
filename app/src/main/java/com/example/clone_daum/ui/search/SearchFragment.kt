@@ -15,7 +15,6 @@ import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
-import io.reactivex.Single
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -26,38 +25,45 @@ import javax.inject.Inject
 class SearchFragment @Inject constructor(
 ) : BaseDaggerFragment<SearchFragmentBinding, PopularViewModel>() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
+        private val logger = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
     override val layoutId = R.layout.search_fragment
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY
+        viewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
-    private val mSearchViewModel: SearchViewModel by stateInject { factory }
+    private val searchViewModel: SearchViewModel by stateInject { factory }
 
     override fun initViewBinding() {
     }
 
     override fun bindViewModel() {
-        mBinding.model        = mSearchViewModel
-        mBinding.popularmodel = mViewModel
+        binding.model        = searchViewModel
+        binding.popularmodel = viewModel
 
-        addCommandEventModel(mSearchViewModel)
+        addCommandEventModel(searchViewModel)
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init()
-        mSearchViewModel.init()
+        viewModel.apply {
+            // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
+            initAdapter(R.layout.search_recycler_popular_item)
+            init()
+        }
+        searchViewModel.apply {
+            initAdapter(R.layout.search_recycler_history_item, R.layout.search_recycler_suggest_item)
+            init()
+        }
     }
 
     override fun onDestroyView() {
-        mBinding.searchEdit.hideKeyboard()
+        binding.searchEdit.hideKeyboard()
 
         super.onDestroyView()
     }
@@ -77,12 +83,12 @@ class SearchFragment @Inject constructor(
     }
 
     private fun browserFragment(url: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("HIDE SEARCH FRAGMENT ${this}")
+        if (logger.isDebugEnabled) {
+            logger.debug("HIDE SEARCH FRAGMENT ${this}")
         }
 
         navigator.browserFragment(url.toString(), true)
-        mBinding.root.postDelayed({ hideKeyboard(mBinding.searchEdit) }, 100)
+        binding.root.postDelayed({ hideKeyboard(binding.searchEdit) }, 100)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

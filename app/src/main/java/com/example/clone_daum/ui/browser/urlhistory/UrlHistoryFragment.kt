@@ -21,7 +21,7 @@ class UrlHistoryFragment @Inject constructor(
     override val layoutId  = R.layout.url_history_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
+        private val logger = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
@@ -30,8 +30,8 @@ class UrlHistoryFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
-            init()
+        viewModel.apply {
+            initAdapter(R.layout.url_history_item, R.layout.url_history_expandable_item)
             initItems()
         }
 
@@ -39,8 +39,8 @@ class UrlHistoryFragment @Inject constructor(
     }
 
     private fun urlHistoryBarBackground() {
-        mViewModel.editMode.observe {
-            mBinding.urlhistoryBar.apply {
+        viewModel.editMode.observe {
+            binding.urlhistoryBar.apply {
                 if (it.get()) {
                     fadeColorResource(android.R.color.white, com.example.clone_daum.R.color.colorAccent)
                 } else {
@@ -57,7 +57,7 @@ class UrlHistoryFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onBackPressed(): Boolean {
-        mViewModel.apply {
+        viewModel.apply {
             if (editMode.get()) {
                 editMode.set(false)
                 return true
@@ -82,8 +82,8 @@ class UrlHistoryFragment @Inject constructor(
     }
 
     private fun showBrowser(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHOW BROWSER $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("SHOW BROWSER $url")
         }
 
         finish()

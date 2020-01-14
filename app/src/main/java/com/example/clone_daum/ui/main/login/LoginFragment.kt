@@ -1,23 +1,15 @@
 package com.example.clone_daum.ui.main.login
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.LoginFragmentBinding
-import com.kakao.auth.ISessionCallback
-import com.kakao.auth.KakaoSDK
 import com.kakao.auth.Session
-import com.kakao.auth.authorization.authcode.KakaoWebViewActivity
-import com.kakao.network.ServerProtocol
-import com.kakao.util.exception.KakaoException
-import com.kakao.util.helper.Utility
 import dagger.Binds
 import dagger.android.ContributesAndroidInjector
-import kotlinx.android.synthetic.main.favorite_fragment.*
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -39,14 +31,14 @@ class LoginFragment @Inject constructor(
     var ob: Observer<Boolean>? = null
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY
+        viewModelScope = SCOPE_ACTIVITY
     }
 
     override fun onDestroyView() {
-        Session.getCurrentSession().removeCallback(mViewModel)
+        Session.getCurrentSession().removeCallback(viewModel)
 
         ob?.let {
-            mViewModel.status.removeObserver(it)
+            viewModel.status.removeObserver(it)
         }
 
         super.onDestroyView()
@@ -54,23 +46,23 @@ class LoginFragment @Inject constructor(
 
     override fun initViewBinding() {
         // 오타네?
-        mBinding.comKakaoLogin.setSuportFragment(this)
+        binding.comKakaoLogin.setSuportFragment(this)
 
-        Session.getCurrentSession().addCallback(mViewModel)
+        Session.getCurrentSession().addCallback(viewModel)
     }
 
     override fun initViewModelEvents() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FRAGMENT MANAGER #1 = ${fragmentManager}")
+        if (logger.isDebugEnabled) {
+            logger.debug("FRAGMENT MANAGER #1 = ${fragmentManager}")
         }
 
         ob = Observer {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FRAGMENT MANAGER #2 = ${fragmentManager}")
+            if (logger.isDebugEnabled) {
+                logger.debug("FRAGMENT MANAGER #2 = ${fragmentManager}")
             }
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("IT = $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("IT = $it")
             }
 
 //            fragmentManager?.popBackStack()
@@ -82,11 +74,11 @@ class LoginFragment @Inject constructor(
             }
         }
 
-        mViewModel.status.observe(requireActivity(), ob!!)
+        viewModel.status.observe(requireActivity(), ob!!)
 
 //        observe(mViewModel.status) {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("LOGIN STATUS : $it")
+//            if (logger.isDebugEnabled) {
+//                logger.debug("LOGIN STATUS : $it")
 //            }
 //        }
     }
@@ -102,13 +94,13 @@ class LoginFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ACTIVITY RESULT, REQUEST CODE: $requestCode, RESULT CODE: $resultCode")
+        if (logger.isDebugEnabled) {
+            logger.debug("ACTIVITY RESULT, REQUEST CODE: $requestCode, RESULT CODE: $resultCode")
         }
 
         if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("HANDLE ACTIVITY RESULT : $requestCode, $resultCode")
+            if (logger.isDebugEnabled) {
+                logger.debug("HANDLE ACTIVITY RESULT : $requestCode, $resultCode")
             }
 
             return
@@ -137,6 +129,6 @@ class LoginFragment @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(LoginFragment::class.java)
+        private val logger = LoggerFactory.getLogger(LoginFragment::class.java)
     }
 }

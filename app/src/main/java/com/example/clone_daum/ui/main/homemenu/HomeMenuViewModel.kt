@@ -15,6 +15,6 @@ class HomeMenuViewModel @Inject constructor(
 ) : RecyclerViewModel<HomeMenu>(app) {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(HomeMenuViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(HomeMenuViewModel::class.java)
     }
 }

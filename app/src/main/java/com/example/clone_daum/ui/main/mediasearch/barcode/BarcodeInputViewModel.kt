@@ -17,7 +17,7 @@ class BarcodeInputViewModel @Inject constructor(
     app: Application
 ) : CommandEventViewModel(app), IDialogAware {
     companion object {
-        private val mLog = LoggerFactory.getLogger(BarcodeInputViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(BarcodeInputViewModel::class.java)
 
         const val CMD_CLEAR_EDIT    = "clear-edt"
         const val CMD_HIDE_KEYBOARD = "hide-keyboard"
@@ -30,8 +30,8 @@ class BarcodeInputViewModel @Inject constructor(
 
     init {
         editorAction.set {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("INSERTED BARCODE NUMBER : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("INSERTED BARCODE NUMBER : $it")
             }
 
             // 숫자를 입력 받아서 처리하는게 어떠한 의미를 가지는 줄 모르겠네 -_ -?

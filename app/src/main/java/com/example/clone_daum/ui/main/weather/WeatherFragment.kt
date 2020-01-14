@@ -32,8 +32,9 @@ import javax.inject.Inject
 class WeatherFragment
     : BaseDaggerBottomSheetDialogFragment<WeatherFragmentBinding, WeatherViewModel>() {
     override val layoutId = R.layout.weather_fragment
+
     companion object {
-        private val mLog = LoggerFactory.getLogger(WeatherFragment::class.java)
+        private val logger = LoggerFactory.getLogger(WeatherFragment::class.java)
 
         // 전국 날씨
         private const val MORE_DETAIL_URL = """https://m.search.daum.net/search?w=tot&q=%EC%A0%84%EA%B5%AD%EB%82%A0%EC%94%A8&DA=G29&f=androidapp&DN=ADDA&nil_app=daumapp&enc_all=utf8"""
@@ -41,7 +42,7 @@ class WeatherFragment
 
     init {
         // WeatherViewModel 를 MainFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
+        viewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var config: Config
@@ -63,7 +64,8 @@ class WeatherFragment
 
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
+    override fun initViewModelEvents() = viewModel.run {
+        initAdapter(R.layout.weather_dust_item, R.layout.weather_other_item)
         initRecycler()
     }
 
@@ -74,8 +76,8 @@ class WeatherFragment
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND EVENT : $cmd")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND EVENT : $cmd")
         }
 
         WeatherViewModel.apply {
@@ -86,12 +88,12 @@ class WeatherFragment
                     dismiss()
                 }
 
-                CMD_REFRESH_LOCATION -> mViewModel.apply {
+                CMD_REFRESH_LOCATION -> viewModel.apply {
                     visibleProgress.set(false)
 
                 }
 
-                CMD_CHECK_PERMISSION_AND_LOAD_GPS -> mViewModel.apply {
+                CMD_CHECK_PERMISSION_AND_LOAD_GPS -> viewModel.apply {
                     visibleProgress.set(true)
 
                     // 뷰를 위해서 타이머를 주긴했는데

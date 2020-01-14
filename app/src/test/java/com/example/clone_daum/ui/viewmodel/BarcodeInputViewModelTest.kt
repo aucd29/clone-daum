@@ -33,9 +33,9 @@ class BarcodeInputViewModelTest: BaseRoboViewModelTest<BarcodeInputViewModel>() 
                     messageId = R.string.barcode_not_matched_info,
                     titleId = R.string.barcode_not_detacted)
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("EVENT ${dialogEvent.value?.messageId}")
-                    mLog.debug("PARAM ${param.messageId}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("EVENT ${dialogEvent.value?.messageId}")
+                    logger.debug("PARAM ${param.messageId}")
                 }
 
                 verifyChanged(param)
@@ -48,14 +48,14 @@ class BarcodeInputViewModelTest: BaseRoboViewModelTest<BarcodeInputViewModel>() 
         viewmodel.apply {
             barcodeNumber.set("helloworld")
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("BEFORE ${barcodeNumber.get()}")
+            if (logger.isDebugEnabled) {
+                logger.debug("BEFORE ${barcodeNumber.get()}")
             }
 
             command(BarcodeInputViewModel.CMD_CLEAR_EDIT)
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("AFTER ${barcodeNumber.get()}")
+            if (logger.isDebugEnabled) {
+                logger.debug("AFTER ${barcodeNumber.get()}")
             }
 
             barcodeNumber.get().assertEquals("")
@@ -63,6 +63,6 @@ class BarcodeInputViewModelTest: BaseRoboViewModelTest<BarcodeInputViewModel>() 
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BarcodeInputViewModelTest::class.java)
+        private val logger = LoggerFactory.getLogger(BarcodeInputViewModelTest::class.java)
     }
 }

@@ -19,7 +19,7 @@ open class VerticalDrawerLayout(
     attrs: AttributeSet
 ) : DrawerLayout(context, attrs) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(VerticalDrawerLayout::class.java)
+        private val logger = LoggerFactory.getLogger(VerticalDrawerLayout::class.java)
 
         const val START = 0
         const val END   = 1
@@ -66,8 +66,8 @@ open class VerticalDrawerLayout(
                     if (decliend || xDiff > touchSlop) {
                         decliend = true
 
-                        if (mLog.isTraceEnabled) {
-                            mLog.trace("INGORE TOUCH EVENT ${xDiff}")
+                        if (logger.isTraceEnabled) {
+                            logger.trace("INGORE TOUCH EVENT ${xDiff}")
                         }
 
                         // 터치 이벤트 무시

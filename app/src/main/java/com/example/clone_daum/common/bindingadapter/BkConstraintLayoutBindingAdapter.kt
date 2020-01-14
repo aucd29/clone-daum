@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory
  */
 
 object ConstraintLayoutBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(ConstraintLayoutBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(ConstraintLayoutBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("bindDispatchTouchEvent")
     fun bindDispatchTouchEvent(view: ConstraintLayout, listener: ((MotionEvent) -> Boolean)?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("DISPATCH TOUCH EVENT")
+        if (logger.isDebugEnabled) {
+            logger.debug("DISPATCH TOUCH EVENT")
         }
 
         view.dispatchTouchEvent = listener

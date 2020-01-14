@@ -6,7 +6,6 @@ import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.DownloadPathFragmentBinding
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -24,7 +23,11 @@ class DownloadPathFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
+            initAdapter(
+                R.layout.download_path_up_item,
+                R.layout.download_path_file_item)
+
             observe(currentRoot) {
                 loadFileList()
             }
@@ -34,7 +37,7 @@ class DownloadPathFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
-        closeCallback?.invoke(mViewModel.currentRoot.value!!)
+        closeCallback?.invoke(viewModel.currentRoot.value!!)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

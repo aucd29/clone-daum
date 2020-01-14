@@ -22,30 +22,30 @@ class FlowerFragment @Inject constructor(
     override val layoutId = R.layout.flower_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(FlowerFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FlowerFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
 
-    private var mFirstLoad = true
+    private var firstLoad = true
 
     override fun initViewBinding() {
-        mBinding.tensorflow.mResultCallback = { it?.let {
-            if (mLog.isDebugEnabled) {
+        binding.tensorflow.mResultCallback = { it?.let {
+            if (logger.isDebugEnabled) {
                 if (it.isNotEmpty()) {
-                    mLog.debug("TENSORFLOW : ${it.size}")
+                    logger.debug("TENSORFLOW : ${it.size}")
 
                     it.forEach { tf ->
-                        mLog.debug(tf.toString())
+                        logger.debug(tf.toString())
                     }
 
-                    mLog.debug("====")
+                    logger.debug("====")
                 }
             }
 
             if (it.isNotEmpty()) {
                 it[0].title?.let {
-                    mViewModel.message.set(it)
+                    viewModel.message.set(it)
                 }
             }
         } }
@@ -55,7 +55,7 @@ class FlowerFragment @Inject constructor(
     }
 
     override fun onPause() {
-        mBinding.tensorflow.pause()
+        binding.tensorflow.pause()
 
         super.onPause()
     }
@@ -63,10 +63,10 @@ class FlowerFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        if (mFirstLoad) {
-            mFirstLoad = false
+        if (firstLoad) {
+            firstLoad = false
         } else {
-            mBinding.tensorflow.resume()
+            binding.tensorflow.resume()
         }
     }
 
@@ -81,7 +81,7 @@ class FlowerFragment @Inject constructor(
             FlowerViewModel.CMD_BRS_OPEN -> {
                 finish()
 
-                mBinding.flowerBack.postDelayed({
+                binding.flowerBack.postDelayed({
                     val url = "https://m.search.daum.net/search?w=tot&q=${data.toString().urlencode()}&DA=13H"
                     navigator.browserFragment(url)
                 }, 400)

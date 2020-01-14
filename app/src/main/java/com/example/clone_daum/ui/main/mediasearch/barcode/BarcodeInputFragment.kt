@@ -7,7 +7,6 @@ import brigitte.di.dagger.scope.FragmentScope
 import brigitte.hideKeyboard
 import com.example.clone_daum.R
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -45,7 +44,7 @@ class BarcodeInputFragment @Inject constructor(
         super.onDestroyView()
     }
 
-    private fun hideKeyboard() = context?.hideKeyboard(mBinding.barcodeEdit)
+    private fun hideKeyboard() = context?.hideKeyboard(binding.barcodeEdit)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
