@@ -11,7 +11,7 @@ import java.util.ArrayList
 
 class AutoFocusManager(private val camera: Camera, settings: CameraSettings) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(AutoFocusManager::class.java)
+        private val logger = LoggerFactory.getLogger(AutoFocusManager::class.java)
 
         private const val AUTO_FOCUS_INTERVAL_MS = 2000L
         private val FOCUS_MODES_CALLING_AF: MutableCollection<String>
@@ -52,8 +52,8 @@ class AutoFocusManager(private val camera: Camera, settings: CameraSettings) {
         val currentFocusMode = camera.parameters.focusMode
         useAutoFocus = settings.isAutoFocusEnabled && FOCUS_MODES_CALLING_AF.contains(currentFocusMode)
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("Current focus mode '$currentFocusMode'; use auto focus? $useAutoFocus")
+        if (logger.isInfoEnabled) {
+            logger.info("Current focus mode '$currentFocusMode'; use auto focus? $useAutoFocus")
         }
 
         start()
@@ -82,11 +82,11 @@ class AutoFocusManager(private val camera: Camera, settings: CameraSettings) {
                     focusing = true
                 } catch (re: RuntimeException) {
                     // Have heard RuntimeException reported in Android 4.0.x+; continue?
-                    if (mLog.isDebugEnabled) {
+                    if (logger.isDebugEnabled) {
                         re.printStackTrace()
                     }
 
-                    mLog.error("ERROR: Unexpected exception while focusing ${re.message}")
+                    logger.error("ERROR: Unexpected exception while focusing ${re.message}")
 
                     // Try again later to keep cycle going
                     autoFocusAgainLater()
@@ -112,11 +112,11 @@ class AutoFocusManager(private val camera: Camera, settings: CameraSettings) {
                 camera.cancelAutoFocus()
             } catch (re: RuntimeException) {
                 // Have heard RuntimeException reported in Android 4.0.x+; continue?
-                if (mLog.isDebugEnabled) {
+                if (logger.isDebugEnabled) {
                     re.printStackTrace()
                 }
 
-                mLog.error("ERROR: Unexpected exception while cancelling focusing ${re.message}")
+                logger.error("ERROR: Unexpected exception while cancelling focusing ${re.message}")
             }
         }
     }

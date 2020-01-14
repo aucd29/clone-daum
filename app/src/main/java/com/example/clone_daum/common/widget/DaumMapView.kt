@@ -51,8 +51,8 @@ class DaumMapView @JvmOverloads constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onDaumMapOpenAPIKeyAuthenticationResult(view: MapView?, code: Int, message: String?) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("Open API Key Authentication Result : code=$code, message=$message")
+        if (logger.isInfoEnabled) {
+            logger.info("Open API Key Authentication Result : code=$code, message=$message")
         }
 
         callback?.invoke(AUTH_RESULT, code to message)
@@ -65,8 +65,8 @@ class DaumMapView @JvmOverloads constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onMapViewInitialized(map: MapView?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("MapView had loaded. Now, MapView APIs could be called safely")
+        if (logger.isDebugEnabled) {
+            logger.debug("MapView had loaded. Now, MapView APIs could be called safely")
         }
         map?.apply {
             setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(37.537229,127.005515), 2, true)
@@ -77,8 +77,8 @@ class DaumMapView @JvmOverloads constructor(
 
     override fun onMapViewCenterPointMoved(map: MapView?, mapPoint: MapPoint?) {
         mapPoint?.mapPointGeoCoord?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("MapView onMapViewCenterPointMoved ($latitude, $longitude)")
+            if (logger.isDebugEnabled) {
+                logger.debug("MapView onMapViewCenterPointMoved ($latitude, $longitude)")
             }
 
 //            toast("MapView onMapViewCenterPointMoved ($latitude, $longitude)")
@@ -91,8 +91,8 @@ class DaumMapView @JvmOverloads constructor(
         mapPoint?.mapPointGeoCoord?.apply {
             val message = "Double-tab on ($latitude, $longitude)"
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug(message)
+            if (logger.isDebugEnabled) {
+                logger.debug(message)
             }
 
         }
@@ -104,8 +104,8 @@ class DaumMapView @JvmOverloads constructor(
         mapPoint?.mapPointGeoCoord?.apply {
             val message = "Long Pressed on ($latitude, $longitude)"
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug(message)
+            if (logger.isDebugEnabled) {
+                logger.debug(message)
             }
         }
 
@@ -114,8 +114,8 @@ class DaumMapView @JvmOverloads constructor(
 
     override fun onMapViewSingleTapped(map: MapView?, mapPoint: MapPoint?) {
         mapPoint?.mapPointGeoCoord?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("MapView onMapViewSingleTapped ($latitude, $longitude)")
+            if (logger.isDebugEnabled) {
+                logger.debug("MapView onMapViewSingleTapped ($latitude, $longitude)")
             }
 
 //            toast("MapView onMapViewSingleTapped ($latitude, $longitude)")
@@ -126,8 +126,8 @@ class DaumMapView @JvmOverloads constructor(
 
     override fun onMapViewDragStarted(map: MapView?, mapPoint: MapPoint?) {
         mapPoint?.mapPointGeoCoord?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("MapView onMapViewDragStarted ($latitude, $longitude)")
+            if (logger.isDebugEnabled) {
+                logger.debug("MapView onMapViewDragStarted ($latitude, $longitude)")
             }
 
 //            toast("MapView onMapViewDragStarted ($latitude, $longitude)")
@@ -138,8 +138,8 @@ class DaumMapView @JvmOverloads constructor(
 
     override fun onMapViewDragEnded(map: MapView?, mapPoint: MapPoint?) {
         mapPoint?.mapPointGeoCoord?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("MapView onMapViewDragEnded ($latitude, $longitude)")
+            if (logger.isDebugEnabled) {
+                logger.debug("MapView onMapViewDragEnded ($latitude, $longitude)")
             }
 
 //            toast("MapView onMapViewDragEnded ($latitude, $longitude)")
@@ -150,8 +150,8 @@ class DaumMapView @JvmOverloads constructor(
 
     override fun onMapViewMoveFinished(map: MapView?, mapPoint: MapPoint?) {
         mapPoint?.mapPointGeoCoord?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("MapView onMapViewMoveFinished ($latitude, $longitude)")
+            if (logger.isDebugEnabled) {
+                logger.debug("MapView onMapViewMoveFinished ($latitude, $longitude)")
             }
 
 //            toast("MapView onMapViewMoveFinished ($latitude, $longitude)")
@@ -161,8 +161,8 @@ class DaumMapView @JvmOverloads constructor(
     }
 
     override fun onMapViewZoomLevelChanged(map: MapView?, zoomLevel: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("MapView onMapViewZoomLevelChanged ($zoomLevel)")
+        if (logger.isDebugEnabled) {
+            logger.debug("MapView onMapViewZoomLevelChanged ($zoomLevel)")
         }
 
 //        toast("MapView onMapViewZoomLevelChanged ($zoomLevel)")
@@ -171,7 +171,7 @@ class DaumMapView @JvmOverloads constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DaumMapView::class.java)
+        private val logger = LoggerFactory.getLogger(DaumMapView::class.java)
 
         const val INIT                  = 0
         const val CENTER_POINT_MOVED    = 1

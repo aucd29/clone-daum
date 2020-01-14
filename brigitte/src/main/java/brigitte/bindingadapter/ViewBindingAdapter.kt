@@ -13,13 +13,13 @@ import org.slf4j.LoggerFactory
  */
 
 object ViewBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(ViewBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(ViewBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("bindLayoutHeight")
     fun layoutHeight(view: View, height: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bind height : $height")
+        if (logger.isDebugEnabled) {
+            logger.debug("bind height : $height")
         }
 
         view.layoutHeight(height)
@@ -28,8 +28,8 @@ object ViewBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindLayoutWidth")
     fun layoutWidth(view: View, width: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bind width : $width")
+        if (logger.isDebugEnabled) {
+            logger.debug("bind width : $width")
         }
 
         view.layoutWidth(width)
@@ -38,8 +38,8 @@ object ViewBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindVideoUrl")
     fun bindVideoUrl(view: VideoView, url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND VIDEO URL : $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND VIDEO URL : $url")
         }
 
         view.setVideoURI(Uri.parse(url))
@@ -48,8 +48,8 @@ object ViewBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindAlphaValue")
     fun bindVideoUrl(view: View, alpha: Float) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ALPHA VALUE : $alpha")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND ALPHA VALUE : $alpha")
         }
 
         view.alpha = alpha
@@ -58,8 +58,8 @@ object ViewBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindTranslationYValue")
     fun bindTranslationYValue(view: View, transY: Float) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND TRANSLATION Y VALUE : $transY")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND TRANSLATION Y VALUE : $transY")
         }
 
         view.translationY = transY

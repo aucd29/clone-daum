@@ -15,6 +15,7 @@ import com.example.clone_daum.model.local.SearchHistoryDao
 import com.example.clone_daum.model.remote.SuggestItem
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
+import brigitte.di.dagger.module.RxSchedulers
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -31,14 +32,15 @@ import org.slf4j.LoggerFactory
  */
 class SearchViewModel @AssistedInject constructor(
     @Assisted private val stateHandle: SavedStateHandle, // stateHandle 이름 고정임 변경하면 컴파일 안됨
-    private val mConfig: Config,
-    private val mDaum: DaumSuggestService,
-    private val mSearchDao: SearchHistoryDao,
-    private val mDisposable: CompositeDisposable,
+    private val config: Config,
+    private val daum: DaumSuggestService,
+    private val searchDao: SearchHistoryDao,
+    private val dp: CompositeDisposable,
+    private val schedulers: RxSchedulers,
     app: Application
-) : RecyclerViewModel<ISearchRecyclerData>(app), IDialogAware {
+) : RecyclerViewModel2<ISearchRecyclerData>(app), IDialogAware {
     companion object {
-        private val mLog = LoggerFactory.getLogger(SearchViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(SearchViewModel::class.java)
 
         const val K_RECENT_SEARCH = "search-recent-search"
 
@@ -50,10 +52,10 @@ class SearchViewModel @AssistedInject constructor(
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
 
-    private val mSearchKeyword          = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
-    private val mSearchIconResId        = ObservableInt(mConfig.SEARCH_ICON)
-    private val mToggleRecentSearchText = ObservableInt(R.string.search_turn_off_recent_search)
-    private val mToggleEmptyAreaText    = ObservableInt(R.string.search_empty_recent_search)
+    private val _searchKeyword          = ObservableField<String>(stateHandle.getLiveData<String>(STS_KEYWORD, "").value)
+    private val _searchIconResId        = ObservableInt(config.SEARCH_ICON)
+    private val _toggleRecentSearchText = ObservableInt(R.string.search_turn_off_recent_search)
+    private val _toggleEmptyAreaText    = ObservableInt(R.string.search_empty_recent_search)
 
     private var prefSearchRecycler = app.prefs().getBoolean(K_RECENT_SEARCH, true)
 
@@ -67,14 +69,13 @@ class SearchViewModel @AssistedInject constructor(
 
     // PUBLIC
     val searchKeyword: ObservableField<String>
-        get() = mSearchKeyword
+        get() = _searchKeyword
     val searchIconResId: ObservableInt
-        get() = mSearchIconResId
+        get() = _searchIconResId
     val toggleRecentSearchText: ObservableInt
-        get() = mToggleRecentSearchText
+        get() = _toggleRecentSearchText
     val toggleEmptyAreaText: ObservableInt
-        get() = mToggleEmptyAreaText
-
+        get() = _toggleEmptyAreaText
 
     fun init() {
         editorAction.set {
@@ -83,14 +84,13 @@ class SearchViewModel @AssistedInject constructor(
             true
         }
 
-        initAdapter(R.layout.search_recycler_history_item, R.layout.search_recycler_suggest_item)
         reloadHistoryData()
     }
 
     private fun reloadHistoryData() {
-        mDisposable.add(mSearchDao.search()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        dp.add(searchDao.search()
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.ui())
             .subscribe({
                 items.set(it)
                 visibleSearchRecycler(it.isNotEmpty())
@@ -102,18 +102,18 @@ class SearchViewModel @AssistedInject constructor(
             snackbar(R.string.error_empty_keyword)
         } else {
             keyword.let {
-                mDisposable.add(mSearchDao.insert(SearchHistory(
+                dp.add(searchDao.insert(SearchHistory(
                     keyword = it,
                     date    = System.currentTimeMillis()))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(schedulers.io())
+                    .observeOn(schedulers.ui())
                     .subscribe({
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("INSERTED DATA $it")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("INSERTED DATA $it")
                         }
 
                         stateHandle.set(STS_KEYWORD, "")
-                        mSearchKeyword.set("")
+                        _searchKeyword.set("")
                     }, { e ->
                         errorLog(e)
                         snackbar(e)
@@ -126,7 +126,8 @@ class SearchViewModel @AssistedInject constructor(
 
     fun eventToggleRecentSearch() {
         if (prefSearchRecycler) {
-            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search, listener = { res, _ ->
+            confirm(app, R.string.dlg_msg_do_you_want_stop_using_recent_search, R.string.dlg_title_stop_using_recent_search,
+                listener = { res, _ ->
                     if (res) toggleSearchRecyclerLayout()
                 })
         } else {
@@ -143,8 +144,8 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     private fun visibleSearchRecycler(res: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("EXIST LIST $res, SHOW LAYOUT $prefSearchRecycler")
+        if (logger.isDebugEnabled) {
+            logger.debug("EXIST LIST $res, SHOW LAYOUT $prefSearchRecycler")
         }
 
         viewSearchRecycler.set(if (res && prefSearchRecycler) {
@@ -163,11 +164,11 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun eventDeleteHistory(item: SearchHistory) {
-        mDisposable.add(mSearchDao.delete(item)
-            .subscribeOn(Schedulers.io())
+        dp.add(searchDao.delete(item)
+            .subscribeOn(schedulers.io())
             .subscribe ({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETED : $item")
+                if (logger.isDebugEnabled) {
+                    logger.debug("DELETED : $item")
                 }
             }, {
                 errorLog(it)
@@ -176,16 +177,18 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun eventDeleteAllHistory() {
-        confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list
-            , listener = { res, _ -> if (res) {
-                mDisposable.add(Completable.fromAction { mSearchDao.deleteAll() }
-                    .subscribeOn(Schedulers.io())
-                    .subscribe ({
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("DELETE ALL")
-                        }
-                    }, ::errorLog))
-            }})
+        confirm(app, R.string.dlg_msg_delete_all_searched_list, R.string.dlg_title_delete_all_searched_list,
+            listener = { res, _ ->
+                if (res) {
+                    dp.add(Completable.fromAction { searchDao.deleteAll() }
+                        .subscribeOn(schedulers.io())
+                        .subscribe ({
+                            if (logger.isDebugEnabled) {
+                                logger.debug("DELETE ALL")
+                            }
+                        }, ::errorLog))
+                }
+            })
     }
 
     fun dateConvert(date: Long) = date.toDate("MM.dd.")
@@ -193,9 +196,9 @@ class SearchViewModel @AssistedInject constructor(
     fun suggest(keyword: String) {
         stateHandle.set(STS_KEYWORD, keyword)
 
-        mDisposable.add(mDaum.suggest(keyword)
+        dp.add(daum.suggest(keyword)
             .map {
-                mLog.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
+                logger.debug("QUERY : ${it.q}, SIZE: ${it.subkeys.size}")
 
                 val suggestList: ArrayList<SuggestItem> = arrayListOf()
                 it.subkeys.forEach { key ->
@@ -209,7 +212,7 @@ class SearchViewModel @AssistedInject constructor(
 
                 suggestList
             }
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulers.ui())
             .subscribe ({
                 items.set(it.toList())
             }, {
@@ -219,8 +222,8 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("TEXT CHANGED $s ($count)")
+        if (logger.isDebugEnabled) {
+            logger.debug("TEXT CHANGED $s ($count)")
         }
 
         viewBottomButtons.set(if (count > 0) {

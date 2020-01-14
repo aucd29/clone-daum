@@ -64,33 +64,33 @@ inline fun Double.toFileSizeString(): String {
 }
 
 class NumberUnit constructor (private var maxSize: Long, convertMaxSize: (Int) -> Unit) {
-    private var mUnitCount: Int = 0
-    private val mUnitChar: Char
-    private val mMaxString: String
+    private var unitCount: Int = 0
+    private val unitChar: Char
+    private val maxString: String
 
     init {
         val tempSize = maxSize
 
         while (maxSize > 1024 * 1024) {
-            mUnitCount++
+            unitCount++
             maxSize = maxSize shr 10
         }
 
-        var count = mUnitCount
+        var count = unitCount
         if (maxSize > 1024) {
             ++count
         }
 
         val newSize = convertProgress(tempSize)
-        mUnitChar   = UNIT_STRING[count]
-        mMaxString  = String.format("%.1f%cB", newSize / 1024f, mUnitChar)
+        unitChar   = UNIT_STRING[count]
+        maxString  = String.format("%.1f%cB", newSize / 1024f, unitChar)
 
         convertMaxSize(newSize)
     }
 
     fun progress(value: Long) = convertProgress(value).let { it to formatProgress(it) }
 
-    private fun convertProgress(value: Long) = (value shr (10 * mUnitCount)).toInt()
+    private fun convertProgress(value: Long) = (value shr (10 * unitCount)).toInt()
     private fun formatProgress(value : Int) =
-        String.format("%.1f%cB/%s", value / 1024f, mUnitChar, mMaxString)
+        String.format("%.1f%cB/%s", value / 1024f, unitChar, maxString)
 }

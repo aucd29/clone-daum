@@ -11,7 +11,6 @@ import com.example.clone_daum.databinding.UserHistoryFragmentBinding
 import com.example.clone_daum.model.local.SettingType
 import com.example.clone_daum.ui.main.setting.SettingViewModel
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class UserHistoryFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             title(R.string.setting_privacy_policy_remove_history)
             userHistorySettingType()
         }
@@ -45,15 +44,15 @@ class UserHistoryFragment @Inject constructor(
             SettingViewModel.PREF_RECENT_KEYWORD)
 
         // live data 를 observe 하여 내용 변경 시 preference 에 적용 하도록 한다.
-        mViewModel.items.get()?.forEach {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("ITEM SIZE = ${mViewModel.items.get()?.size}, KEY SIZE = ${keys.size}")
+        viewModel.items.get()?.forEach {
+            if (logger.isDebugEnabled) {
+                logger.debug("ITEM SIZE = ${viewModel.items.get()?.size}, KEY SIZE = ${keys.size}")
             }
 
             val key = keys[i]
             editPreference(it.checked, key) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("$key : $it")
+                if (logger.isDebugEnabled) {
+                    logger.debug("$key : $it")
                 }
             }
 
@@ -80,13 +79,13 @@ class UserHistoryFragment @Inject constructor(
     }
 
     inline private fun viewHolder(pos: Int) =
-        mBinding.userhistoryLayout.settingRecycler
+        binding.userhistoryLayout.settingRecycler
             .findViewHolderForLayoutPosition(pos)
 
     inline private fun checkboxPerformClick(type: SettingType) {
         val vh = viewHolder(type.position)
         if (vh is RecyclerHolder) {
-            val binding = vh.mBinding
+            val binding = vh.binding
             if (binding is SettingCheckItemBinding) {
                 binding.settingCheckOption.performClick()
             }
@@ -117,6 +116,6 @@ class UserHistoryFragment @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(UserHistoryFragment::class.java)
+        private val logger = LoggerFactory.getLogger(UserHistoryFragment::class.java)
     }
 }

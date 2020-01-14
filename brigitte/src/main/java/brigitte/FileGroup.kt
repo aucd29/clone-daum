@@ -38,7 +38,7 @@ fun File.totalLength(): Long {
  * 파일이나 디렉토리를 복사 한다 (하위 폴더 포함)
  */
 fun File.copy(target: File, listener:FileListener? = null) {
-    val log = LoggerFactory.getLogger(File::class.java)
+    val logger = LoggerFactory.getLogger(File::class.java)
 
     if (!this.exists()) {
         listener?.finish(FileListener.NOT_FOUND)
@@ -60,8 +60,8 @@ fun File.copy(target: File, listener:FileListener? = null) {
                     target.mkdirs()
                 }
 
-                if (log.isTraceEnabled) {
-                    log.trace("${it.absolutePath} -> ${target.absolutePath}/${it.name}")
+                if (logger.isTraceEnabled) {
+                    logger.trace("${it.absolutePath} -> ${target.absolutePath}/${it.name}")
                 }
 
                 it.inputStream().use { ism ->
@@ -74,8 +74,8 @@ fun File.copy(target: File, listener:FileListener? = null) {
             target.mkdirs()
         }
 
-        if (log.isTraceEnabled) {
-            log.trace("${this.absolutePath} -> ${target.absolutePath}/${this.name}")
+        if (logger.isTraceEnabled) {
+            logger.trace("${this.absolutePath} -> ${target.absolutePath}/${this.name}")
         }
 
         this.inputStream().use { ism ->
@@ -190,7 +190,7 @@ fun AssetManager.totalLength(srcPath: String): Long {
 ////////////////////////////////////////////////////////////////////////////////////
 
 abstract class FileListener {
-    private val log = LoggerFactory.getLogger(FileListener::class.java)
+    private val logger = LoggerFactory.getLogger(FileListener::class.java)
 
     companion object {
         const val DONE = 1
@@ -211,8 +211,8 @@ abstract class FileListener {
     }
 
     fun trace() {
-        if (log.isTraceEnabled) {
-            log.trace("$percent% (${current.toFileSizeString()} / ${total.toFileSizeString()})")
+        if (logger.isTraceEnabled) {
+            logger.trace("$percent% (${current.toFileSizeString()} / ${total.toFileSizeString()})")
         }
     }
 

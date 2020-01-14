@@ -1,6 +1,7 @@
 package com.example.clone_daum.di.module
 
 import brigitte.di.dagger.module.RxModule
+import brigitte.di.dagger.module.RxSchedulers
 import brigitte.di.dagger.module.ViewModelFactoryModule
 import com.example.clone_daum.di.module.libs.CalligraphyModule
 import com.example.clone_daum.di.module.libs.ChipModule

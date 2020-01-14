@@ -15,7 +15,7 @@ class AssignedInjectTestViewModel @AssistedInject constructor(
     @Assisted private val stateHandle: SavedStateHandle
 ) : ViewModel() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(AssignedInjectTestViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(AssignedInjectTestViewModel::class.java)
 
         private const val K_HELLO = "hello"
     }

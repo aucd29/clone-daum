@@ -2,6 +2,7 @@ package com.example.clone_daum.ui.main.setting.daumappinfo
 
 import androidx.fragment.app.Fragment
 import brigitte.BaseDaggerFragment
+import brigitte.RecyclerAdapter
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.string
 import brigitte.toast
@@ -11,6 +12,7 @@ import com.example.clone_daum.model.local.SettingType
 import com.example.clone_daum.ui.Navigator
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -24,8 +26,11 @@ class DaumAppInfoFragment @Inject constructor(
     override val layoutId = R.layout.daum_app_info_fragment
 
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var adapter: RecyclerAdapter<SettingType>
 
     override fun initViewBinding() {
+        adapter.viewModel = viewModel
+        binding.daumAppInfoRecycler.adapter = adapter
     }
 
     override fun initViewModelEvents() {
@@ -36,8 +41,8 @@ class DaumAppInfoFragment @Inject constructor(
             DaumAppInfoViewModel.CMD_DAUMAPP_INFO_EVENT -> {
                 val type = data as SettingType
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("$cmd : ${data.title}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("$cmd : ${data.title}")
                 }
 
                 // 경로는 임시로 설정한다.
@@ -58,8 +63,8 @@ class DaumAppInfoFragment @Inject constructor(
             }
 
             DaumAppInfoViewModel.CMD_UPDATE -> {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("UPDATE DAUM APP")
+                if (logger.isDebugEnabled) {
+                    logger.debug("UPDATE DAUM APP")
                 }
 
                 toast(R.string.setting_daumapp_update_daumapp)
@@ -87,10 +92,20 @@ class DaumAppInfoFragment @Inject constructor(
 
         @dagger.Module
         companion object {
+            @JvmStatic
+            @Provides
+            fun provideSettingTypeAdapter(): RecyclerAdapter<SettingType> =
+                RecyclerAdapter(arrayOf(R.layout.setting_category_item,
+                    R.layout.setting_normal_item,
+                    R.layout.setting_color_item,
+                    R.layout.setting_switch_item,
+                    R.layout.setting_check_item,
+                    R.layout.setting_depth_item,
+                    R.layout.daum_app_info_item))
         }
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DaumAppInfoFragment::class.java)
+        private val logger = LoggerFactory.getLogger(DaumAppInfoFragment::class.java)
     }
 }

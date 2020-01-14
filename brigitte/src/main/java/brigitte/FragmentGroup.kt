@@ -10,10 +10,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.ArrayRes
-import androidx.annotation.ColorRes
-import androidx.annotation.IdRes
-import androidx.annotation.StringRes
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -186,47 +183,17 @@ inline fun Fragment.keepScreen(on: Boolean) {
 /**
  * fragment 를 add 또는 replace 할 때 화면에 나타내야할 animation 효과를 지정한다.
  */
-object FragmentAnim {
-    val LEFT: String
-        get() = "left"
 
-    val RIGHT: String
-        get() = "right"
+@StringDef(value = [
+    FragmentParams.LEFT, FragmentParams.RIGHT, FragmentParams.RIGHT_ALPHA,
+    FragmentParams.UP, FragmentParams.ALPHA
+])
+annotation class FragmentAnim
 
-    val RIGHT_ALPHA: String
-        get() = "right-alpha"
-
-    val UP: String
-        get() = "up"
-
-    val ALPHA: String
-        get() = "alpha"
-}
-
-/**
- * fragment 를 add 또는 replace 할 때 commit 에 옵션
- */
-object FragmentCommit {
-    /** 동기적으로 트랜잭션 처리 */
-    val NOW: String
-        get() = "now"
-
-    /**
-     * 커밋과 유사하지만  activity 의 상태 값이 저장된 이후 실행 된다.
-     * 나중에 작업을 해당 상태에서 복원해야하는 경우 커밋이 손실 될 수 있어
-     * 위험하므로 UI 상태가 예기치 않게 변경되는 경우에만 사용해야함
-     */
-    val ALLOW_STATE: String
-        get() = "allow"
-
-    /**
-     * commitNow ()와 같지만 활동의 상태가 저장된 후에 커밋이 실행될 수 있음
-     * 현재 상태를 복원해야하는 경우 커밋이 손실 될 수 있어
-     * 위험하므로 UI 상태가 예기치 않게 변경되는 경우에만 사용해야함
-     */
-    val NOW_ALLOW_STATE: String
-        get() = "notallow"
-}
+@StringDef(value = [
+    FragmentParams.NOW, FragmentParams.ALLOW_STATE, FragmentParams.NOW_ALLOW_STATE
+])
+annotation class FragmentCommit
 
 inline fun FragmentManager.showBy(params: FragmentParams) {
     val fragment = params.fragment
@@ -259,20 +226,28 @@ inline fun FragmentManager.internalShow(fragment: Fragment, params: FragmentPara
 
         transaction.apply {
             anim?.let {
-                FragmentAnim.apply {
-                    when (it) {
-                        RIGHT -> setCustomAnimations(R.anim.slide_in_current,   R.anim.slide_in_next,
-                                                     R.anim.slide_out_current,  R.anim.slide_out_prev)
-                        RIGHT_ALPHA -> setCustomAnimations(R.anim.slide_in_current_fadein,   R.anim.slide_in_next_fadeout,
-                                                           R.anim.slide_out_current_fadein,  R.anim.slide_out_prev_fadeout)
-                        LEFT  -> setCustomAnimations(R.anim.slide_out_current,  R.anim.slide_out_prev,
-                                                     R.anim.slide_in_current,   R.anim.slide_in_next)
-                        UP    -> setCustomAnimations(R.anim.slide_up_current,   R.anim.slide_up_next,
-                                                     R.anim.slide_down_current, R.anim.slide_down_prev)
-                        ALPHA -> setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                when (it) {
+                    FragmentParams.RIGHT ->
+                        setCustomAnimations(R.anim.slide_in_current,  R.anim.slide_in_next,
+                                            R.anim.slide_out_current, R.anim.slide_out_prev)
 
-                        else -> { }
-                    }
+                    FragmentParams.RIGHT_ALPHA ->
+                        setCustomAnimations(R.anim.slide_in_current_fadein,  R.anim.slide_in_next_fadeout,
+                                            R.anim.slide_out_current_fadein, R.anim.slide_out_prev_fadeout)
+
+                    FragmentParams.LEFT  ->
+                        setCustomAnimations(R.anim.slide_out_current, R.anim.slide_out_prev,
+                                            R.anim.slide_in_current,  R.anim.slide_in_next)
+
+                    FragmentParams.UP    ->
+                        setCustomAnimations(R.anim.slide_up_current,   R.anim.slide_up_next,
+                                            R.anim.slide_down_current, R.anim.slide_down_prev)
+
+                    FragmentParams.ALPHA ->
+                        setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+                                            R.anim.fade_in, R.anim.fade_out)
+
+                    else -> { }
                 }
             }
 
@@ -288,13 +263,11 @@ inline fun FragmentManager.internalShow(fragment: Fragment, params: FragmentPara
             }
 
             commit?.let {
-                FragmentCommit.apply {
-                    when (it) {
-                        NOW             -> commitNow()
-                        ALLOW_STATE     -> commitAllowingStateLoss()
-                        NOW_ALLOW_STATE -> commitNowAllowingStateLoss()
-                        else            -> commit()
-                    }
+                when (it) {
+                    FragmentParams.NOW             -> commitNow()
+                    FragmentParams.ALLOW_STATE     -> commitAllowingStateLoss()
+                    FragmentParams.NOW_ALLOW_STATE -> commitNowAllowingStateLoss()
+                    else                           -> commit()
                 }
             } ?: commit()
         }
@@ -344,14 +317,39 @@ data class FragmentParams(
     /** true 면 add 시키고 false 면 replace 한다. add 면 기존에 Fragment 를 나두고 추가 시키고 replace 면 기존에 걸 교체 한다.  */
     val add: Boolean = true,
     /** 트렌젝션 시 화면에 나타나야할 animation 종류 */
-    var anim: String? = null,
+    @FragmentAnim var anim: String? = null,
     /** Fragment 에 전달해야할 인자 값들 Fragment 는 arguments 를 통해 이 값을 얻을 수 있다. */
     var bundle: Bundle? = null,
     /** 커밋 형태  */
-    var commit: String? = null,
+    @FragmentCommit var commit: String? = null,
     /** back stack 추가 유/무 */
     var backStack: Boolean = true
-)
+) {
+    companion object {
+        const val LEFT: String        = "left"
+        const val RIGHT: String       = "right"
+        const val RIGHT_ALPHA: String = "right-alpha"
+        const val UP: String          = "up"
+        const val ALPHA: String       = "alpha"
+
+        /** 동기적으로 트랜잭션 처리 */
+        const val NOW: String = "now"
+
+        /**
+         * 커밋과 유사하지만  activity 의 상태 값이 저장된 이후 실행 된다.
+         * 나중에 작업을 해당 상태에서 복원해야하는 경우 커밋이 손실 될 수 있어
+         * 위험하므로 UI 상태가 예기치 않게 변경되는 경우에만 사용해야함
+         */
+        const val ALLOW_STATE: String = "allow"
+
+        /**
+         * commitNow ()와 같지만 활동의 상태가 저장된 후에 커밋이 실행될 수 있음
+         * 현재 상태를 복원해야하는 경우 커밋이 손실 될 수 있어
+         * 위험하므로 UI 상태가 예기치 않게 변경되는 경우에만 사용해야함
+         */
+        const val NOW_ALLOW_STATE: String = "notallow"
+    }
+}
 
 /**
  * Fragment 클래스 명을 기반하여 inflate 할 layout 이름을 얻도록 한다. 이때 첫글자 뒤에 오는 대문자는 _ 을 붙이고 대문자는 소문자로 변환 된다.

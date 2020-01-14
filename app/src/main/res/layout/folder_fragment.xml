@@ -81,10 +81,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:bindItems="@{model.items}"
-                app:bindAdapter="@{model.adapter}"
+                app:bindRecyclerItems="@{model.items}"
                 app:bindSmoothToPosition="@{model.smoothToPosition}"
         />
+
+<!--        app:bindItems="@{model.items}"-->
+<!--        app:bindAdapter="@{model.adapter}"-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

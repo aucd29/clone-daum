@@ -24,11 +24,7 @@ object AppBarBindingAdapter {
     fun bindAppBarDragCallback(appbar: AppBarLayout, state: Boolean) {
         val lp = appbar.layoutParams
         if (lp is CoordinatorLayout.LayoutParams) {
-            val br = if (lp.behavior == null) {
-                AppBarLayout.Behavior()
-            } else {
-                lp.behavior!!
-            }
+            val br = lp.behavior?.let { it } ?: AppBarLayout.Behavior()
 
             if (br is AppBarLayout.Behavior) {
                 br.setDragCallback(object: AppBarLayout.Behavior.DragCallback() {

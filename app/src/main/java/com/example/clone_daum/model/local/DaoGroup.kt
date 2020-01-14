@@ -22,10 +22,10 @@ import io.reactivex.Single
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(::finish) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 it.printStackTrace()
             }
-            mLog.error("ERROR: ${it.message}")
+            logger.error("ERROR: ${it.message}")
             snackbar(it)
         })
 

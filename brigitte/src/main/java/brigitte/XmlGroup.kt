@@ -17,20 +17,19 @@ import javax.xml.xpath.XPathFactory
 
 abstract class BaseXPath constructor() {
     companion object {
-        private val log = LoggerFactory.getLogger(BaseXPath::class.java)
+        private val logger = LoggerFactory.getLogger(BaseXPath::class.java)
     }
 
-    lateinit var document: Document
-
-    private val xpath     = XPathFactory.newInstance().newXPath()
     protected val builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+    private val xpath     = XPathFactory.newInstance().newXPath()
+    lateinit var document: Document
 
     /**
      * xml 파일 핸을 연다
      */
     fun loadXml(fp: File) {
         if (!fp.exists()) {
-            log.error("ERROR: FILE NOT FOUND ($fp)")
+            logger.error("ERROR: FILE NOT FOUND ($fp)")
             return
         }
 
@@ -38,7 +37,7 @@ abstract class BaseXPath constructor() {
             document = builder.parse(fp)
             parsing()
         } catch (e: Exception) {
-            log.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
     }
 
@@ -50,7 +49,7 @@ abstract class BaseXPath constructor() {
             document = builder.parse(ism)
             parsing()
         } catch (e: Exception) {
-            log.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
     }
 
@@ -62,7 +61,7 @@ abstract class BaseXPath constructor() {
             document = builder.parse(InputSource(StringReader(xml)))
             parsing()
         } catch (e: Exception) {
-            log.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
     }
 

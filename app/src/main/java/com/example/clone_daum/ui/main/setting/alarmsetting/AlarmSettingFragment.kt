@@ -7,7 +7,6 @@ import com.example.clone_daum.R
 import com.example.clone_daum.databinding.AlarmSettingFragmentBinding
 import com.example.clone_daum.ui.main.setting.SettingViewModel
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -23,7 +22,7 @@ class AlarmSettingFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             title(R.string.setting_alarm_item)
             alarmSettingType()
         }

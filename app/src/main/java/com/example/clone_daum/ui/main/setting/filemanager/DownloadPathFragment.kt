@@ -2,11 +2,13 @@ package com.example.clone_daum.ui.main.setting.filemanager
 
 import androidx.fragment.app.Fragment
 import brigitte.BaseDaggerFragment
+import brigitte.RecyclerAdapter
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.DownloadPathFragmentBinding
+import com.example.clone_daum.model.local.FileInfo
 import dagger.Binds
-import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -20,11 +22,15 @@ class DownloadPathFragment @Inject constructor(
 
     var closeCallback: ((String) -> Unit)? = null
 
+    @Inject lateinit var adapter: RecyclerAdapter<FileInfo>
+
     override fun initViewBinding() {
+        adapter.viewModel = viewModel
+        binding.downloadPathRecycler.adapter = adapter
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             observe(currentRoot) {
                 loadFileList()
             }
@@ -34,7 +40,7 @@ class DownloadPathFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
-        closeCallback?.invoke(mViewModel.currentRoot.value!!)
+        closeCallback?.invoke(viewModel.currentRoot.value!!)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -54,5 +60,14 @@ class DownloadPathFragment @Inject constructor(
     abstract class DownloadPathFragmentModule {
         @Binds
         abstract fun bindDownloadPathFragment(fragment: DownloadPathFragment): Fragment
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideFileInfoAdapter(): RecyclerAdapter<FileInfo> =
+                RecyclerAdapter(arrayOf(R.layout.download_path_up_item,
+                    R.layout.download_path_file_item))
+        }
     }
 }

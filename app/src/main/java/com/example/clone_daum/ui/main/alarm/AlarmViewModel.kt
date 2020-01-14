@@ -1,7 +1,7 @@
 package com.example.clone_daum.ui.main.alarm
 
 import android.app.Application
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import com.example.clone_daum.model.local.AlarmHistory
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 class AlarmViewModel @Inject constructor(
     app: Application
-) : RecyclerViewModel<AlarmHistory>(app) {
+) : RecyclerViewModel2<AlarmHistory>(app) {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(AlarmViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(AlarmViewModel::class.java)
     }
 }

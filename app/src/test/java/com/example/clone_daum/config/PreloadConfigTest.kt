@@ -40,8 +40,8 @@ class PreloadConfigTest: BaseRoboTest() {
 
     @Test
     fun submenuTest() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SUBMENU ${config.brsSubMenuList.size}")
+        if (logger.isDebugEnabled) {
+            logger.debug("SUBMENU ${config.brsSubMenuList.size}")
         }
 
         val submenu = app.assets.open("res/brs_submenu.json").readBytes()
@@ -60,8 +60,8 @@ class PreloadConfigTest: BaseRoboTest() {
 
     @Test
     fun sitemapTest() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SITEMAP ${config.naviSitemapList.size}")
+        if (logger.isDebugEnabled) {
+            logger.debug("SITEMAP ${config.naviSitemapList.size}")
         }
 
         val sitemap = app.assets.open("res/navi_sitemap.json").readBytes()
@@ -80,8 +80,8 @@ class PreloadConfigTest: BaseRoboTest() {
 
     @Test
     fun frequentlyTest() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("FREQUENTLY ${db.frequentlySiteDao().count()}")
+        if (logger.isDebugEnabled) {
+            logger.debug("FREQUENTLY ${db.frequentlySiteDao().count()}")
         }
 
         val frequently = app.assets.open("res/frequently_site.json").readBytes()
@@ -106,8 +106,8 @@ class PreloadConfigTest: BaseRoboTest() {
 
     @Test
     fun tabTest() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("TAB ${config.tabLabelList.size}")
+        if (logger.isDebugEnabled) {
+            logger.debug("TAB ${config.tabLabelList.size}")
         }
 
         val tab = app.assets.open("res/tab.json").readBytes().jsonParse<List<TabData>>()
@@ -144,7 +144,7 @@ class PreloadConfigTest: BaseRoboTest() {
     ////////////////////////////////////////////////////////////////////////////////////
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(PreloadConfigTest::class.java)
+        private val logger = LoggerFactory.getLogger(PreloadConfigTest::class.java)
     }
 
     @Mock lateinit var daumService: DaumService

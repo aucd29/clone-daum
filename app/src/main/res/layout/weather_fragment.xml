@@ -198,8 +198,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="@dimen/weather_recycler_mgn_t"
-                    app:bindItems="@{model.items}"
-                    app:bindAdapter="@{model.adapter}"
+                    app:bindRecyclerItems="@{model.items}"
                     app:bindLockedGridLayoutManager="@{model.gridCount}"
             />
 

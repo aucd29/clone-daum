@@ -18,7 +18,7 @@ class AlarmPreferenceFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             title(R.string.setting_alarm_preference)
             alarmPreferenceSettingType()
         }

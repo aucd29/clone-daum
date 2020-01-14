@@ -38,8 +38,7 @@
                 android:layout_marginTop="10dp"
                 android:fillViewport="true"
                 app:bindLockedGridLayoutManager="@{sitemapModel.gridCount}"
-                app:bindAdapter="@{sitemapModel.adapter}"
-                app:bindItems="@{sitemapModel.items}"
+                app:bindRecyclerItems="@{sitemapModel.items}"
         />
 
         <View
@@ -89,8 +88,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/frequently_site_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:bindLockedGridLayoutManager="@{frequentlySiteModel.gridCount}"
-                app:bindAdapter="@{frequentlySiteModel.adapter}"
-                app:bindItems="@{frequentlySiteModel.items}"
+                app:bindRecyclerItems="@{frequentlySiteModel.items}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

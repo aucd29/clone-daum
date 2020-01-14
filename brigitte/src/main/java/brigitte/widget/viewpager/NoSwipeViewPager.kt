@@ -17,10 +17,10 @@ class NoSwipeViewPager @JvmOverloads constructor(
     context: Context,
     attr: AttributeSet? = null
 ) : WrapContentViewPager(context, attr) {
-    var mSwipe: Boolean = false
+    var isSwipe: Boolean = false
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        if (mSwipe) {
+        if (isSwipe) {
             return super.onInterceptTouchEvent(ev)
         }
 
@@ -37,7 +37,7 @@ class NoSwipeViewPager @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
-        if (mSwipe) {
+        if (isSwipe) {
             return super.onTouchEvent(ev)
         }
 

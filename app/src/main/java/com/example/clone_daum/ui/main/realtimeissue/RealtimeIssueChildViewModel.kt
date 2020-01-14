@@ -3,7 +3,7 @@ package com.example.clone_daum.ui.main.realtimeissue
 import android.app.Application
 import android.text.Spanned
 import com.example.clone_daum.model.remote.RealtimeIssue
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import brigitte.html
 import com.example.clone_daum.R
 import org.slf4j.LoggerFactory
@@ -15,19 +15,19 @@ import javax.inject.Inject
 
 class RealtimeIssueChildViewModel @Inject constructor(
     app: Application
-) : RecyclerViewModel<RealtimeIssue>(app) {
+) : RecyclerViewModel2<RealtimeIssue>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(RealtimeIssueChildViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(RealtimeIssueChildViewModel::class.java)
 
         const val CMD_BRS_OPEN = "brs-open"
     }
 
     fun initRealtimeIssueAdapter(list: List<RealtimeIssue>) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT REALTIME RECYCLER ADAPTER")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT REALTIME RECYCLER ADAPTER")
         }
 
-        initAdapter(R.layout.realtime_issue_child_item)
+//        initAdapter(R.layout.realtime_issue_child_item)
         items.set(list)
     }
 

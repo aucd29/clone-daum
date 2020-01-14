@@ -11,14 +11,14 @@ package com.example.clone_daum.common.bindingadapter
  */
 
 //object XWalkViewBindingAdapter {
-//    private val mLog = LoggerFactory.getLogger(XWalkViewBindingAdapter::class.java)
+//    private val logger = LoggerFactory.getLogger(XWalkViewBindingAdapter::class.java)
 //
 //    @JvmStatic
 //    @BindingAdapter("bindWebViewEvent")
 //    fun bindWebViewEvent(view: XWalkView, event: WebViewEvent?) = view.run {
 //        event?.let {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("bindWebViewEvent : $it")
+//            if (logger.isDebugEnabled) {
+//                logger.debug("bindWebViewEvent : $it")
 //            }
 //
 //            when (it) {
@@ -29,8 +29,8 @@ package com.example.clone_daum.common.bindingadapter
 //                WebViewEvent.RESUME       -> resume()
 //                WebViewEvent.STOP_LOADING -> stopLoading()
 //                else -> {
-//                    if (mLog.isDebugEnabled) {
-//                        mLog.debug("UNKNOWN EVENT")
+//                    if (logger.isDebugEnabled) {
+//                        logger.debug("UNKNOWN EVENT")
 //                    }
 //                }
 //            }

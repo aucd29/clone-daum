@@ -12,10 +12,12 @@ import com.example.clone_daum.R
 import com.example.clone_daum.di.module.AssistedViewModelKey
 import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
+import com.example.clone_daum.model.ISearchRecyclerData
+import com.example.clone_daum.model.remote.PopularKeyword
 import dagger.Binds
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
-import io.reactivex.Single
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -26,38 +28,45 @@ import javax.inject.Inject
 class SearchFragment @Inject constructor(
 ) : BaseDaggerFragment<SearchFragmentBinding, PopularViewModel>() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(SearchFragment::class.java)
+        private val logger = LoggerFactory.getLogger(SearchFragment::class.java)
     }
 
     override val layoutId = R.layout.search_fragment
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY
+        viewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var factory: DaggerSavedStateViewModelFactory
+    @Inject lateinit var searchAdapter: RecyclerAdapter<ISearchRecyclerData>
+    @Inject lateinit var popuplarAdapter: RecyclerAdapter<PopularKeyword>
 
-    private val mSearchViewModel: SearchViewModel by stateInject { factory }
-
-    override fun initViewBinding() {
-    }
+    private val searchViewModel: SearchViewModel by stateInject { factory }
 
     override fun bindViewModel() {
-        mBinding.model        = mSearchViewModel
-        mBinding.popularmodel = mViewModel
+        binding.model        = searchViewModel
+        binding.popularmodel = viewModel
 
-        addCommandEventModel(mSearchViewModel)
+        addCommandEventModel(searchViewModel)
+    }
+
+    override fun initViewBinding() {
+        searchAdapter.viewModel   = searchViewModel
+        popuplarAdapter.viewModel = viewModel
+
+        binding.searchRecycler.adapter = searchAdapter
+        binding.chipRecycler.adapter   = popuplarAdapter
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init()
-        mSearchViewModel.init()
+        viewModel.init()
+        searchViewModel.init()
     }
 
     override fun onDestroyView() {
-        mBinding.searchEdit.hideKeyboard()
+        binding.searchEdit.hideKeyboard()
 
         super.onDestroyView()
     }
@@ -77,12 +86,12 @@ class SearchFragment @Inject constructor(
     }
 
     private fun browserFragment(url: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("HIDE SEARCH FRAGMENT ${this}")
+        if (logger.isDebugEnabled) {
+            logger.debug("HIDE SEARCH FRAGMENT ${this}")
         }
 
         navigator.browserFragment(url.toString(), true)
-        mBinding.root.postDelayed({ hideKeyboard(mBinding.searchEdit) }, 100)
+        binding.root.postDelayed({ hideKeyboard(binding.searchEdit) }, 100)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -111,5 +120,21 @@ class SearchFragment @Inject constructor(
 
         @Binds
         abstract fun bindSavedStateRegistryOwner(fragment: SearchFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideSearchRecyclerDataAdapter(): RecyclerAdapter<ISearchRecyclerData> =
+                RecyclerAdapter(arrayOf(
+                    R.layout.search_recycler_history_item,
+                    R.layout.search_recycler_suggest_item))
+
+            @JvmStatic
+            @Provides
+            fun providePopularKeywordAdapter(): RecyclerAdapter<PopularKeyword> =
+                RecyclerAdapter(arrayOf(
+                    R.layout.search_recycler_popular_item))
+        }
     }
 }

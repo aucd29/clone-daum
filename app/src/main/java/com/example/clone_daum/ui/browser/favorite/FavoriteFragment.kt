@@ -6,10 +6,13 @@ import com.example.clone_daum.databinding.FavoriteFragmentBinding
 import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.BaseDaggerFragment
+import brigitte.RecyclerAdapter
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.find
 import brigitte.finish
+import com.example.clone_daum.model.local.MyFavorite
 import dagger.Binds
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -23,24 +26,33 @@ import javax.inject.Inject
 class FavoriteFragment @Inject constructor(
 ): BaseDaggerFragment<FavoriteFragmentBinding, FavoriteViewModel>() {
     override val layoutId  = R.layout.favorite_fragment
+
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var adapter: RecyclerAdapter<MyFavorite>
 
     override fun initViewBinding() {
-        mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
-            when (checkedId) {
-                R.id.favorite_show_all    -> mViewModel.initItems()
-                R.id.favorite_show_folder -> mViewModel.initItemsByFolder()
+        adapter.viewModel = viewModel
+        binding.apply {
+            favoriteRecycler.adapter = adapter
+            favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
+                when (checkedId) {
+                    R.id.favorite_show_all    -> viewModel.initItems()
+                    R.id.favorite_show_folder -> viewModel.initItemsByFolder()
+                }
             }
         }
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init()
-        mViewModel.initItems()
+        viewModel.apply {
+            adapter.isScrollToPosition = false
+
+            initItems()
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -50,15 +62,15 @@ class FavoriteFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND : $cmd")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND : $cmd")
         }
 
         FavoriteViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN           -> showBrowser(data.toString())
                 CMD_FOLDER_CHOOSE      -> navigator.favoriteFolderFragment(data as Int)
-                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, mViewModel)
+                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, viewModel)
                 CMD_FAVORITE_MODIFY    -> navigator.favoriteModifyFragment()
             }
         }
@@ -87,5 +99,14 @@ class FavoriteFragment @Inject constructor(
     abstract class FavoriteFragmentModule {
         @Binds
         abstract fun bindSavedStateRegistryOwner(activity: FavoriteFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideFavoriteAdapter(): RecyclerAdapter<MyFavorite> =
+                RecyclerAdapter(arrayOf(
+                    R.layout.favorite_item_folder, R.layout.favorite_item))
+        }
     }
 }

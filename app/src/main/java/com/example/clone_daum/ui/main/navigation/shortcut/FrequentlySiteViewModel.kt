@@ -5,11 +5,9 @@ import androidx.databinding.ObservableInt
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.local.FrequentlySiteDao
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import brigitte.arch.SingleLiveEvent
-import brigitte.launchApp
 import io.reactivex.disposables.CompositeDisposable
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
 /**
@@ -17,23 +15,20 @@ import javax.inject.Inject
  */
 
 class FrequentlySiteViewModel @Inject constructor(
-    val frequentlySiteDao: FrequentlySiteDao,
+    private val frequentlySiteDao: FrequentlySiteDao,
     app: Application
-) : RecyclerViewModel<FrequentlySite>(app) {
+) : RecyclerViewModel2<FrequentlySite>(app) {
     companion object {
         const val CMD_BROWSER = "browser"
     }
 
-    private lateinit var mDisposable: CompositeDisposable
+    private val dp = CompositeDisposable()
 
     val gridCount    = ObservableInt(4)
     val brsOpenEvent = SingleLiveEvent<String>()
 
-    fun init(disposable: CompositeDisposable) {
-        mDisposable = disposable
-        initAdapter(R.layout.frequently_item)
-
-        mDisposable.add(frequentlySiteDao.select()
+    fun init() {
+        dp.add(frequentlySiteDao.select()
             .subscribe {
                 items.set(it)
             })
@@ -43,4 +38,10 @@ class FrequentlySiteViewModel @Inject constructor(
         item.url.replace("^(http|https)://".toRegex(), "")
             .substring(0, 1)
             .toUpperCase()
+
+    override fun onCleared() {
+        dp.dispose()
+
+        super.onCleared()
+    }
 }

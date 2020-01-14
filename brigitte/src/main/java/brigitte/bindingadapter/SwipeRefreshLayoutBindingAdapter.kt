@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory
  */
 
 object SwipeRefreshLayoutBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(SwipeRefreshLayoutBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(SwipeRefreshLayoutBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("bindSwipeRefreshListener")
     fun bindSwipeRefreshListener(view: SwipeRefreshLayout, callback: (() -> Unit)?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindSwipeRefreshListener")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindSwipeRefreshListener")
         }
 
         view.setOnRefreshListener(callback)
@@ -24,8 +24,8 @@ object SwipeRefreshLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindSwipeIsEnabled")
     fun bindSwipeIsEnabled(view: SwipeRefreshLayout, result: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindSwipeIsEnabled $result")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindSwipeIsEnabled $result")
         }
 
         view.isEnabled = result
@@ -34,8 +34,8 @@ object SwipeRefreshLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindSpinnerOffsetEnd")
     fun bindSpinnerOffsetEnd(view: SwipeRefreshLayout, offset: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindSpinnerOffsetEnd $offset")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindSpinnerOffsetEnd $offset")
         }
 
         view.setProgressViewOffset(false, 0, offset)
@@ -44,8 +44,8 @@ object SwipeRefreshLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindSwipeRefreshingFalse")
     fun bindSwipeRefreshingFalse(view: SwipeRefreshLayout, dumy: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindSwipeRefreshingFalse")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindSwipeRefreshingFalse")
         }
 
         view.isRefreshing = false
@@ -55,8 +55,8 @@ object SwipeRefreshLayoutBindingAdapter {
     @BindingAdapter("bindSwipeIsRefreshing")
     fun bindSwipeIsRefreshing(view: SwipeRefreshLayout, callback: ((Boolean) -> Unit)?) {
         callback?.apply {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("bindSwipeIsRefreshing")
+            if (logger.isDebugEnabled) {
+                logger.debug("bindSwipeIsRefreshing")
             }
 
             invoke(view.isRefreshing)

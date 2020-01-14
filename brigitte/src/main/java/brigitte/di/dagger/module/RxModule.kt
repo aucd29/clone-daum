@@ -20,7 +20,7 @@ class RxModule {
             = CompositeDisposable()
 }
 
-@Module
+@Singleton
 class RxSchedulers @Inject constructor() {
     fun io() =
         Schedulers.io()

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
  */
 
 object WebViewBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(WebViewBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(WebViewBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("bindWebViewEvent")
@@ -20,8 +20,8 @@ object WebViewBindingAdapter {
         // 잠시 잊고 있었다. =_ = observable 에 동일한 값이 들어오면 무시하는걸.. =_ =;
 
         event?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("bindWebViewEvent : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("bindWebViewEvent : $it")
             }
 
             when (it) {
@@ -32,8 +32,8 @@ object WebViewBindingAdapter {
                 WebViewEvent.RESUME       -> resume()
                 WebViewEvent.STOP_LOADING -> stopLoading()
                 else -> {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("UNKNOWN EVENT")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("UNKNOWN EVENT")
                     }
                 }
             }
@@ -43,8 +43,8 @@ object WebViewBindingAdapter {
 //    @JvmStatic
 //    @BindingAdapter("bindLoadUrl")
 //    fun bindWebViewInit(webview: WebView, url: String) {
-//        if (mLog.isDebugEnabled) {
-//            mLog.debug("bindLoadUrl")
+//        if (logger.isDebugEnabled) {
+//            logger.debug("bindLoadUrl")
 //        }
 //
 //        webview.loadUrl(url)

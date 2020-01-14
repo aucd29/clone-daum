@@ -44,7 +44,7 @@ inline fun View.fadeColorResource(@ColorRes fcolor: Int, @ColorRes scolor: Int,
 }
 
 object Resize {
-    private val mLog = LoggerFactory.getLogger(Resize::class.java)
+    private val logger = LoggerFactory.getLogger(Resize::class.java)
 
     fun height(view: View, height: Int, aniListener: AniListener? = null, duration: Long = 600) {
         ValueAnimator.ofInt(view.measuredHeight, height).apply {

@@ -194,8 +194,7 @@
                                 android:layout_marginEnd="@dimen/dp15"
                                 android:fillViewport="true"
                                 app:bindLockedGridLayoutManager="@{sitemapModel.gridCount}"
-                                app:bindAdapter="@{sitemapModel.adapter}"
-                                app:bindItems="@{sitemapModel.items}"
+                                app:bindRecyclerItems="@{sitemapModel.items}"
                                 />
 
                         <View
@@ -264,8 +263,7 @@
                                 android:layout_marginTop="@dimen/dp10"
                                 android:layout_marginEnd="@dimen/dp15"
                                 app:bindLockedGridLayoutManager="@{frequentlySiteModel.gridCount}"
-                                app:bindAdapter="@{frequentlySiteModel.adapter}"
-                                app:bindItems="@{frequentlySiteModel.items}"
+                                app:bindRecyclerItems="@{frequentlySiteModel.items}"
                                 />
 
                         <!-- POPUP MENU 이려나? -->

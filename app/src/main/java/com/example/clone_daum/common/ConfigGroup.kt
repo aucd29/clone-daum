@@ -26,7 +26,6 @@ import javax.inject.Singleton
 import android.view.*
 import brigitte.*
 import io.reactivex.Single
-import java.util.function.BiFunction
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 2. 15. <p/>
@@ -68,8 +67,8 @@ class Config @Inject constructor(val context: Context) {
         //
         // PERMISSION
         //
-        HAS_PERMISSION_GPS = RuntimePermission.checkPermissions(context
-            , permissions = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION))
+        HAS_PERMISSION_GPS = RuntimePermission.checkPermissions(context,
+            permissions = arrayListOf(Manifest.permission.ACCESS_FINE_LOCATION))
 
         val rightNow = Calendar.getInstance()
         SEARCH_ICON = when (rightNow.get(Calendar.HOUR_OF_DAY) % 4) {
@@ -89,14 +88,14 @@ class Config @Inject constructor(val context: Context) {
 
 @Singleton
 class PreloadConfig @Inject constructor(
-    private val mDaum: DaumService,
-    private val mDb: DbRepository,
-    private val mDisposable: CompositeDisposable,
-    private val mAssetManager: AssetManager,
-    private val mContext: Context
+    private val daum: DaumService,
+    private val db: DbRepository,
+    private val disposable: CompositeDisposable,
+    private val assetManager: AssetManager,
+    private val context: Context
 ) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(PreloadConfig::class.java)
+        private val logger = LoggerFactory.getLogger(PreloadConfig::class.java)
     }
 
     lateinit var tabLabelList: List<TabData>
@@ -104,59 +103,59 @@ class PreloadConfig @Inject constructor(
     lateinit var naviSitemapList: List<Sitemap>
 
     init {
-        val submenu = Single.just(mAssetManager.open("res/brs_submenu.json").readBytes())
+        val submenu = Single.just(assetManager.open("res/brs_submenu.json").readBytes())
             .subscribeOn(Schedulers.io())
             .map { it.jsonParse<List<BrowserSubMenu>>() }
             .map {
                 it.forEach { f ->
-                    f.iconResid = mContext.stringId(f.icon)
+                    f.iconResid = context.stringId(f.icon)
                 }
 
                 it
             }
 
-        val sitemap = Single.just(mAssetManager.open("res/navi_sitemap.json").readBytes())
+        val sitemap = Single.just(assetManager.open("res/navi_sitemap.json").readBytes())
             .subscribeOn(Schedulers.io())
             .map { it.jsonParse<List<Sitemap>>() }
 
-        val tabList = Single.just(mAssetManager.open("res/tab.json").readBytes())
+        val tabList = Single.just(assetManager.open("res/tab.json").readBytes())
             .subscribeOn(Schedulers.io())
             .map { it.jsonParse<List<TabData>>() }
 
-        val frequentlySite = mDb.frequentlySiteDao.select().subscribeOn(Schedulers.io())
+        val frequentlySite = db.frequentlySiteDao.select().subscribeOn(Schedulers.io())
 
-        val defaultFrequentlySite = Single.just(mAssetManager.open("res/frequently_site.json").readBytes())
+        val defaultFrequentlySite = Single.just(assetManager.open("res/frequently_site.json").readBytes())
             .subscribeOn(Schedulers.io())
             .map { s -> s.jsonParse<List<FrequentlySite>>() }
 
-        mDisposable.add(submenu.subscribe { it ->
+        disposable.add(submenu.subscribe { it ->
                 brsSubMenuList = it
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("LOADED BrowserSubMenu")
+                if (logger.isDebugEnabled) {
+                    logger.debug("LOADED BrowserSubMenu")
                 }
             })
 
-        mDisposable.add(sitemap.subscribe { it ->
+        disposable.add(sitemap.subscribe { it ->
                 naviSitemapList = it
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("LOADED Sitemap")
+                if (logger.isDebugEnabled) {
+                    logger.debug("LOADED Sitemap")
                 }
             })
 
-        mDisposable.add(frequentlySite.subscribe {
+        disposable.add(frequentlySite.subscribe {
                 if (it.isEmpty()) {
                     // frequently_site.json 을 파싱 한 뒤에 그걸 디비에 넣는다.
                     // 기본 값 생성하는 것.
-                    mDisposable.add(defaultFrequentlySite.subscribe { list ->
-                            if (mLog.isDebugEnabled) {
-                                mLog.debug("LOADED DEFAULT FrequentlySite")
+                    disposable.add(defaultFrequentlySite.subscribe { list ->
+                            if (logger.isDebugEnabled) {
+                                logger.debug("LOADED DEFAULT FrequentlySite")
                             }
 
-                            mDb.frequentlySiteDao.insertAll(list).subscribe {
-                                if (mLog.isDebugEnabled) {
-                                    mLog.debug("INSERTED FrequentlySite")
+                            db.frequentlySiteDao.insertAll(list).subscribe {
+                                if (logger.isDebugEnabled) {
+                                    logger.debug("INSERTED FrequentlySite")
                                 }
                             }
                         })
@@ -164,22 +163,22 @@ class PreloadConfig @Inject constructor(
             })
 
         tabLabelList = tabList.blockingGet()
-        if (mLog.isDebugEnabled) {
-            mLog.debug("LOADED TabData")
+        if (logger.isDebugEnabled) {
+            logger.debug("LOADED TabData")
         }
     }
 
-    fun daumMain(): Observable<String> = mDaum.main()
+    fun daumMain(): Observable<String> = daum.main()
 
     fun weatherData(callback: (List<WeatherDetail>) -> Unit) {
-        mDisposable.add(Observable.just(mAssetManager.open("res/weather_default.json").readBytes())
+        disposable.add(Observable.just(assetManager.open("res/weather_default.json").readBytes())
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .map { it.jsonParse<List<WeatherDetail>>() }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("PARSE OK : weather_default.json")
+                if (logger.isDebugEnabled) {
+                    logger.debug("PARSE OK : weather_default.json")
                 }
 
                 callback.invoke(it)

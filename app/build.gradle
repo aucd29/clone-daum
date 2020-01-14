@@ -80,9 +80,9 @@ dependencies {
     testImplementation "org.robolectric:robolectric:4.3"
     testImplementation "javax.annotation:javax.annotation-api:1.3.2"
 
-    debugImplementation ('androidx.fragment:fragment-testing:1.2.0-alpha02') {
-        exclude group: "androidx.test", module: "core"
-    }
+//    debugImplementation ('androidx.fragment:fragment-testing:1.2.0-alpha02') {
+//        exclude group: "androidx.test", module: "core"
+//    }
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:runner:1.2.0'

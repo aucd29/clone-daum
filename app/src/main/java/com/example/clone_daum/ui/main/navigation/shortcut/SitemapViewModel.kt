@@ -4,9 +4,8 @@ import android.app.Application
 import androidx.databinding.ObservableInt
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Sitemap
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import brigitte.dpToPx
-import com.example.clone_daum.R
 import javax.inject.Inject
 
 /**
@@ -16,7 +15,7 @@ import javax.inject.Inject
 class SitemapViewModel @Inject constructor(
     val preConfig: PreloadConfig,
     app: Application
-) : RecyclerViewModel<Sitemap>(app) {
+) : RecyclerViewModel2<Sitemap>(app) {
 
     companion object {
         const val CMD_OPEN_APP = "open-app"
@@ -30,7 +29,6 @@ class SitemapViewModel @Inject constructor(
     val roundedCorners = ObservableInt(10.dpToPx(app))
 
     init {
-        initAdapter(R.layout.sitemap_item)
         items.set(preConfig.naviSitemapList)
     }
 }

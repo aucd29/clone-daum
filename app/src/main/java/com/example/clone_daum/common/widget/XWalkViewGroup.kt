@@ -39,12 +39,12 @@ package com.example.clone_daum.common.widget
 //    }
 //
 //    setResourceClient(object: XWalkResourceClient(this@defaultSetting) {
-//        private val mLog = LoggerFactory.getLogger(XWalkView::class.java)
+//        private val logger = LoggerFactory.getLogger(XWalkView::class.java)
 //        var redirectFlag = false
 //
 //        override fun shouldOverrideUrlLoading(view: XWalkView?, url: String?): Boolean {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("OVERRIDE URL LOADING : $url")
+//            if (logger.isDebugEnabled) {
+//                logger.debug("OVERRIDE URL LOADING : $url")
 //            }
 //
 //            urlLoading?.invoke(null, url) ?: view?.loadUrl(url)
@@ -57,8 +57,8 @@ package com.example.clone_daum.common.widget
 //            super.onLoadStarted(view, url)
 //
 //            if (!redirectFlag) {
-//                if (mLog.isInfoEnabled) {
-//                    mLog.info("PAGE STARTED : $url")
+//                if (logger.isInfoEnabled) {
+//                    logger.info("PAGE STARTED : $url")
 //                }
 //
 //                view?.let { canGoForward?.invoke(it.canGoForward()) }
@@ -72,8 +72,8 @@ package com.example.clone_daum.common.widget
 //            super.onLoadFinished(view, url)
 //
 //            if (!redirectFlag) {
-//                if (mLog.isInfoEnabled) {
-//                    mLog.info("PAGE FINISHED")
+//                if (logger.isInfoEnabled) {
+//                    logger.info("PAGE FINISHED")
 //                }
 //
 //                view?.let { canGoForward?.invoke(it.canGoForward()) }

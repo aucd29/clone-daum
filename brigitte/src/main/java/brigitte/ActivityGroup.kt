@@ -289,33 +289,34 @@ inline fun Activity.dialog(params: DialogParam, disposable: CompositeDisposable?
  * 앱 종료를 위해 다시 한번 backkey 를 선택하라는 문구를 동작 시키기 위한 클래스
  */
 open class BackPressedManager constructor (
-    private var mActivity: AppCompatActivity, var view: View? = null
+    private var activity: AppCompatActivity,
+    var view: View? = null
 ) {
     companion object {
         const val DELAY = 2000
     }
 
-    protected var mToast: Toast? = null
-    protected var mSnackbar: Snackbar? = null
-    protected var mPressedTime: Long = 0
+    protected var toast: Toast? = null
+    protected var snackbar: Snackbar? = null
+    protected var pressedTime: Long = 0
 
-    private fun time() = mPressedTime + DELAY
+    private fun time() = pressedTime + DELAY
 
     fun onBackPressed(): Boolean {
-        if (mActivity.supportFragmentManager.backStackEntryCount > 0) {
+        if (activity.supportFragmentManager.backStackEntryCount > 0) {
             return true
         }
 
         if (System.currentTimeMillis() > time()) {
-            mPressedTime = System.currentTimeMillis()
+            pressedTime = System.currentTimeMillis()
             show()
 
             return false
         }
 
         if (System.currentTimeMillis() <= time()) {
-            view?.let { mSnackbar?.dismiss() } ?: mToast?.cancel()
-            ActivityCompat.finishAffinity(mActivity)
+            view?.let { snackbar?.dismiss() } ?: toast?.cancel()
+            ActivityCompat.finishAffinity(activity)
         }
 
         return false
@@ -323,8 +324,8 @@ open class BackPressedManager constructor (
 
     fun show() {
         if (view != null) {
-            mSnackbar = mActivity.snackbar(view!!, R.string.activity_backkey_exit)
-            mSnackbar?.show()
+            snackbar = activity.snackbar(view!!, R.string.activity_backkey_exit)
+            snackbar?.show()
         }
     }
 }

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
  */
 
 object ViewPagerBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(ViewPagerBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(ViewPagerBindingAdapter::class.java)
 //    @JvmStatic
 //    @InverseBindingAdapter(attribute = "currentItem")
 //    fun currentItem(viewpager: ViewPager) {
@@ -24,8 +24,8 @@ object ViewPagerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindOffscreenPageLimit")
     fun bindOffscreenPageLimit(viewpager: ViewPager, limit: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindOffscreenPageLimit : $limit")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindOffscreenPageLimit : $limit")
         }
         viewpager.offscreenPageLimit = limit
     }
@@ -34,8 +34,8 @@ object ViewPagerBindingAdapter {
     @BindingAdapter("bindPagerAdapter", "bindViewPagerLoaded", requireAll = false)
     fun bindAdapter(viewpager: ViewPager, adapter: PagerAdapter?, viewPagerLoadedCallback: (() -> Unit)? = null) {
         adapter?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("bindPagerAdapter")
+            if (logger.isDebugEnabled) {
+                logger.debug("bindPagerAdapter")
             }
 
             viewpager.adapter = it
@@ -46,8 +46,8 @@ object ViewPagerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindBannerAdapter", "bindBannerItems", requireAll = false)
     fun <T: IBannerItem> bindBannerItems(viewpager: ViewPager, adapter: IBannerPagerAdapter?, items: List<T>?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindBannerItems ${items?.size}")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindBannerItems ${items?.size}")
         }
 
         try {
@@ -84,19 +84,19 @@ object ViewPagerBindingAdapter {
                 }
             }
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
     }
 
     @JvmStatic
     @BindingAdapter("bindPageChangeListener")
     fun bindPageChangeListener(viewpager: ViewPager, listener: ViewPager.OnPageChangeListener?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindPageChangeListener")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindPageChangeListener")
         }
 
         listener?.let { viewpager.addOnPageChangeListener(it) }
@@ -105,8 +105,8 @@ object ViewPagerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindPageChangeCallback")
     fun bindPageChangeCallback(viewpager: ViewPager, callback: ((Int) -> Unit)?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindPageChangeListener")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindPageChangeListener")
         }
 
         callback?.let {

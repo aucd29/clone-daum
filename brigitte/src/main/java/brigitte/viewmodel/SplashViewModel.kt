@@ -1,10 +1,8 @@
 package brigitte.viewmodel
 
-import android.view.View
-import androidx.databinding.ObservableInt
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import brigitte.arch.SingleLiveEvent
+import brigitte.di.dagger.module.RxSchedulers
 import brigitte.singleTimer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -17,15 +15,16 @@ import javax.inject.Inject
  */
 
 class SplashViewModel @Inject constructor(
+    schedulers: RxSchedulers
 ) : ViewModel() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(SplashViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(SplashViewModel::class.java)
 
         private const val SPLASH_TIMEOUT = 7000L
     }
 
-    private val mDisposable = CompositeDisposable()
-    private var mState      = true
+    private val dp      = CompositeDisposable()
+    private var isState = true
 
     val closeEvent = SingleLiveEvent<Void>()
 
@@ -34,11 +33,11 @@ class SplashViewModel @Inject constructor(
         // 여지껏 커스텀 뷰를 만들어서 재활용한 적이 별로 없다.. -_ -;
 
         // 로딩 완료가 안뜨는 경우가 존재할 수 있으니 이를 보안하기 위한 타이머 추가
-        mDisposable.add(singleTimer(SPLASH_TIMEOUT)
-            .observeOn(AndroidSchedulers.mainThread())
+        dp.add(singleTimer(SPLASH_TIMEOUT)
+            .observeOn(schedulers.ui())
             .subscribe { _ ->
-                if (mLog.isInfoEnabled && mState) {
-                    mLog.info("SPLASH TIMEOUT ($SPLASH_TIMEOUT MILLISECONDS)")
+                if (logger.isInfoEnabled && isState) {
+                    logger.info("SPLASH TIMEOUT ($SPLASH_TIMEOUT MILLISECONDS)")
                 }
 
                 closeSplash()
@@ -47,16 +46,16 @@ class SplashViewModel @Inject constructor(
 
     fun closeSplash() {
         synchronized(this) {
-            if (!mState) {
+            if (!isState) {
                 return
             }
 
-            if (mLog.isInfoEnabled) {
-                mLog.info("CLOSE SPLASH")
+            if (logger.isInfoEnabled) {
+                logger.info("CLOSE SPLASH")
             }
 
-            mState = false
-            mDisposable.dispose()
+            isState = false
+            dp.dispose()
             closeEvent.call()
         }
     }

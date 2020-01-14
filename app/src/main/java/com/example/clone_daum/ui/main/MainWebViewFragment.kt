@@ -26,42 +26,46 @@ class MainWebviewFragment @Inject constructor(
     override val layoutId = R.layout.main_webview_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainWebviewFragment::class.java)
+        private val logger = LoggerFactory.getLogger(MainWebviewFragment::class.java)
+
+        fun create(): MainWebviewFragment {
+            return MainWebviewFragment()
+        }
 
         private const val TIMEOUT_RELOAD_ICO = 4000L
     }
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 공유
+        viewModelScope = SCOPE_ACTIVITY        // MainViewModel 를 공유
     }
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var navigator: Navigator
 
-    private val mSplashViewModel: SplashViewModel by activityInject()
+    private val splashViewModel: SplashViewModel by activityInject()
 
     override val webview: WebView
-        get() = mBinding.webview
+        get() = binding.webview
 
-    private val mPosition: Int
+    private val position: Int
         get() = arguments?.getInt(MainTabAdapter.K_POSITION) ?: 0
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun initViewBinding() = mBinding.run {
+    override fun initViewBinding() = binding.run {
         webview.defaultSetting(WebViewSettingParams(
             urlLoading = { _, url ->
                 url?.let {
                     if (!it.contains("m.daum.net")) {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("OPEN BROWSER FRAGMENT : $url")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("OPEN BROWSER FRAGMENT : $url")
                         }
 
                         navigator.browserFragment(url)
                     } else {
                         // uri 를 redirect 시키는 이유가 뭘까나?
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("LOAD URL : $url")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("LOAD URL : $url")
                         }
 
                         webview.loadUrl(url)
@@ -76,8 +80,8 @@ class MainWebviewFragment @Inject constructor(
                     }
                 }
 
-                if (mPosition == MainViewModel.INDEX_NEWS) {
-                    mSplashViewModel.closeSplash()
+                if (position == MainViewModel.INDEX_NEWS) {
+                    splashViewModel.closeSplash()
                 }
 
                 syncCookie()
@@ -86,8 +90,8 @@ class MainWebviewFragment @Inject constructor(
         ))
 
         mainWebViewSwipeRefresh.setOnRefreshListener {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("SWIPE RELOAD URL : ${webview.url}")
+            if (logger.isDebugEnabled) {
+                logger.debug("SWIPE RELOAD URL : ${webview.url}")
             }
 
             webview.reload()
@@ -95,8 +99,8 @@ class MainWebviewFragment @Inject constructor(
             disposable().add(singleTimer(TIMEOUT_RELOAD_ICO)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { _ ->
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("EXPLODE RELOAD ICO TIMER")
+                    if (logger.isInfoEnabled) {
+                        logger.info("EXPLODE RELOAD ICO TIMER")
                     }
 
                     mainWebViewSwipeRefresh.isRefreshing = false
@@ -105,27 +109,27 @@ class MainWebviewFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             // appbar 이동 시 webview 도 동일하게 이동 시킴
             observe(appbarOffsetLive) {
-                if (mLog.isTraceEnabled) {
-                    mLog.trace("WEBVIEW TRANSLATION Y : $it")
+                if (logger.isTraceEnabled) {
+                    logger.trace("WEBVIEW TRANSLATION Y : $it")
                 }
 
                 webview.translationY = it.toFloat()
 
                 // https://stackoverflow.com/questions/30779667/android-collapsingtoolbarlayout-and-mainWebViewSwipeRefreshlayout-get-stuck
-                mBinding.mainWebViewSwipeRefresh.isEnabled = it == 0
+                binding.mainWebViewSwipeRefresh.isEnabled = it == 0
             }
         }
     }
 
     override fun onDestroyView() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("DESTROY VIEW = ")
+        if (logger.isDebugEnabled) {
+            logger.debug("DESTROY VIEW")
         }
 
-        mBinding.mainWebViewSwipeRefresh.run {
+        binding.mainWebViewSwipeRefresh.run {
             isEnabled = false
             removeAllViews()
         }
@@ -134,7 +138,7 @@ class MainWebviewFragment @Inject constructor(
     }
 
     fun disableSwipeRefresh() {
-        mBinding.mainWebViewSwipeRefresh.isEnabled = false
+        binding.mainWebViewSwipeRefresh.isEnabled = false
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

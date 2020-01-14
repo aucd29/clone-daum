@@ -11,7 +11,7 @@ import com.example.clone_daum.common.Config
 import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.model.remote.Weather
 import com.example.clone_daum.model.remote.WeatherDetail
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import com.patloew.rxlocation.RxLocation
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
@@ -30,9 +30,9 @@ class WeatherViewModel @Inject constructor(
     val preConfig: PreloadConfig,
     val disposable: CompositeDisposable,
     private val rxLocation: RxLocation
-) : RecyclerViewModel<WeatherDetail>(app) {
+) : RecyclerViewModel2<WeatherDetail>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(WeatherViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(WeatherViewModel::class.java)
 
         const val CMD_MORE_DETAIL                   = "more-detail"
         const val CMD_REFRESH_LOCATION              = "refresh-location"
@@ -52,13 +52,20 @@ class WeatherViewModel @Inject constructor(
         refreshWeather()
     }
 
+    fun init() {
+        preConfig.weatherData {
+            //            initAdapter(R.layout.weather_dust_item, R.layout.weather_other_item)
+            items.set(it)
+        }
+    }
+
     fun refreshCurrentLocation() {
         if (config.HAS_PERMISSION_GPS) {
             disposable.add(rxLocation.location().lastLocation()
                 .flatMap { location -> rxLocation.geocoding().fromLocation(location) }
                 .subscribe ({
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("CURRENT LOCATION : ${it.locality} ${it.subLocality} ${it.thoroughfare}")
+                    if (logger.isInfoEnabled) {
+                        logger.info("CURRENT LOCATION : ${it.locality} ${it.subLocality} ${it.thoroughfare}")
                     }
 
                     val current = "${it.subLocality} ${it.thoroughfare}"
@@ -82,10 +89,4 @@ class WeatherViewModel @Inject constructor(
             , "풍속 3.5m/s"))
     }
 
-    fun initRecycler() {
-        preConfig.weatherData {
-            initAdapter(R.layout.weather_dust_item, R.layout.weather_other_item)
-            items.set(it)
-        }
-    }
 }

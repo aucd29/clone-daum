@@ -16,59 +16,59 @@ import brigitte.dpToPx
  */
 
 class SpaceItemDecoration constructor(
-    private val mMargin: Rect,
-    private val mLastMargin: Rect? = null
+    private val margin: Rect,
+    private val lastMargin: Rect? = null
 ): RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        if (mLastMargin != null && parent.adapter != null &&
+        if (lastMargin != null && parent.adapter != null &&
             parent.getChildAdapterPosition(view) == parent.adapter!!.itemCount -1) {
-            outRect.set(mLastMargin)
+            outRect.set(lastMargin)
             return
         }
 
-        outRect.set(mMargin)
+        outRect.set(margin)
     }
 }
 
 //https://stackoverflow.com/questions/29146781/decorating-recyclerview-with-gridlayoutmanager-to-display-divider-between-item
-class GridItemDecoration(private val mSizeGridSpacingPx: Int, private val mGridSize: Int) :
+class GridItemDecoration(private val sizeGridSpacingPx: Int, private val gridSize: Int) :
     RecyclerView.ItemDecoration() {
 
-    private var mNeedLeftSpacing = false
+    private var needLeftSpacing = false
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val frameWidth = ((parent.width - mSizeGridSpacingPx.toFloat() * (mGridSize - 1)) / mGridSize).toInt()
-        val padding = parent.width / mGridSize - frameWidth
+        val frameWidth = ((parent.width - sizeGridSpacingPx.toFloat() * (gridSize - 1)) / gridSize).toInt()
+        val padding = parent.width / gridSize - frameWidth
         val itemPosition = (view.layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
-        if (itemPosition < mGridSize) {
+        if (itemPosition < gridSize) {
             outRect.top = 0
         } else {
-            outRect.top = mSizeGridSpacingPx
+            outRect.top = sizeGridSpacingPx
         }
-        if (itemPosition % mGridSize == 0) {
+        if (itemPosition % gridSize == 0) {
             outRect.left = 0
             outRect.right = padding
-            mNeedLeftSpacing = true
-        } else if ((itemPosition + 1) % mGridSize == 0) {
-            mNeedLeftSpacing = false
+            needLeftSpacing = true
+        } else if ((itemPosition + 1) % gridSize == 0) {
+            needLeftSpacing = false
             outRect.right = 0
             outRect.left = padding
-        } else if (mNeedLeftSpacing) {
-            mNeedLeftSpacing = false
-            outRect.left = mSizeGridSpacingPx - padding
-            if ((itemPosition + 2) % mGridSize == 0) {
-                outRect.right = mSizeGridSpacingPx - padding
+        } else if (needLeftSpacing) {
+            needLeftSpacing = false
+            outRect.left = sizeGridSpacingPx - padding
+            if ((itemPosition + 2) % gridSize == 0) {
+                outRect.right = sizeGridSpacingPx - padding
             } else {
-                outRect.right = mSizeGridSpacingPx / 2
+                outRect.right = sizeGridSpacingPx / 2
             }
-        } else if ((itemPosition + 2) % mGridSize == 0) {
-            mNeedLeftSpacing = false
-            outRect.left = mSizeGridSpacingPx / 2
-            outRect.right = mSizeGridSpacingPx - padding
+        } else if ((itemPosition + 2) % gridSize == 0) {
+            needLeftSpacing = false
+            outRect.left = sizeGridSpacingPx / 2
+            outRect.right = sizeGridSpacingPx - padding
         } else {
-            mNeedLeftSpacing = false
-            outRect.left = mSizeGridSpacingPx / 2
-            outRect.right = mSizeGridSpacingPx / 2
+            needLeftSpacing = false
+            outRect.left = sizeGridSpacingPx / 2
+            outRect.right = sizeGridSpacingPx / 2
         }
         outRect.bottom = 0
     }
@@ -76,7 +76,7 @@ class GridItemDecoration(private val mSizeGridSpacingPx: Int, private val mGridS
 
 // https://github.com/DhruvamSharma/Recycler-View-Series/blob/master/app/src/main/java/com/dhruvam/recyclerviewseries/data/DividerItemDecoration.java
 class OffsetDividerItemDecoration(
-    private val mDivider: Drawable, val mOffsetStartDp: Int, val mOffsetEndDp: Int
+    private val divider: Drawable, val offsetStartDp: Int, val offsetEndDp: Int
 ): RecyclerView.ItemDecoration() {
     constructor(context: Context, @DrawableRes resid: Int, offsetDp: Int)
         : this(ContextCompat.getDrawable(context, resid)!!, offsetDp, offsetDp)
@@ -91,14 +91,14 @@ class OffsetDividerItemDecoration(
             return
         }
 
-        outRect.top = mDivider.intrinsicHeight
+        outRect.top = divider.intrinsicHeight
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(c, parent, state)
 
-        val dividerStart = mOffsetStartDp.dpToPx(parent.context)
-        val dividerEnd = parent.width - mOffsetEndDp.dpToPx(parent.context)
+        val dividerStart = offsetStartDp.dpToPx(parent.context)
+        val dividerEnd = parent.width - offsetEndDp.dpToPx(parent.context)
 
         val count = parent.childCount - 1
         val it = parent.children.iterator()
@@ -110,10 +110,10 @@ class OffsetDividerItemDecoration(
 
             val lp = it.layoutParams as (RecyclerView.LayoutParams)
             val dividerTop = it.bottom + lp.bottomMargin
-            val dividerBottom = dividerTop + mDivider.intrinsicHeight
+            val dividerBottom = dividerTop + divider.intrinsicHeight
 
-            mDivider.setBounds(dividerStart, dividerTop, dividerEnd, dividerBottom)
-            mDivider.draw(c)
+            divider.setBounds(dividerStart, dividerTop, dividerEnd, dividerBottom)
+            divider.draw(c)
 
             ++i
         }
@@ -121,7 +121,7 @@ class OffsetDividerItemDecoration(
 }
 
 class PositionDividerItemDecoration(
-    private val mDivider: Drawable, val positionList: List<Int>
+    private val divider: Drawable, val positionList: List<Int>
 ): RecyclerView.ItemDecoration() {
     constructor(context: Context, @DrawableRes resid: Int, positionList: List<Int>)
             : this(ContextCompat.getDrawable(context, resid)!!, positionList)
@@ -130,7 +130,7 @@ class PositionDividerItemDecoration(
         super.getItemOffsets(outRect, view, parent, state)
 
         if (positionList.contains(parent.getChildAdapterPosition(view))) {
-            outRect.top = mDivider.intrinsicHeight
+            outRect.top = divider.intrinsicHeight
         }
     }
 
@@ -148,10 +148,10 @@ class PositionDividerItemDecoration(
             if (positionList.contains(i)) {
                 val lp = it.layoutParams as (RecyclerView.LayoutParams)
                 val dividerTop = it.bottom + lp.bottomMargin
-                val dividerBottom = dividerTop + mDivider.intrinsicHeight
+                val dividerBottom = dividerTop + divider.intrinsicHeight
 
-                mDivider.setBounds(0, dividerTop, parent.width, dividerBottom)
-                mDivider.draw(c)
+                divider.setBounds(0, dividerTop, parent.width, dividerBottom)
+                divider.draw(c)
             }
 
             ++i

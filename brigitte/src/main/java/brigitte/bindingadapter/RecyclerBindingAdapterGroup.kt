@@ -17,8 +17,9 @@ import org.slf4j.LoggerFactory
  */
 
 object RecyclerBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(RecyclerBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(RecyclerBindingAdapter::class.java)
 
+    @Deprecated("")
     @JvmStatic
     @BindingAdapter("bindAdapter", "bindItems")
     fun <T: IRecyclerDiff> bindAdapter(recycler: RecyclerView, adapter: RecyclerAdapter<T>?,
@@ -37,8 +38,8 @@ object RecyclerBindingAdapter {
                 myadapter = recycler.adapter as RecyclerAdapter<T>
 
                 if (myadapter !== it) {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("CHANGED ADAPTER")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("CHANGED ADAPTER")
                     }
 
                     myadapter = it
@@ -47,8 +48,8 @@ object RecyclerBindingAdapter {
             }
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ADAPTER ($myadapter, ${items.run { hashCode() }}), ITEM COUNT (${items.count()})")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND ADAPTER ($myadapter, ${items.run { hashCode() }}), ITEM COUNT (${items.count()})")
         }
 
         items.let {
@@ -59,11 +60,31 @@ object RecyclerBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("bindRecyclerItems")
+    fun <T: IRecyclerDiff> bindRecyclerItems(recycler: RecyclerView, items: List<T>?) {
+        val adapter: RecyclerAdapter<T>? = recycler.adapter as RecyclerAdapter<T>
+
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND RECYCLER VIEW ITEM : ${items?.size}")
+        }
+
+        adapter?.let { recyclerAdapter ->
+            items?.let { recyclerItems ->
+                if (recyclerItems is ArrayList<T>) {
+                    recyclerAdapter.setItems(recycler, recyclerItems)
+                } else {
+                    logger.error("ERROR: INVALID LIST TYPE ")
+                }
+            }
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("bindItemTouchHelper")
     fun bindDragCallback(recycler: RecyclerView, helper: ItemTouchHelper?) {
         helper?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("BIND ITEM TOUCH HELPER (${recycler.id})")
+            if (logger.isDebugEnabled) {
+                logger.debug("BIND ITEM TOUCH HELPER (${recycler.id})")
             }
 
             it.attachToRecyclerView(recycler)
@@ -92,8 +113,8 @@ object RecyclerBindingAdapter {
     @BindingAdapter("bindHorDecoration", "bindVerDecoration", requireAll = false)
     fun bindDecoration(recycler: RecyclerView, horDrawable: Int? = null, verDrawable: Int? = null) {
         //https://stackoverflow.com/questions/31242812/how-can-a-divider-line-be-added-in-an-android-recyclerview
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND DECORATION: hor($horDrawable), ver($verDrawable)")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND DECORATION: hor($horDrawable), ver($verDrawable)")
         }
 
         recycler.removeItemDecorationAll()
@@ -106,8 +127,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindItemDecoration")
     fun bindItemDecoration(recycler: RecyclerView, decoration: RecyclerView.ItemDecoration? = null) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ITEM DECORATION")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND ITEM DECORATION")
         }
 
         recycler.removeItemDecorationAll()
@@ -117,8 +138,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindItemDecorations")
     fun bindItemDecorations(recycler: RecyclerView, decorations: Array<RecyclerView.ItemDecoration>? = null) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ITEM DECORATION")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND ITEM DECORATION")
         }
 
         recycler.removeItemDecorationAll()
@@ -128,8 +149,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindGridLayoutManager")
     fun bindGridLayoutManager(recycler: RecyclerView, spancount: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND GRID LAYOUT: SPAN COUNT($spancount)")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND GRID LAYOUT: SPAN COUNT($spancount)")
         }
 
         recycler.layoutManager = GridLayoutManager(recycler.context, spancount)
@@ -138,8 +159,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindStaggeredVerticalGridLayoutManager")
     fun bindStaggeredGridLayoutManager(recycler: RecyclerView, spancount: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND STAGGERED GRID LAYOUT: SPAN COUNT($spancount)")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND STAGGERED GRID LAYOUT: SPAN COUNT($spancount)")
         }
 
         recycler.layoutManager = StaggeredGridLayoutManager(spancount, StaggeredGridLayoutManager.VERTICAL)
@@ -148,8 +169,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindLockedGridLayoutManager")
     fun bindLockedGridLayoutManager(recycler: RecyclerView, spancount: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND LOCKED GRID LAYOUT: SPAN COUNT($spancount)")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND LOCKED GRID LAYOUT: SPAN COUNT($spancount)")
         }
 
         recycler.layoutManager = object: GridLayoutManager(recycler.context, spancount) {
@@ -162,8 +183,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindLayoutManager")
     fun bindLayoutManager(recycler: RecyclerView, manager: RecyclerView.LayoutManager?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND LAYOUT MANAGER")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND LAYOUT MANAGER")
         }
 
         manager?.let { recycler.layoutManager = it }
@@ -172,8 +193,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindItemAnimator")
     fun bindLayoutManager(recycler: RecyclerView, animator: RecyclerView.ItemAnimator?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND ITEM ANIMATOR")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND ITEM ANIMATOR")
         }
 
         recycler.itemAnimator = animator
@@ -182,8 +203,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindSmoothToPosition")
     fun bindSmoothToPosition(recycler: RecyclerView, position: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND SMOOTH TO POSITION $position")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND SMOOTH TO POSITION $position")
         }
 
         recycler.smoothScrollToPosition(position)
@@ -192,8 +213,8 @@ object RecyclerBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindInfiniteScrollListener")
     fun bindInfiniteScrollListener(recycler: RecyclerView, listener: InfiniteScrollListener?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND INFINITE SCROLL LISTENER")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND INFINITE SCROLL LISTENER")
         }
 
         listener?.let {

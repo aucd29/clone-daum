@@ -7,12 +7,12 @@ import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import brigitte.*
 import brigitte.arch.SingleLiveEvent
+import brigitte.di.dagger.module.RxSchedulers
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
@@ -20,10 +20,11 @@ import com.example.clone_daum.R
 
 class FavoriteViewModel @Inject constructor(
     app: Application,
-    private val mFavoriteDao: MyFavoriteDao
-) : RecyclerViewModel<MyFavorite>(app), IDialogAware, IFolder {
+    private val favoriteDao: MyFavoriteDao,
+    private val schedulers: RxSchedulers
+) : RecyclerViewModel2<MyFavorite>(app), IDialogAware, IFolder {
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteViewModel::class.java)
 
         const val CMD_BRS_OPEN           = "brs-open"
         const val CMD_FOLDER_CHOOSE      = "folder-choose"
@@ -32,24 +33,17 @@ class FavoriteViewModel @Inject constructor(
     }
 
     override val dialogEvent = SingleLiveEvent<DialogParam>()
-
-    private val mDisposable = CompositeDisposable()
-    val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
-
-    fun init() {
-        initAdapter(R.layout.favorite_item_folder, R.layout.favorite_item)
-        adapter.get()?.run { isScrollToPosition = false }
-    }
+    private val dp           = CompositeDisposable()
+    val itemAnimator         = ObservableField<RecyclerView.ItemAnimator?>()
 
     fun initItems() {
-        mDisposable.clear()
-
-        mDisposable.add(mFavoriteDao.selectShowAllFlowable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        dp.clear()
+        dp.add(favoriteDao.selectShowAllFlowable()
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.ui())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE COUNT : ${it.size} ${it.hashCode()}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("FAVORITE COUNT : ${it.size} ${it.hashCode()}")
                 }
 
                 items.set(it)
@@ -60,13 +54,13 @@ class FavoriteViewModel @Inject constructor(
     }
 
     fun initItemsByFolder() {
-        mDisposable.clear()
-        mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        dp.clear()
+        dp.add(favoriteDao.selectShowFolderFlowable()
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.ui())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FAVORITE BY FOLDER NAME COUNT : ${it.size}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("FAVORITE BY FOLDER NAME COUNT : ${it.size}")
                 }
 
                 items.set(it)
@@ -77,11 +71,11 @@ class FavoriteViewModel @Inject constructor(
     }
 
     fun insertFolder(folderName: String) {
-        mDisposable.add(mFavoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
-            .subscribeOn(Schedulers.io())
+        dp.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
+            .subscribeOn(schedulers.io())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("INSERTED FOLDER: $folderName")
+                if (logger.isDebugEnabled) {
+                    logger.debug("INSERTED FOLDER: $folderName")
                 }
             }, {
                 errorLog(it)
@@ -92,8 +86,8 @@ class FavoriteViewModel @Inject constructor(
     fun firstWord(name: String): String {
         val firstWord = name.substring(0, 1)
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("FIRST WORD : $firstWord")
+        if (logger.isTraceEnabled) {
+            logger.trace("FIRST WORD : $firstWord")
         }
 
         return firstWord
@@ -110,13 +104,13 @@ class FavoriteViewModel @Inject constructor(
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
-        mDisposable.add(mFavoriteDao.hasFolder(name)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        dp.add(favoriteDao.hasFolder(name)
+            .subscribeOn(schedulers.io())
+            .observeOn(schedulers.ui())
             .subscribe({
-                if (mLog.isDebugEnabled) {
+                if (logger.isDebugEnabled) {
                     if (it > 0) {
-                        mLog.debug("HAS FAVORITE FOLDER : $name ($it)")
+                        logger.debug("HAS FAVORITE FOLDER : $name ($it)")
                     }
                 }
 
@@ -129,7 +123,7 @@ class FavoriteViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
         super.onCleared()
     }
 }

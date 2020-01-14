@@ -71,23 +71,23 @@ open class VerticalSwipeRefreshLayout @JvmOverloads constructor(
 // provider 로 하는게 나으려나?? =_ = ?
 // 후자가 나아보이긴 한데 =_ =ㅋ
 class SwipeRefreshController @Inject constructor() {
-    private val mLog = LoggerFactory.getLogger(SwipeRefreshController::class.java)
+    private val logger = LoggerFactory.getLogger(SwipeRefreshController::class.java)
 
     val listener    = ObservableField<() -> Unit>()
     val isRefresh   = ObservableBoolean(false)
     var refreshLive = SingleLiveEvent<Void>()
 
     fun init(listener: () -> Unit) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT")
         }
 
         this.listener.set(listener)
     }
 
     fun initTest(dp: CompositeDisposable, delay: Long = 500) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT TEST $delay")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT TEST $delay")
         }
 
         this.listener.set {
@@ -99,16 +99,16 @@ class SwipeRefreshController @Inject constructor() {
     }
 
     fun initLive() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT LIVE")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT LIVE")
         }
 
         this.listener.set { refreshLive.call() }
     }
 
     fun stopSwipeRefresh() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("STOP SWIPE REFRESH")
+        if (logger.isDebugEnabled) {
+            logger.debug("STOP SWIPE REFRESH")
         }
 
         isRefresh.notify(false)

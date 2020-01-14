@@ -7,7 +7,9 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import com.example.clone_daum.model.local.MyFavorite
 import dagger.Binds
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -21,22 +23,26 @@ class FavoriteFolderFragment @Inject constructor()
     override val layoutId = R.layout.favorite_folder_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteFolderFragment::class.java)
 
         const val K_FOLDER = "folder"
     }
 
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var adapter: RecyclerAdapter<MyFavorite>
 
-    override fun initViewBinding() { }
+    override fun initViewBinding() {
+        adapter.viewModel = viewModel
+        binding.favoriteRecycler.adapter = adapter
+    }
 
     override fun initViewModelEvents() {
         arguments?.getInt(K_FOLDER)?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER ID : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("FOLDER ID : $it")
             }
 
-            mViewModel.initByFolder(it)
+            viewModel.initByFolder(it)
         }
     }
 
@@ -56,8 +62,8 @@ class FavoriteFolderFragment @Inject constructor()
     }
 
     private fun showBrowser(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHOW BROWSER $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("SHOW BROWSER $url")
         }
 
         finish()
@@ -68,8 +74,8 @@ class FavoriteFolderFragment @Inject constructor()
 
     private fun modifyFavorite() {
         arguments?.getInt(K_FOLDER)?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER ID : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("FOLDER ID : $it")
             }
 
             navigator.favoriteModifyFragment(it)
@@ -93,5 +99,15 @@ class FavoriteFolderFragment @Inject constructor()
     abstract class FavoriteFolderFragmentModule {
         @Binds
         abstract fun bindSavedStateRegistryOwner(activity: FavoriteFolderFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideFavoriteFolderAdapter(): RecyclerAdapter<MyFavorite> =
+                RecyclerAdapter(arrayOf(
+                    R.layout.favorite_item_folder,
+                    R.layout.favorite_item_from_folder))
+        }
     }
 }

@@ -16,6 +16,7 @@ open class WrapContentViewPager @JvmOverloads constructor(
     // https://stackoverflow.com/questions/8394681/android-i-am-unable-to-have-viewpager-wrap-content
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
         val firstChild = getChildAt(0)
         firstChild?.let {
             it.measure(widthMeasureSpec, heightMeasureSpec)

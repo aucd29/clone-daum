@@ -29,20 +29,25 @@ open class BannerViewModel<T: IBannerItem> constructor(
 ) : ViewModel() {
 
     val items              = ObservableField<List<T>>()
-    val adapter            = ObservableField<IBannerPagerAdapter>()
+//    val adapter            = ObservableField<IBannerPagerAdapter>()
     val pageChangeCallback = ObservableField<(Int) -> Unit>()
-    val disposable         = CompositeDisposable()
+    val dp                 = CompositeDisposable()
 
-    fun initAdapter(layout: Int) {
-        adapter.set(BannerPagerAdapter<T>(layout, this))
-    }
-
-    fun initInfiniteAdapter(layout: Int, autoScroll: Long = 0) {
-        adapter.set(InfinitePagerAdapter(BannerPagerAdapter<T>(layout, this)))
-    }
+//    fun initAdapter(layout: Int) {
+//        adapter.set(BannerPagerAdapter<T>(layout, this))
+//    }
+//
+//    fun initInfiniteAdapter(layout: Int, autoScroll: Long = 0) {
+//        adapter.set(InfinitePagerAdapter(BannerPagerAdapter<T>(layout, this)))
+//    }
 
     fun convertColor(str: String) = Color.parseColor(str)
     fun convertImage(str: String) = app.drawable(str)
+
+    override fun onCleared() {
+        dp.dispose()
+        super.onCleared()
+    }
 }
 
 class BannerPagerAdapter <T: IBannerItem> (
@@ -51,7 +56,7 @@ class BannerPagerAdapter <T: IBannerItem> (
 ) : IBannerPagerAdapter() {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BannerPagerAdapter::class.java)
+        private val logger = LoggerFactory.getLogger(BannerPagerAdapter::class.java)
 
         private const val METHOD_NAME_VIEW_MODEL = "setModel"
         private const val METHOD_NAME_ITEM       = "setItem"
@@ -63,16 +68,16 @@ class BannerPagerAdapter <T: IBannerItem> (
             } catch (e: Exception) {
                 if (log) {
                     e.printStackTrace()
-                    mLog.debug("NOT FOUND : ${e.message}")
+                    logger.debug("NOT FOUND : ${e.message}")
                 }
             }
         }
     }
 
-    private var mItems: List<T> = arrayListOf()
+    private var items: List<T> = arrayListOf()
 
     fun setBannerItems(items: List<T>, invalidate: Boolean = true) {
-        mItems = items
+        this.items = items
 
         if (invalidate) {
             notifyDataSetChanged()
@@ -84,7 +89,7 @@ class BannerPagerAdapter <T: IBannerItem> (
         val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater,
             mLayoutId, container, true)
 
-        val item = mItems[position]
+        val item = items[position]
 
         invokeMethod(binding, METHOD_NAME_VIEW_MODEL, mViewModel.javaClass, mViewModel, false)
         invokeMethod(binding, METHOD_NAME_ITEM, item.javaClass, item, true)
@@ -93,7 +98,7 @@ class BannerPagerAdapter <T: IBannerItem> (
     }
 
     override fun isViewFromObject(view: View, obj: Any): Boolean = view == obj
-    override fun getCount(): Int = mItems.size
+    override fun getCount(): Int = items.size
 
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
         if (obj is View) {
@@ -111,13 +116,13 @@ class BannerPagerAdapter <T: IBannerItem> (
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdapter() {
+class InfinitePagerAdapter(private val adapter: PagerAdapter): IBannerPagerAdapter() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(InfinitePagerAdapter::class.java)
+        private val logger = LoggerFactory.getLogger(InfinitePagerAdapter::class.java)
     }
 
     val realCount: Int
-        get() = mAdapter.count
+        get() = adapter.count
 
     override fun getCount() =
         if (realCount == 0) 0 else Int.MAX_VALUE
@@ -125,66 +130,66 @@ class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdap
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val virtualPos = position % realCount
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("INSTANTIATE ITEM : $virtualPos ($position)")
+        if (logger.isTraceEnabled) {
+            logger.trace("INSTANTIATE ITEM : $virtualPos ($position)")
         }
 
-        return mAdapter.instantiateItem(container, virtualPos)
+        return adapter.instantiateItem(container, virtualPos)
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
         val virtualPos = position % realCount
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("DESTROY ITEM : $virtualPos ($position)")
+        if (logger.isTraceEnabled) {
+            logger.trace("DESTROY ITEM : $virtualPos ($position)")
         }
 
-        mAdapter.destroyItem(container, virtualPos, obj)
+        adapter.destroyItem(container, virtualPos, obj)
     }
 
     fun setBannerItems(items: List<*>) {
-        if (mAdapter is BannerPagerAdapter<*>) {
-            mAdapter.setBannerItems(items as List<Nothing>, false)
+        if (adapter is BannerPagerAdapter<*>) {
+            adapter.setBannerItems(items as List<Nothing>, false)
         }
 
         notifyDataSetChanged()
     }
 
     override fun finishUpdate(container: ViewGroup) =
-        mAdapter.finishUpdate(container)
+        adapter.finishUpdate(container)
 
     override fun isViewFromObject(view: View, obj: Any) =
-        mAdapter.isViewFromObject(view, obj)
+        adapter.isViewFromObject(view, obj)
 
     override fun restoreState(state: Parcelable?, loader: ClassLoader?) =
-        mAdapter.restoreState(state, loader)
+        adapter.restoreState(state, loader)
 
     override fun saveState() =
-        mAdapter.saveState()
+        adapter.saveState()
 
     override fun startUpdate(container: ViewGroup) =
-        mAdapter.startUpdate(container)
+        adapter.startUpdate(container)
 
     override fun getPageTitle(position: Int) =
-        mAdapter.getPageTitle(position % realCount)
+        adapter.getPageTitle(position % realCount)
 
     override fun getPageWidth(position: Int) =
-        mAdapter.getPageWidth(position)
+        adapter.getPageWidth(position)
 
     override fun setPrimaryItem(container: ViewGroup, position: Int, obj: Any) =
-        mAdapter.setPrimaryItem(container, position, obj)
+        adapter.setPrimaryItem(container, position, obj)
 
     override fun unregisterDataSetObserver(observer: DataSetObserver) =
-        mAdapter.unregisterDataSetObserver(observer)
+        adapter.unregisterDataSetObserver(observer)
 
     override fun registerDataSetObserver(observer: DataSetObserver) =
-        mAdapter.registerDataSetObserver(observer)
+        adapter.registerDataSetObserver(observer)
 
     override fun notifyDataSetChanged() {
-        mAdapter.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
         super.notifyDataSetChanged()
     }
 
     override fun getItemPosition(obj: Any) =
-        mAdapter.getItemPosition(obj)
+        adapter.getItemPosition(obj)
 }

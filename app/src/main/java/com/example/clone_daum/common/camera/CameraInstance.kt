@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory
 
 class CameraInstance constructor(val context: Context) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(CameraInstance::class.java)
+        private val logger = LoggerFactory.getLogger(CameraInstance::class.java)
     }
 
     private var mThread: CameraThread? = null
@@ -37,25 +37,25 @@ class CameraInstance constructor(val context: Context) {
 
     val mOpener = Runnable {
         try {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("Opening camera")
+            if (logger.isDebugEnabled) {
+                logger.debug("Opening camera")
             }
 
             mManager?.open()
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
             notifyError(e)
-            mLog.error("ERROR: Failed to open camera ${e.message}")
+            logger.error("ERROR: Failed to open camera ${e.message}")
         }
     }
 
     val mConfigure = Runnable {
         try {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("Configuring camera")
+            if (logger.isDebugEnabled) {
+                logger.debug("Configuring camera")
             }
 
             mManager?.let {
@@ -65,18 +65,18 @@ class CameraInstance constructor(val context: Context) {
                     it.getPreviewSize())?.sendToTarget()
             }
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
             notifyError(e)
-            mLog.error("ERROR: Failed to configure camera ${e.message}")
+            logger.error("ERROR: Failed to configure camera ${e.message}")
         }
     }
 
     val mPreviewStarter = Runnable {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("STATING PREVIEW")
+        if (logger.isDebugEnabled) {
+            logger.debug("STATING PREVIEW")
         }
 
         try {
@@ -85,13 +85,13 @@ class CameraInstance constructor(val context: Context) {
                 startPreview()
             }
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
             notifyError(e)
 
-            mLog.error("ERROR: Failed to start preview ${e.message}")
+            logger.error("ERROR: Failed to start preview ${e.message}")
         }
     }
 
@@ -102,11 +102,11 @@ class CameraInstance constructor(val context: Context) {
                 close()
             }
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: Failed to close camera ${e.message}")
+            logger.error("ERROR: Failed to close camera ${e.message}")
         }
 
         mThread?.decrementInstance()
@@ -144,8 +144,8 @@ class CameraInstance constructor(val context: Context) {
     fun open() {
         validateMainThread()
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CAMERA INSTANCE OPEN")
+        if (logger.isDebugEnabled) {
+            logger.debug("CAMERA INSTANCE OPEN")
         }
 
         mOpen = true
@@ -163,8 +163,8 @@ class CameraInstance constructor(val context: Context) {
         validateMainThread()
         validateOpen()
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("START PREVIEW")
+        if (logger.isDebugEnabled) {
+            logger.debug("START PREVIEW")
         }
 
         mThread?.enqueue(mPreviewStarter)
@@ -181,8 +181,8 @@ class CameraInstance constructor(val context: Context) {
     fun close() {
         validateMainThread()
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CAMERA INSTANCE CLOSE")
+        if (logger.isDebugEnabled) {
+            logger.debug("CAMERA INSTANCE CLOSE")
         }
 
         if (mOpen) {
@@ -195,8 +195,8 @@ class CameraInstance constructor(val context: Context) {
     fun requestPreview(callback: (SourceData) -> Unit) {
         validateOpen()
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("REQUEST PREVIEW")
+        if (logger.isTraceEnabled) {
+            logger.trace("REQUEST PREVIEW")
         }
 
         mThread?.enqueue(Runnable { mManager?.requestPreviewFrame(callback) })

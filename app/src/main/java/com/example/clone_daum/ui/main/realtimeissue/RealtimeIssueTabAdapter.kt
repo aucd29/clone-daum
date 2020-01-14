@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import brigitte.widget.pageradapter.FragmentPagerAdapter
 import com.example.clone_daum.model.remote.RealtimeIssue
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Provider
 
 /**
@@ -28,14 +29,16 @@ class RealtimeIssueTabAdapter @Inject constructor(
 ) : FragmentPagerAdapter(fm) {
     companion object {
         const val K_POS = "position"
-    }
 
-    @Inject lateinit var fragment: Provider<RealtimeIssueChildFragment>
+        fun create(fm: FragmentManager): RealtimeIssueTabAdapter {
+            return RealtimeIssueTabAdapter(fm)
+        }
+    }
 
     var issueList: List<Pair<String, List<RealtimeIssue>>>? = null
 
     override fun getItem(position: Int): Fragment {
-        return fragment.get().apply {
+        return RealtimeIssueChildFragment.create().apply {
             arguments = Bundle().apply {
                 putInt(K_POS, position)
             }

@@ -55,7 +55,7 @@ class MainFragmentTest {
     ////////////////////////////////////////////////////////////////////////////////////
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainFragmentTest::class.java)
+        private val logger = LoggerFactory.getLogger(MainFragmentTest::class.java)
     }
 
     private fun initMock() {

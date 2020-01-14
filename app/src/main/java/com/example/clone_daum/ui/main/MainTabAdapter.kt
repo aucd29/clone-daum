@@ -1,7 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 package com.example.clone_daum.ui.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -24,29 +23,20 @@ import javax.inject.Provider
 // https://medium.com/@naturalwarren/dagger-kotlin-3b03c8dd6e9b
 // https://stackoverflow.com/questions/48442623/dagger-2-constructor-injection-in-kotlin-with-named-arguments
 
-@SuppressLint("WrongConstant")
 class MainTabAdapter @Inject constructor(
     fm: FragmentManager,
-    private val mPreConfig: PreloadConfig
+    private val preConfig: PreloadConfig
 ) : FragmentPagerAdapter(fm) {
-    companion object {
-        private val mLog = LoggerFactory.getLogger(MainTabAdapter::class.java)
-
-        const val K_POSITION = "position"
-    }
-
     // https://dagger.dev/users-guide
-    @Inject lateinit var webViewFragment: Provider<MainWebviewFragment>
-
     private val items: List<TabData>
-        get() = mPreConfig.tabLabelList
+        get() = preConfig.tabLabelList
 
     override fun getItem(position: Int): Fragment {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CREATE TAB ($position) ${url(position)}")
+        if (logger.isDebugEnabled) {
+            logger.debug("CREATE TAB ($position) ${url(position)}")
         }
 
-        return webViewFragment.get().apply {
+        return MainWebviewFragment.create().apply {
             arguments = Bundle().apply {
                 putInt(K_POSITION, position)
                 putString(BaseDaggerWebViewFragment.K_URL, url(position))
@@ -58,8 +48,8 @@ class MainTabAdapter @Inject constructor(
         super.destroyItem(container, position, obj)
 
         if (obj is MainWebviewFragment) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("DESTROY ITEM")
+            if (logger.isDebugEnabled) {
+                logger.debug("DESTROY ITEM")
             }
             obj.disableSwipeRefresh()
             obj.fragmentManager?.beginTransaction()?.apply {
@@ -75,4 +65,14 @@ class MainTabAdapter @Inject constructor(
     private inline fun url(pos: Int)   = data(pos).url
     private inline fun title(pos: Int) = data(pos).name
     private inline fun data(pos: Int) = items[pos]
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(MainTabAdapter::class.java)
+
+        const val K_POSITION = "position"
+
+        fun create(fm: FragmentManager, preConfig: PreloadConfig): MainTabAdapter {
+            return MainTabAdapter(fm, preConfig)
+        }
+    }
 }

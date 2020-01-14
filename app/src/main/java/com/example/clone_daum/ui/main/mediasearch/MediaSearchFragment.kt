@@ -27,7 +27,7 @@ class MediaSearchFragment @Inject constructor(
     override val layoutId = R.layout.media_search_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(MediaSearchFragment::class.java)
+        private val logger = LoggerFactory.getLogger(MediaSearchFragment::class.java)
 
         private const val ANIM_DURATION     = 400L
         private const val ANIM_START_DELAY  = 250L
@@ -40,9 +40,9 @@ class MediaSearchFragment @Inject constructor(
 
     @Inject lateinit var navigator: Navigator
 
-    private var mPauseAnimator: Animator? = null
+    private var pauseAnimator: Animator? = null
 
-    override fun initViewBinding() = mBinding.run {
+    override fun initViewBinding() = binding.run {
         mediaSearchExtendMenuContainer.apply {
             globalLayoutListener {
                 translationY = height.toFloat() * -1
@@ -59,8 +59,8 @@ class MediaSearchFragment @Inject constructor(
                 // 숨김 영역을 조금 감춤
 
                 val newHeight = height + 20.dpToPx(requireContext())
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("MEDIA SEARCH HEIGHT : $height -> $newHeight")
+                if (logger.isDebugEnabled) {
+                    logger.debug("MEDIA SEARCH HEIGHT : $height -> $newHeight")
                 }
 
                 layoutHeight(newHeight)
@@ -76,7 +76,7 @@ class MediaSearchFragment @Inject constructor(
     }
 
     private fun startAnimation() {
-        val mediaSearchButtonLayoutHeight = mBinding.mediaSearchButtonLayout.height.toFloat() * -1
+        val mediaSearchButtonLayoutHeight = binding.mediaSearchButtonLayout.height.toFloat() * -1
         val overshootAnim = AnimParams(0f
             , initValue    = mediaSearchButtonLayoutHeight
             , duration     = ANIM_DURATION
@@ -86,12 +86,12 @@ class MediaSearchFragment @Inject constructor(
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             overshootAnim.reverse = {
-                mPauseAnimator = it
+                pauseAnimator = it
                 it?.pause()
             }
         }
 
-        mViewModel.apply {
+        viewModel.apply {
             // animate set 을 쓰는게 나으려나?
             dimmingBgAlpha.set(AnimParams(1f, duration = ANIM_DURATION))
             containerTransY.set(AnimParams(0f, duration = ANIM_DURATION))
@@ -100,7 +100,7 @@ class MediaSearchFragment @Inject constructor(
     }
 
     private fun endAnimation(endCallback: (() -> Unit)? = null) {
-        val searchExtendMenuHeight = mBinding.mediaSearchExtendMenuContainer.height.toFloat() * -1
+        val searchExtendMenuHeight = binding.mediaSearchExtendMenuContainer.height.toFloat() * -1
         val dimmingBgAlphaAnim  = AnimParams(0f, duration = ANIM_DURATION)
         val containerTransYAnim = AnimParams(searchExtendMenuHeight, duration = ANIM_DURATION
             , endListener = { anim ->
@@ -111,17 +111,17 @@ class MediaSearchFragment @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             dimmingBgAlphaAnim.startDelay  = ANIM_START_DELAY
             containerTransYAnim.startDelay = ANIM_START_DELAY
-            mPauseAnimator?.resume()
+            pauseAnimator?.resume()
         }
 
-        mViewModel.apply {
+        viewModel.apply {
             dimmingBgAlpha.set(dimmingBgAlphaAnim)
             containerTransY.set(containerTransYAnim)
         }
     }
 
     override fun onDestroyView() {
-        mViewModel.apply {
+        viewModel.apply {
             dimmingBgAlpha.set(null)
             containerTransY.set(null)
         }
@@ -136,8 +136,8 @@ class MediaSearchFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onBackPressed(): Boolean {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BACK PRESSED")
+        if (logger.isDebugEnabled) {
+            logger.debug("BACK PRESSED")
         }
 
         endAnimation()
@@ -151,8 +151,8 @@ class MediaSearchFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND EVENT : $cmd")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND EVENT : $cmd")
         }
 
         MediaSearchViewModel.apply {

@@ -3,11 +3,13 @@ package com.example.clone_daum.ui.browser.favorite
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FolderFragmentBinding
 import brigitte.BaseDaggerFragment
+import brigitte.RecyclerAdapter
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.finish
 import com.example.clone_daum.R
+import com.example.clone_daum.model.local.MyFavorite
 import dagger.Binds
-import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -20,19 +22,24 @@ import javax.inject.Inject
 class FolderFragment @Inject constructor(
 ) : BaseDaggerFragment<FolderFragmentBinding, FolderViewModel>() {
     override val layoutId  = R.layout.folder_fragment
+
     companion object {
-        private val mLog = LoggerFactory.getLogger(FolderFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FolderFragment::class.java)
 
         const val K_CURRENT_FOLDER = "current-folder"
     }
 
+    @Inject lateinit var adapter: RecyclerAdapter<MyFavorite>
+
     override fun initViewBinding() {
+        adapter.viewModel = viewModel
+        binding.folderRecycler.adapter = adapter
     }
 
     override fun initViewModelEvents() {
         val currentFolderId = arguments?.getInt(K_CURRENT_FOLDER, 0) ?: 0
 
-        mViewModel.initFolder(currentFolderId)
+        viewModel.initFolder(currentFolderId)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -43,26 +50,26 @@ class FolderFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) = FolderViewModel.run {
         when (cmd) {
-            CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FolderFragment, mViewModel)
+            CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FolderFragment, viewModel)
             CMD_CHANGE_FOLDER      -> changeFolderName()
         }
     }
 
     private fun changeFolderName() {
         val frgmt    = parentFragment
-        val pair = mViewModel.currentFolder()
+        val pair = viewModel.currentFolder()
 
         when (frgmt) {
             is FavoriteProcessFragment -> {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FROM PROCESS")
+                if (logger.isDebugEnabled) {
+                    logger.debug("FROM PROCESS")
                 }
 
                 frgmt.changeFolderName(pair.first, pair.second)
             }
             is FavoriteModifyFragment -> {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("FROM MODIFY")
+                if (logger.isDebugEnabled) {
+                    logger.debug("FROM MODIFY")
                 }
 
                 frgmt.changeFolderName(pair.first, pair.second)
@@ -89,5 +96,13 @@ class FolderFragment @Inject constructor(
     abstract class FolderFragmentModule {
         @Binds
         abstract fun bindSavedStateRegistryOwner(activity: FolderFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideFavoriteModifyAdapter(): RecyclerAdapter<MyFavorite> =
+                RecyclerAdapter(arrayOf(R.layout.folder_item))
+        }
     }
 }

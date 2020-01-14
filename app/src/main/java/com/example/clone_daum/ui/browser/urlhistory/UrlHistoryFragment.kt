@@ -7,7 +7,9 @@ import com.example.clone_daum.ui.browser.BrowserFragment
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
+import com.example.clone_daum.model.local.UrlHistory
 import dagger.Binds
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -21,26 +23,25 @@ class UrlHistoryFragment @Inject constructor(
     override val layoutId  = R.layout.url_history_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
+        private val logger = LoggerFactory.getLogger(UrlHistoryFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var adapter: RecyclerAdapter<UrlHistory>
 
     override fun initViewBinding() {
+        adapter.viewModel = viewModel
+        binding.urlhistoryRecycler.adapter = adapter
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
-            init()
-            initItems()
-        }
-
+        viewModel.initItems()
         urlHistoryBarBackground()
     }
 
     private fun urlHistoryBarBackground() {
-        mViewModel.editMode.observe {
-            mBinding.urlhistoryBar.apply {
+        viewModel.editMode.observe {
+            binding.urlhistoryBar.apply {
                 if (it.get()) {
                     fadeColorResource(android.R.color.white, com.example.clone_daum.R.color.colorAccent)
                 } else {
@@ -57,7 +58,7 @@ class UrlHistoryFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onBackPressed(): Boolean {
-        mViewModel.apply {
+        viewModel.apply {
             if (editMode.get()) {
                 editMode.set(false)
                 return true
@@ -76,18 +77,34 @@ class UrlHistoryFragment @Inject constructor(
     override fun onCommandEvent(cmd: String, data: Any) {
         UrlHistoryViewModel.apply {
             when (cmd) {
-                CMD_BRS_OPEN -> showBrowser(data as String)
+                CMD_BRS_OPEN          -> showBrowser(data as String)
+                CMD_EXPANDABLE_TOGGLE -> toggle(data as UrlHistory)
             }
         }
     }
 
     private fun showBrowser(url: String) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SHOW BROWSER $url")
+        if (logger.isDebugEnabled) {
+            logger.debug("SHOW BROWSER $url")
         }
 
         finish()
         find<BrowserFragment>()?.loadUrl(url)
+    }
+
+    private fun toggle(data: UrlHistory) {
+        if (logger.isDebugEnabled) {
+            logger.debug("DATA TOGGLE")
+        }
+
+        vibrate(10L)
+        viewModel.items.get()?.let {
+            data.toggle(it, adapter)
+
+            if (logger.isDebugEnabled) {
+                logger.debug("URL HISTORY ITEM (${viewModel.items.get()?.size})")
+            }
+        } ?: logger.error("ERROR: ITEMS == NULL")
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -107,5 +124,13 @@ class UrlHistoryFragment @Inject constructor(
     abstract class UrlHistoryFragmentModule {
         @Binds
         abstract fun bindSavedStateRegistryOwner(activity: UrlHistoryFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideUriHistoryAdapter() =
+                RecyclerAdapter<UrlHistory>(arrayOf(R.layout.url_history_item, R.layout.url_history_expandable_item))
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.clone_daum
 
 import android.content.Context
-import android.view.View
 import androidx.multidex.MultiDex
 import com.example.clone_daum.di.component.DaggerAppComponent
 import com.kakao.auth.KakaoAdapter
@@ -23,7 +22,7 @@ class MainApp : DaggerApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        mLog.error("START APP ${BuildConfig.APPLICATION_ID} (${BuildConfig.VERSION_NAME})")
+        logger.error("START APP ${BuildConfig.APPLICATION_ID} (${BuildConfig.VERSION_NAME})")
 
         ViewPump.init(viewPump)
         KakaoSDK.init(kakaoAdapter)
@@ -40,12 +39,12 @@ class MainApp : DaggerApplication() {
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private val mComponent: AndroidInjector<MainApp> by lazy(LazyThreadSafetyMode.NONE) {
+    private val component: AndroidInjector<MainApp> by lazy(LazyThreadSafetyMode.NONE) {
         DaggerAppComponent.factory().create(this)
     }
 
     override fun applicationInjector() =
-        mComponent
+        component
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -55,6 +54,6 @@ class MainApp : DaggerApplication() {
 
 //    https://developers.kakao.com/docs/android/user-management
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainApp::class.java)
+        private val logger = LoggerFactory.getLogger(MainApp::class.java)
     }
 }

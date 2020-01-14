@@ -10,12 +10,15 @@ import com.example.clone_daum.common.PreloadConfig
 import com.example.clone_daum.databinding.WeatherFragmentBinding
 import com.example.clone_daum.ui.Navigator
 import brigitte.BaseDaggerBottomSheetDialogFragment
+import brigitte.RecyclerAdapter
 import brigitte.SCOPE_ACTIVITY
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.runtimepermission.PermissionParams
 import brigitte.runtimepermission.runtimePermissions
+import com.example.clone_daum.model.remote.WeatherDetail
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.Binds
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,7 +36,7 @@ class WeatherFragment
     : BaseDaggerBottomSheetDialogFragment<WeatherFragmentBinding, WeatherViewModel>() {
     override val layoutId = R.layout.weather_fragment
     companion object {
-        private val mLog = LoggerFactory.getLogger(WeatherFragment::class.java)
+        private val logger = LoggerFactory.getLogger(WeatherFragment::class.java)
 
         // 전국 날씨
         private const val MORE_DETAIL_URL = """https://m.search.daum.net/search?w=tot&q=%EC%A0%84%EA%B5%AD%EB%82%A0%EC%94%A8&DA=G29&f=androidapp&DN=ADDA&nil_app=daumapp&enc_all=utf8"""
@@ -41,12 +44,13 @@ class WeatherFragment
 
     init {
         // WeatherViewModel 를 MainFragment 와 공유
-        mViewModelScope = SCOPE_ACTIVITY
+        viewModelScope = SCOPE_ACTIVITY
     }
 
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var adapter: RecyclerAdapter<WeatherDetail>
 
     // 라운드 다이얼로그로 수정
     override fun onCreateDialog(savedInstanceState: Bundle?) =
@@ -60,11 +64,12 @@ class WeatherFragment
     }
 
     override fun initViewBinding() {
-
+        adapter.viewModel = viewModel
+        binding.weatherRecycler.adapter = adapter
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
-        initRecycler()
+    override fun initViewModelEvents() {
+        viewModel.init()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -74,8 +79,8 @@ class WeatherFragment
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND EVENT : $cmd")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND EVENT : $cmd")
         }
 
         WeatherViewModel.apply {
@@ -86,12 +91,11 @@ class WeatherFragment
                     dismiss()
                 }
 
-                CMD_REFRESH_LOCATION -> mViewModel.apply {
+                CMD_REFRESH_LOCATION -> viewModel.apply {
                     visibleProgress.set(false)
-
                 }
 
-                CMD_CHECK_PERMISSION_AND_LOAD_GPS -> mViewModel.apply {
+                CMD_CHECK_PERMISSION_AND_LOAD_GPS -> viewModel.apply {
                     visibleProgress.set(true)
 
                     // 뷰를 위해서 타이머를 주긴했는데
@@ -132,5 +136,14 @@ class WeatherFragment
     abstract class WeatherFragmentModule {
         @Binds
         abstract fun bindSavedStateRegistryOwner(activity: WeatherFragment): SavedStateRegistryOwner
+
+        @dagger.Module
+        companion object {
+            @JvmStatic
+            @Provides
+            fun provideWeatherDetailAdapter(): RecyclerAdapter<WeatherDetail> =
+                RecyclerAdapter(arrayOf(
+                    R.layout.weather_dust_item, R.layout.weather_other_item))
+        }
     }
 }

@@ -8,7 +8,6 @@ import com.example.clone_daum.ui.main.navigation.NavigationLoginViewModel
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 
@@ -22,25 +21,25 @@ class MailFragment @Inject constructor(
 ) : BaseDaggerFragment<MailFragmentBinding, MailViewModel>() {
     override val layoutId = R.layout.mail_fragment
 
-    private val mLoginViewModel: NavigationLoginViewModel by inject()
-    private lateinit var mLoginDataBinding: NavigationLoginViewBinding
+    private val loginViewModel: NavigationLoginViewModel by inject()
+    private lateinit var loginDataBinding: NavigationLoginViewBinding
 
-    override fun initViewBinding() = mBinding.run {
+    override fun initViewBinding() = binding.run {
         // LOGOUT STATUS
-        mLoginDataBinding       = dataBinding(R.layout.navigation_login_view)
-        mLoginDataBinding.model = mLoginViewModel
+        loginDataBinding       = dataBinding(R.layout.navigation_login_view)
+        loginDataBinding.model = loginViewModel
 
-        mailContainer.addView(mLoginDataBinding.naviLoginContainer)
-        mLoginDataBinding.naviLoginContainer.lpmm(mailContainer)
+        mailContainer.addView(loginDataBinding.naviLoginContainer)
+        loginDataBinding.naviLoginContainer.lpmm(mailContainer)
 
         loginViewModelEvents()
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
+    override fun initViewModelEvents() = viewModel.run {
 
     }
 
-    private fun loginViewModelEvents() = mLoginViewModel.run {
+    private fun loginViewModelEvents() = loginViewModel.run {
         message.set(R.string.navi_require_login_check_mail)
     }
 

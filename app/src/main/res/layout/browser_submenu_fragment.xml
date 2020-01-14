@@ -17,12 +17,11 @@
                 android:id="@+id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:bindItems="@{model.items}"
-                app:bindAdapter="@{model.adapter}"
-                app:bindLockedGridLayoutManager="@{model.gridCount}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:bindRecyclerItems="@{model.items}"
+                app:bindLockedGridLayoutManager="@{model.gridCount}"
         />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

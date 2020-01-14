@@ -19,7 +19,6 @@ import dagger.android.support.*
 import io.reactivex.disposables.CompositeDisposable
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2018. 12. 19. <p/>
@@ -41,9 +40,9 @@ import kotlin.reflect.KClass
 abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> constructor(
 ) : BaseActivity<T, M>(), HasSupportFragmentInjector {
 
-    @Inject lateinit var mGlobalDisposable: CompositeDisposable
-    @Inject lateinit var mViewModelProviders: DaggerViewModelProviders
-    @Inject lateinit var mSupportFragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject lateinit var globalDisposable: CompositeDisposable
+    @Inject lateinit var viewModelProviders: DaggerViewModelProviders
+    @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     /**
      * view model 처리, 기본 이벤트 처리를 위한 aware 와 view binding, view model 을 호출 한다.
@@ -55,20 +54,20 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> constructor(
     }
 
     override fun onDestroy() {
-        mGlobalDisposable.clear()
+        globalDisposable.clear()
 
         super.onDestroy()
     }
 
     override fun supportFragmentInjector() =
-        mSupportFragmentInjector
+        supportFragmentInjector
 
     override fun initViewModel() =
-        mViewModelProviders.get(this, mViewModelClass)
+        viewModelProviders.get(this, viewModelClass)
 
     protected inline fun <reified T : ViewModel> inject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(this, T::class.java)
+            viewModelProviders.get(this, T::class.java)
         }
 }
 
@@ -81,7 +80,7 @@ abstract class BaseDaggerActivity<T: ViewDataBinding, M: ViewModel> constructor(
 abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     : BaseFragment<T, M>(), HasSupportFragmentInjector {
 
-    @Inject lateinit var mViewModelProviders: DaggerViewModelProviders
+    @Inject lateinit var viewModelProviders: DaggerViewModelProviders
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onAttach(context: Context) {
@@ -93,27 +92,27 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
     override fun supportFragmentInjector() =
         childFragmentInjector
 
-    override fun initViewModel(): M = mViewModelProviders.let {
-        if (mViewModelScope == SCOPE_ACTIVITY) {
-            it.get(activity(), mViewModelClass)
+    override fun initViewModel(): M = viewModelProviders.let {
+        if (viewModelScope == SCOPE_ACTIVITY) {
+            it.get(activity(), viewModelClass)
         } else {
-            it.get(this, mViewModelClass)
+            it.get(this, viewModelClass)
         }
     }
 
     protected inline fun <reified VM : ViewModel> inject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(this, VM::class.java)
+            viewModelProviders.get(this, VM::class.java)
         }
 
     protected inline fun <reified VM : ViewModel> activityInject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(requireActivity(), VM::class.java)
+            viewModelProviders.get(requireActivity(), VM::class.java)
         }
 
     protected inline fun <reified VM: ViewModel> stateInject(noinline factory: () -> ViewModelProvider.Factory) =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(this, factory(), VM::class.java)
+            viewModelProviders.get(this, factory(), VM::class.java)
         }
 }
 
@@ -126,7 +125,7 @@ abstract class BaseDaggerFragment<T: ViewDataBinding, M: ViewModel>
 abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : BaseDialogFragment<T, M>(), HasSupportFragmentInjector {
 
-    @Inject lateinit var mViewModelProviders: DaggerViewModelProviders
+    @Inject lateinit var viewModelProviders: DaggerViewModelProviders
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onAttach(context: Context) {
@@ -138,22 +137,22 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> constr
     override fun supportFragmentInjector() =
         childFragmentInjector
 
-    override fun initViewModel(): M = mViewModelProviders.let {
-        if (mViewModelScope == SCOPE_ACTIVITY) {
-            it.get(requireActivity(), mViewModelClass)
+    override fun initViewModel(): M = viewModelProviders.let {
+        if (viewModelScope == SCOPE_ACTIVITY) {
+            it.get(requireActivity(), viewModelClass)
         } else {
-            it.get(this@BaseDaggerDialogFragment, mViewModelClass)
+            it.get(this@BaseDaggerDialogFragment, viewModelClass)
         }
     }
 
     protected inline fun <reified VM : ViewModel> inject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(this, VM::class.java)
+            viewModelProviders.get(this, VM::class.java)
         }
 
     protected inline fun <reified VM : ViewModel> activityInject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(requireActivity(), VM::class.java)
+            viewModelProviders.get(requireActivity(), VM::class.java)
         }
 }
 
@@ -166,7 +165,7 @@ abstract class BaseDaggerDialogFragment<T: ViewDataBinding, M: ViewModel> constr
 abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewModel> constructor()
     : BaseBottomSheetDialogFragment<T, M>(), HasSupportFragmentInjector {
 
-    @Inject lateinit var mViewModelProviders: DaggerViewModelProviders
+    @Inject lateinit var viewModelProviders: DaggerViewModelProviders
     @Inject lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onAttach(context: Context) {
@@ -178,22 +177,22 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
     override fun supportFragmentInjector() =
         childFragmentInjector
 
-    override fun initViewModel(): M = mViewModelProviders.let {
-        if (mViewModelScope == SCOPE_ACTIVITY) {
-            it.get(requireActivity(), mViewModelClass)
+    override fun initViewModel(): M = viewModelProviders.let {
+        if (viewModelScope == SCOPE_ACTIVITY) {
+            it.get(requireActivity(), viewModelClass)
         } else {
-            it.get(this@BaseDaggerBottomSheetDialogFragment, mViewModelClass)
+            it.get(this@BaseDaggerBottomSheetDialogFragment, viewModelClass)
         }
     }
 
     protected inline fun <reified VM : ViewModel> inject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(this, VM::class.java)
+            viewModelProviders.get(this, VM::class.java)
         }
 
     protected inline fun <reified VM : ViewModel> activityInject() =
         lazy(LazyThreadSafetyMode.NONE) {
-            mViewModelProviders.get(requireActivity(), VM::class.java)
+            viewModelProviders.get(requireActivity(), VM::class.java)
         }
 }
 
@@ -206,20 +205,21 @@ abstract class BaseDaggerBottomSheetDialogFragment<T: ViewDataBinding, M: ViewMo
 abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> constructor(
 ): BaseDaggerFragment<T, M>() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(BaseDaggerWebViewFragment::class.java)
+        private val logger = LoggerFactory.getLogger(BaseDaggerWebViewFragment::class.java)
+
         const val K_URL = "url"
     }
 
-    protected val mUrl: String
+    protected val url: String
         get() = arguments?.getString(K_URL) ?: ""
 
     abstract val webview: WebView
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
 
-        if (savedInstanceState != null) {
-            webview.restoreState(savedInstanceState)
+        savedInstanceState?.let {
+            webview.restoreState(it)
         }
     }
 
@@ -240,13 +240,13 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> const
     override fun onResume() {
         webview.apply {
             resume()
-            if (url.isNullOrEmpty() || url.contains(mUrl)) {
-
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("RESUME LOAD URL : $mUrl")
+            val currentUrl = arguments?.getString(K_URL)
+            currentUrl?.let {
+                if (logger.isDebugEnabled) {
+                    logger.debug("RESUME LOAD URL : $it")
                 }
 
-                loadUrl(mUrl)
+                loadUrl(it)
             }
         }
 

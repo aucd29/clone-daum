@@ -22,11 +22,11 @@ class DaummapFragment @Inject constructor(
     override val layoutId = R.layout.daummap_fragment
 
     override fun initViewBinding() {
-        mBinding.daummapLayout.apply {
+        binding.daummapLayout.apply {
             initMapLayout(requireActivity())
             callback = { code, data ->
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CODE : $code, ")
+                if (logger.isDebugEnabled) {
+                    logger.debug("CODE : $code, ")
                 }
 
                 when (code) {
@@ -46,8 +46,8 @@ class DaummapFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        observe(mViewModel.polyLine) {
-            mBinding.daummapLayout.mapView?.addPolyline(MapPolyline().apply {
+        observe(viewModel.polyLine) {
+            binding.daummapLayout.mapView?.addPolyline(MapPolyline().apply {
                 lineColor = Color.argb(128, 255, 51, 0)
                 addPoint(it)
             })
@@ -56,7 +56,7 @@ class DaummapFragment @Inject constructor(
 
     override fun onCommandEvent(cmd: String, data: Any) {
         DaummapViewModel.apply {
-            mBinding.daummapLayout.mapView?.let {
+            binding.daummapLayout.mapView?.let {
                 when (cmd) {
                     CMD_TILE_MODE_STANDARD ->
                         it.mapTileMode = MapView.MapTileMode.Standard
@@ -110,6 +110,6 @@ class DaummapFragment @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DaummapFragment::class.java)
+        private val logger = LoggerFactory.getLogger(DaummapFragment::class.java)
     }
 }

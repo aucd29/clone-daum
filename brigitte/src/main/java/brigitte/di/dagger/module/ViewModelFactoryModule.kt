@@ -2,8 +2,6 @@
 package brigitte.di.dagger.module
 
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
-import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import javax.inject.Inject
@@ -40,7 +38,7 @@ class DaggerViewModelFactory @Inject constructor(
 
 @Singleton
 class DaggerViewModelProviders @Inject constructor(
-    private val mFactory: DaggerViewModelFactory
+    private val daggerFactory: DaggerViewModelFactory
 ) {
     fun <T: ViewModel> get(owner: ViewModelStoreOwner, klass: KClass<T>): T {
         // TODO 추후 이걸로 바꾸자
@@ -53,7 +51,7 @@ class DaggerViewModelProviders @Inject constructor(
     }
 
     fun <T: ViewModel> get(owner: ViewModelStoreOwner, clazz: Class<T>): T {
-        return ViewModelProvider(owner, mFactory).get(clazz)
+        return ViewModelProvider(owner, daggerFactory).get(clazz)
     }
 
     fun <T: ViewModel> get(owner: ViewModelStoreOwner, factory: ViewModelProvider.Factory, clazz: Class<T>): T {

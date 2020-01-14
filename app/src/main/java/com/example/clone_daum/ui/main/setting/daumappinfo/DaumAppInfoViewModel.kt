@@ -2,7 +2,7 @@ package com.example.clone_daum.ui.main.setting.daumappinfo
 
 import android.app.Application
 import androidx.databinding.ObservableField
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.clone_daum.BuildConfig
 import com.example.clone_daum.R
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class DaumAppInfoViewModel @Inject constructor(
     app: Application
-) : RecyclerViewModel<SettingType>(app) {
+) : RecyclerViewModel2<SettingType>(app) {
 
     val itemDecoration = ObservableField(OffsetDividerItemDecoration(app,
             R.drawable.shape_divider_gray,  0, 0))
@@ -47,19 +47,19 @@ class DaumAppInfoViewModel @Inject constructor(
         currentVersion.set(current)
         lastestVersion.set(lastest)
 
-        initAdapter(R.layout.setting_category_item,
-            R.layout.setting_normal_item,
-            R.layout.setting_color_item,
-            R.layout.setting_switch_item,
-            R.layout.setting_check_item,
-            R.layout.setting_depth_item,
-            R.layout.daum_app_info_item)
+//        initAdapter(R.layout.setting_category_item,
+//            R.layout.setting_normal_item,
+//            R.layout.setting_color_item,
+//            R.layout.setting_switch_item,
+//            R.layout.setting_check_item,
+//            R.layout.setting_depth_item,
+//            R.layout.daum_app_info_item)
 
         items.set(data)
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DaumAppInfoViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(DaumAppInfoViewModel::class.java)
 
         const val CMD_DAUMAPP_INFO_EVENT = "daumappinfo-event"
         const val CMD_UPDATE             = "daumappinfo-update"

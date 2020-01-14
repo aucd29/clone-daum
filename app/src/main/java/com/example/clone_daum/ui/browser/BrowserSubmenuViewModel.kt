@@ -18,9 +18,9 @@ import com.example.clone_daum.R
 class BrowserSubmenuViewModel @Inject constructor(
     val config: PreloadConfig,
     app: Application
-) : RecyclerViewModel<BrowserSubMenu>(app) {
+) : RecyclerViewModel2<BrowserSubMenu>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(BrowserSubmenuViewModel::class.java)
 
         const val CMD_SUBMENU = "submenu"
     }
@@ -29,11 +29,10 @@ class BrowserSubmenuViewModel @Inject constructor(
     val dismiss   = SingleLiveEvent<Void>()
 
     init {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ITEM (${config.brsSubMenuList.size})\n${config.brsSubMenuList}")
+        if (logger.isDebugEnabled) {
+            logger.debug("ITEM (${config.brsSubMenuList.size})\n${config.brsSubMenuList}")
         }
 
-        initAdapter(R.layout.browser_submenu_item)
         items.set(config.brsSubMenuList)
     }
 }

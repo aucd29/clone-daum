@@ -48,186 +48,186 @@ class Navigator @Inject constructor(
     @param:Named("activityFragmentManager") val manager: FragmentManager
 ) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(Navigator::class.java)
+        private val logger = LoggerFactory.getLogger(Navigator::class.java)
 
         const val CONTAINER          = R.id.rootContainer
         const val FAVORITE_CONTAINER = R.id.favorite_container
     }
 
     fun mainFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MAIN FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("MAIN FRAGMENT")
         }
 
-        manager.show<MainFragment>(FragmentParams(CONTAINER, commit = FragmentCommit.NOW,
+        manager.show<MainFragment>(FragmentParams(CONTAINER, commit = FragmentParams.NOW,
             backStack = false))
     }
 
     fun searchFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("SEARCH FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("SEARCH FRAGMENT")
         }
 
         manager.show<SearchFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.ALPHA))
+            anim = FragmentParams.ALPHA))
     }
 
     fun navigationFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("NAVIGATION FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("NAVIGATION FRAGMENT")
         }
 
         manager.show<NavigationFragment>(FragmentParams(CONTAINER))
     }
 
     fun settingFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("SETTING FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("SETTING FRAGMENT")
         }
 
         manager.show<SettingFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun privacyPolicyFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("PrivacyPolicyFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("PrivacyPolicyFragment")
         }
 
         manager.show<PrivacyPolicyFragment>(FragmentParams(CONTAINER))
     }
 
     fun alarmSettingFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("AlarmSettingFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("AlarmSettingFragment")
         }
 
         manager.show<AlarmSettingFragment>(FragmentParams(CONTAINER))
     }
 
     fun alarmPreferenceFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("AlarmPreferenceFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("AlarmPreferenceFragment")
         }
 
         manager.show<AlarmPreferenceFragment>(FragmentParams(CONTAINER))
     }
 
     fun userHistoryFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("UserHistoryFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("UserHistoryFragment")
         }
 
         manager.show<UserHistoryFragment>(FragmentParams(CONTAINER))
     }
 
     fun downloadPathFragment(): DownloadPathFragment? {
-        if (mLog.isInfoEnabled) {
-            mLog.info("DownloadPathFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("DownloadPathFragment")
         }
 
         return manager.show<DownloadPathFragment>(FragmentParams(CONTAINER)) as DownloadPathFragment
     }
 
     fun daumAppInfoFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("DaumAppInfoFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("DaumAppInfoFragment")
         }
 
         manager.show<DaumAppInfoFragment>(FragmentParams(CONTAINER))
     }
 
     fun researchFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("ResearchFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("ResearchFragment")
         }
 
         manager.show<ResearchFragment>(FragmentParams(CONTAINER))
     }
 
     fun homeMenuFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("EDIT HOME MENU FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("EDIT HOME MENU FRAGMENT")
         }
 
         manager.show<HomeMenuFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun homeTextFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("RESIZE HOME TEXT FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("RESIZE HOME TEXT FRAGMENT")
         }
 
         manager.showDialog(HomeTextFragment(), HomeTextFragment::class.java.simpleName)
     }
 
     fun mailFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MAIL FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("MAIL FRAGMENT")
         }
 
         manager.show<MailFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun cafeFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("CAFE FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("CAFE FRAGMENT")
         }
 
         manager.show<CafeFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun loginFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("LOGIN FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("LOGIN FRAGMENT")
         }
 
         manager.show<LoginFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun alarmFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("ALARM FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("ALARM FRAGMENT")
         }
 
         manager.show<AlarmFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun bookmarkFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("BOOKMARK FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("BOOKMARK FRAGMENT")
         }
 
         manager.show<BookmarkFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun mediaSearchFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MEDIA SEARCH FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("MEDIA SEARCH FRAGMENT")
         }
 
         manager.show<MediaSearchFragment>(FragmentParams(CONTAINER))
     }
 
     fun browserFragment(url: String?, finishInclusive: Boolean = false) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("BROWSER FRAGMENT $url")
+        if (logger.isInfoEnabled) {
+            logger.info("BROWSER FRAGMENT $url")
         }
 
         if (url == null) {
-            mLog.error("ERROR: URL == NULL")
+            logger.error("ERROR: URL == NULL")
 
             return
         }
 
         manager.show<BrowserFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.ALPHA,
+            anim = FragmentParams.ALPHA,
             bundle = Bundle().apply {
                 putString(BrowserFragment.K_URL, url)
                 putBoolean(BrowserFragment.K_FINISH_INCLUSIVE, finishInclusive)
@@ -235,70 +235,70 @@ class Navigator @Inject constructor(
     }
 
     fun speechFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("SPEECH FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("SPEECH FRAGMENT")
         }
 
         manager.show<SpeechFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun musicFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MUSIC FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("MUSIC FRAGMENT")
         }
 
         manager.show<MusicFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun flowerFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FLOWER FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("FLOWER FRAGMENT")
         }
 
         manager.show<FlowerFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun barcodeFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("BARCODE FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("BARCODE FRAGMENT")
         }
 
         manager.show<BarcodeFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun barcodeInputFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("BARCODE INPUT FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("BARCODE INPUT FRAGMENT")
         }
 
         manager.show<BarcodeInputFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun browserSubFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("BROWSER SUBMENU FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("BROWSER SUBMENU FRAGMENT")
         }
 
         manager.showDialog(BrowserSubmenuFragment(), "brs-submenu")
     }
 
     fun favoriteFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("FAVORITE FRAGMENT")
         }
 
         manager.show<FavoriteFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun favoriteModifyFragment(folderId: Int = 0) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE MODIFY FRAGMENT ($folderId)")
+        if (logger.isInfoEnabled) {
+            logger.info("FAVORITE MODIFY FRAGMENT ($folderId)")
         }
 
         manager.show<FavoriteModifyFragment>(FragmentParams(CONTAINER,
@@ -308,24 +308,24 @@ class Navigator @Inject constructor(
     }
 
     fun favoriteFolderFragment(folderId: Int = 0) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE FOLDER FRAGMENT ($folderId)")
+        if (logger.isInfoEnabled) {
+            logger.info("FAVORITE FOLDER FRAGMENT ($folderId)")
         }
 
         manager.show<FavoriteFolderFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT,
+            anim = FragmentParams.RIGHT,
             bundle = Bundle().apply {
                 putInt(FavoriteFolderFragment.K_FOLDER, folderId)
             }))
     }
 
     fun favoriteProcessFragment(title: String, url: String) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE PROCESS(ADD) FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("FAVORITE PROCESS(ADD) FRAGMENT")
         }
 
         manager.show<FavoriteProcessFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT,
+            anim = FragmentParams.RIGHT,
             bundle = Bundle().apply {
                 putString(FavoriteProcessFragment.K_TITLE, title)
                 putString(FavoriteProcessFragment.K_URL, url)
@@ -333,42 +333,42 @@ class Navigator @Inject constructor(
     }
 
     fun favoriteProcessFragment(favorite: MyFavorite) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FAVORITE PROCESS(MODIFY) FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("FAVORITE PROCESS(MODIFY) FRAGMENT")
         }
 
         // add fragment 로 ui 를 대신해 봄
         manager.show<FavoriteProcessFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT,
+            anim = FragmentParams.RIGHT,
             bundle = Bundle().apply {
                 putSerializable(FavoriteProcessFragment.K_MODIFY, favorite)
             }))
     }
 
     fun folderFragment(child: FragmentManager, currentFolderId: Int = 0, container: Int = FAVORITE_CONTAINER) {
-        if (mLog.isInfoEnabled) {
-            mLog.info("FOLDER FRAGMENT ($currentFolderId)")
+        if (logger.isInfoEnabled) {
+            logger.info("FOLDER FRAGMENT ($currentFolderId)")
         }
 
         child.show<FolderFragment>(FragmentParams(container,
-            anim = FragmentAnim.RIGHT,
+            anim = FragmentParams.RIGHT,
             bundle = Bundle().apply {
                 putInt(FolderFragment.K_CURRENT_FOLDER, currentFolderId)
             }))
     }
 
     fun urlHistoryFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("URL HISTORY FRAGMENT")
+        if (logger.isInfoEnabled) {
+            logger.info("URL HISTORY FRAGMENT")
         }
 
         manager.show<UrlHistoryFragment>(FragmentParams(CONTAINER,
-            anim = FragmentAnim.RIGHT))
+            anim = FragmentParams.RIGHT))
     }
 
     fun mapFragment() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("MapFragment")
+        if (logger.isInfoEnabled) {
+            logger.info("MapFragment")
         }
 
         manager.show<DaummapFragment>(FragmentParams(CONTAINER))

@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor(
     app: Application
 ) : CommandEventViewModel(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(MainViewModel::class.java)
 
         const val INDEX_NEWS = 1
 
@@ -58,8 +58,8 @@ class MainViewModel @Inject constructor(
 
     init {
         tabChangedCallback.set(TabSelectedCallback {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("CHANGED MAIN TAB ${it?.position}")
+            if (logger.isDebugEnabled) {
+                logger.debug("CHANGED MAIN TAB ${it?.position}")
             }
 
             tabChangedLive.value = it
@@ -69,8 +69,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun appbarHeight(appbarHeight: Int, containerHeight: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("APPBAR HEIGHT: $appbarHeight, CONTAINER HEIGHT: $containerHeight")
+        if (logger.isDebugEnabled) {
+            logger.debug("APPBAR HEIGHT: $appbarHeight, CONTAINER HEIGHT: $containerHeight")
         }
 
         spinnerOffsetEnd.set(appbarHeight)
@@ -85,8 +85,8 @@ class MainViewModel @Inject constructor(
         appbarChangedListener.set { maxScroll, offset ->
             val percentage = 1f - abs(offset).toFloat() / maxScroll.toFloat()
 
-            if (mLog.isTraceEnabled) {
-                mLog.trace("APPBAR (ALPHA) : $percentage")
+            if (logger.isTraceEnabled) {
+                logger.trace("APPBAR (ALPHA) : $percentage")
             }
 
             appbarAlpha.set(percentage)
@@ -102,8 +102,8 @@ class MainViewModel @Inject constructor(
             val max = appbarHeight * -1
 
             magneticEffect(it, y, max) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("MAGNETIC EFFECT : ${if (it) "UP" else "DOWN"}")
+                if (logger.isDebugEnabled) {
+                    logger.debug("MAGNETIC EFFECT : ${if (it) "UP" else "DOWN"}")
                 }
 
                 appbarMagneticEffectLive.value = it

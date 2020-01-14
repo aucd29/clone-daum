@@ -9,17 +9,18 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.NavigationFragmentBinding
 import com.example.clone_daum.common.Config
 import brigitte.*
+import brigitte.di.dagger.module.RxSchedulers
 import brigitte.di.dagger.scope.FragmentScope
 import dagger.android.ContributesAndroidInjector
 import javax.inject.Inject
 import com.example.clone_daum.R
+import com.example.clone_daum.model.local.FrequentlySite
 import com.example.clone_daum.model.remote.Sitemap
 import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.login.LoginViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.FrequentlySiteViewModel
 import com.example.clone_daum.ui.main.navigation.shortcut.SitemapViewModel
 import com.example.clone_daum.ui.main.setting.SettingViewModel
-import com.google.android.material.navigation.NavigationView
 import dagger.Binds
 import dagger.Provides
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +38,7 @@ class NavigationFragment constructor(
     override val layoutId = R.layout.navigation_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(NavigationFragment::class.java)
+        private val logger = LoggerFactory.getLogger(NavigationFragment::class.java)
 
         private val URI_CAFE = "https://m.cafe.daum.net"
         private val URI_MAIL = "https://m.mail.daum.net/"
@@ -45,13 +46,16 @@ class NavigationFragment constructor(
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
+    @Inject lateinit var schedulers: RxSchedulers
+    @Inject lateinit var sitemapAdapter: RecyclerAdapter<Sitemap>
+    @Inject lateinit var frequentlySiteAdapter: RecyclerAdapter<FrequentlySite>
 
-    private val mTranslationX: Float by lazy { (-30f).dpToPx(requireContext()) }
-    private val mSitemapModel: SitemapViewModel by inject()
-    private val mFrequentlySiteModel: FrequentlySiteViewModel by inject()
-    private val mLoginViewModel: LoginViewModel by activityInject()
+    private val translationX: Float by lazy { (-30f).dpToPx(requireContext()) }
+    private val sitemapViewModel: SitemapViewModel by inject()
+    private val frequentlySiteViewModel: FrequentlySiteViewModel by inject()
+    private val loginViewModel: LoginViewModel by activityInject()
 
-    private val mStackChanger: () -> Unit = {
+    private val stackChanger: () -> Unit = {
         val name = this@NavigationFragment.javaClass.simpleName
         val currentName = activity?.supportFragmentManager?.current?.javaClass?.simpleName
 
@@ -65,19 +69,25 @@ class NavigationFragment constructor(
 
         // sitemap, frequently 의 view model 은 shortcut fragment 내에서만 동작해야 하므로
         // injectOf 를 이용 한다.
-        mBinding.apply {
-            sitemapModel        = mSitemapModel
-            frequentlySiteModel = mFrequentlySiteModel
-            loginModel          = mLoginViewModel
+        binding.apply {
+            sitemapModel        = sitemapViewModel
+            frequentlySiteModel = frequentlySiteViewModel
+            loginModel          = loginViewModel
         }
 
-        addCommandEventModels(mSitemapModel, mFrequentlySiteModel)
+        addCommandEventModels(sitemapViewModel, frequentlySiteViewModel)
     }
 
-    override fun initViewBinding() = mBinding.run {
+    override fun initViewBinding() = binding.run {
+        sitemapAdapter.viewModel = sitemapViewModel
+        naviSitemap.adapter      = sitemapAdapter
+
+        frequentlySiteAdapter.viewModel = frequentlySiteViewModel
+        naviFrequentlySite.adapter      = frequentlySiteAdapter
+
         naviContainer.apply {
             singleTimer(50)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(schedulers.ui())
                 .subscribe { _ -> openDrawer(GravityCompat.END) }
 
             addDrawerListener(this@NavigationFragment)
@@ -85,17 +95,17 @@ class NavigationFragment constructor(
 
         naviView.layoutWidth(config.SCREEN.x)
         addStackChangeListener()
-        mLoginViewModel.checkIsLoginSession()
+        loginViewModel.checkIsLoginSession()
 
         Unit
     }
 
     override fun initViewModelEvents() {
-        mFrequentlySiteModel.init(disposable())
-        mLoginViewModel.run {
+        frequentlySiteViewModel.init()
+        loginViewModel.run {
             observe(status) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("LOGIN STATUS : $it")
+                if (logger.isInfoEnabled) {
+                    logger.info("LOGIN STATUS : $it")
                 }
 
                 // 로그인/로그아웃 시 닉네임을 저장하여 사용이 쉽게 한다.
@@ -112,20 +122,20 @@ class NavigationFragment constructor(
 
     override fun onDestroyView() {
         removeStackChangeListener()
-        mBinding.naviContainer.removeDrawerListener(this@NavigationFragment)
+        binding.naviContainer.removeDrawerListener(this@NavigationFragment)
 
         super.onDestroyView()
     }
 
     override fun commandFinish() {
-        mBinding.naviContainer.closeDrawer(GravityCompat.END)
+        binding.naviContainer.closeDrawer(GravityCompat.END)
     }
 
     private fun addStackChangeListener() =
-        activity?.supportFragmentManager?.addOnBackStackChangedListener(mStackChanger)
+        activity?.supportFragmentManager?.addOnBackStackChangedListener(stackChanger)
 
     private fun removeStackChangeListener() =
-        activity?.supportFragmentManager?.removeOnBackStackChangedListener(mStackChanger)
+        activity?.supportFragmentManager?.removeOnBackStackChangedListener(stackChanger)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -134,8 +144,8 @@ class NavigationFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND EVENT $cmd = $data")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND EVENT $cmd = $data")
         }
 
         if (checkRequireLogin(cmd)) {
@@ -179,7 +189,7 @@ class NavigationFragment constructor(
         // TODO 로그인이 필요한 항목의 경우 이곳에서 정의 한다.
         NavigationViewModel.CMD_BOOKMARK,
         NavigationViewModel.CMD_MAIL->
-            if (mLoginViewModel.status.value == true) {
+            if (loginViewModel.status.value == true) {
                 loginFragment()
 
                 true
@@ -193,7 +203,7 @@ class NavigationFragment constructor(
         navigator.settingFragment()
 
     private fun loginFragment() {
-        if (mLoginViewModel.status.value == true) {
+        if (loginViewModel.status.value == true) {
             return
         }
 
@@ -239,12 +249,12 @@ class NavigationFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     private fun translationLeft() {
-        mBinding.root.animate().translationX(mTranslationX).start()
+        binding.root.animate().translationX(translationX).start()
     }
 
     private fun translationRight() {
-        with(mBinding.root) {
-            if (translationX == mTranslationX) {
+        with(binding.root) {
+            if (translationX == this@NavigationFragment.translationX) {
                 animate().translationX(0f).start()
             }
         }
@@ -256,8 +266,8 @@ class NavigationFragment constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    override fun onBackPressed() = mBinding.run {
-        if (naviContainer.isDrawerVisible(mBinding.naviView)) {
+    override fun onBackPressed() = binding.run {
+        if (naviContainer.isDrawerVisible(naviView)) {
             naviContainer.closeDrawer(GravityCompat.END)
         } else {
             finish()
@@ -276,7 +286,7 @@ class NavigationFragment constructor(
         finish()
     }
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-        mViewModel.backgroundAlpha.set(slideOffset)
+        viewModel.backgroundAlpha.set(slideOffset)
     }
     override fun onDrawerStateChanged(newState: Int) { }
     override fun onDrawerOpened(drawerView: View) { }
@@ -308,6 +318,18 @@ class NavigationFragment constructor(
             @Provides
             fun provideNavigationFragmentManager(fragment: Fragment): FragmentManager =
                 fragment.childFragmentManager
+
+            @JvmStatic
+            @Provides
+            fun provideSitemapAdapter(): RecyclerAdapter<Sitemap> =
+                RecyclerAdapter(arrayOf(R.layout.sitemap_item))
+
+            @JvmStatic
+            @Provides
+            fun provideFrequentlySiteAdapter(): RecyclerAdapter<FrequentlySite> =
+                RecyclerAdapter(arrayOf(R.layout.frequently_item))
+
+
         }
     }
 }

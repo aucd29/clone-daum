@@ -6,24 +6,24 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.UrlHistory
 import com.example.clone_daum.model.local.UrlHistoryDao
 import brigitte.*
+import brigitte.di.dagger.module.RxSchedulers
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 4. 10. <p/>
  */
 
 class UrlHistoryViewModel @Inject constructor(
-    private val mUrlHistoryDao: UrlHistoryDao,
-    app: Application
-) : RecyclerViewModel<UrlHistory>(app) {
-
+    app: Application,
+    private val urlHistoryDao: UrlHistoryDao,
+    private val schedulers: RxSchedulers
+) : RecyclerViewModel2<UrlHistory>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(UrlHistoryViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(UrlHistoryViewModel::class.java)
 
         const val CMD_BRS_OPEN          = "brs-open"
         const val CMD_MODIFY            = "url-history-modify"
@@ -32,8 +32,8 @@ class UrlHistoryViewModel @Inject constructor(
         const val CMD_CHECKBOX_TOGGLE   = "url-history-checkbox-toggle"
     }
 
-    private val mDisposable = CompositeDisposable()
-    private val dateCal   = DateCalculator<UrlHistory>()
+    private val dp           = CompositeDisposable()
+    private val dateCal      = DateCalculator<UrlHistory>()
     private var blockingFlag = true
 
     val editMode     = ObservableBoolean(false)
@@ -44,9 +44,9 @@ class UrlHistoryViewModel @Inject constructor(
         dateCal.dateFormat(string(R.string.history_date_format))
     }
 
-    fun init() {
-        initAdapter(R.layout.url_history_item, R.layout.url_history_expandable_item)
-    }
+//    fun init() {
+//        initAdapter(R.layout.url_history_item, R.layout.url_history_expandable_item)
+//    }
 
     fun toggleCheckbox(check: ObservableBoolean) {
         check.toggle()
@@ -55,8 +55,8 @@ class UrlHistoryViewModel @Inject constructor(
     fun initItems() {
         val historyLabels = app.stringArray(R.array.history_labels)
 
-        mDisposable.add(mUrlHistoryDao.select()
-            .subscribeOn(Schedulers.io())
+        dp.add(urlHistoryDao.select()
+            .subscribeOn(schedulers.io())
             .filter { blockingFlag }
             .map {
                 // BRS 에서 finished 가 뒤늦게 들어온 경우
@@ -64,8 +64,8 @@ class UrlHistoryViewModel @Inject constructor(
                 // 그래서 일단 filter 를 둠
                 blockingFlag = false
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("RAW HISTORY DATA (${it.size})")
+                if (logger.isDebugEnabled) {
+                    logger.debug("RAW HISTORY DATA (${it.size})")
                 }
 
                 dateCal.clear()
@@ -77,8 +77,8 @@ class UrlHistoryViewModel @Inject constructor(
                         val dateFormat    = dateCal.dateFormatString(it)?.let { dts -> dts } ?: ""
                         val title = String.format(historyLabels[it], dateFormat)
 
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("TITLE : $title")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("TITLE : $title")
                         }
 
                         newList.add(UrlHistory(title, null, 0).apply {
@@ -89,14 +89,14 @@ class UrlHistoryViewModel @Inject constructor(
                 }
 
                 // 0번째 아이템은 화면에 보이도록
-                newList[0].toggle(newList, adapter.get())
+                newList[0].toggle(newList, null)
 
                 newList
             }
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulers.ui())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("URL HISTORY ITEM (${it.size})")
+                if (logger.isDebugEnabled) {
+                    logger.debug("URL HISTORY ITEM (${it.size})")
                 }
 
                 items.set(it)
@@ -104,8 +104,8 @@ class UrlHistoryViewModel @Inject constructor(
     }
 
     fun deleteList(state: Boolean, item: UrlHistory) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ITEM state: $state, id: ${item._id} $item")
+        if (logger.isDebugEnabled) {
+            logger.debug("ITEM state: $state, id: ${item._id} $item")
         }
 
         if (state) {
@@ -127,22 +127,9 @@ class UrlHistoryViewModel @Inject constructor(
         when (cmd) {
             CMD_MODIFY            -> editModeToggle()
             CMD_DELETE            -> deleteUrlHistories()
-            CMD_EXPANDABLE_TOGGLE -> toggle(data as UrlHistory)
             CMD_CHECKBOX_TOGGLE   -> checkboxToggle()
-            else -> super.command(cmd, data)
+            else                  -> super.command(cmd, data)
         }
-    }
-
-    private fun toggle(data: UrlHistory) {
-        app.vibrate(10L)
-
-        items.get()?.let {
-            data.toggle(it, adapter.get())
-
-            if (mLog.isDebugEnabled) {
-                mLog.debug("URL HISTORY ITEM (${items.get()?.size})")
-            }
-        } ?: mLog.error("ERROR: ITEMS == NULL")
     }
 
     private fun editModeToggle() {
@@ -156,18 +143,19 @@ class UrlHistoryViewModel @Inject constructor(
     private fun deleteUrlHistories() {
         blockingFlag = true
 
-        mDisposable.add(mUrlHistoryDao.delete(selectedList)
+        dp.add(urlHistoryDao.delete(selectedList)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DELETED OK")
+                if (logger.isDebugEnabled) {
+                    logger.debug("DELETED OK")
                 }
             }, ::errorLog))
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
+
         super.onCleared()
     }
 }

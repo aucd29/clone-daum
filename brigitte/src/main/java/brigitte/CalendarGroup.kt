@@ -124,7 +124,7 @@ interface IDateCalculator {
 
 class DateCalculator<T : IDateCalculator> constructor() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(DateCalculator::class.java)
+        private val logger = LoggerFactory.getLogger(DateCalculator::class.java)
 
         const val K_TODAY     = 0
         const val K_YESTERDAY = 1
@@ -133,10 +133,10 @@ class DateCalculator<T : IDateCalculator> constructor() {
         const val K_OTHER     = 4
     }
 
-    private val mToday = Calendar.getInstance()
-    private val mYesterday by lazy(LazyThreadSafetyMode.NONE) { mToday.dayAgo(-1) }
-    private val mWeek      by lazy(LazyThreadSafetyMode.NONE) { mToday.prevWeek() }
-    private val mMonth     by lazy(LazyThreadSafetyMode.NONE) { mToday.prevMonth() }
+    private val today = Calendar.getInstance()
+    private val yesterday by lazy(LazyThreadSafetyMode.NONE) { today.dayAgo(-1) }
+    private val week      by lazy(LazyThreadSafetyMode.NONE) { today.prevWeek() }
+    private val month     by lazy(LazyThreadSafetyMode.NONE) { today.prevMonth() }
 
     var mapData = hashMapOf<Int, ArrayList<T>>()
     var dateFormat: SimpleDateFormat? = null
@@ -151,10 +151,10 @@ class DateCalculator<T : IDateCalculator> constructor() {
 
     fun dateFormatString(value: Int) =
         when (value) {
-            K_TODAY     -> dateFormat(mToday)
-            K_YESTERDAY -> dateFormat(mYesterday)
-            K_WEEK      -> dateFormat(mWeek)
-            K_MONTH     -> dateFormat(mMonth)
+            K_TODAY     -> dateFormat(today)
+            K_YESTERDAY -> dateFormat(yesterday)
+            K_WEEK      -> dateFormat(week)
+            K_MONTH     -> dateFormat(month)
             else        -> null
         }
 
@@ -171,10 +171,10 @@ class DateCalculator<T : IDateCalculator> constructor() {
     }
 
     private fun initToday() {
-        mToday.setYmd()
+        today.setYmd()
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("TODAY: ${mToday.timeInMillis.toDateString()}")
+        if (logger.isTraceEnabled) {
+            logger.trace("TODAY: ${today.timeInMillis.toDateString()}")
         }
     }
 
@@ -188,10 +188,10 @@ class DateCalculator<T : IDateCalculator> constructor() {
         list.add(date)
     }
 
-    private fun isToday(date: T) = isLow(mToday, date)
-    private fun isYesterday(date: T) = isLow(mYesterday, date)
-    private fun isWeek(date: T) = isLow(mWeek, date)
-    private fun isMonth(date: T) = isLow(mMonth, date)
+    private fun isToday(date: T) = isLow(today, date)
+    private fun isYesterday(date: T) = isLow(yesterday, date)
+    private fun isWeek(date: T) = isLow(week, date)
+    private fun isMonth(date: T) = isLow(month, date)
 
     private inline fun isLow(cal: Calendar?, date: T) =
         cal?.isLow(date.timeInMillis) ?: false

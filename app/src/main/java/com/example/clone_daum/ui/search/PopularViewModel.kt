@@ -7,7 +7,8 @@ import androidx.databinding.ObservableInt
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.example.clone_daum.model.remote.PopularSearchedWord
 import com.example.clone_daum.model.remote.PopularKeyword
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
+import brigitte.di.dagger.module.RxSchedulers
 import brigitte.jsonParse
 import com.example.clone_daum.R
 import io.reactivex.Observable
@@ -23,17 +24,18 @@ import javax.inject.Provider
  */
 
 class PopularViewModel @Inject constructor(
-    private val mDisposable: CompositeDisposable,
-    private val mLayoutManager: Provider<ChipsLayoutManager>,
+    private val dp: CompositeDisposable,
+    private val layoutManager: Provider<ChipsLayoutManager>,
+    private val schedulers: RxSchedulers,
     app: Application
-) : RecyclerViewModel<PopularKeyword>(app) {
+) : RecyclerViewModel2<PopularKeyword>(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(PopularViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(PopularViewModel::class.java)
 
         const val CMD_BRS_SEARCH = "brs-search"
     }
 
-    private var mPopularList: PopularSearchedWord? = null
+    private var popularList: PopularSearchedWord? = null
 
     val viewPopular       = ObservableInt(View.GONE)
     val chipLayoutManager = ObservableField<ChipsLayoutManager>()
@@ -45,17 +47,17 @@ class PopularViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun load(html: String) {
-        if (mPopularList == null) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("HTML PARSE (POPULAR LIST)")
+        if (popularList == null) {
+            if (logger.isDebugEnabled) {
+                logger.debug("HTML PARSE (POPULAR LIST)")
             }
 
-            mDisposable.add(Observable.just(html)
-                .subscribeOn(Schedulers.io())
+            dp.add(Observable.just(html)
+                .subscribeOn(schedulers.io())
                 .map(::parsePopular)
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(schedulers.ui())
                 .subscribe({
-                    mPopularList = it
+                    popularList = it
                 }, ::errorLog))
         }
     }
@@ -67,25 +69,22 @@ class PopularViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun init() {
-        chipLayoutManager.set(mLayoutManager.get())
-
-        // CHIP 레이아웃 의 아이템을 선택할 경우에 대해 처리 한다.
-        initAdapter(R.layout.search_recycler_popular_item)
+        chipLayoutManager.set(layoutManager.get())
         selectPopularList()
     }
 
     private fun selectPopularList() {
-        mPopularList?.let {
+        popularList?.let {
             val pos = System.currentTimeMillis() % it.items.size
             val chooseItem = it.items[pos.toInt()].item
-            if (mLog.isDebugEnabled) {
-                mLog.debug("SELECTED LIST $pos, SIZE : ${chooseItem.size}")
+            if (logger.isDebugEnabled) {
+                logger.debug("SELECTED LIST $pos, SIZE : ${chooseItem.size}")
                 var keywords = ""
                 chooseItem.forEach { f ->
                     keywords += f.keyword + ", "
                 }
 
-                mLog.debug(keywords)
+                logger.debug(keywords)
             }
 
             this.items.set(chooseItem)
@@ -123,7 +122,7 @@ class PopularViewModel @Inject constructor(
         val e = html.indexOf(ek, f)
 
         if (f == fk.length || e == -1) {
-            mLog.error("ERROR: INVALID HTML DATA")
+            logger.error("ERROR: INVALID HTML DATA")
 
             return data
         }
@@ -134,11 +133,11 @@ class PopularViewModel @Inject constructor(
         try {
             data = plaintext.jsonParse()
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
 
             return null
         }

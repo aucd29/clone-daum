@@ -4,10 +4,9 @@ import android.app.Application
 import android.os.Environment
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import brigitte.edit
 import brigitte.prefs
-import brigitte.string
 import brigitte.widget.viewpager.OffsetDividerItemDecoration
 import com.example.clone_daum.R
 import com.example.clone_daum.model.local.FileInfo
@@ -22,10 +21,10 @@ import javax.inject.Inject
 
 class DownloadPathViewModel @Inject constructor(
     app: Application
-) : RecyclerViewModel<FileInfo>(app) {
+) : RecyclerViewModel2<FileInfo>(app) {
 
-    val title       = ObservableField(string(R.string.setting_privacy))
-    val currentRoot = MutableLiveData<String>()
+    val title          = ObservableField(string(R.string.setting_privacy))
+    val currentRoot    = MutableLiveData<String>()
     val itemDecoration = ObservableField(OffsetDividerItemDecoration(app,
             R.drawable.shape_divider_gray,  0, 0))
 
@@ -36,8 +35,8 @@ class DownloadPathViewModel @Inject constructor(
 
         currentRoot.value = downloadPath
 
-        initAdapter(R.layout.download_path_up_item,
-            R.layout.download_path_file_item)
+//        initAdapter(R.layout.download_path_up_item,
+//            R.layout.download_path_file_item)
     }
 
     fun loadFileList() {
@@ -45,15 +44,15 @@ class DownloadPathViewModel @Inject constructor(
         val current = currentRoot.value!!
         itemList.add(FileInfo(0, File(""), FileInfo.T_UP))
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("LOAD FILE LIST $current")
+        if (logger.isDebugEnabled) {
+            logger.debug("LOAD FILE LIST $current")
         }
 
         var i = 1
         val fp = File(current)
         fp.listFiles()?.forEach {
-            if (mLog.isTraceEnabled) {
-                mLog.trace("FILE PATH ${it.name}")
+            if (logger.isTraceEnabled) {
+                logger.trace("FILE PATH ${it.name}")
             }
 
             if (it.isDirectory) {
@@ -68,8 +67,8 @@ class DownloadPathViewModel @Inject constructor(
         when (cmd) {
             CMD_CHOOSE_DOWNLOAD_PATH -> {
                 app.prefs().edit {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("CMD_CHOOSE_DOWNLOAD_PATH ${currentRoot.value}")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("CMD_CHOOSE_DOWNLOAD_PATH ${currentRoot.value}")
                     }
 
                     putString(SettingViewModel.PREF_DOWNLOADPATH, currentRoot.value!!)
@@ -94,7 +93,7 @@ class DownloadPathViewModel @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DownloadPathViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(DownloadPathViewModel::class.java)
 
         const val CMD_CHOOSE_DOWNLOAD_PATH = "choose-download-path"
         const val CMD_LEAVE_DIR = "leave-dir"

@@ -1,7 +1,7 @@
 package com.example.clone_daum.ui.main.bookmark
 
 import android.app.Application
-import brigitte.RecyclerViewModel
+import brigitte.RecyclerViewModel2
 import com.example.clone_daum.model.remote.Bookmark
 import javax.inject.Inject
 
@@ -11,6 +11,6 @@ import javax.inject.Inject
 
 class BookmarkViewModel @Inject constructor(
     app: Application
-) : RecyclerViewModel<Bookmark>(app) {
+) : RecyclerViewModel2<Bookmark>(app) {
 
 }

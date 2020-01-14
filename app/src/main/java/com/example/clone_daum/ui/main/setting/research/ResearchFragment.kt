@@ -22,7 +22,7 @@ class ResearchFragment @Inject constructor(
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             title(R.string.setting_research)
             researchSettingType()
         }

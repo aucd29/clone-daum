@@ -23,8 +23,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:bindAdapter="@{model.adapter}"
-                app:bindItems="@{model.items}"
+                app:bindRecyclerItems="@{model.items}"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

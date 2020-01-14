@@ -2,7 +2,6 @@ package com.example.clone_daum.ui.main.login
 
 import android.app.Application
 import androidx.databinding.ObservableField
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import brigitte.arch.SingleLiveEvent
 import brigitte.viewmodel.CommandEventViewModel
@@ -27,12 +26,12 @@ import javax.inject.Inject
  */
 
 class LoginViewModel @Inject constructor(
-    private val mUserManagement: UserManagement,
-    private val mAuthService: AuthService,
+    private val userManagement: UserManagement,
+    private val authService: AuthService,
     app: Application
 ) : CommandEventViewModel(app), ISessionCallback {
     companion object {
-        private val mLog = LoggerFactory.getLogger(LoginViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(LoginViewModel::class.java)
     }
 
     // public
@@ -50,14 +49,14 @@ class LoginViewModel @Inject constructor(
     }
 
     fun logout() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("REQUEST LOGOUT")
+        if (logger.isDebugEnabled) {
+            logger.debug("REQUEST LOGOUT")
         }
 
-        mUserManagement.requestLogout(object: LogoutResponseCallback() {
+        userManagement.requestLogout(object: LogoutResponseCallback() {
             override fun onCompleteLogout() {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("COMPLETE LOGOUT")
+                if (logger.isDebugEnabled) {
+                    logger.debug("COMPLETE LOGOUT")
                 }
 
                 status.postValue(false)
@@ -66,11 +65,11 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun requestMe() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("REQUEST ME (GET USER INFO)")
+        if (logger.isDebugEnabled) {
+            logger.debug("REQUEST ME (GET USER INFO)")
         }
 
-        mUserManagement.me(object: MeV2ResponseCallback() {
+        userManagement.me(object: MeV2ResponseCallback() {
             override fun onSuccess(result: MeV2Response?) {
                 result?.let {
                     // 이 정도인데 맵퍼가 필요할까?
@@ -84,22 +83,22 @@ class LoginViewModel @Inject constructor(
                     status.postValue(true)
 
                     info.run {
-                        if (mLog.isDebugEnabled) {
-                            mLog.debug("\n====\nLOGIN INFO\n====\n" +
-                                    "id        : $id\n" +
-                                    "thumbnail : ${thumbnail.get()}\n" +
-                                    "nickname  : ${nickname.get()}")
+                        if (logger.isDebugEnabled) {
+                            logger.debug("\n====\nLOGIN INFO\n====\n" +
+                                "id        : $id\n" +
+                                "thumbnail : ${thumbnail.get()}\n" +
+                                "nickname  : ${nickname.get()}")
                         }
                     }
                 }
             }
 
             override fun onSessionClosed(e: ErrorResult?) {
-                mLog.error("ERROR: SESSION CLOSED")
+                logger.error("ERROR: SESSION CLOSED")
 
                 status.postValue(false)
                 e?.let {
-                    mLog.error("${e.errorCode} : ${e.errorMessage}")
+                    logger.error("${e.errorCode} : ${e.errorMessage}")
                     snackbar(e.errorMessage)
                 }
 
@@ -109,35 +108,35 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun accessTokenInfo() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("REQUEST ACCESS TOKEN")
+        if (logger.isDebugEnabled) {
+            logger.debug("REQUEST ACCESS TOKEN")
         }
 
-        mAuthService.requestAccessTokenInfo(object: ApiResponseCallback<AccessTokenInfoResponse>() {
+        authService.requestAccessTokenInfo(object: ApiResponseCallback<AccessTokenInfoResponse>() {
             override fun onSuccess(result: AccessTokenInfoResponse) {
                 val token = AccessToken(result.userId, result.expiresInMillis)
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("RECEIVED ACCESS TOKEN\n" +
+                if (logger.isDebugEnabled) {
+                    logger.debug("RECEIVED ACCESS TOKEN\n" +
                             "id  : ${token.userId}\n" +
                             "exp : ${token.expiresInMillis}")
                 }
 
                 if (token.isValidToken()) {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("VALID ACCESS TOKEN")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("VALID ACCESS TOKEN")
                     }
 
                     requestMe()
                 } else {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("INVALID ACCESS TOKEN : ${token.expiresInMillis}")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("INVALID ACCESS TOKEN : ${token.expiresInMillis}")
                     }
                 }
             }
 
             override fun onSessionClosed(e: ErrorResult?) {
-                mLog.error("ERROR: ${e?.errorCode} = ${e?.errorMessage}")
+                logger.error("ERROR: ${e?.errorCode} = ${e?.errorMessage}")
             }
         })
     }
@@ -149,15 +148,15 @@ class LoginViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onSessionOpenFailed(e: KakaoException?) {
-        mLog.error("ERROR: SESSION OPEN FAILED ${e?.message}")
+        logger.error("ERROR: SESSION OPEN FAILED ${e?.message}")
         e?.message?.let { snackbar(it) }
 
         status.postValue(false)
     }
 
     override fun onSessionOpened() {
-        if (mLog.isInfoEnabled) {
-            mLog.info("SESSION OPENED")
+        if (logger.isInfoEnabled) {
+            logger.info("SESSION OPENED")
         }
 
         requestMe()

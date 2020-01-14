@@ -1,13 +1,10 @@
 package com.example.clone_daum.ui.main.setting
 
-import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import brigitte.BaseDaggerFragment
+import brigitte.RecyclerAdapter
 import brigitte.di.dagger.scope.FragmentScope
-import brigitte.edit
-import brigitte.prefs
 import brigitte.string
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.SettingFragmentBinding
@@ -15,6 +12,7 @@ import com.example.clone_daum.model.local.SettingType
 import com.example.clone_daum.ui.Navigator
 import com.example.clone_daum.ui.main.login.LoginViewModel
 import dagger.Binds
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -27,15 +25,18 @@ class SettingFragment @Inject constructor(
 ): BaseDaggerFragment<SettingFragmentBinding, SettingViewModel>() {
     override val layoutId = R.layout.setting_fragment
 
-    private val mLoginViewModel: LoginViewModel by activityInject()
+    private val loginViewModel: LoginViewModel by activityInject()
 
     @Inject lateinit var navigator: Navigator
+    @Inject lateinit var adapter: RecyclerAdapter<SettingType>
 
     override fun initViewBinding() {
+        adapter.viewModel = viewModel
+        binding.settingInclude.settingRecycler.adapter = adapter
     }
 
     override fun initViewModelEvents() {
-        mViewModel.apply {
+        viewModel.apply {
             title(R.string.setting_title)
             mainSettingType()
         }
@@ -65,7 +66,7 @@ class SettingFragment @Inject constructor(
     }
 
     private fun setLoginInfo() {
-        if (mLoginViewModel.status.value == false) {
+        if (loginViewModel.status.value == false) {
             navigator.loginFragment()
         } else {
             // TODO login 된 화면이 보이면 되는데
@@ -86,8 +87,8 @@ class SettingFragment @Inject constructor(
 
     private fun setBlockingPopup(type: SettingType) {
 //        editPreference(type.checked, SettingViewModel.PREF_BLOCKING_POPUP) {
-//            if (mLog.isDebugEnabled) {
-//                mLog.debug("PREFERENCE BLOCKING POPUP : $it")
+//            if (logger.isDebugEnabled) {
+//                logger.debug("PREFERENCE BLOCKING POPUP : $it")
 //            }
 //        }
     }
@@ -95,8 +96,8 @@ class SettingFragment @Inject constructor(
     private fun setCharacterSet(type: SettingType) {
         type.option?.let {
             editPreference(it, SettingViewModel.PREF_CHARACTER_SET) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("PREFERENCE CHARACTER SET : $it")
+                if (logger.isDebugEnabled) {
+                    logger.debug("PREFERENCE CHARACTER SET : $it")
                 }
             }
         }
@@ -114,8 +115,8 @@ class SettingFragment @Inject constructor(
         val defaultString = type.option?.value!!
         while (i < data.size) {
             if (defaultString == data[i]) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DEFAULT STRING : $defaultString ($i)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("DEFAULT STRING : $defaultString ($i)")
                 }
                 break
             }
@@ -128,12 +129,12 @@ class SettingFragment @Inject constructor(
             .setTitle(R.string.setting_character_set)
             .setSingleChoiceItems(data, defaultItem) { dlg, which ->
                 val chooseItem = data[which]
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CHARACTER SET: WHICH $chooseItem($which)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("CHARACTER SET: WHICH $chooseItem($which)")
                 }
 
                 type.option.value = chooseItem
-                mViewModel.notifyItemChanged(type.position)
+                adapter.notifyItemChanged(type.position)
 
                 dlg.dismiss()
             }
@@ -147,8 +148,8 @@ class SettingFragment @Inject constructor(
     private fun setMediaAutoPlay(type: SettingType) {
         type.option?.let {
             editPreference(it, SettingViewModel.PREF_MEDIA_AUTOPLAY) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("PREFERENCE MEDIA AUTOPLAY : $it")
+                if (logger.isDebugEnabled) {
+                    logger.debug("PREFERENCE MEDIA AUTOPLAY : $it")
                 }
             }
         }
@@ -163,8 +164,8 @@ class SettingFragment @Inject constructor(
         val defaultString = type.option?.value!!
         while (i < data.size) {
             if (defaultString == data[i]) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("DEFAULT STRING : $defaultString ($i)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("DEFAULT STRING : $defaultString ($i)")
                 }
                 break
             }
@@ -177,12 +178,12 @@ class SettingFragment @Inject constructor(
             .setTitle(R.string.setting_media_autoplay)
             .setSingleChoiceItems(data, defaultItem) { dlg, which ->
                 val chooseItem = data[which]
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("MEDIA AUTO PLAY : WHICH $chooseItem($which)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("MEDIA AUTO PLAY : WHICH $chooseItem($which)")
                 }
 
                 type.option.value = chooseItem
-                mViewModel.notifyItemChanged(type.position)
+                adapter.notifyItemChanged(type.position)
 
                 dlg.dismiss()
             }
@@ -195,20 +196,20 @@ class SettingFragment @Inject constructor(
 
     private fun setUsedLocation(type: SettingType) {
         editPreference(type.checked, SettingViewModel.PREF_USE_LOCATION_INFO) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("PREFERENCE USE LOCATION INFO : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("PREFERENCE USE LOCATION INFO : $it")
             }
         }
 
         type.checked.value = !type.checked.value!!
 
-        mViewModel.notifyItemChanged(type.position)
+        adapter.notifyItemChanged(type.position)
     }
 
     private fun setSimpleSearch(type: SettingType) {
         editPreference(type.checked, SettingViewModel.PREF_SIMPLE_SEARCH) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("PREFERENCE SIMPLE SEARCH : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("PREFERENCE SIMPLE SEARCH : $it")
             }
         }
     }
@@ -241,11 +242,21 @@ class SettingFragment @Inject constructor(
 
         @dagger.Module
         companion object {
+            @JvmStatic
+            @Provides
+            fun provideSettingTypeAdapter(): RecyclerAdapter<SettingType> =
+                RecyclerAdapter(arrayOf(R.layout.setting_category_item,
+                    R.layout.setting_normal_item,
+                    R.layout.setting_color_item,
+                    R.layout.setting_switch_item,
+                    R.layout.setting_check_item,
+                    R.layout.setting_depth_item,
+                    R.layout.daum_app_info_item))
         }
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(SettingFragment::class.java)
+        private val logger = LoggerFactory.getLogger(SettingFragment::class.java)
     }
 }
 

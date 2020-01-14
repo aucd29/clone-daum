@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory
  */
 
 object RadioGroupBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(RadioGroupBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(RadioGroupBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("bindCheckedChangeListener")
     fun bindCheckedChangeListener(view: RadioGroup, listener: ((Int) -> Unit)?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND CHECKED CHANGE LISTENER $listener")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND CHECKED CHANGE LISTENER $listener")
         }
 
         listener?.let {
@@ -29,8 +29,8 @@ object RadioGroupBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindCheckId")
     fun bindCheckId(view: RadioGroup, id: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND CHECK ID $id")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND CHECK ID $id")
         }
 
         view.check(id)

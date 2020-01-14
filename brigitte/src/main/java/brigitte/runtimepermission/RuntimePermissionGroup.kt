@@ -112,12 +112,12 @@ data class PermissionParams(
 
 open class PermissionFragment : Fragment() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(PermissionFragment::class.java)
+        private val logger = LoggerFactory.getLogger(PermissionFragment::class.java)
 
         private const val REQ_SETTING_EVENT = 7911
     }
 
-    lateinit var mParams: PermissionParams
+    lateinit var permissionParams: PermissionParams
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,7 +129,7 @@ open class PermissionFragment : Fragment() {
     }
 
     fun requestPermissions(params: PermissionParams) {
-        mParams = params
+        permissionParams = params
 
         requestPermissions(params.permissions.toTypedArray(), params.reqCode)
     }
@@ -155,29 +155,29 @@ open class PermissionFragment : Fragment() {
 
         when (requestCode) {
             REQ_SETTING_EVENT -> {
-                val result = RuntimePermission.checkPermissions(mParams.activity, mParams.permissions)
+                val result = RuntimePermission.checkPermissions(permissionParams.activity, permissionParams.permissions)
                 if (result) {
-                    mParams.listener.invoke(mParams.reqCode, true)
+                    permissionParams.listener.invoke(permissionParams.reqCode, true)
                 }
             }
         }
     }
 
     protected fun onPermissionResult(result: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("PERMISSION RESULT : $result")
+        if (logger.isDebugEnabled) {
+            logger.debug("PERMISSION RESULT : $result")
         }
 
         if (result) {
-            mParams.listener.invoke(mParams.reqCode, true)
+            permissionParams.listener.invoke(permissionParams.reqCode, true)
         } else {
             confirmPermissionDialog()
         }
     }
 
     fun confirmPermissionDialog() {
-        if (mParams.reqCode == RuntimePermission.REQ_MAIN) {
-            mParams.listener.invoke(mParams.reqCode, false)
+        if (permissionParams.reqCode == RuntimePermission.REQ_MAIN) {
+            permissionParams.listener.invoke(permissionParams.reqCode, false)
             return
         }
 
@@ -189,11 +189,11 @@ open class PermissionFragment : Fragment() {
             , listener   = { result, dlg ->
                 if (result) {
                     startActivityForResult(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data = Uri.parse(("package:${mParams.activity.packageName}"))
+                        data = Uri.parse(("package:${permissionParams.activity.packageName}"))
                     }, REQ_SETTING_EVENT)
                 }
 
-                mParams.listener.invoke(mParams.reqCode, result)
+                permissionParams.listener.invoke(permissionParams.reqCode, result)
             }))
     }
 }

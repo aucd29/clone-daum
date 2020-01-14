@@ -6,27 +6,27 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.example.clone_daum.common.PreloadConfig
-import com.example.clone_daum.databinding.MainFragmentBinding
-import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
-import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
-import com.example.clone_daum.ui.search.PopularViewModel
 import brigitte.*
 import brigitte.bindingadapter.AnimParams
 import brigitte.di.dagger.scope.FragmentScope
 import brigitte.widget.observeTabPosition
-import org.slf4j.LoggerFactory
-import javax.inject.Inject
 import com.example.clone_daum.R
 import com.example.clone_daum.common.Config
-import com.example.clone_daum.databinding.TabMainCustomBinding
+import com.example.clone_daum.common.PreloadConfig
+import com.example.clone_daum.databinding.*
 import com.example.clone_daum.di.module.AssistedViewModelKey
 import com.example.clone_daum.di.module.DaggerSavedStateViewModelFactory
 import com.example.clone_daum.di.module.ViewModelAssistedFactory
 import com.example.clone_daum.ui.Navigator
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueTabAdapter
+import com.example.clone_daum.ui.main.realtimeissue.RealtimeIssueViewModel
+import com.example.clone_daum.ui.search.PopularViewModel
 import dagger.Binds
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import org.slf4j.LoggerFactory
+import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Provider
 
 class MainFragment constructor(
@@ -34,45 +34,47 @@ class MainFragment constructor(
     override val layoutId = R.layout.main_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainFragment::class.java)
+        private val logger = LoggerFactory.getLogger(MainFragment::class.java)
     }
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY    // MainViewModel 를 MainWebViewFragment 와 공유
+        viewModelScope = SCOPE_ACTIVITY    // MainViewModel 를 MainWebViewFragment 와 공유
     }
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
     @Inject lateinit var preConfig: PreloadConfig
-    @Inject lateinit var mainTabAdapter: MainTabAdapter
-    @Inject lateinit var realtimeIssueTabAdapter: Provider<RealtimeIssueTabAdapter>
     @Inject lateinit var factory: DaggerSavedStateViewModelFactory
 
-    private val mIssueViewModel: RealtimeIssueViewModel by activityInject()
-    private val mPopularViewModel: PopularViewModel by activityInject()
-    private val mAssignedInjectViewModel: AssignedInjectTestViewModel by stateInject { factory }
+    private lateinit var mainTabAdapter: MainTabAdapter
+    private lateinit var realtimeIssueTabAdapter: RealtimeIssueTabAdapter
+
+    private val issueViewModel: RealtimeIssueViewModel by activityInject()
+    private val popularViewModel: PopularViewModel by activityInject()
+    private val assignedInjectViewModel: AssignedInjectTestViewModel by stateInject { factory }
 
     override fun bindViewModel() {
         super.bindViewModel()
 
-        mBinding.issueModel = mIssueViewModel
-        addCommandEventModels(mIssueViewModel)
+        binding.issueModel = issueViewModel
+        addCommandEventModels(issueViewModel)
     }
 
     override fun initViewBinding() {
-        mBinding.apply {
+        mainTabAdapter = MainTabAdapter.create(childFragmentManager, preConfig)
+
+        binding.apply {
             // MAIN TAB
             mainWebViewpager.adapter = mainTabAdapter
             mainTab.setupWithViewPager(mainWebViewpager)
 
             // ISSUE TAB
             mainIssueTab.setupWithViewPager(mainIssueViewpager)
-
             mainAppbar.globalLayoutListener {
                 val result = realtimeIssueAreaMargin()
 
-                mViewModel.appbarHeight(mainAppbar.height, mainTabContainer.height)
-                mIssueViewModel.layoutTranslationY.set(mainIssueViewpager.height * -1f)
+                viewModel.appbarHeight(mainAppbar.height, mainTabContainer.height)
+                issueViewModel.layoutTranslationY.set(mainIssueViewpager.height * -1f)
 
                 result
             }
@@ -80,14 +82,14 @@ class MainFragment constructor(
     }
 
     private fun realtimeIssueAreaMargin(): Boolean {
-        mBinding.apply {
+        binding.apply {
             mainIssueContainer.apply {
                 // 검색쪽 위치까지 margin 이동
                 (layoutParams as ConstraintLayout.LayoutParams).let {
                     it.topMargin = mainToolbarContainer.height - mainToolbarUnderline.height
 
-                    if (mLog.isDebugEnabled) {
-                        mLog.info("REALTIME ISSUE AREA TOP MARGIN : ${it.topMargin}")
+                    if (logger.isDebugEnabled) {
+                        logger.info("REALTIME ISSUE AREA TOP MARGIN : ${it.topMargin}")
                     }
 
                     it.height    = 1    // 0 의 경우 제대로 동작하지 않는 문제?
@@ -100,30 +102,30 @@ class MainFragment constructor(
     }
 
     override fun initViewModelEvents() {
-        observe(mAssignedInjectViewModel.testLive) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("LIVE DATA HELLO ${it.toUpperCase()}")
+        observe(assignedInjectViewModel.testLive) {
+            if (logger.isDebugEnabled) {
+                logger.debug("LIVE DATA HELLO ${it.toUpperCase()}")
             }
         }
 
-        mIssueViewModel.apply {
+        issueViewModel.apply {
             loadData()
-            observe(htmlDataLive) { mPopularViewModel.load(it) }
+            observe(htmlDataLive) { popularViewModel.load(it) }
             observeTabPosition(tabChangedLive, ::realtimeIssueTabFocusText)
         }
 
-        mViewModel.apply {
+        viewModel.apply {
             mainContainerDispatchTouchEvent()
             appbarAlpha()
 
             observe(appbarMagneticEffectLive) {
-                mBinding.mainAppbar.setExpanded(it, true)
+                binding.mainAppbar.setExpanded(it, true)
             }
         }
     }
 
     override fun onDestroy() {
-        mBinding.apply {
+        binding.apply {
             mainWebViewpager.adapter   = null
             mainIssueViewpager.adapter = null
         }
@@ -138,14 +140,14 @@ class MainFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND EVENT : $cmd")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND EVENT : $cmd")
         }
 
         MainViewModel.apply {
             // NAVIGATION EDITOR 로 변경해야 되나? -_ -ㅋ
             // 상단 검색쪽 메뉴들은 스크롤 시 클릭 이벤트가 동작하지 않도록 offset 값을 참조 한다.
-            if (mViewModel.appbarOffsetLive.value == 0) {
+            if (viewModel.appbarOffsetLive.value == 0) {
                 when (cmd) {
                     CMD_SEARCH_FRAGMENT       -> navigateSearchFragment()
                     CMD_NAVIGATION_FRAGMENT   -> navigateNavigationFragment()
@@ -175,9 +177,9 @@ class MainFragment constructor(
 
     private fun toggleIssueLayout(visibleCallback: (() -> Unit)? = null) {
         // 개발자가 바뀐건지 기획자가 바뀐건지.. UI 가 통일되지 않고 이건 따로 노는 듯?
-        val lp = mBinding.mainIssueContainer.layoutParams as ConstraintLayout.LayoutParams
+        val lp = binding.mainIssueContainer.layoutParams as ConstraintLayout.LayoutParams
 
-        mIssueViewModel.apply {
+        issueViewModel.apply {
             if (viewRealtimeIssue.isGone()) {
                 visibleCallback?.let {
                     it.invoke()
@@ -196,41 +198,43 @@ class MainFragment constructor(
                 val currentTabHeight = 0f
                 val changeTabHeight = config.SCREEN.y.toFloat() - lp.topMargin
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
+                if (logger.isDebugEnabled) {
+                    logger.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
 
-                mBinding.mainIssueContainer.layoutHeight(changeTabHeight)
+                binding.mainIssueContainer.layoutHeight(changeTabHeight)
             } else {
                 tabAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION
                     , endListener = { _ ->
                         viewRealtimeIssue.gone()
-                        mBinding.mainIssueContainer.layoutHeight(1f)
+                        binding.mainIssueContainer.layoutHeight(1f)
 
                         visibleCallback?.invoke()
                     }))
                 backgroundAlpha.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
                 tabMenuRotation.set(AnimParams(0f, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
-                val height = mBinding.mainIssueViewpager.height * -1f
+                val height = binding.mainIssueViewpager.height * -1f
                 containerTransY.set(AnimParams(height, duration = RealtimeIssueViewModel.ANIM_DURATION))
 
-                val currentTabHeight = mBinding.mainIssueContainer.height.toFloat()
+                val currentTabHeight = binding.mainIssueContainer.height.toFloat()
                 val changeTabHeight = 0f
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
+                if (logger.isDebugEnabled) {
+                    logger.debug("CHANGE TAB HEIGHT : $currentTabHeight -> $changeTabHeight")
                 }
             }
         }
     }
 
     private fun loadRealtimeIssueTab() {
-        mIssueViewModel.apply {
-            val adapter = realtimeIssueTabAdapter.get()
+        issueViewModel.apply {
+            realtimeIssueTabAdapter = RealtimeIssueTabAdapter.create(childFragmentManager)
+
+            val adapter = realtimeIssueTabAdapter
             adapter.issueList = mRealtimeIssueList
 
-            mBinding.mainIssueViewpager.adapter = adapter
+            binding.mainIssueViewpager.adapter = adapter
 
             customRealtimeIssueTab()
         }
@@ -238,7 +242,7 @@ class MainFragment constructor(
 
     @SuppressLint("InflateParams")
     private fun customRealtimeIssueTab() {
-        mBinding.mainIssueTab.apply {
+        binding.mainIssueTab.apply {
             tabs.forEach {
                 it?.let { tab ->
                     val binding = dataBinding<TabMainCustomBinding>(R.layout.tab_main_custom)
@@ -246,7 +250,7 @@ class MainFragment constructor(
                     tab.customView        = binding.tabLabel
                 }
 
-                mBinding.mainIssueTab.tabs[0]?.customView?.let { v -> if (v is TextView) { v.bold() } }
+                binding.mainIssueTab.tabs[0]?.customView?.let { v -> if (v is TextView) { v.bold() } }
             }
         }
     }
@@ -266,7 +270,7 @@ class MainFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onBackPressed(): Boolean {
-        if (mIssueViewModel.viewRealtimeIssue.isVisible()) {
+        if (issueViewModel.viewRealtimeIssue.isVisible()) {
             toggleIssueLayout()
 
             return true
@@ -283,7 +287,7 @@ class MainFragment constructor(
 
     private fun realtimeIssueTabFocusText(pos: Int) {
         var i = 0
-        mBinding.mainIssueTab.tabs.forEach {
+        binding.mainIssueTab.tabs.forEach {
             val tv = it?.customView
             if (tv is TextView) {
                 if (i++ == pos) {
@@ -321,13 +325,5 @@ class MainFragment constructor(
 
         @Binds
         abstract fun bindSavedStateRegistryOwner(fragment: MainFragment): SavedStateRegistryOwner
-
-        @dagger.Module
-        companion object {
-            @JvmStatic
-            @Provides
-            fun provideMainFragmentManager(fragment: Fragment) =
-                fragment.childFragmentManager
-        }
     }
 }

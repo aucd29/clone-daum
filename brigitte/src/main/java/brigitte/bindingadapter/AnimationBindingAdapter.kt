@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 // view.animate 가 보기는 좋아서 바꿨다가 기능의 문제로 원래대로 ObjectAnimator 로 변경 OTL
 //
 object AnimationBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(AnimationBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(AnimationBindingAdapter::class.java)
 
     const val K_TRANSLATION_X = "translationX"
     const val K_TRANSLATION_Y = "translationY"
@@ -53,8 +53,8 @@ object AnimationBindingAdapter {
         }
 
         if (animList.size == 0) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("ANIMATOR SET == 0")
+            if (logger.isDebugEnabled) {
+                logger.debug("ANIMATOR SET == 0")
             }
             return
         }
@@ -88,8 +88,8 @@ object AnimationBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ANIMATION $K_TRANSLATION_X")
+        if (logger.isDebugEnabled) {
+            logger.debug("ANIMATION $K_TRANSLATION_X")
         }
 
         val anim = if (params.initValue == null) {
@@ -108,8 +108,8 @@ object AnimationBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ANIMATION $K_TRANSLATION_Y")
+        if (logger.isDebugEnabled) {
+            logger.debug("ANIMATION $K_TRANSLATION_Y")
         }
 
         val anim = if (params.initValue == null) {
@@ -128,8 +128,8 @@ object AnimationBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ANIMATION $K_ALPHA")
+        if (logger.isDebugEnabled) {
+            logger.debug("ANIMATION $K_ALPHA")
         }
 
         val anim = if (params.initValue == null) {
@@ -148,8 +148,8 @@ object AnimationBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ANIMATION $K_SCALE_X")
+        if (logger.isDebugEnabled) {
+            logger.debug("ANIMATION $K_SCALE_X")
         }
 
         val anim = if (params.initValue == null) {
@@ -168,8 +168,8 @@ object AnimationBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ANIMATION $K_SCALE_Y")
+        if (logger.isDebugEnabled) {
+            logger.debug("ANIMATION $K_SCALE_Y")
         }
 
         val anim = if (params.initValue == null) {
@@ -188,8 +188,8 @@ object AnimationBindingAdapter {
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ANIMATION $K_ROTATION")
+        if (logger.isDebugEnabled) {
+            logger.debug("ANIMATION $K_ROTATION")
         }
 
         val anim = if (params.initValue == null) {
@@ -235,7 +235,7 @@ object AnimationBindingAdapter {
         params.apply {
             anim.duration = duration
             interpolator?.let { anim.interpolator = it }
-            startDelay?.let   { anim.startDelay = it }
+            startDelay?.let { anim.startDelay = it }
 
             if (reverse != null) {
                 anim.repeatMode = ValueAnimator.REVERSE
