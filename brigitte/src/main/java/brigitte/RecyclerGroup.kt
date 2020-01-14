@@ -97,7 +97,7 @@ interface IRecyclerExpandable<T> : IRecyclerItem, IRecyclerDiff {
 
 /** view holder */
 class RecyclerHolder constructor (itemView: View) : RecyclerView.ViewHolder(itemView) {
-    lateinit var mBinding: ViewDataBinding
+    lateinit var binding: ViewDataBinding
 }
 
 /**
@@ -105,10 +105,10 @@ class RecyclerHolder constructor (itemView: View) : RecyclerView.ViewHolder(item
  * 한다.
  */
 class RecyclerAdapter<T: IRecyclerDiff> constructor (
-    val mLayouts: Array<Int>
+    val layoutIds: Array<Int>
 ) : RecyclerView.Adapter<RecyclerHolder>() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(RecyclerAdapter::class.java)
+        private val logger = LoggerFactory.getLogger(RecyclerAdapter::class.java)
 
         private const val METHOD_NAME_VIEW_MODEL = "setModel"
         private const val METHOD_NAME_ITEM       = "setItem"
@@ -123,7 +123,7 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
             } catch (e: Exception) {
                 if (log) {
                     e.printStackTrace()
-                    mLog.debug("NOT FOUND : ${e.message}")
+                    logger.debug("NOT FOUND : ${e.message}")
                 }
             }
         }
@@ -142,13 +142,13 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
      * 해당 layout 의 RecyclerHolder 를 생성 한다.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerHolder {
-        val layoutId = mLayouts[viewType]
+        val layoutId = layoutIds[viewType]
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<ViewDataBinding>(inflater,
             layoutId, parent, false)
 
         val vh = RecyclerHolder(binding.root)
-        vh.mBinding = binding
+        vh.binding = binding
 
         return vh
     }
@@ -158,17 +158,17 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
      *
      */
     override fun onBindViewHolder(holder: RecyclerHolder, position: Int) {
-        viewModel.let { invokeMethod(holder.mBinding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
+        viewModel.let { invokeMethod(holder.binding, METHOD_NAME_VIEW_MODEL, it.javaClass, it, false) }
 
         items[position].let { item ->
             when (item) {
                 is IRecyclerPosition -> item.position = position
             }
 
-            invokeMethod(holder.mBinding, METHOD_NAME_ITEM, item.javaClass, item, true)
+            invokeMethod(holder.binding, METHOD_NAME_ITEM, item.javaClass, item, true)
         }
 
-        holder.mBinding.executePendingBindings()
+        holder.binding.executePendingBindings()
         viewHolderCallback?.invoke(holder, position)
     }
 
@@ -254,28 +254,28 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
 //            }
         })
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("OLD ${oldItems.hashCode()}")
-            mLog.debug("NEW ${newItems.hashCode()}")
-            mLog.debug("DISPATCH UPDATES TO $this")
+        if (logger.isDebugEnabled) {
+            logger.debug("OLD ${oldItems.hashCode()}")
+            logger.debug("NEW ${newItems.hashCode()}")
+            logger.debug("DISPATCH UPDATES TO $this")
         }
 
         // https://stackoverflow.com/questions/43458146/diffutil-in-recycleview-making-it-autoscroll-if-a-new-item-is-added
         result.dispatchUpdatesTo(object: ListUpdateCallback {
-            private var mFirstInsert = -1
+            private var firstInsert = -1
 
             // 데이터가 추가되었다면
             override fun onInserted(position: Int, count: Int) {
-                if (mFirstInsert == -1 || mFirstInsert > position) {
-                    mFirstInsert = position
+                if (firstInsert == -1 || firstInsert > position) {
+                    firstInsert = position
 
                     if (isScrollToPosition) {
-                        recycler.smoothScrollToPosition(mFirstInsert)
+                        recycler.smoothScrollToPosition(firstInsert)
                     }
                 }
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("INSERTED (pos: $position) (cnt: $count)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("INSERTED (pos: $position) (cnt: $count)")
                 }
 
                 notifyItemRangeInserted(position, count)
@@ -283,8 +283,8 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
 
             // 데이터가 삭제 되었다면
             override fun onRemoved(position: Int, count: Int) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("REMOVED (pos: $position) (cnt: $count)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("REMOVED (pos: $position) (cnt: $count)")
                 }
 
                 notifyItemRangeRemoved(position, count)
@@ -292,16 +292,16 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
 
             // 데이터 위치가 변화 되었다면
             override fun onMoved(fromPosition: Int, toPosition: Int) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("MOVED (from: $fromPosition) (to: $toPosition)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("MOVED (from: $fromPosition) (to: $toPosition)")
                 }
 
                 notifyItemMoved(fromPosition, toPosition)
             }
 
             override fun onChanged(position: Int, count: Int, payload: Any?) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("CHANGED (pos: $position) (cnt: $count)")
+                if (logger.isDebugEnabled) {
+                    logger.debug("CHANGED (pos: $position) (cnt: $count)")
                 }
 
                 notifyItemRangeChanged(position, count, payload)
@@ -318,11 +318,11 @@ class RecyclerAdapter<T: IRecyclerDiff> constructor (
 open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
     : CommandEventViewModel(app) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(RecyclerViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(RecyclerViewModel::class.java)
     }
 
-    protected var mThreshold   = 1
-    protected var mDataLoading = false
+    protected var threshold   = 1
+    protected var dataLoading = false
 
     val items           = ObservableField<List<T>>()
     val adapter         = ObservableField<RecyclerAdapter<T>>()
@@ -349,7 +349,7 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
 
         bindingCallback?.let {
             adapter.get()?.viewHolderCallback = { holder, _ ->
-                it.invoke(holder.mBinding)?.setOnTouchListener { v, ev ->
+                it.invoke(holder.binding)?.setOnTouchListener { v, ev ->
                     if (ev.action == MotionEvent.ACTION_DOWN) {
                         itemTouchHelper.get()?.startDrag(holder)
                     }
@@ -360,7 +360,7 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
         }
     }
 
-    fun errorLog(e: Throwable) = errorLog(e, mLog)
+    fun errorLog(e: Throwable) = errorLog(e, logger)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -368,10 +368,10 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    inner class ItemMovedCallback(val mItemMovedListener:((fromPos: Int, toPos: Int) -> Unit)? = null)
+    inner class ItemMovedCallback(val itemMovedListener:((fromPos: Int, toPos: Int) -> Unit)? = null)
         : ItemTouchHelper.Callback() {
-        private var mLongPressDrag = false
-        private var mSwipeDrag     = false
+        private var longPressDrag = false
+        private var swipeDrag     = false
 
 //        private var dragFrom = -1
 //        private var dragTo   = -1
@@ -389,8 +389,8 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
             val fromPos = viewHolder.adapterPosition
             val toPos = target.adapterPosition
 
-            if (mLog.isTraceEnabled) {
-                mLog.trace("MOVE RECYCLER ITEM : $fromPos -> $toPos")
+            if (logger.isTraceEnabled) {
+                logger.trace("MOVE RECYCLER ITEM : $fromPos -> $toPos")
             }
 
 //            if (dragFrom == -1) {
@@ -399,7 +399,7 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
 //            dragTo = toPos
 
             Collections.swap(items.get(), fromPos, toPos)
-            mItemMovedListener?.invoke(fromPos, toPos)
+            itemMovedListener?.invoke(fromPos, toPos)
             adapter.get()?.notifyItemMoved(fromPos, toPos)
 
             return true
@@ -409,8 +409,8 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
             // swipe 로 삭제 할때
         }
 
-        override fun isLongPressDragEnabled() = mLongPressDrag
-        override fun isItemViewSwipeEnabled() = mSwipeDrag
+        override fun isLongPressDragEnabled() = longPressDrag
+        override fun isItemViewSwipeEnabled() = swipeDrag
 
         // https://stackoverflow.com/questions/35920584/android-how-to-catch-drop-action-of-itemtouchhelper-which-is-used-with-recycle
         // 최종적으로 drop 되었을때 디비를 바꿔볼까 싶었는데 이게 0 -> 4 값이 서로 변경되는 형태가 아니므로
@@ -420,8 +420,8 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
 //            super.clearView(recyclerView, viewHolder)
 //
 //            if (dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
-//                if (mLog.isDebugEnabled) {
-//                    mLog.debug("ITEM MOVED FROM $dragFrom TO $dragTo")
+//                if (logger.isDebugEnabled) {
+//                    logger.debug("ITEM MOVED FROM $dragFrom TO $dragTo")
 //                }
 //
 //                mItemMovedListener?.invoke(dragFrom, dragTo)
@@ -436,15 +436,15 @@ open class RecyclerViewModel<T: IRecyclerDiff> constructor (app: Application)
         if (lastVisiblePos == -1) return false
 
         return items.get()?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("DataLoading : $mDataLoading")
-                mLog.debug("list.size : ${it.size}")
-                mLog.debug("lastVisiblePos : $lastVisiblePos")
-                mLog.debug("mThreshold : $mThreshold")
-                mLog.debug("${it.size - lastVisiblePos <= mThreshold}")
+            if (logger.isDebugEnabled) {
+                logger.debug("DataLoading : $dataLoading")
+                logger.debug("list.size : ${it.size}")
+                logger.debug("lastVisiblePos : $lastVisiblePos")
+                logger.debug("mThreshold : $threshold")
+                logger.debug("${it.size - lastVisiblePos <= threshold}")
             }
 
-            !mDataLoading && it.size - lastVisiblePos <= mThreshold
+            !dataLoading && it.size - lastVisiblePos <= threshold
         } ?: false
     }
 }
@@ -469,7 +469,7 @@ inline fun <T: IRecyclerExpandable<T>> List<T>.toggleExpandableItems(type: Int,
 
 class InfiniteScrollListener constructor (val callback: (Int) -> Unit) : RecyclerView.OnScrollListener() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(InfiniteScrollListener::class.java)
+        private val logger = LoggerFactory.getLogger(InfiniteScrollListener::class.java)
     }
 
     lateinit var recycler: RecyclerView
@@ -477,8 +477,8 @@ class InfiniteScrollListener constructor (val callback: (Int) -> Unit) : Recycle
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SCROLL STATE : $newState")
+        if (logger.isDebugEnabled) {
+            logger.debug("SCROLL STATE : $newState")
         }
 
     }
@@ -488,8 +488,8 @@ class InfiniteScrollListener constructor (val callback: (Int) -> Unit) : Recycle
 
         val manager = recycler.layoutManager
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SCROLLED : $dy")
+        if (logger.isDebugEnabled) {
+            logger.debug("SCROLLED : $dy")
         }
 
         if (dy <= 0) {

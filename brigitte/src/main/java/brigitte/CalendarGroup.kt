@@ -124,7 +124,7 @@ interface IDateCalculator {
 
 class DateCalculator<T : IDateCalculator> constructor() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(DateCalculator::class.java)
+        private val logger = LoggerFactory.getLogger(DateCalculator::class.java)
 
         const val K_TODAY     = 0
         const val K_YESTERDAY = 1
@@ -173,8 +173,8 @@ class DateCalculator<T : IDateCalculator> constructor() {
     private fun initToday() {
         mToday.setYmd()
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("TODAY: ${mToday.timeInMillis.toDateString()}")
+        if (logger.isTraceEnabled) {
+            logger.trace("TODAY: ${mToday.timeInMillis.toDateString()}")
         }
     }
 

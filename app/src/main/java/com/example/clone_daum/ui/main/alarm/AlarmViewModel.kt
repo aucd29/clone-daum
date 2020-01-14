@@ -15,6 +15,6 @@ class AlarmViewModel @Inject constructor(
 ) : RecyclerViewModel<AlarmHistory>(app) {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(AlarmViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(AlarmViewModel::class.java)
     }
 }

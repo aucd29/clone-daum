@@ -112,7 +112,7 @@ data class PermissionParams(
 
 open class PermissionFragment : Fragment() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(PermissionFragment::class.java)
+        private val logger = LoggerFactory.getLogger(PermissionFragment::class.java)
 
         private const val REQ_SETTING_EVENT = 7911
     }
@@ -164,8 +164,8 @@ open class PermissionFragment : Fragment() {
     }
 
     protected fun onPermissionResult(result: Boolean) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("PERMISSION RESULT : $result")
+        if (logger.isDebugEnabled) {
+            logger.debug("PERMISSION RESULT : $result")
         }
 
         if (result) {

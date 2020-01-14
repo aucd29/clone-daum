@@ -21,7 +21,7 @@ class NavigationViewModel @Inject constructor(
     app: Application
 ) : CommandEventViewModel(app), IDialogAware {
     companion object {
-        private val mLog = LoggerFactory.getLogger(NavigationViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(NavigationViewModel::class.java)
 
         const val URL_NOTIFICATION   = "https://m.daum.net/channel/notice_an"
 

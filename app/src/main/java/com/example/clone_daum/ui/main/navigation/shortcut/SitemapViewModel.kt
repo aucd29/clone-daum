@@ -30,7 +30,6 @@ class SitemapViewModel @Inject constructor(
     val roundedCorners = ObservableInt(10.dpToPx(app))
 
     init {
-        initAdapter(R.layout.sitemap_item)
         items.set(preConfig.naviSitemapList)
     }
 }

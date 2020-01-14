@@ -35,7 +35,7 @@ class SpeechFragment @Inject constructor(
     SpeechRecognizeListener {
     override val layoutId = R.layout.speech_fragment
     companion object {
-        private val mLog = LoggerFactory.getLogger(SpeechFragment::class.java)
+        private val logger = LoggerFactory.getLogger(SpeechFragment::class.java)
 
         private const val V_SCALE          = 1.2F
         private const val V_SCALE_DURATION = 500L
@@ -45,10 +45,10 @@ class SpeechFragment @Inject constructor(
 
 
     // https://code.i-harness.com/ko-kr/q/254ae5
-    private val mAnimList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
-    private var mRecognizer: SpeechRecognizerClient? = null
+    private val animList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())
+    private var recognizer: SpeechRecognizerClient? = null
 
-    override fun initViewBinding() = mBinding.run {
+    override fun initViewBinding() = binding.run {
         keepScreen(true)
 
         if (!DeviceUtils.isSupportedDevice()) {
@@ -107,7 +107,7 @@ class SpeechFragment @Inject constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////
 
-    private fun startAnimation()  = mViewModel.run {
+    private fun startAnimation()  = viewModel.run {
         bgScale.set(AnimParams(V_SCALE, objAniCallback = {
             it.apply {
                 repeatMode  = ValueAnimator.REVERSE
@@ -115,18 +115,18 @@ class SpeechFragment @Inject constructor(
                 duration    = V_SCALE_DURATION
                 start()
 
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("START SCALE ANIM")
+                if (logger.isDebugEnabled) {
+                    logger.debug("START SCALE ANIM")
                 }
 
-                mAnimList.add(this)
+                animList.add(this)
             }
         }))
     }
 
     private fun endAnimation() {
-        mAnimList.forEach { it.cancel() }
-        mAnimList.clear()
+        animList.forEach { it.cancel() }
+        animList.clear()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -150,8 +150,8 @@ class SpeechFragment @Inject constructor(
             .setServiceType(SpeechRecognizerClient.SERVICE_TYPE_WEB)
             .setUserDictionary(null)
 
-        mRecognizer = builder.build()
-        mRecognizer?.setSpeechRecognizeListener(this)
+        recognizer = builder.build()
+        recognizer?.setSpeechRecognizeListener(this)
     }
 
     private fun resetSpeechClient() {
@@ -159,22 +159,22 @@ class SpeechFragment @Inject constructor(
             SpeechRecognizerManager.getInstance().finalizeLibrary()
         }
 
-        mRecognizer?.setSpeechRecognizeListener(null)
+        recognizer?.setSpeechRecognizeListener(null)
     }
 
     private fun startRecording() {
         context?.apply {
             if (!isNetworkConntected()) {
-                mLog.error("ERROR: NETWORK DISCONNECTED")
+                logger.error("ERROR: NETWORK DISCONNECTED")
                 return
             }
 
-            mRecognizer?.startRecording(true)
+            recognizer?.startRecording(true)
         }
     }
 
     private fun stopRecording() {
-        mRecognizer?.cancelRecording()
+        recognizer?.cancelRecording()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -192,38 +192,38 @@ class SpeechFragment @Inject constructor(
     // 따라 두가지 callback을 통해 얻을 수 있습니다.
 
     override fun onReady() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH READY")
+        if (logger.isDebugEnabled) {
+            logger.debug("SPEECH READY")
         }
 
         startAnimation()
-        mViewModel.messageResId.set(R.string.speech_listening)
+        viewModel.messageResId.set(R.string.speech_listening)
     }
 
     override fun onFinished() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH FINISHED")
+        if (logger.isDebugEnabled) {
+            logger.debug("SPEECH FINISHED")
         }
 //        mViewModel.messageResId.set(R.string.speech_processing)
     }
 
     override fun onBeginningOfSpeech() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH BEGINNING")
+        if (logger.isDebugEnabled) {
+            logger.debug("SPEECH BEGINNING")
         }
     }
 
     override fun onEndOfSpeech() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH END")
+        if (logger.isDebugEnabled) {
+            logger.debug("SPEECH END")
         }
 
         disposable().add(Single.just(null)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 endAnimation()
-                mViewModel.speechResult.set("")
-            }, { errorLog(it, mLog) }))
+                viewModel.speechResult.set("")
+            }, { errorLog(it, logger) }))
     }
 
     override fun onAudioLevel(audioLevel: Float) {
@@ -231,8 +231,8 @@ class SpeechFragment @Inject constructor(
             return
         }
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("AUDIO LEVEL : $audioLevel")
+        if (logger.isTraceEnabled) {
+            logger.trace("AUDIO LEVEL : $audioLevel")
         }
     }
 
@@ -241,16 +241,16 @@ class SpeechFragment @Inject constructor(
 //    중간 인식 결과에 대한 결과가 발생할 때마다 호출되므로 여러번 호출될 수 있습니다.
 
     override fun onPartialResult(partialResult: String?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("SPEECH PARTIAL RESULT : $partialResult")
+        if (logger.isDebugEnabled) {
+            logger.debug("SPEECH PARTIAL RESULT : $partialResult")
         }
 
         disposable().add(Single.just(partialResult)
             .observeOn(AndroidSchedulers.mainThread())
             .filter { it.isNotEmpty() }
             .subscribe({
-                mViewModel.speechResult.set(it)
-            }, { errorLog(it, mLog) }))
+                viewModel.speechResult.set(it)
+            }, { errorLog(it, logger) }))
     }
 
 //    onResults는 음성 입력이 종료된 것으로 판단하거나 stopRecording()을 호출한 후에 서버에 질의하는
@@ -262,19 +262,19 @@ class SpeechFragment @Inject constructor(
 //    신뢰도값은 항상 0보다 크거나 같은 정수이며, 문자열 목록과 같은 개수입니다.
 
     override fun onResults(results: Bundle?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RESULT = $results")
+        if (logger.isDebugEnabled) {
+            logger.debug("RESULT = $results")
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CANCEL RECORDING")
+        if (logger.isDebugEnabled) {
+            logger.debug("CANCEL RECORDING")
         }
 
-        disposable().add(Single.just(mRecognizer)
+        disposable().add(Single.just(recognizer)
             .subscribeOn(Schedulers.io())
             .map {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("OPEN BRS")
+                if (logger.isDebugEnabled) {
+                    logger.debug("OPEN BRS")
                 }
 
                 it.cancelRecording()
@@ -287,14 +287,14 @@ class SpeechFragment @Inject constructor(
                     finish()
                     navigator.browserFragment("https://m.search.daum.net/search?w=tot&q=${data[0]}&DA=13H")
                 } ?: let {
-                    mViewModel.messageResId.set(R.string.speech_no_result)
+                    viewModel.messageResId.set(R.string.speech_no_result)
                     finish()
 
-                    mBinding.speechContainer.postDelayed({
+                    binding.speechContainer.postDelayed({
                         finish()
                     }, 100)
                 }
-            }, { errorLog(it, mLog) }))
+            }, { errorLog(it, logger) }))
 //        ioThread { mRecognizer?.cancelRecording() }
     }
 
@@ -303,19 +303,19 @@ class SpeechFragment @Inject constructor(
 //    SpeechRecognizerClient 에서 다양한 에러 코드에 대응하는 ERROR_ 로 시작하는 code 값들을 확인할 수 있습니다.
 
     override fun onError(errorCode: Int, errorMsg: String?) {
-        mLog.error("ERROR: $errorCode $errorMsg")
+        logger.error("ERROR: $errorCode $errorMsg")
 
         disposable().add(Single.just(null)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 endAnimation()
             }, {
-                errorLog(it, mLog)
+                errorLog(it, logger)
             }))
 
 //        uiThread(::endAnimation)
 
-        mViewModel.messageResId.apply {
+        viewModel.messageResId.apply {
             val error = when (errorCode) {
                 SpeechRecognizerClient.ERROR_NO_RESULT -> {
                     set(R.string.speech_no_result)
@@ -363,7 +363,7 @@ class SpeechFragment @Inject constructor(
                 }
             }
 
-            mLog.error("ERROR: $error")
+            logger.error("ERROR: $error")
         }
     }
 

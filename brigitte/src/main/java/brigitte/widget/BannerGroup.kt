@@ -51,7 +51,7 @@ class BannerPagerAdapter <T: IBannerItem> (
 ) : IBannerPagerAdapter() {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BannerPagerAdapter::class.java)
+        private val logger = LoggerFactory.getLogger(BannerPagerAdapter::class.java)
 
         private const val METHOD_NAME_VIEW_MODEL = "setModel"
         private const val METHOD_NAME_ITEM       = "setItem"
@@ -63,7 +63,7 @@ class BannerPagerAdapter <T: IBannerItem> (
             } catch (e: Exception) {
                 if (log) {
                     e.printStackTrace()
-                    mLog.debug("NOT FOUND : ${e.message}")
+                    logger.debug("NOT FOUND : ${e.message}")
                 }
             }
         }
@@ -113,7 +113,7 @@ class BannerPagerAdapter <T: IBannerItem> (
 
 class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdapter() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(InfinitePagerAdapter::class.java)
+        private val logger = LoggerFactory.getLogger(InfinitePagerAdapter::class.java)
     }
 
     val realCount: Int
@@ -125,8 +125,8 @@ class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdap
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val virtualPos = position % realCount
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("INSTANTIATE ITEM : $virtualPos ($position)")
+        if (logger.isTraceEnabled) {
+            logger.trace("INSTANTIATE ITEM : $virtualPos ($position)")
         }
 
         return mAdapter.instantiateItem(container, virtualPos)
@@ -135,8 +135,8 @@ class InfinitePagerAdapter(private val mAdapter: PagerAdapter): IBannerPagerAdap
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
         val virtualPos = position % realCount
 
-        if (mLog.isTraceEnabled) {
-            mLog.trace("DESTROY ITEM : $virtualPos ($position)")
+        if (logger.isTraceEnabled) {
+            logger.trace("DESTROY ITEM : $virtualPos ($position)")
         }
 
         mAdapter.destroyItem(container, virtualPos, obj)

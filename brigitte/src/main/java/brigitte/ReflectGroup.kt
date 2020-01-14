@@ -17,7 +17,7 @@ import kotlin.reflect.jvm.jvmName
 // Reflect.create<ClassName>(ClassName::class.java)
 
 object Reflect {
-    val mLog = LoggerFactory.getLogger(Reflect::class.java)
+    val logger = LoggerFactory.getLogger(Reflect::class.java)
 
     /**
      * 클래스의 경로를 지정하고 인자 타입과 인자를 전달하여 클래스를 인스턴스 시킨다.
@@ -97,11 +97,11 @@ object Reflect {
                 }
             }
         } catch (e: Exception) {
-            if (Reflect.mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: ${e.message}")
+            logger.error("ERROR: ${e.message}")
         }
     }
 

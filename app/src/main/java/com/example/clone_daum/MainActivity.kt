@@ -22,14 +22,14 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>(
     private val mLoginViewModel: LoginViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        chromeInspector { if (mLog.isInfoEnabled) { mLog.info(it) }}
-        exceptionCatcher { mLog.error("ERROR: $it") }
+        chromeInspector { if (logger.isInfoEnabled) { logger.info(it) }}
+        exceptionCatcher { logger.error("ERROR: $it") }
         setTheme(R.style.AppTheme)
 
         super.onCreate(savedInstanceState)
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("START ACTIVITY")
+        if (logger.isDebugEnabled) {
+            logger.debug("START ACTIVITY")
         }
 
         initCookieManager()
@@ -59,16 +59,16 @@ class MainActivity : BaseDaggerActivity<MainActivityBinding, SplashViewModel>(
     override fun initViewBinding() {
     }
 
-    override fun initViewModelEvents() = mViewModel.run {
+    override fun initViewModelEvents() = viewModel.run {
         observe(closeEvent) {
-            mBinding.root.removeView(mBinding.splash)
+            binding.root.removeView(binding.splash)
         }
 
         mLoginViewModel.checkIsLoginSession()
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainActivity::class.java)
+        private val logger = LoggerFactory.getLogger(MainActivity::class.java)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

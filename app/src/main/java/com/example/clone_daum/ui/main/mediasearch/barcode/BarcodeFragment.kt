@@ -19,7 +19,6 @@ import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import com.google.zxing.common.HybridBinarizer
-import com.journeyapps.barcodescanner.DecoderFactory
 import dagger.Binds
 
 /**
@@ -30,7 +29,7 @@ class BarcodeFragment @Inject constructor(
 ) : BaseDaggerFragment<BarcodeFragmentBinding, BarcodeViewModel>(), BarcodeCallback {
     override val layoutId = R.layout.barcode_fragment
     companion object {
-        private val mLog = LoggerFactory.getLogger(BarcodeFragment::class.java)
+        private val logger = LoggerFactory.getLogger(BarcodeFragment::class.java)
 
         const val REQ_FILE_OPEN = 7912
     }
@@ -38,7 +37,7 @@ class BarcodeFragment @Inject constructor(
     @Inject lateinit var navigator: Navigator
 
     override fun initViewBinding() {
-        mBinding.barcodeScanner.apply {
+        binding.barcodeScanner.apply {
             barcodeView.decoderFactory = DefaultDecoderFactory(
                 arrayListOf(BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39))
 
@@ -55,11 +54,11 @@ class BarcodeFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        mBinding.barcodeScanner.resume()
+        binding.barcodeScanner.resume()
     }
 
     override fun onPause() {
-        mBinding.barcodeScanner.pause()
+        binding.barcodeScanner.pause()
 
         super.onPause()
     }
@@ -92,7 +91,7 @@ class BarcodeFragment @Inject constructor(
         when (requestCode) {
             REQ_FILE_OPEN -> {
                 if (resultCode != Activity.RESULT_OK) {
-                    mLog.error("ERROR: FILE OPEN RESULT $resultCode")
+                    logger.error("ERROR: FILE OPEN RESULT $resultCode")
                     return
                 }
 
@@ -129,12 +128,12 @@ class BarcodeFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun barcodeResult(result: BarcodeResult?) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BARCODE RESULT : $result")
+        if (logger.isDebugEnabled) {
+            logger.debug("BARCODE RESULT : $result")
         }
 
         result?.apply {
-            val v = mBinding.barcodeScanner
+            val v = binding.barcodeScanner
             v.postDelayed({ finish() }, 400)
 
             // 단순하게 http 만 했는데, sms, vcard, pdf 등등이 존재

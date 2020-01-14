@@ -18,7 +18,7 @@ import kotlin.math.roundToInt
  */
 
 object CameraConfigurationUtils {
-    private val mLog = LoggerFactory.getLogger(CameraConfigurationUtils::class.java)
+    private val logger = LoggerFactory.getLogger(CameraConfigurationUtils::class.java)
 
     private val SEMICOLON = Pattern.compile(";")
 
@@ -75,8 +75,8 @@ object CameraConfigurationUtils {
         }
         if (focusMode != null) {
             if (focusMode == parameters.focusMode) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("Focus mode already set to $focusMode")
+                if (logger.isDebugEnabled) {
+                    logger.debug("Focus mode already set to $focusMode")
                 }
             } else {
                 parameters.focusMode = focusMode
@@ -103,12 +103,12 @@ object CameraConfigurationUtils {
         }
         if (flashMode != null) {
             if (flashMode == parameters.flashMode) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Flash mode already set to $flashMode")
+                if (logger.isInfoEnabled) {
+                    logger.info("Flash mode already set to $flashMode")
                 }
             } else {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Setting flash mode to $flashMode")
+                if (logger.isInfoEnabled) {
+                    logger.info("Setting flash mode to $flashMode")
                 }
                 parameters.flashMode = flashMode
             }
@@ -127,18 +127,18 @@ object CameraConfigurationUtils {
             // Clamp value:
             compensationSteps = max(min(compensationSteps, maxExposure), minExposure)
             if (parameters.exposureCompensation == compensationSteps) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Exposure compensation already set to $compensationSteps / $actualCompensation")
+                if (logger.isInfoEnabled) {
+                    logger.info("Exposure compensation already set to $compensationSteps / $actualCompensation")
                 }
             } else {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Setting exposure compensation to $compensationSteps / $actualCompensation")
+                if (logger.isInfoEnabled) {
+                    logger.info("Setting exposure compensation to $compensationSteps / $actualCompensation")
                 }
                 parameters.exposureCompensation = compensationSteps
             }
         } else {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Camera does not support exposure compensation")
+            if (logger.isInfoEnabled) {
+                logger.info("Camera does not support exposure compensation")
             }
         }
     }
@@ -147,8 +147,8 @@ object CameraConfigurationUtils {
     fun setBestPreviewFPS(parameters: Camera.Parameters, minFPS: Int = MIN_FPS, maxFPS: Int = MAX_FPS) {
         val supportedPreviewFpsRanges = parameters.supportedPreviewFpsRange
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("Supported FPS ranges: ${toString(supportedPreviewFpsRanges)}")
+        if (logger.isInfoEnabled) {
+            logger.info("Supported FPS ranges: ${toString(supportedPreviewFpsRanges)}")
         }
 
         if (supportedPreviewFpsRanges != null && supportedPreviewFpsRanges.isNotEmpty()) {
@@ -162,19 +162,19 @@ object CameraConfigurationUtils {
                 }
             }
             if (suitableFPSRange == null) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("No suitable FPS range?")
+                if (logger.isInfoEnabled) {
+                    logger.info("No suitable FPS range?")
                 }
             } else {
                 val currentFpsRange = IntArray(2)
                 parameters.getPreviewFpsRange(currentFpsRange)
                 if (Arrays.equals(currentFpsRange, suitableFPSRange)) {
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("FPS range already set to " + Arrays.toString(suitableFPSRange))
+                    if (logger.isInfoEnabled) {
+                        logger.info("FPS range already set to " + Arrays.toString(suitableFPSRange))
                     }
                 } else {
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("Setting FPS range to " + Arrays.toString(suitableFPSRange))
+                    if (logger.isInfoEnabled) {
+                        logger.info("Setting FPS range to " + Arrays.toString(suitableFPSRange))
                     }
                     parameters.setPreviewFpsRange(
                         suitableFPSRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
@@ -188,18 +188,18 @@ object CameraConfigurationUtils {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     fun setFocusArea(parameters: Camera.Parameters) {
         if (parameters.maxNumFocusAreas > 0) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Old focus areas: " + toString(parameters.focusAreas)!!)
+            if (logger.isInfoEnabled) {
+                logger.info("Old focus areas: " + toString(parameters.focusAreas)!!)
             }
             val middleArea = buildMiddleArea(AREA_PER_1000)
 
-            if (mLog.isInfoEnabled) {
-                mLog.info("Setting focus area to : " + toString(middleArea)!!)
+            if (logger.isInfoEnabled) {
+                logger.info("Setting focus area to : " + toString(middleArea)!!)
             }
             parameters.focusAreas = middleArea
         } else {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Device does not support focus areas")
+            if (logger.isInfoEnabled) {
+                logger.info("Device does not support focus areas")
             }
         }
     }
@@ -207,17 +207,17 @@ object CameraConfigurationUtils {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
     fun setMetering(parameters: Camera.Parameters) {
         if (parameters.maxNumMeteringAreas > 0) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Old metering areas: " + parameters.meteringAreas)
+            if (logger.isInfoEnabled) {
+                logger.info("Old metering areas: " + parameters.meteringAreas)
             }
             val middleArea = buildMiddleArea(AREA_PER_1000)
-            if (mLog.isInfoEnabled) {
-                mLog.info("Setting metering area to : " + toString(middleArea)!!)
+            if (logger.isInfoEnabled) {
+                logger.info("Setting metering area to : " + toString(middleArea)!!)
             }
             parameters.meteringAreas = middleArea
         } else {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Device does not support metering areas")
+            if (logger.isInfoEnabled) {
+                logger.info("Device does not support metering areas")
             }
         }
     }
@@ -231,27 +231,27 @@ object CameraConfigurationUtils {
     fun setVideoStabilization(parameters: Camera.Parameters) {
         if (parameters.isVideoStabilizationSupported) {
             if (parameters.videoStabilization) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Video stabilization already enabled")
+                if (logger.isInfoEnabled) {
+                    logger.info("Video stabilization already enabled")
                 }
             } else {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Enabling video stabilization...")
+                if (logger.isInfoEnabled) {
+                    logger.info("Enabling video stabilization...")
                 }
 
                 parameters.videoStabilization = true
             }
         } else {
-            if (mLog.isInfoEnabled) {
-                mLog.info("This device does not support video stabilization")
+            if (logger.isInfoEnabled) {
+                logger.info("This device does not support video stabilization")
             }
         }
     }
 
     fun setBarcodeSceneMode(parameters: Camera.Parameters) {
         if (Camera.Parameters.SCENE_MODE_BARCODE == parameters.sceneMode) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Barcode scene mode already set")
+            if (logger.isInfoEnabled) {
+                logger.info("Barcode scene mode already set")
             }
             return
         }
@@ -269,18 +269,18 @@ object CameraConfigurationUtils {
         if (parameters.isZoomSupported) {
             val zoom = indexOfClosestZoom(parameters, targetZoomRatio) ?: return
             if (parameters.zoom == zoom) {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Zoom is already set to $zoom")
+                if (logger.isInfoEnabled) {
+                    logger.info("Zoom is already set to $zoom")
                 }
             } else {
-                if (mLog.isInfoEnabled) {
-                    mLog.info("Setting zoom to $zoom")
+                if (logger.isInfoEnabled) {
+                    logger.info("Setting zoom to $zoom")
                 }
                 parameters.zoom = zoom
             }
         } else {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Zoom is not supported")
+            if (logger.isInfoEnabled) {
+                logger.info("Zoom is not supported")
             }
         }
     }
@@ -288,13 +288,13 @@ object CameraConfigurationUtils {
     private fun indexOfClosestZoom(parameters: Camera.Parameters, targetZoomRatio: Double): Int? {
         val ratios = parameters.zoomRatios
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("Zoom ratios: " + ratios!!)
+        if (logger.isInfoEnabled) {
+            logger.info("Zoom ratios: " + ratios!!)
         }
         val maxZoom = parameters.maxZoom
         if (ratios == null || ratios.isEmpty() || ratios.size != maxZoom + 1) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Invalid zoom ratios!")
+            if (logger.isInfoEnabled) {
+                logger.info("Invalid zoom ratios!")
             }
             return null
         }
@@ -308,16 +308,16 @@ object CameraConfigurationUtils {
                 closestIndex = i
             }
         }
-        if (mLog.isInfoEnabled) {
-            mLog.info("Chose zoom ratio of " + ratios[closestIndex] / 100.0)
+        if (logger.isInfoEnabled) {
+            logger.info("Chose zoom ratio of " + ratios[closestIndex] / 100.0)
         }
         return closestIndex
     }
 
     fun setInvertColor(parameters: Camera.Parameters) {
         if (Camera.Parameters.EFFECT_NEGATIVE == parameters.colorEffect) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Negative effect already set")
+            if (logger.isInfoEnabled) {
+                logger.info("Negative effect already set")
             }
             return
         }
@@ -336,23 +336,23 @@ object CameraConfigurationUtils {
         supportedValues: Collection<String>?,
         vararg desiredValues: String
     ): String? {
-        if (mLog.isInfoEnabled) {
-            mLog.info("Requesting " + name + " value from among: " + Arrays.toString(desiredValues))
-            mLog.info("Supported $name values: $supportedValues")
+        if (logger.isInfoEnabled) {
+            logger.info("Requesting " + name + " value from among: " + Arrays.toString(desiredValues))
+            logger.info("Supported $name values: $supportedValues")
         }
 
         if (supportedValues != null) {
             for (desiredValue in desiredValues) {
                 if (supportedValues.contains(desiredValue)) {
-                    if (mLog.isInfoEnabled) {
-                        mLog.info("Can set $name to: $desiredValue")
+                    if (logger.isInfoEnabled) {
+                        logger.info("Can set $name to: $desiredValue")
                     }
                     return desiredValue
                 }
             }
         }
-        if (mLog.isInfoEnabled) {
-            mLog.info("No supported values match")
+        if (logger.isInfoEnabled) {
+            logger.info("No supported values match")
         }
         return null
     }

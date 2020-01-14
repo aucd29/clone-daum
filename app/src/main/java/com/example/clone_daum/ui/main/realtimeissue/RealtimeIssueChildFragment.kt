@@ -20,27 +20,30 @@ class RealtimeIssueChildFragment @Inject constructor(
 ) : BaseDaggerFragment<RealtimeIssueChildFragmentBinding, RealtimeIssueChildViewModel>() {
     override val layoutId = R.layout.realtime_issue_child_fragment
     companion object {
-        private val mLog = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
+        private val logger = LoggerFactory.getLogger(RealtimeIssueChildFragment::class.java)
     }
 
     @Inject lateinit var preConfig: PreloadConfig
     @Inject lateinit var navigator: Navigator
 
-    private val mRealtimeIssueViewModel: RealtimeIssueViewModel by activityInject()
-    private val mPosition: Int
+    private val realtimeIssueViewModel: RealtimeIssueViewModel by activityInject()
+    private val position: Int
         get() = arguments?.getInt(RealtimeIssueTabAdapter.K_POS)!!
 
     override fun initViewBinding() {
     }
 
     override fun initViewModelEvents() {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("POSITION : $mPosition")
+        if (logger.isDebugEnabled) {
+            logger.debug("POSITION : $position")
         }
 
         // main 에서 load 한 데이터를 읽어다가 출력
-        mRealtimeIssueViewModel.issueList(mPosition)?.let { list ->
-            mViewModel.initRealtimeIssueAdapter(list)
+        realtimeIssueViewModel.issueList(position)?.let { list ->
+            viewModel.apply {
+                initAdapter(R.layout.realtime_issue_child_item)
+                initRealtimeIssueAdapter(list)
+            }
         }
     }
 
@@ -57,7 +60,7 @@ class RealtimeIssueChildFragment @Inject constructor(
     }
 
     private fun showBrowser(url: String) {
-        mRealtimeIssueViewModel.command(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
+        realtimeIssueViewModel.command(RealtimeIssueViewModel.CMD_CLOSE_ISSUE)
 
         navigator.browserFragment(url)
     }

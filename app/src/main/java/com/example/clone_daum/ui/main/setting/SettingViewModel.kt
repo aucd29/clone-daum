@@ -26,24 +26,13 @@ class SettingViewModel @Inject constructor(
     val itemDecoration = ObservableField(OffsetDividerItemDecoration(app,
         R.drawable.shape_divider_gray,  0, 0))
 
-    init {
-        initAdapter(R.layout.setting_category_item,
-            R.layout.setting_normal_item,
-            R.layout.setting_color_item,
-            R.layout.setting_switch_item,
-            R.layout.setting_check_item,
-            R.layout.setting_depth_item,
-            R.layout.daum_app_info_item
-        )
-    }
-
     fun title(@StringRes resid: Int) {
         title = ObservableField(app.string(resid))
     }
 
     fun mainSettingType(): ArrayList<SettingType> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("MAIN SETTING TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("MAIN SETTING TYPE")
         }
 
         var nickName: String
@@ -123,8 +112,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun privacyPolicySettingType(): ArrayList<SettingType> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("PRIVACY POLICY TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("PRIVACY POLICY TYPE")
         }
 
         val envDownloadPath = Environment.getExternalStoragePublicDirectory(
@@ -153,8 +142,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun removeHistorySettingType(): ArrayList<SettingType> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("REMOVE HISTORY TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("REMOVE HISTORY TYPE")
         }
 
         var idx = 0
@@ -192,8 +181,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun alarmSettingType(): ArrayList<SettingType> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ALARM SETTING TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("ALARM SETTING TYPE")
         }
 
         var idx = 0
@@ -257,8 +246,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun alarmPreferenceSettingType(): ArrayList<SettingType> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ALARM PREFERENCE SETTING TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("ALARM PREFERENCE SETTING TYPE")
         }
 
         var idx = 0
@@ -291,8 +280,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun researchSettingType(): ArrayList<SettingType> {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("RESEARCH SETTING TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("RESEARCH SETTING TYPE")
         }
 
         var idx = 0
@@ -315,8 +304,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun userHistorySettingType(): ArrayList<SettingType>  {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("USER HISTORY SETTING TYPE")
+        if (logger.isDebugEnabled) {
+            logger.debug("USER HISTORY SETTING TYPE")
         }
 
         var idx = 0
@@ -358,8 +347,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun notifyItemChanged(pos: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INVALIDATE $pos")
+        if (logger.isDebugEnabled) {
+            logger.debug("INVALIDATE $pos")
         }
 
         adapter.get()?.notifyItemChanged(pos)
@@ -386,7 +375,7 @@ class SettingViewModel @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(SettingViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(SettingViewModel::class.java)
 
         const val CMD_SETTING_EVENT       = "setting-event"
         const val CMD_REMOVE_USER_HISTORY = "remove-user-history"

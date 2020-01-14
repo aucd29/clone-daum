@@ -23,24 +23,28 @@ import javax.inject.Inject
 class FavoriteFragment @Inject constructor(
 ): BaseDaggerFragment<FavoriteFragmentBinding, FavoriteViewModel>() {
     override val layoutId  = R.layout.favorite_fragment
+
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteFragment::class.java)
     }
 
     @Inject lateinit var navigator: Navigator
 
     override fun initViewBinding() {
-        mBinding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
+        binding.favoriteRadio.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.favorite_show_all    -> mViewModel.initItems()
-                R.id.favorite_show_folder -> mViewModel.initItemsByFolder()
+                R.id.favorite_show_all    -> viewModel.initItems()
+                R.id.favorite_show_folder -> viewModel.initItemsByFolder()
             }
         }
     }
 
     override fun initViewModelEvents() {
-        mViewModel.init(disposable())
-        mViewModel.initItems()
+        viewModel.apply {
+            initAdapter(R.layout.favorite_item_folder, R.layout.favorite_item)
+            init()
+            initItems()
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -50,15 +54,15 @@ class FavoriteFragment @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun onCommandEvent(cmd: String, data: Any) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("COMMAND : $cmd")
+        if (logger.isDebugEnabled) {
+            logger.debug("COMMAND : $cmd")
         }
 
         FavoriteViewModel.apply {
             when (cmd) {
                 CMD_BRS_OPEN           -> showBrowser(data.toString())
                 CMD_FOLDER_CHOOSE      -> navigator.favoriteFolderFragment(data as Int)
-                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, mViewModel)
+                CMD_SHOW_FOLDER_DIALOG -> FolderDialog.show(this@FavoriteFragment, viewModel)
                 CMD_FAVORITE_MODIFY    -> navigator.favoriteModifyFragment()
             }
         }

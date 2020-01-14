@@ -33,8 +33,8 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
         repeat(2) {
             tab.position.mockReturn(it)
 
-            if (mLog.isDebugEnabled) {
-                mLog.debug("TEST CHANGE TAB $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("TEST CHANGE TAB $it")
             }
 
             viewmodel.apply {
@@ -137,7 +137,7 @@ class MainViewModelTest: BaseRoboViewModelTest<MainViewModel>() {
     ////////////////////////////////////////////////////////////////////////////////////
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(MainViewModelTest::class.java)
+        private val logger = LoggerFactory.getLogger(MainViewModelTest::class.java)
     }
 
     @Mock lateinit var config: Config

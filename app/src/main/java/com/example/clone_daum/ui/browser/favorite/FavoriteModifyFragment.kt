@@ -20,8 +20,9 @@ import javax.inject.Inject
 class FavoriteModifyFragment @Inject constructor(
 ) : BaseDaggerFragment<FavoriteModifyFragmentBinding, FavoriteModifyViewModel>() {
     override val layoutId = R.layout.favorite_modify_fragment
+
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteModifyFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteModifyFragment::class.java)
 
         const val K_FOLDER = "folder"
     }
@@ -29,7 +30,7 @@ class FavoriteModifyFragment @Inject constructor(
     @Inject lateinit var navigator: Navigator
 
     override fun initViewBinding() {
-        mBinding.apply {
+        binding.apply {
             favoriteModifyBar.fadeColorResource(android.R.color.white,
                 R.color.colorAccent)
         }
@@ -37,11 +38,16 @@ class FavoriteModifyFragment @Inject constructor(
 
     override fun initViewModelEvents() {
         arguments?.getInt(K_FOLDER)?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("FOLDER : $it")
+            if (logger.isDebugEnabled) {
+                logger.debug("FOLDER : $it")
             }
 
-            mViewModel.init(it, disposable())
+            viewModel.apply {
+                initAdapter(
+                    R.layout.favorite_modify_item_folder,
+                    R.layout.favorite_modify_item)
+                init(it)
+            }
         }
     }
 
@@ -58,7 +64,7 @@ class FavoriteModifyFragment @Inject constructor(
     }
 
     private fun showPopupMenu() {
-        val popup = popupMenu(R.menu.favorite, mBinding.favoriteFolderMenu) {
+        val popup = popupMenu(R.menu.favorite, binding.favoriteFolderMenu) {
             when (it.itemId) {
                 R.id.mnu_move_folder       -> moveFavoriteFolder()
                 R.id.mnu_modify_favorite   -> modifyFavorite()
@@ -70,7 +76,7 @@ class FavoriteModifyFragment @Inject constructor(
 
         var folderCount = 0
         var favCount    = 0
-        mViewModel.selectedList.forEach {
+        viewModel.selectedList.forEach {
             when (it.favType) {
                 MyFavorite.T_FOLDER  -> ++folderCount
                 MyFavorite.T_DEFAULT -> ++favCount
@@ -80,7 +86,7 @@ class FavoriteModifyFragment @Inject constructor(
         // 팝업 메뉴의 경우 folder 를 1개 이상 선택 시,
         // 폴더와 link 를 같이 선택 시
         // 아무것도 선택 안했을때 에 모두 비활성화 처리 한다.
-        if (mViewModel.selectedList.size == 0 || folderCount > 1 ||
+        if (viewModel.selectedList.size == 0 || folderCount > 1 ||
             folderCount > 0 && favCount > 0) {
             popup.enableAll(false)
             return
@@ -98,12 +104,12 @@ class FavoriteModifyFragment @Inject constructor(
     }
 
     private fun moveFavoriteFolder() {
-        val fav = mViewModel.selectedList[0]
+        val fav = viewModel.selectedList[0]
         navigator.folderFragment(childFragmentManager, fav.folderId, R.id.favorite_modify_container)
     }
 
     private fun modifyFavorite() {
-        val fav = mViewModel.selectedList[0]
+        val fav = viewModel.selectedList[0]
         when (fav.favType) {
             MyFavorite.T_FOLDER  -> modifyFavoriteFolderName(fav)
             MyFavorite.T_DEFAULT -> modifyFavoriteLink(fav)
@@ -111,7 +117,7 @@ class FavoriteModifyFragment @Inject constructor(
     }
 
     private fun modifyFavoriteFolderName(fav: MyFavorite) {
-        FolderDialog.show(this, mViewModel, fav)
+        FolderDialog.show(this, viewModel, fav)
     }
 
     private fun modifyFavoriteLink(fav: MyFavorite) {
@@ -121,9 +127,9 @@ class FavoriteModifyFragment @Inject constructor(
     }
 
     private fun addIconToHomeLauncher() {
-        mViewModel.selectedList.forEach {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("ADD ICON TO HOME LAUNCHER : $it.url")
+        viewModel.selectedList.forEach {
+            if (logger.isDebugEnabled) {
+                logger.debug("ADD ICON TO HOME LAUNCHER : $it.url")
             }
 
             shortcut(ShortcutParams(it.url, R.mipmap.ic_launcher, it.name, it.name))
@@ -133,15 +139,15 @@ class FavoriteModifyFragment @Inject constructor(
     }
 
     fun changeFolderName(pos: Int, fav: MyFavorite) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CHANGE FOLDER ${fav.name} ($pos)")
+        if (logger.isDebugEnabled) {
+            logger.debug("CHANGE FOLDER ${fav.name} ($pos)")
         }
 
-        val modifyFav = mViewModel.selectedList[0]
+        val modifyFav = viewModel.selectedList[0]
         modifyFav.folderId = fav._id
         // FIXME fav.folderId = if (name == string(R.string.folder_favorite)) "" else name
 
-        mViewModel.updateFavorite(modifyFav) { finish() }
+        viewModel.updateFavorite(modifyFav) { finish() }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////

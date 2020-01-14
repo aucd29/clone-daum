@@ -21,7 +21,7 @@ class FavoriteProcessFragment @Inject constructor()
     override val layoutId = R.layout.favorite_process_fragment
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(FavoriteProcessFragment::class.java)
+        private val logger = LoggerFactory.getLogger(FavoriteProcessFragment::class.java)
 
         const val K_TITLE  = "title"
         const val K_URL    = "url"
@@ -34,20 +34,18 @@ class FavoriteProcessFragment @Inject constructor()
     }
 
     override fun initViewModelEvents() {
-        arguments?.let { mViewModel.run {
-            init(disposable())
-
+        arguments?.let { viewModel.run {
             val fav = it.getSerializable(K_MODIFY)
             if (fav is MyFavorite) {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("MODIFY FAVORITE")
-                    mLog.debug(fav.toString())
+                if (logger.isDebugEnabled) {
+                    logger.debug("MODIFY FAVORITE")
+                    logger.debug(fav.toString())
                 }
 
                 favorite(fav)
             } else {
-                if (mLog.isDebugEnabled) {
-                    mLog.debug("ADD FAVORITE")
+                if (logger.isDebugEnabled) {
+                    logger.debug("ADD FAVORITE")
                 }
 
                 // ui 에서 name 으로 되어 있어 title -> name 으로 변경
@@ -58,7 +56,7 @@ class FavoriteProcessFragment @Inject constructor()
     }
 
     override fun onDestroyView() {
-        mBinding.root.hideKeyboard()
+        binding.root.hideKeyboard()
 
         super.onDestroyView()
     }
@@ -70,11 +68,11 @@ class FavoriteProcessFragment @Inject constructor()
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun changeFolderName(pos: Int, fav: MyFavorite) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("CHANGE FOLDER ${fav.name} ($pos)")
+        if (logger.isDebugEnabled) {
+            logger.debug("CHANGE FOLDER ${fav.name} ($pos)")
         }
 
-        mViewModel.apply {
+        viewModel.apply {
             folder.set(fav.name)
             folderId = fav._id
         }
@@ -88,7 +86,7 @@ class FavoriteProcessFragment @Inject constructor()
 
     override fun onCommandEvent(cmd: String, data: Any) = FavoriteProcessViewModel.run {
         when (cmd) {
-            CMD_FOLDER_DETAIL -> navigator.folderFragment(childFragmentManager, mViewModel.folderId)
+            CMD_FOLDER_DETAIL -> navigator.folderFragment(childFragmentManager, viewModel.folderId)
         }
     }
 

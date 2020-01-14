@@ -1,15 +1,11 @@
 package com.example.clone_daum.ui.browser
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.R
 import com.example.clone_daum.databinding.BrowserSubmenuFragmentBinding
 import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import dagger.Binds
-import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 
@@ -30,15 +26,17 @@ class BrowserSubmenuFragment
     override val layoutId = R.layout.browser_submenu_fragment
 
     init {
-        mViewModelScope = SCOPE_ACTIVITY
+        viewModelScope = SCOPE_ACTIVITY
     }
 
-    override fun initViewBinding() { }
+    override fun initViewBinding() {
+        viewModel.initAdapter(R.layout.browser_submenu_item)
+    }
 
     override fun initViewModelEvents() {
-        observe(mViewModel.dismiss) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("SUBMENU DISMISS")
+        observe(viewModel.dismiss) {
+            if (logger.isDebugEnabled) {
+                logger.debug("SUBMENU DISMISS")
             }
 
             dismiss()
@@ -82,6 +80,6 @@ class BrowserSubmenuFragment
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(BrowserSubmenuFragment::class.java)
+        private val logger = LoggerFactory.getLogger(BrowserSubmenuFragment::class.java)
     }
 }

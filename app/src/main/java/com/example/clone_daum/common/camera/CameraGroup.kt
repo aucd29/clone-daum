@@ -13,7 +13,7 @@ import java.lang.RuntimeException
 
 class CameraManager constructor(val mContext: Context) {
     companion object {
-        private val mLog = LoggerFactory.getLogger(CameraManager::class.java)
+        private val logger = LoggerFactory.getLogger(CameraManager::class.java)
 
         fun getPreviewSizes(params: Camera.Parameters): List<Size> {
             val rawSupportedSizes = params.supportedPreviewSizes
@@ -57,7 +57,7 @@ class CameraManager constructor(val mContext: Context) {
 
         override fun onPreviewFrame(data: ByteArray, camera: Camera) {
             if (resolution == null || callback == null) {
-                mLog.error("ERROR: Got preview callback, but no handler or resolution available")
+                logger.error("ERROR: Got preview callback, but no handler or resolution available")
                 return
             }
 
@@ -159,13 +159,13 @@ class CameraManager constructor(val mContext: Context) {
     private fun setDesiredParameters(safeMode: Boolean) {
         val params = getDefaultCameraParameters()
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("INIT CAMERA PARAMS : ${params.flatten()}")
+        if (logger.isInfoEnabled) {
+            logger.info("INIT CAMERA PARAMS : ${params.flatten()}")
         }
 
         if (safeMode) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("IN CAMERA CONFIG SAFE MODE -- MOST SETTINGS WILL NOT BE HONORED")
+            if (logger.isInfoEnabled) {
+                logger.info("IN CAMERA CONFIG SAFE MODE -- MOST SETTINGS WILL NOT BE HONORED")
             }
         }
 
@@ -201,20 +201,20 @@ class CameraManager constructor(val mContext: Context) {
     private fun desiredParameters(safeMode: Boolean) {
         val params = getDefaultCameraParameters()
         if (params == null) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("Device error: no camera parameters are available. Proceeding without configuration.")
+            if (logger.isInfoEnabled) {
+                logger.info("Device error: no camera parameters are available. Proceeding without configuration.")
             }
 
             return
         }
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("Initial camera parameters: ${params.flatten()}")
+        if (logger.isInfoEnabled) {
+            logger.info("Initial camera parameters: ${params.flatten()}")
         }
 
         if (safeMode) {
-            if (mLog.isInfoEnabled) {
-                mLog.info("In camera config safe mode -- most settings will not be honored")
+            if (logger.isInfoEnabled) {
+                logger.info("In camera config safe mode -- most settings will not be honored")
             }
         }
 
@@ -244,8 +244,8 @@ class CameraManager constructor(val mContext: Context) {
             }
         }
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("Final camera parameters: ${params.flatten()}")
+        if (logger.isInfoEnabled) {
+            logger.info("Final camera parameters: ${params.flatten()}")
         }
 
         mCamera?.parameters = params
@@ -274,8 +274,8 @@ class CameraManager constructor(val mContext: Context) {
             result = (mCameraInfo.orientation - degrees + 360) % 360
         }
 
-        if (mLog.isInfoEnabled) {
-            mLog.info("Camera Display Orientation: $result")
+        if (logger.isInfoEnabled) {
+            logger.info("Camera Display Orientation: $result")
         }
 
         return result
@@ -290,27 +290,27 @@ class CameraManager constructor(val mContext: Context) {
             rotationDegrees = calculateDisplayRotation()
             setCameraDisplayOrientation(rotationDegrees)
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
-            mLog.error("ERROR: Failed to set rotation.")
+            logger.error("ERROR: Failed to set rotation.")
         }
 
         try {
             setDesiredParameters(false)
         } catch (e: Exception) {
-            if (mLog.isDebugEnabled) {
+            if (logger.isDebugEnabled) {
                 e.printStackTrace()
             }
 
             try {
                 setDesiredParameters(true)
             } catch (e2: java.lang.Exception) {
-                if (mLog.isDebugEnabled) {
+                if (logger.isDebugEnabled) {
                     e2.printStackTrace()
                 }
-                mLog.error("ERROR: Camera rejected even safe-mode parameters! No configuration")
+                logger.error("ERROR: Camera rejected even safe-mode parameters! No configuration")
             }
         }
 

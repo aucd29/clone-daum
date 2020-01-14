@@ -15,14 +15,14 @@ import org.slf4j.LoggerFactory
  */
 
 object TabLayoutBindingAdapter {
-    private val mLog = LoggerFactory.getLogger(TabLayoutBindingAdapter::class.java)
+    private val logger = LoggerFactory.getLogger(TabLayoutBindingAdapter::class.java)
 
     @JvmStatic
     @BindingAdapter("bindSetupWithViewPager", "bindTabLoaded", requireAll = false)
     fun bindSetupWithViewPager(tab: TabLayout, viewpager: ViewPager?, tabLoadedCallback: (() -> Unit)? = null) {
         viewpager?.let {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("bindSetupWithViewPager")
+            if (logger.isDebugEnabled) {
+                logger.debug("bindSetupWithViewPager")
             }
 
             tab.setupWithViewPager(it)
@@ -33,12 +33,12 @@ object TabLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindTabSelect")
     fun bindTabSelect(tab: TabLayout, index: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("bindTabSelect $index")
+        if (logger.isDebugEnabled) {
+            logger.debug("bindTabSelect $index")
         }
 
         if (index < 0 || tab.tabCount < index) {
-            mLog.error("ERROR: INVALID INDEX ($index)")
+            logger.error("ERROR: INVALID INDEX ($index)")
 
             return
         }
@@ -49,8 +49,8 @@ object TabLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindTabChanged")
     fun bindTabChanged(tab: TabLayout, tabSelectedCallback: TabSelectedCallback) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("ADD TAB SELECTED LISTENER")
+        if (logger.isDebugEnabled) {
+            logger.debug("ADD TAB SELECTED LISTENER")
         }
         tab.addOnTabSelectedListener(tabSelectedCallback)
     }
@@ -58,8 +58,8 @@ object TabLayoutBindingAdapter {
     @JvmStatic
     @BindingAdapter("bindIndicatorColor")
     fun bindIndicatorColor(tab: TabLayout, @ColorInt color: Int) {
-        if (mLog.isDebugEnabled) {
-            mLog.debug("BIND TAB INDICATOR COLOR")
+        if (logger.isDebugEnabled) {
+            logger.debug("BIND TAB INDICATOR COLOR")
         }
 
         tab.setSelectedTabIndicatorColor(color)

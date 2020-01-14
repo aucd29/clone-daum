@@ -35,9 +35,6 @@ class DownloadPathViewModel @Inject constructor(
         val downloadPath = app.prefs().getString(SettingViewModel.PREF_DOWNLOADPATH, envDownloadPath)
 
         currentRoot.value = downloadPath
-
-        initAdapter(R.layout.download_path_up_item,
-            R.layout.download_path_file_item)
     }
 
     fun loadFileList() {
@@ -45,15 +42,15 @@ class DownloadPathViewModel @Inject constructor(
         val current = currentRoot.value!!
         itemList.add(FileInfo(0, File(""), FileInfo.T_UP))
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("LOAD FILE LIST $current")
+        if (logger.isDebugEnabled) {
+            logger.debug("LOAD FILE LIST $current")
         }
 
         var i = 1
         val fp = File(current)
         fp.listFiles()?.forEach {
-            if (mLog.isTraceEnabled) {
-                mLog.trace("FILE PATH ${it.name}")
+            if (logger.isTraceEnabled) {
+                logger.trace("FILE PATH ${it.name}")
             }
 
             if (it.isDirectory) {
@@ -68,8 +65,8 @@ class DownloadPathViewModel @Inject constructor(
         when (cmd) {
             CMD_CHOOSE_DOWNLOAD_PATH -> {
                 app.prefs().edit {
-                    if (mLog.isDebugEnabled) {
-                        mLog.debug("CMD_CHOOSE_DOWNLOAD_PATH ${currentRoot.value}")
+                    if (logger.isDebugEnabled) {
+                        logger.debug("CMD_CHOOSE_DOWNLOAD_PATH ${currentRoot.value}")
                     }
 
                     putString(SettingViewModel.PREF_DOWNLOADPATH, currentRoot.value!!)
@@ -94,7 +91,7 @@ class DownloadPathViewModel @Inject constructor(
     }
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(DownloadPathViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(DownloadPathViewModel::class.java)
 
         const val CMD_CHOOSE_DOWNLOAD_PATH = "choose-download-path"
         const val CMD_LEAVE_DIR = "leave-dir"

@@ -19,7 +19,7 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
 ) : ViewModel() {
     companion object {
-        private val mLog = LoggerFactory.getLogger(SplashViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(SplashViewModel::class.java)
 
         private const val SPLASH_TIMEOUT = 7000L
     }
@@ -37,8 +37,8 @@ class SplashViewModel @Inject constructor(
         mDisposable.add(singleTimer(SPLASH_TIMEOUT)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { _ ->
-                if (mLog.isInfoEnabled && mState) {
-                    mLog.info("SPLASH TIMEOUT ($SPLASH_TIMEOUT MILLISECONDS)")
+                if (logger.isInfoEnabled && mState) {
+                    logger.info("SPLASH TIMEOUT ($SPLASH_TIMEOUT MILLISECONDS)")
                 }
 
                 closeSplash()
@@ -51,8 +51,8 @@ class SplashViewModel @Inject constructor(
                 return
             }
 
-            if (mLog.isInfoEnabled) {
-                mLog.info("CLOSE SPLASH")
+            if (logger.isInfoEnabled) {
+                logger.info("CLOSE SPLASH")
             }
 
             mState = false

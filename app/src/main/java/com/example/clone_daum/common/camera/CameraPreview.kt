@@ -25,7 +25,7 @@ import kotlin.math.min
 
 open class CameraPreview: ViewGroup {
     companion object {
-        private val mLog = LoggerFactory.getLogger(CameraPreview::class.java)
+        private val logger = LoggerFactory.getLogger(CameraPreview::class.java)
 
         const val ROTATION_LISTENER_DELAY_MS = 250L
     }
@@ -112,8 +112,8 @@ open class CameraPreview: ViewGroup {
 
         attrs?.let { initAttr(it) }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT LAYOUT")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT LAYOUT")
         }
 
         mWindowManager    = context.systemService<WindowManager>()!!
@@ -201,8 +201,8 @@ open class CameraPreview: ViewGroup {
                 previewFramingRect = null
                 framingRect        = null
 
-                if (mLog.isInfoEnabled) {
-                    mLog.info("PREVIEW FRAME IS TOO SMALL")
+                if (logger.isInfoEnabled) {
+                    logger.info("PREVIEW FRAME IS TOO SMALL")
                 }
             } else {
                 mFireState.sized()
@@ -305,8 +305,8 @@ open class CameraPreview: ViewGroup {
 
     open fun resume() {
         validateMainThread()
-        if (mLog.isDebugEnabled) {
-            mLog.debug("resume()")
+        if (logger.isDebugEnabled) {
+            logger.debug("resume()")
         }
 
         initCamera()
@@ -325,8 +325,8 @@ open class CameraPreview: ViewGroup {
 
     open fun pause() {
         validateMainThread()
-        if (mLog.isDebugEnabled) {
-            mLog.debug("pause()")
+        if (logger.isDebugEnabled) {
+            logger.debug("pause()")
         }
 
         openedOrientation = -1
@@ -363,15 +363,15 @@ open class CameraPreview: ViewGroup {
 
     private fun initCamera() {
         if (mCameraInstance != null) {
-            if (mLog.isDebugEnabled) {
-                mLog.debug("INIT CAMERA CALLED TWICE")
+            if (logger.isDebugEnabled) {
+                logger.debug("INIT CAMERA CALLED TWICE")
             }
 
             return
         }
 
-        if (mLog.isDebugEnabled) {
-            mLog.debug("INIT CAMERA")
+        if (logger.isDebugEnabled) {
+            logger.debug("INIT CAMERA")
         }
 
         mCameraInstance = CameraInstance(context)

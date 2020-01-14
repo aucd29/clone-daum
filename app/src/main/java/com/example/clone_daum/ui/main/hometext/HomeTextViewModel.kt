@@ -14,6 +14,6 @@ class HomeTextViewModel @Inject constructor(
 ) : CommandEventViewModel(app) {
 
     companion object {
-        private val mLog = LoggerFactory.getLogger(HomeTextViewModel::class.java)
+        private val logger = LoggerFactory.getLogger(HomeTextViewModel::class.java)
     }
 }
