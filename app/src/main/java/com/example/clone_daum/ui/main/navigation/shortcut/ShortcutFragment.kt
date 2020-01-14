@@ -46,7 +46,7 @@ class ShortcutFragment @Inject constructor(
             navigator.browserFragment(it)
         }
 
-        frequentlySiteViewModel.init(disposable())
+        frequentlySiteViewModel.load(disposable())
         observe(frequentlySiteViewModel.brsOpenEvent) {
             navigator.browserFragment(it)
         }

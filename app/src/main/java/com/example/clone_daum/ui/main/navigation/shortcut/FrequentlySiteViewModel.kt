@@ -22,15 +22,10 @@ class FrequentlySiteViewModel @Inject constructor(
         const val CMD_BROWSER = "browser"
     }
 
-    private lateinit var dp: CompositeDisposable
-
     val gridCount    = ObservableInt(4)
     val brsOpenEvent = SingleLiveEvent<String>()
 
-    fun init(disposable: CompositeDisposable) {
-        dp = disposable
-        initAdapter(R.layout.frequently_item)
-
+    fun load(dp: CompositeDisposable) {
         dp.add(frequentlySiteDao.select()
             .subscribe {
                 items.set(it)
@@ -41,10 +36,4 @@ class FrequentlySiteViewModel @Inject constructor(
         item.url.replace("^(http|https)://".toRegex(), "")
             .substring(0, 1)
             .toUpperCase()
-
-    override fun onCleared() {
-        dp.dispose()
-
-        super.onCleared()
-    }
 }

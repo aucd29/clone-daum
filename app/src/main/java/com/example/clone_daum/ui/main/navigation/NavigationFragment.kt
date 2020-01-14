@@ -90,7 +90,10 @@ class NavigationFragment constructor(
     }
 
     override fun initViewModelEvents() {
-        frequentlySiteViewModel.init(disposable())
+        frequentlySiteViewModel.initAdapter(R.layout.frequently_item)
+        frequentlySiteViewModel.load(disposable())
+        sitemapViewModel.initAdapter(R.layout.sitemap_item)
+
         loginViewModel.run {
             observe(status) {
                 if (logger.isInfoEnabled) {
