@@ -1,5 +1,6 @@
 package com.example.clone_daum.ui.browser.favorite
 
+import androidx.fragment.app.Fragment
 import androidx.savedstate.SavedStateRegistryOwner
 import com.example.clone_daum.databinding.FavoriteFolderFragmentBinding
 import com.example.clone_daum.ui.Navigator
@@ -8,6 +9,7 @@ import brigitte.*
 import brigitte.di.dagger.scope.FragmentScope
 import com.example.clone_daum.R
 import dagger.Binds
+import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import org.slf4j.LoggerFactory
 import javax.inject.Inject

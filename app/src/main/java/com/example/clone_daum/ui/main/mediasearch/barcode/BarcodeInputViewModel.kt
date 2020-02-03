@@ -23,10 +23,10 @@ class BarcodeInputViewModel @Inject constructor(
         const val CMD_HIDE_KEYBOARD = "hide-keyboard"
     }
 
-    override val dialogEvent  = SingleLiveEvent<DialogParam>()
-
     val barcodeNumber = ObservableField<String>()
     val editorAction  = ObservableField<(String?) -> Boolean>()
+
+    override val dialogEvent  = SingleLiveEvent<DialogParam>()
 
     init {
         editorAction.set {

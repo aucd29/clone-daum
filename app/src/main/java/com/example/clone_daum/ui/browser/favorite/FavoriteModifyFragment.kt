@@ -76,6 +76,7 @@ class FavoriteModifyFragment @Inject constructor(
 
         var folderCount = 0
         var favCount    = 0
+
         viewModel.selectedList.forEach {
             when (it.favType) {
                 MyFavorite.T_FOLDER  -> ++folderCount

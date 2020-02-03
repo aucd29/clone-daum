@@ -38,21 +38,19 @@ class BrowserFragment constructor(
         private const val WEBVIEW_SLIDING = 3
 
         const val K_FINISH_INCLUSIVE = "finish-inclusive"
-        const val K_URL = "url"
+        const val K_URL              = "url"
     }
 
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
-    private val mBrowserSubmenuViewModel by activityInject<BrowserSubmenuViewModel>()
-
     override val webview: WebView
         get() = binding.brsWebview
 
-    private val mFinishInclusive: Boolean
+    private val browserSubmenuViewModel by activityInject<BrowserSubmenuViewModel>()
+    private val finishInclusive: Boolean
         get() = arguments?.getBoolean(K_FINISH_INCLUSIVE) ?: false
-
-    private var mScrollListener: () -> Unit = {
+    private var scrollListener: () -> Unit = {
         if (webview.scrollY > config.SCREEN.y) {
             if (binding.brsMoveTop.alpha == 0f) {
                 if (logger.isDebugEnabled) {
@@ -73,7 +71,7 @@ class BrowserFragment constructor(
     override fun bindViewModel() {
         super.bindViewModel()
 
-        addCommandEventModel(mBrowserSubmenuViewModel)
+        addCommandEventModel(browserSubmenuViewModel)
     }
 
     override fun initViewBinding() = binding.run {
@@ -125,15 +123,15 @@ class BrowserFragment constructor(
             ))
         }
 
-        loadUrl(mUrl)
-        webview.viewTreeObserver.addOnScrollChangedListener(mScrollListener)
+        loadUrl(uri)
+        webview.viewTreeObserver.addOnScrollChangedListener(scrollListener)
         webview.setFindListener { active, count, _ ->
             viewModel.innerSearchCount.set("${active + 1}/$count")
         }
     }
 
     override fun initViewModelEvents() = viewModel.run {
-        applyUrl(mUrl)
+        applyUrl(uri)
         // TODO 임시 코드 추후 db 에서 얻어오도록 해야함
         applyBrowserCount(binding.brsArea.childCount)
 
@@ -158,7 +156,7 @@ class BrowserFragment constructor(
 
     override fun onDestroyView() {
         webview.apply {
-            viewTreeObserver.removeOnScrollChangedListener(mScrollListener)
+            viewTreeObserver.removeOnScrollChangedListener(scrollListener)
         }
 
         super.onDestroyView()
@@ -218,7 +216,7 @@ class BrowserFragment constructor(
             } else {
                 endAnimation()
 
-                if (mFinishInclusive) {
+                if (finishInclusive) {
                     finishInclusive()
                 } else {
                     finish()
@@ -309,7 +307,7 @@ class BrowserFragment constructor(
             "앱설정"       -> appSetting()
         }
 
-        mBrowserSubmenuViewModel.dismiss.call()
+        browserSubmenuViewModel.dismiss.call()
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +331,7 @@ class BrowserFragment constructor(
     private fun copyUrl() {
         context?.toast(R.string.brs_copied_url)
 
-        requireContext().clipboard(mUrl)
+        requireContext().clipboard(uri)
     }
 
     private fun showSystemBrowser() {
@@ -342,7 +340,7 @@ class BrowserFragment constructor(
                 if (res) {
                     startActivity(Intent(Intent.ACTION_VIEW).apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        data = Uri.parse(mUrl)
+                        data = Uri.parse(uri)
                     })
                 }
             })

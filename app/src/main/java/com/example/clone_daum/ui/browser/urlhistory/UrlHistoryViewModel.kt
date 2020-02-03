@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 
 class UrlHistoryViewModel @Inject constructor(
-    private val mUrlHistoryDao: UrlHistoryDao,
+    private val urlHistoryDao: UrlHistoryDao,
     app: Application
 ) : RecyclerViewModel<UrlHistory>(app) {
 
@@ -32,13 +32,13 @@ class UrlHistoryViewModel @Inject constructor(
         const val CMD_CHECKBOX_TOGGLE   = "url-history-checkbox-toggle"
     }
 
-    private val mDisposable = CompositeDisposable()
-    private val dateCal   = DateCalculator<UrlHistory>()
-    private var blockingFlag = true
-
     val editMode     = ObservableBoolean(false)
     val enableDelete = ObservableBoolean(false)
     val selectedList = arrayListOf<UrlHistory>()
+
+    private val dp           = CompositeDisposable()
+    private val dateCal      = DateCalculator<UrlHistory>()
+    private var blockingFlag = true
 
     init {
         dateCal.dateFormat(string(R.string.history_date_format))
@@ -51,7 +51,7 @@ class UrlHistoryViewModel @Inject constructor(
     fun initItems() {
         val historyLabels = app.stringArray(R.array.history_labels)
 
-        mDisposable.add(mUrlHistoryDao.select()
+        dp.add(urlHistoryDao.select()
             .subscribeOn(Schedulers.io())
             .filter { blockingFlag }
             .map {
@@ -152,7 +152,7 @@ class UrlHistoryViewModel @Inject constructor(
     private fun deleteUrlHistories() {
         blockingFlag = true
 
-        mDisposable.add(mUrlHistoryDao.delete(selectedList)
+        dp.add(urlHistoryDao.delete(selectedList)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -163,7 +163,7 @@ class UrlHistoryViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
         super.onCleared()
     }
 }

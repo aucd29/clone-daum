@@ -19,6 +19,7 @@ import javax.inject.Inject
 class FolderFragment @Inject constructor(
 ) : BaseDaggerFragment<FolderFragmentBinding, FolderViewModel>() {
     override val layoutId  = R.layout.folder_fragment
+
     companion object {
         private val logger = LoggerFactory.getLogger(FolderFragment::class.java)
 

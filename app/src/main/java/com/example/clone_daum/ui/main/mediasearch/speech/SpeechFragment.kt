@@ -34,6 +34,7 @@ class SpeechFragment @Inject constructor(
 ) : BaseDaggerFragment<SpeechFragmentBinding, SpeechViewModel>(), OnBackPressedListener,
     SpeechRecognizeListener {
     override val layoutId = R.layout.speech_fragment
+
     companion object {
         private val logger = LoggerFactory.getLogger(SpeechFragment::class.java)
 
@@ -42,7 +43,6 @@ class SpeechFragment @Inject constructor(
     }
 
     @Inject lateinit var navigator: Navigator
-
 
     // https://code.i-harness.com/ko-kr/q/254ae5
     private val animList = Collections.synchronizedCollection(arrayListOf<ObjectAnimator>())

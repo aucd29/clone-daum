@@ -45,12 +45,12 @@ class NavigationFragment constructor(
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var config: Config
 
-    private val mTranslationX: Float by lazy { (-30f).dpToPx(requireContext()) }
+    private val transX: Float by lazy { (-30f).dpToPx(requireContext()) }
     private val sitemapViewModel: SitemapViewModel by inject()
     private val frequentlySiteViewModel: FrequentlySiteViewModel by inject()
     private val loginViewModel: LoginViewModel by activityInject()
 
-    private val mStackChanger: () -> Unit = {
+    private val stackChanger: () -> Unit = {
         val name = this@NavigationFragment.javaClass.simpleName
         val currentName = activity?.supportFragmentManager?.current?.javaClass?.simpleName
 
@@ -124,10 +124,10 @@ class NavigationFragment constructor(
     }
 
     private fun addStackChangeListener() =
-        activity?.supportFragmentManager?.addOnBackStackChangedListener(mStackChanger)
+        activity?.supportFragmentManager?.addOnBackStackChangedListener(stackChanger)
 
     private fun removeStackChangeListener() =
-        activity?.supportFragmentManager?.removeOnBackStackChangedListener(mStackChanger)
+        activity?.supportFragmentManager?.removeOnBackStackChangedListener(stackChanger)
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -241,12 +241,12 @@ class NavigationFragment constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     private fun translationLeft() {
-        binding.root.animate().translationX(mTranslationX).start()
+        binding.root.animate().translationX(transX).start()
     }
 
     private fun translationRight() {
         with(binding.root) {
-            if (translationX == mTranslationX) {
+            if (translationX == transX) {
                 animate().translationX(0f).start()
             }
         }

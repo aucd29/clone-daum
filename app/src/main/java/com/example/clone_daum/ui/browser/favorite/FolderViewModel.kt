@@ -7,7 +7,6 @@ import com.example.clone_daum.R
 import com.example.clone_daum.model.local.MyFavorite
 import com.example.clone_daum.model.local.MyFavoriteDao
 import brigitte.*
-import brigitte.viewmodel.string
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -29,12 +28,12 @@ class FolderViewModel @Inject constructor(
         const val CMD_CHANGE_FOLDER      = "change-folder"
     }
 
-    private val mDisposable = CompositeDisposable()
-    private var mCurrentFolderId: Int = 0
-
     var selectedPosition: Int = 0
     var smoothToPosition = ObservableInt(0)
     val empty = ObservableField("")
+
+    private val dp = CompositeDisposable()
+    private var currentFolderId: Int = 0
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -43,7 +42,7 @@ class FolderViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     fun initFolder(currentFolderId: Int) {
-        this.mCurrentFolderId = currentFolderId
+        this.currentFolderId = currentFolderId
 
         reloadFolderItems()
     }
@@ -53,7 +52,7 @@ class FolderViewModel @Inject constructor(
             logger.debug("RELOAD FOLDER LIST")
         }
 
-        mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
+        dp.add(mFavoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .filter { it.isNotEmpty() }
             .map {
@@ -67,9 +66,9 @@ class FolderViewModel @Inject constructor(
                 list.add(0, MyFavorite(defaultFolder, favType = MyFavorite.T_FOLDER))
 
                 var pos = 0
-                if (mCurrentFolderId != 0) {
+                if (currentFolderId != 0) {
                     for (item in it) {
-                        if (item._id == mCurrentFolderId) {
+                        if (item._id == currentFolderId) {
                             selectedPosition = pos
                             break
                         }
@@ -94,7 +93,7 @@ class FolderViewModel @Inject constructor(
     ////////////////////////////////////////////////////////////////////////////////////
 
     override fun processFolder(folderName: Any) {
-        mDisposable.add(mFavoriteDao.insert(MyFavorite(folderName.toString()
+        dp.add(mFavoriteDao.insert(MyFavorite(folderName.toString()
             , favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
@@ -108,7 +107,7 @@ class FolderViewModel @Inject constructor(
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
-        mDisposable.add(mFavoriteDao.hasFolder(name)
+        dp.add(mFavoriteDao.hasFolder(name)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -161,7 +160,7 @@ class FolderViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
         super.onCleared()
     }
 }

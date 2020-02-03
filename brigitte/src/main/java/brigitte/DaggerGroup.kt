@@ -210,7 +210,7 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> const
         const val K_URL = "url"
     }
 
-    protected val mUrl: String
+    protected val uri: String
         get() = arguments?.getString(K_URL) ?: ""
 
     abstract val webview: WebView
@@ -240,13 +240,13 @@ abstract class BaseDaggerWebViewFragment<T: ViewDataBinding, M: ViewModel> const
     override fun onResume() {
         webview.apply {
             resume()
-            if (url.isNullOrEmpty() || url.contains(mUrl)) {
+            if (url.isNullOrEmpty() || url.contains(uri)) {
 
                 if (logger.isDebugEnabled) {
-                    logger.debug("RESUME LOAD URL : $mUrl")
+                    logger.debug("RESUME LOAD URL : $uri")
                 }
 
-                loadUrl(mUrl)
+                loadUrl(uri)
             }
         }
 

@@ -24,7 +24,7 @@ import io.reactivex.Completable
 
 class FavoriteModifyViewModel @Inject constructor(
     app: Application,
-    private val mFavoriteDao: MyFavoriteDao
+    private val favoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(app), IFolder {
     companion object {
         private val logger = LoggerFactory.getLogger(FavoriteModifyViewModel::class.java)
@@ -34,12 +34,12 @@ class FavoriteModifyViewModel @Inject constructor(
         const val CMD_POPUP_MENU      = "popup-menu"
     }
 
-    private var dp = CompositeDisposable()
-    private var mFolderId: Int = 0
-
     val selectedList = arrayListOf<MyFavorite>()
     val visibleEmpty = ObservableInt(View.GONE) // 화면 깜박임 때문에 추가
     val enableDelete = ObservableBoolean(false)
+
+    private var dp = CompositeDisposable()
+    private var folderId: Int = 0
 
     private fun initItems(folderId: Int, notify: (() -> Unit)? = null) {
         if (logger.isDebugEnabled) {
@@ -47,15 +47,14 @@ class FavoriteModifyViewModel @Inject constructor(
         }
 
         val fav = if (folderId == 0) {
-            mFavoriteDao.selectShowAll()
+            favoriteDao.selectShowAll()
         } else {
-            mFavoriteDao.selectByFolderId(folderId)
+            favoriteDao.selectByFolderId(folderId)
         }
 
         // flowable 로 하면 디비 갱신 다시 쿼리를 전달 받아서 해주긴 하는데
         // touch helper 구조상 처음에만 쿼리를 전달 받도록 함
-        dp.add(fav
-            .subscribeOn(Schedulers.io())
+        dp.add(fav.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 if (logger.isDebugEnabled) {
@@ -73,7 +72,7 @@ class FavoriteModifyViewModel @Inject constructor(
     }
 
     fun init(folderId: Int) {
-        mFolderId = folderId
+        this.folderId = folderId
 
         initItems(folderId)
         initItemTouchHelper(ItemMovedCallback { from, to ->
@@ -87,7 +86,7 @@ class FavoriteModifyViewModel @Inject constructor(
 
                 fromData.swapDate(toData)
 
-                dp.add(mFavoriteDao.update(fromData, toData)
+                dp.add(favoriteDao.update(fromData, toData)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe ({
@@ -188,7 +187,7 @@ class FavoriteModifyViewModel @Inject constructor(
         //  TODO zip 처리 필요
 
         if (folderIdList.size > 0) {
-            dp.add(Completable.fromAction { mFavoriteDao.deleteByFolderIds(folderIdList) }
+            dp.add(Completable.fromAction { favoriteDao.deleteByFolderIds(folderIdList) }
                 .subscribeOn(Schedulers.io())
                 .subscribe {
                     if (logger.isDebugEnabled) {
@@ -197,7 +196,7 @@ class FavoriteModifyViewModel @Inject constructor(
                 })
         }
 
-        dp.add(mFavoriteDao.delete(selectedList)
+        dp.add(favoriteDao.delete(selectedList)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -208,14 +207,14 @@ class FavoriteModifyViewModel @Inject constructor(
                 // modify fragment 에서는 single 로 call 하고 있으므로
                 // 화면을 갱신 시켜줘야 한다.
 
-                initItems(mFolderId) {
+                initItems(folderId) {
                     adapter.get()?.notifyDataSetChanged()
                 }
             }, ::errorLog))
     }
 
     fun updateFavorite(fav: MyFavorite, callback: (Boolean) -> Unit) {
-        dp.add(mFavoriteDao.update(fav)
+        dp.add(favoriteDao.update(fav)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -244,25 +243,14 @@ class FavoriteModifyViewModel @Inject constructor(
             logger.debug("UPDATE FAVORITE (OLD: ${pair.first}, NEW: ${pair.second.name})")
         }
 
-//        val oldName = pair.first
-//        val newName = pair.second.name
         val fav = pair.second
-
         updateFavorite(fav) {
-//            if (fav.favType == MyFavorite.T_FOLDER) {
-//                // 폴더 변경시 하위의 favorite link 를 수정한다.
-//                // 이렇게 안하려면 폴더에 별도의 table 을 생성하고 참조를 _id 값을 참조해서 join 하면 되긴하는데
-//                // 데이터 양이 많지 않을거라 생각해서 이리 생성..
-//                // 그리고 swap 도 하려면 한개의 테이블이 편함
-//                updateFolderName(oldName, newName) {
-                    finish(false)
-//                }
-//            }
+            finish(false)
         }
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
-        dp.add(mFavoriteDao.hasFolder(name, id)
+        dp.add(favoriteDao.hasFolder(name, id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

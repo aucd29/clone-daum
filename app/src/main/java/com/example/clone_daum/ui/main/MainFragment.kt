@@ -228,7 +228,7 @@ class MainFragment constructor(
     private fun loadRealtimeIssueTab() {
         issueViewModel.apply {
             val adapter = realtimeIssueTabAdapter.get()
-            adapter.issueList = mRealtimeIssueList
+            adapter.issueList = realtimeIssue
 
             binding.mainIssueViewpager.adapter = adapter
 

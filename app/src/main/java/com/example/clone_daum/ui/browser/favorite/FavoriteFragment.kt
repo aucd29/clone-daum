@@ -42,7 +42,7 @@ class FavoriteFragment @Inject constructor(
     override fun initViewModelEvents() {
         viewModel.apply {
             initAdapter(R.layout.favorite_item_folder, R.layout.favorite_item)
-            init()
+            initScrollToPosition()
             initItems()
         }
     }

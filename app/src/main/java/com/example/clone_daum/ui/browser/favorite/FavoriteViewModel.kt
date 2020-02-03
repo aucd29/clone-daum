@@ -12,7 +12,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import com.example.clone_daum.R
 
 /**
  * Created by <a href="mailto:aucd29@gmail.com">Burke Choi</a> on 2019. 3. 4. <p/>
@@ -20,7 +19,7 @@ import com.example.clone_daum.R
 
 class FavoriteViewModel @Inject constructor(
     app: Application,
-    private val mFavoriteDao: MyFavoriteDao
+    private val favoriteDao: MyFavoriteDao
 ) : RecyclerViewModel<MyFavorite>(app), IDialogAware, IFolder {
     companion object {
         private val logger = LoggerFactory.getLogger(FavoriteViewModel::class.java)
@@ -31,19 +30,17 @@ class FavoriteViewModel @Inject constructor(
         const val CMD_SHOW_FOLDER_DIALOG = "show-folder-dialog"
     }
 
-    override val dialogEvent = SingleLiveEvent<DialogParam>()
-
-    private val mDisposable = CompositeDisposable()
     val itemAnimator = ObservableField<RecyclerView.ItemAnimator?>()
+    override val dialogEvent = SingleLiveEvent<DialogParam>()
+    private val dp = CompositeDisposable()
 
-    fun init() {
+    fun initScrollToPosition() {
         adapter.get()?.run { isScrollToPosition = false }
     }
 
     fun initItems() {
-        mDisposable.clear()
-
-        mDisposable.add(mFavoriteDao.selectShowAllFlowable()
+        dp.clear()
+        dp.add(favoriteDao.selectShowAllFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -59,8 +56,8 @@ class FavoriteViewModel @Inject constructor(
     }
 
     fun initItemsByFolder() {
-        mDisposable.clear()
-        mDisposable.add(mFavoriteDao.selectShowFolderFlowable()
+        dp.clear()
+        dp.add(favoriteDao.selectShowFolderFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -76,7 +73,7 @@ class FavoriteViewModel @Inject constructor(
     }
 
     fun insertFolder(folderName: String) {
-        mDisposable.add(mFavoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
+        dp.add(favoriteDao.insert(MyFavorite(folderName, favType = MyFavorite.T_FOLDER))
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (logger.isDebugEnabled) {
@@ -109,7 +106,7 @@ class FavoriteViewModel @Inject constructor(
     }
 
     override fun hasFolder(name: String, callback: (Boolean) -> Unit, id: Int) {
-        mDisposable.add(mFavoriteDao.hasFolder(name)
+        dp.add(favoriteDao.hasFolder(name)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -128,7 +125,7 @@ class FavoriteViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
         super.onCleared()
     }
 }

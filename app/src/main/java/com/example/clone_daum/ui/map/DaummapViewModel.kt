@@ -59,6 +59,11 @@ class DaummapViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        dp.clear()
+        super.onCleared()
+    }
+
     companion object {
         const val CMD_TILE_MODE_STANDARD = "mode-standard"
         const val CMD_TILE_MODE_HD2X     = "mode-hd2x"

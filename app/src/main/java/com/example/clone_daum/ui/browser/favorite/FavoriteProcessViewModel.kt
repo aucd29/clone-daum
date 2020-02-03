@@ -34,10 +34,6 @@ class FavoriteProcessViewModel @Inject constructor(
         const val CMD_FAVORITE_PROCESS = "favorite-process"
     }
 
-    override val dialogEvent   = SingleLiveEvent<DialogParam>()
-
-    private val dp = CompositeDisposable()
-
     val name      = ObservableField<String>()
     val url       = ObservableField<String>()
     val folder    = ObservableField(string(R.string.folder_favorite))
@@ -48,6 +44,8 @@ class FavoriteProcessViewModel @Inject constructor(
     val title     = ObservableInt(R.string.favorite_title_add)
     var _id       = 0
 
+    override val dialogEvent   = SingleLiveEvent<DialogParam>()
+    private val dp = CompositeDisposable()
 
     fun favorite(fav: MyFavorite) {
         _id = fav._id

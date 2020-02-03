@@ -46,10 +46,7 @@ class RealtimeIssueViewModel @Inject constructor(
         const val ITN_ERROR_ISSUE   = "error-realtime-issue"
     }
 
-    private var mAllIssueList: List<RealtimeIssue>? = null
-    private val mDisposable = CompositeDisposable()
-
-    var mRealtimeIssueList: List<Pair<String, List<RealtimeIssue>>>? = null
+    var realtimeIssue: List<Pair<String, List<RealtimeIssue>>>? = null
 
     val tabChangedCallback = ObservableField<TabSelectedCallback>()
     var tabChangedLive     = MutableLiveData<TabLayout.Tab?>()
@@ -70,6 +67,9 @@ class RealtimeIssueViewModel @Inject constructor(
 
     val htmlDataLive       = MutableLiveData<String>()
 
+    private var allIssueList: List<RealtimeIssue>? = null
+    private val dp = CompositeDisposable()
+
     init {
         tabChangedCallback.set(TabSelectedCallback {
             if (logger.isDebugEnabled) {
@@ -81,7 +81,7 @@ class RealtimeIssueViewModel @Inject constructor(
     }
 
     fun loadData() {
-        mDisposable.add(preConfig.daumMain()
+        dp.add(preConfig.daumMain()
             .subscribe({ html ->
                 htmlDataLive.postValue(html)
                 load(html)
@@ -102,7 +102,7 @@ class RealtimeIssueViewModel @Inject constructor(
             return
         }
 
-        mDisposable.add(Observable.just(html)
+        dp.add(Observable.just(html)
             .subscribeOn(Schedulers.io())
             .map (::parseRealtimeIssue)
             .observeOn(AndroidSchedulers.mainThread())
@@ -125,8 +125,8 @@ class RealtimeIssueViewModel @Inject constructor(
                 viewIssueProgress.gone()
                 viewRetry.gone()
 
-                mRealtimeIssueList = it
-                mAllIssueList      = it[0].second
+                realtimeIssue = it
+                allIssueList      = it[0].second
 
                 enableClick.set(true)
                 startRealtimeIssue()
@@ -180,7 +180,7 @@ class RealtimeIssueViewModel @Inject constructor(
     }
 
     fun issueList(position: Int) =
-        mRealtimeIssueList?.get(position)?.second
+        realtimeIssue?.get(position)?.second
 
     ////////////////////////////////////////////////////////////////////////////////////
     //
@@ -193,9 +193,9 @@ class RealtimeIssueViewModel @Inject constructor(
             logger.debug("START REALTIME ISSUE")
         }
 
-        mAllIssueList?.let { list ->
-            mDisposable.clear()
-            mDisposable.add(interval(INTERVAL, initDelay = 0)
+        allIssueList?.let { list ->
+            dp.clear()
+            dp.add(interval(INTERVAL, initDelay = 0)
                 .map {
                     if (logger.isTraceEnabled) {
                         logger.trace("REALTIME ISSUE INTERVAL $it")
@@ -213,11 +213,11 @@ class RealtimeIssueViewModel @Inject constructor(
             logger.debug("STOP REALTIME ISSUE")
         }
 
-        mDisposable.clear()
+        dp.clear()
     }
 
     override fun onCleared() {
-        mDisposable.dispose()
+        dp.dispose()
         super.onCleared()
     }
 
